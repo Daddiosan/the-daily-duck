@@ -566,3 +566,12 @@ noscript {
     transition: none !important;
   }
 }
+
+/* Version 3 data-driven archive */
+.archive-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.duck-card { grid-template-columns: 150px 1fr; }
+.duck-card-image img { width: 82%; }
+.duck-card a { text-decoration: none; }
+@media (max-width: 900px) {
+  .archive-grid { grid-template-columns: 1fr; }
+}
