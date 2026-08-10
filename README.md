@@ -1,3 +1,10 @@
+# The Daily Duck — Version 3.6 Brand Edition
+
+Version 3.5 static duck pages + approved Vintage Emblem brand assets.
+
+Upload the CONTENTS of this folder to the root of the existing GitHub repository, preserving folders.
+Vercel should deploy automatically after commit.
+
 # The Daily Duck — Version 3.5
 
 ## What changed
