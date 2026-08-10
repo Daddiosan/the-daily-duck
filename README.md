@@ -1,27 +1,12 @@
-# The Daily Duck — Version 3.6 Brand Edition
+# The Daily Duck — Version 3.7
 
-Version 3.5 static duck pages + approved Vintage Emblem brand assets.
+Version 3.7 integrates the approved Vintage Emblem into the visible site header.
 
-Upload the CONTENTS of this folder to the root of the existing GitHub repository, preserving folders.
+Changes:
+- Main homepage header: official emblem + The Daily Duck wordmark
+- Static archive pages: same official branded header
+- Existing Version 3.6 favicon / Apple icon assets retained
+- Existing Version 3.5 static archive and social metadata retained
+
+Upload the CONTENTS of this folder to the root of the GitHub repository.
 Vercel should deploy automatically after commit.
-
-# The Daily Duck — Version 3.5
-
-## What changed
-- Each published duck gets a real static URL:
-  `/ducks/YYYY-MM-DD/`
-- Each static page has its own Open Graph image/title/description.
-- X/Twitter large-image cards are included.
-- Each page has its own canonical URL and Article structured data.
-- Archive links point to static duck pages.
-- sitemap.xml lists the static duck pages.
-
-## Current publication state
-- 2026-08-10 QUACKSTRONAUT: published
-- 2026-08-11 SHARKQUACK: still unpublished
-
-## Upload
-Upload the contents of this folder to the root of the existing GitHub repository,
-preserving the `ducks/`, `data/`, and `assets/` folders.
-
-Vercel should deploy automatically after the GitHub commit.

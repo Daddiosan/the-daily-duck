@@ -621,3 +621,25 @@ noscript {
 .about-expanded h2 { margin: 12px 0 18px; font-size: clamp(28px, 4vw, 48px); line-height: 1.05; }
 .about-expanded p { max-width: 720px; margin: 0 auto 14px; line-height: 1.9; }
 .about-manifesto { font-weight: 800; }
+
+
+/* Version 3.7 — official branded header */
+.brand-official {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+.brand-official img {
+  display: block;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.brand-official strong {
+  letter-spacing: -0.02em;
+}
+@media (max-width: 640px) {
+  .brand-official { gap: 8px; }
+  .brand-official img { width: 36px; height: 36px; }
+}
