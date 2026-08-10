@@ -1,0 +1,18 @@
+{
+  "date": "YYYY-MM-DD",
+  "title": "DUCK NAME",
+  "published": false,
+  "image": "assets/ducks/YYYY-MM-DD-duck-name.png",
+  "imageAltEn": "Describe today's duck image.",
+  "imageAltJa": "今日のダック画像の説明。",
+  "dekEn": "One bright story from the world, turned into one duck.",
+  "dekJa": "世界の明るい話題を、今日の一羽のダックに。",
+  "storyEn": "Write today's short story here.",
+  "storyJa": "今日の出来事をここに書きます。",
+  "duckEn": "Write the duck's playful interpretation here.",
+  "duckJa": "ダックらしい一言や解釈をここに書きます。",
+  "sourceName": "SOURCE NAME",
+  "sourceUrl": "https://example.com/source",
+  "archiveSummaryEn": "Short archive description.",
+  "archiveSummaryJa": "アーカイブ用の短い説明。"
+}

@@ -1,0 +1,17 @@
+THE DAILY DUCK — DAILY CHECKLIST
+
+[ ] ニュース決定
+[ ] ダック名決定
+[ ] 画像完成
+[ ] 日付確認
+[ ] 英語本文確認
+[ ] 日本語本文確認
+[ ] 出典URL確認
+[ ] published = true
+[ ] トップページ確認
+[ ] Archive確認
+[ ] 個別ページ確認
+[ ] sitemap確認
+[ ] GitHub Commit
+[ ] Vercel Production確認
+[ ] 公開サイト確認

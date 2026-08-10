@@ -1,18 +1,20 @@
-# The Daily Duck — Version 3.8
+# The Daily Duck — Version 4.0 Daily Template
 
-Google Analytics 4 integration.
+Version 4.0 is the reusable daily-update foundation.
 
-Measurement ID: G-ZY7DDS7PRO
+It preserves the current live site and adds:
+- `daily-template/new-duck.json`
+- Japanese daily workflow guide
+- Daily publishing checklist
+- Stable naming rules for images and static duck pages
+- A publish/unpublish convention for future ducks
 
-Includes everything from Version 3.7:
-- Approved Vintage Emblem branding
-- Static duck archive pages
-- Social metadata / OGP
-- Sitemap and SEO files
+Existing features retained:
+- Vintage Emblem branding
+- Static archive pages
+- OGP / X Card metadata
+- sitemap.xml / robots.txt
+- Google Analytics 4
 
-Version 3.8 change:
-- Google tag installed on every HTML page.
-
-Upload the CONTENTS of this folder to the root of the existing GitHub repository.
-Preserve the folder structure. Commit the changes and let Vercel deploy automatically.
-Then return to Google Analytics and click "インストールをテスト".
+This package does NOT prematurely publish a future duck.
+Upload the contents to the existing GitHub repository and preserve folders.
