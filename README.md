@@ -1,22 +1,20 @@
-# The Daily Duck — Version 3.4 Launch Ready
+# The Daily Duck — Version 3.5
 
-Adds:
-- richer bilingual About section
-- Open Graph social sharing metadata
-- X/Twitter large image metadata
-- SEO description + canonical URL
-- Schema.org WebSite structured data
-- robots.txt
-- sitemap.xml
-- clickable archive date pages (from v3.3)
-- custom 404 page
+## What changed
+- Each published duck gets a real static URL:
+  `/ducks/YYYY-MM-DD/`
+- Each static page has its own Open Graph image/title/description.
+- X/Twitter large-image cards are included.
+- Each page has its own canonical URL and Article structured data.
+- Archive links point to static duck pages.
+- sitemap.xml lists the static duck pages.
 
-Current public day remains:
-2026-08-10 — QUACKSTRONAUT
+## Current publication state
+- 2026-08-10 QUACKSTRONAUT: published
+- 2026-08-11 SHARKQUACK: still unpublished
 
-SHARKQUACK remains prepared but unpublished for 2026-08-11.
+## Upload
+Upload the contents of this folder to the root of the existing GitHub repository,
+preserving the `ducks/`, `data/`, and `assets/` folders.
 
-Note:
-For the strongest social preview for every historical URL, a future version can generate
-a separate static HTML page per duck. Version 3.4 updates metadata in the browser, which
-works for the site UI, while some social crawlers may only read the initial HTML metadata.
+Vercel should deploy automatically after the GitHub commit.

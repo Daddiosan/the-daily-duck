@@ -72,7 +72,7 @@
   function archiveCard(item) {
     const summary = lang === 'ja' ? item.archiveSummaryJa : item.archiveSummaryEn;
     const imageAlt = lang === 'ja' ? item.imageAltJa : item.imageAltEn;
-    const href = `?date=${encodeURIComponent(item.date)}#today`;
+    const href = `/ducks/${encodeURIComponent(item.date)}/`;
 
     return `
       <article class="duck-card">
