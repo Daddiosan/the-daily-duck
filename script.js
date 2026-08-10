@@ -4,8 +4,17 @@
 
   let lang = localStorage.getItem('dailyDuckLang') || 'ja';
   const data = window.DAILY_DUCK_DATA || {};
-  const todayData = data.today || null;
-  const archiveData = Array.isArray(data.archive) ? data.archive : [];
+  const archiveAll = Array.isArray(data.archive) ? data.archive : [];
+  const publishedArchive = archiveAll.filter(item => item.published !== false);
+  const byDate = new Map(archiveAll.map(item => [item.date, item]));
+
+  const params = new URLSearchParams(location.search);
+  const requestedDate = params.get('date');
+
+  let currentData =
+    (requestedDate && byDate.get(requestedDate)?.published !== false)
+      ? byDate.get(requestedDate)
+      : data.today || publishedArchive[0] || null;
 
   const translatable = $$('[data-ja][data-en]');
 
@@ -27,67 +36,73 @@
     localStorage.setItem('dailyDuckLang', lang);
   }
 
-  function renderToday() {
-    if (!todayData) {
-      const story = $('#todayStory');
-      if (story) {
-        story.textContent =
-          lang === 'ja'
-            ? '今日のダックを読み込めませんでした。'
-            : "Today's duck could not be loaded.";
-      }
-      return;
-    }
+  function renderCurrent() {
+    if (!currentData) return;
 
     const image = $('#todayImage');
-    image.src = todayData.image;
-    image.alt = lang === 'ja' ? todayData.imageAltJa : todayData.imageAltEn;
+    image.src = currentData.image;
+    image.alt = lang === 'ja' ? currentData.imageAltJa : currentData.imageAltEn;
 
     const date = $('#todayDate');
-    date.textContent = todayData.displayDate;
-    date.dateTime = todayData.date;
+    date.textContent = currentData.displayDate;
+    date.dateTime = currentData.date;
 
-    $('#todayTitle').textContent = todayData.title;
+    $('#todayTitle').textContent = currentData.title;
     $('#todayStory').textContent =
-      lang === 'ja' ? todayData.storyJa : todayData.storyEn;
+      lang === 'ja' ? currentData.storyJa : currentData.storyEn;
     $('#todayDuck').textContent =
-      lang === 'ja' ? todayData.duckJa : todayData.duckEn;
+      lang === 'ja' ? currentData.duckJa : currentData.duckEn;
 
     const source = $('#sourceLink');
-    source.href = todayData.sourceUrl;
+    source.href = currentData.sourceUrl;
     $('#sourceText').textContent =
-      (lang === 'ja' ? '出典：' : 'Source: ') + todayData.sourceLabel;
+      (lang === 'ja' ? '出典：' : 'Source: ') + currentData.sourceLabel;
 
-    document.title = `The Daily Duck — ${todayData.title}`;
+    const todayLabel = document.querySelector('.eyebrow');
+    if (todayLabel) {
+      const isToday = currentData.date === data.today?.date;
+      todayLabel.textContent = isToday
+        ? (lang === 'ja' ? '🐤 今日のダック' : "🐤 TODAY'S DUCK")
+        : (lang === 'ja' ? '🐤 アーカイブのダック' : '🐤 ARCHIVE DUCK');
+    }
+
+    document.title = `The Daily Duck — ${currentData.title}`;
+  }
+
+  function archiveCard(item) {
+    const summary = lang === 'ja' ? item.archiveSummaryJa : item.archiveSummaryEn;
+    const imageAlt = lang === 'ja' ? item.imageAltJa : item.imageAltEn;
+    const href = `?date=${encodeURIComponent(item.date)}#today`;
+
+    return `
+      <article class="duck-card">
+        <a class="duck-card-link" href="${href}" aria-label="${item.title} ${item.date}">
+          <div class="duck-card-image">
+            <img src="${item.image}" alt="${imageAlt}" loading="lazy">
+          </div>
+          <div>
+            <time datetime="${item.date}">${item.date.replaceAll('-', '.')}</time>
+            <h3>${item.title}</h3>
+            <p>${summary}</p>
+            <span class="view-story">${lang === 'ja' ? 'この日のページを見る →' : 'View this day →'}</span>
+          </div>
+        </a>
+      </article>
+    `;
   }
 
   function renderArchive() {
     const grid = $('#archiveGrid');
     if (!grid) return;
+    grid.innerHTML = publishedArchive.map(archiveCard).join('');
+  }
 
-    grid.innerHTML = '';
-
-    archiveData.forEach((item) => {
-      const card = document.createElement('article');
-      card.className = 'duck-card';
-
-      const imageAlt = lang === 'ja' ? item.imageAltJa : item.imageAltEn;
-      const summary =
-        lang === 'ja' ? item.archiveSummaryJa : item.archiveSummaryEn;
-
-      card.innerHTML = `
-        <div class="duck-card-image">
-          <img src="${item.image}" alt="${imageAlt}" loading="lazy">
-        </div>
-        <div>
-          <time datetime="${item.date}">${item.date.replaceAll('-', '.')}</time>
-          <h3>${item.title}</h3>
-          <p>${summary}</p>
-        </div>
-      `;
-
-      grid.appendChild(card);
-    });
+  function updateCanonical() {
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical || !currentData) return;
+    canonical.href = currentData.date === data.today?.date
+      ? 'https://www.thedailyduck.ai/'
+      : `https://www.thedailyduck.ai/?date=${currentData.date}`;
   }
 
   const langToggle = $('#langToggle');
@@ -95,7 +110,7 @@
     langToggle.addEventListener('click', () => {
       lang = lang === 'ja' ? 'en' : 'ja';
       applyStaticLanguage();
-      renderToday();
+      renderCurrent();
       renderArchive();
     });
   }
@@ -103,22 +118,25 @@
   const shareBtn = $('#shareBtn');
   if (shareBtn) {
     shareBtn.addEventListener('click', async () => {
-      if (!todayData) return;
+      if (!currentData) return;
+      const url = currentData.date === data.today?.date
+        ? 'https://www.thedailyduck.ai/'
+        : `https://www.thedailyduck.ai/?date=${currentData.date}`;
 
       const shareData = {
-        title: `The Daily Duck — ${todayData.title}`,
+        title: `The Daily Duck — ${currentData.title}`,
         text:
           lang === 'ja'
-            ? `今日のダックは ${todayData.title} 🐤`
-            : `Today's duck is ${todayData.title} 🐤`,
-        url: 'https://www.thedailyduck.ai/'
+            ? `${currentData.displayDate} のダックは ${currentData.title} 🐤`
+            : `${currentData.displayDate}'s duck is ${currentData.title} 🐤`,
+        url
       };
 
       try {
         if (navigator.share) {
           await navigator.share(shareData);
         } else if (navigator.clipboard) {
-          await navigator.clipboard.writeText(shareData.url);
+          await navigator.clipboard.writeText(url);
           $('#shareStatus').textContent =
             lang === 'ja' ? 'URLをコピーしました' : 'URL copied';
         }
@@ -132,6 +150,7 @@
   }
 
   applyStaticLanguage();
-  renderToday();
+  renderCurrent();
   renderArchive();
+  updateCanonical();
 })();

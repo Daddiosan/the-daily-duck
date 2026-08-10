@@ -575,3 +575,34 @@ noscript {
 @media (max-width: 900px) {
   .archive-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Version 3.3 clickable archive */
+.duck-card { padding: 0; overflow: hidden; }
+.duck-card-link {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 24px;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+.duck-card-link:hover {
+  background: #fffaf0;
+}
+.view-story {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0067d9;
+}
+@media (max-width: 700px) {
+  .duck-card-link {
+    grid-template-columns: 120px 1fr;
+    gap: 16px;
+    padding: 14px;
+  }
+}

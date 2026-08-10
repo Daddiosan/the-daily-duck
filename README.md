@@ -1,42 +1,21 @@
-# The Daily Duck — Version 3.1 FIXED
+# The Daily Duck — Version 3.3
 
-Version 3.1 removes the runtime JSON `fetch()` dependency.
+変更点:
+- 今日を 2026-08-10 QUACKSTRONAUT に復元
+- SHARKQUACK (2026-08-11) はデータとして保存するが、まだ未公開
+- Archiveカードをクリックすると、その日の記事をトップ表示
+- 過去記事URL:
+  `https://www.thedailyduck.ai/?date=YYYY-MM-DD`
+- 未公開日のURLは表示しない
 
-## Why
-The site is a static Vercel site. Version 3 loaded the daily content using
-`fetch('data/today.json')` and `fetch('data/archive.json')`.
+## 現在の公開状態
+- 2026-08-10 QUACKSTRONAUT: published
+- 2026-08-11 SHARKQUACK: prepared / unpublished
 
-Version 3.1 loads one plain JavaScript data file before the main script:
+## 8/11になったら
+`data/content.js` で:
+- `today` を SHARKQUACK に変更
+- SHARKQUACK の `"published": false` を `true` に変更
 
-`data/content.js`
-
-This makes the daily content available immediately as
-`window.DAILY_DUCK_DATA`, so the title, story, image and Archive can render
-without an asynchronous JSON request.
-
-## Daily update — only 2 things are normally needed
-
-1. Add today's image:
-   `assets/ducks/YYYY-MM-DD-name.png`
-
-2. Replace/update:
-   `data/content.js`
-
-`data/content.js` contains:
-- `today`
-- `archive`
-
-So the current duck and Archive are updated together.
-
-## Usually do not change
-- index.html
-- styles.css
-- script.js
-- favicon.svg
-
-## First deployment of Version 3.1
-Upload the full contents of this ZIP to the GitHub repository root and commit
-to `main`. Vercel should deploy automatically.
-
-The existing JSON files remain in `/data` as reference/backward compatibility,
-but the live Version 3.1 page does not depend on them.
+通常は画像ファイルはすでに置いてあるので、
+その日は `data/content.js` だけ更新すれば公開できます。
