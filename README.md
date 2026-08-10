@@ -1,38 +1,42 @@
-# The Daily Duck — Version 3 Daily Update
+# The Daily Duck — Version 3.1 FIXED
 
-このバージョンは **毎日更新用** です。
-見た目はVersion 2を維持しつつ、毎日の更新場所を減らしています。
+Version 3.1 removes the runtime JSON `fetch()` dependency.
 
-## 毎日触るのは基本2つだけ
+## Why
+The site is a static Vercel site. Version 3 loaded the daily content using
+`fetch('data/today.json')` and `fetch('data/archive.json')`.
 
-1. `data/today.json`
-2. `assets/ducks/YYYY-MM-DD-name.png`
+Version 3.1 loads one plain JavaScript data file before the main script:
 
-そして過去のダックを残すため、
-3. `data/archive.json`
-にその日のデータを1件追加します。
+`data/content.js`
 
-## 今日の更新手順
+This makes the daily content available immediately as
+`window.DAILY_DUCK_DATA`, so the title, story, image and Archive can render
+without an asynchronous JSON request.
 
-### 1. 新しいダック画像を追加
-例:
-`assets/ducks/2026-08-11-goal-duck.png`
+## Daily update — only 2 things are normally needed
 
-### 2. `data/today.json` を今日の内容に置き換える
-タイトル、日付、日英本文、画像パス、出典URLを変更します。
+1. Add today's image:
+   `assets/ducks/YYYY-MM-DD-name.png`
 
-### 3. `data/archive.json` の先頭に同じデータを追加
-これで過去のダックがArchiveに残ります。
+2. Replace/update:
+   `data/content.js`
 
-### 4. GitHubへ3ファイルをアップロードして Commit
-Vercelが自動公開します。
+`data/content.js` contains:
+- `today`
+- `archive`
 
-## 重要
-- `index.html`
-- `styles.css`
-- `script.js`
+So the current duck and Archive are updated together.
 
-は、普段は変更不要です。
+## Usually do not change
+- index.html
+- styles.css
+- script.js
+- favicon.svg
 
-つまり公開後の日常運用では、
-**今日のJSON + 画像 + Archive JSON** だけで更新できます。
+## First deployment of Version 3.1
+Upload the full contents of this ZIP to the GitHub repository root and commit
+to `main`. Vercel should deploy automatically.
+
+The existing JSON files remain in `/data` as reference/backward compatibility,
+but the live Version 3.1 page does not depend on them.
