@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="One day. One story. One duck. 世界の明るい話題を、毎日1羽のラバーダックに。" />
+  <title>The Daily Duck — One day. One story. One duck.</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#today" aria-label="The Daily Duck home"><span class="duckmark">🐤</span><span>The Daily Duck</span></a>
+    <nav><a href="#today" data-ja="今日" data-en="TODAY">今日</a><a href="#archive" data-ja="アーカイブ" data-en="ARCHIVE">アーカイブ</a><a href="#about" data-ja="このサイト" data-en="ABOUT">このサイト</a></nav>
+    <button id="langToggle" class="lang-toggle" type="button">EN</button>
+  </header>
+
+  <main>
+    <section id="today" class="hero shell">
+      <div class="hero-art"><img src="assets/quackstronaut.png" alt="宇宙をテーマにした黄色いラバーダック Quackstronaut" /></div>
+      <div class="hero-copy">
+        <div class="eyebrow" data-ja="今日のダック" data-en="TODAY'S DUCK">今日のダック</div>
+        <p class="date">August 10, 2026</p>
+        <h1>QUACKSTRONAUT</h1>
+        <p class="tagline">One day. One story. One duck.</p>
+        <p class="tagline-jp" data-ja="1日、1つの話、1羽のダック。" data-en="A small bright spot from today's world, turned into one duck.">1日、1つの話、1羽のダック。</p>
+
+        <div class="story-grid">
+          <article>
+            <h2 data-ja="今日" data-en="Today">今日</h2>
+            <p data-ja="NASAのIMAPミッションで、7つの科学観測機器から得られたデータが公開されました。IMAPは太陽風や星間空間からやって来る粒子・ちりなどを観測し、太陽系を取り巻く環境の理解を深めています。" data-en="NASA has released science data from seven instruments aboard the IMAP mission. The mission studies the solar wind, interstellar particles and dust to help us better understand the environment surrounding our solar system.">NASAのIMAPミッションで、7つの科学観測機器から得られたデータが公開されました。IMAPは太陽風や星間空間からやって来る粒子・ちりなどを観測し、太陽系を取り巻く環境の理解を深めています。</p>
+          </article>
+          <article>
+            <h2 data-ja="このダック" data-en="The Duck">このダック</h2>
+            <p data-ja="知らない宇宙をのぞきに行く日。だから今日は、好奇心いっぱいの宇宙飛行士ダックです。小さな一歩でも、視線はずっと遠くへ。" data-en="A day for peeking into the unknown. So today's duck is a curious little astronaut — tiny steps, enormous view.">知らない宇宙をのぞきに行く日。だから今日は、好奇心いっぱいの宇宙飛行士ダックです。小さな一歩でも、視線はずっと遠くへ。</p>
+          </article>
+        </div>
+
+        <a class="source" href="https://science.nasa.gov/blogs/imap/2026/08/07/nasas-imap-mission-releases-new-data-from-7-science-instruments/" target="_blank" rel="noopener"><span data-ja="出典：NASA Science" data-en="Source: NASA Science">出典：NASA Science</span> ↗</a>
+        <div class="actions"><button id="shareBtn" type="button" data-ja="今日のダックをシェア" data-en="Share today's duck">今日のダックをシェア</button><span id="shareStatus" aria-live="polite"></span></div>
+      </div>
+    </section>
+
+    <section id="archive" class="section shell">
+      <div class="section-heading"><span class="eyebrow" data-ja="365羽の記録" data-en="365 DUCKS">365羽の記録</span><h2 data-ja="Duck Archive" data-en="Duck Archive">Duck Archive</h2><p data-ja="今日から始まる、1日1羽の小さなタイムカプセル。" data-en="A tiny time capsule, one duck at a time — starting today.">今日から始まる、1日1羽の小さなタイムカプセル。</p></div>
+      <div class="archive-grid">
+        <article class="duck-card"><img src="assets/quackstronaut.png" alt="Quackstronaut"/><div><time>2026.08.10</time><h3>QUACKSTRONAUT</h3><p data-ja="NASA IMAPの新しい科学データ" data-en="New science data from NASA IMAP">NASA IMAPの新しい科学データ</p></div></article>
+        <div class="placeholder"><span>+364</span><p data-ja="ここから毎日増えていきます。" data-en="One new duck joins every day.">ここから毎日増えていきます。</p></div>
+      </div>
+    </section>
+
+    <section id="about" class="section about shell">
+      <div><span class="eyebrow">THE RULE</span><h2 data-ja="悲しいニュースは、選ばない。" data-en="No tragic news here.">悲しいニュースは、選ばない。</h2></div>
+      <div class="about-copy"><p data-ja="The Daily Duck は、世界で起きた注目の出来事の中から、好奇心・驚き・希望・楽しさにつながる話題を1日1つ選び、オリジナルのラバーダックとして残す小さなデイリープロジェクトです。" data-en="The Daily Duck picks one notable story each day — something curious, surprising, hopeful or fun — and turns it into an original rubber duck artwork.">The Daily Duck は、世界で起きた注目の出来事の中から、好奇心・驚き・希望・楽しさにつながる話題を1日1つ選び、オリジナルのラバーダックとして残す小さなデイリープロジェクトです。</p><p class="hope" data-ja="明日も、何かいいことがありますように。 🐤" data-en="Hope something good happens tomorrow. 🐤">明日も、何かいいことがありますように。 🐤</p></div>
+    </section>
+  </main>
+
+  <footer><span>© 2026 The Daily Duck</span><span>One day. One story. One duck.</span></footer>
+  <script src="script.js"></script>
+</body>
+</html>
