@@ -1,24 +1,21 @@
-# The Daily Duck — v0.2
+# The Daily Duck — Version 2 Final
 
-One day. One story. One duck.
+GitHub / Vercel upload package for https://www.thedailyduck.ai/
 
-## Production
-https://www.thedailyduck.ai/
+## Files
+- index.html
+- styles.css
+- script.js
+- favicon.svg
+- assets/quackstronaut.png
 
-## This release
-- UTF-8 / Japanese rendering hardened
-- Japanese / English language toggle improved
-- QUACKSTRONAUT story updated against NASA's Aug. 7, 2026 IMAP release
-- Mobile layout improved
-- Archive and About copy refined
-- Open Graph / canonical / favicon metadata added
-- Share button uses the production domain
+## Design lock
+- Uses the user's exact seated astronaut-duck image.
+- The image itself is not rotated, re-posed, cropped, or regenerated.
+- CSS displays it smaller with `object-fit: contain`, so the whole seated astronaut is visible.
+- Japanese / English toggle included.
+- Archive and About sections included below the main hero.
 
-## Daily publishing workflow
-1. Pick one notable, non-tragic current story.
-2. Verify it with a primary or reputable source.
-3. Generate one original duck concept and image.
-4. Update today's story, image, date, title and source.
-5. Move yesterday's duck into the archive.
-6. Human review.
-7. Commit to `main`; Vercel deploys automatically.
+## Update
+Upload all files/folders to the root of the GitHub repository.
+Commit to `main`; Vercel should deploy automatically.
