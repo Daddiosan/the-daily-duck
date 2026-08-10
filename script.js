@@ -97,6 +97,28 @@
     grid.innerHTML = publishedArchive.map(archiveCard).join('');
   }
 
+
+  function updateSocialMeta() {
+    if (!currentData) return;
+    const pageUrl = currentData.date === data.today?.date
+      ? 'https://www.thedailyduck.ai/'
+      : `https://www.thedailyduck.ai/?date=${currentData.date}`;
+    const imageUrl = new URL(currentData.image, 'https://www.thedailyduck.ai/').href;
+    const desc = lang === 'ja' ? currentData.archiveSummaryJa : currentData.archiveSummaryEn;
+    const setMeta = (selector, value) => {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute('content', value);
+    };
+    setMeta('meta[property="og:title"]', `The Daily Duck — ${currentData.title}`);
+    setMeta('meta[property="og:description"]', desc);
+    setMeta('meta[property="og:url"]', pageUrl);
+    setMeta('meta[property="og:image"]', imageUrl);
+    setMeta('meta[property="og:image:alt"]', lang === 'ja' ? currentData.imageAltJa : currentData.imageAltEn);
+    setMeta('meta[name="twitter:title"]', `The Daily Duck — ${currentData.title}`);
+    setMeta('meta[name="twitter:description"]', desc);
+    setMeta('meta[name="twitter:image"]', imageUrl);
+  }
+
   function updateCanonical() {
     const canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical || !currentData) return;
@@ -112,6 +134,7 @@
       applyStaticLanguage();
       renderCurrent();
       renderArchive();
+      updateSocialMeta();
     });
   }
 
@@ -153,4 +176,5 @@
   renderCurrent();
   renderArchive();
   updateCanonical();
+  updateSocialMeta();
 })();

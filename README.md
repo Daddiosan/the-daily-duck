@@ -1,21 +1,22 @@
-# The Daily Duck — Version 3.3
+# The Daily Duck — Version 3.4 Launch Ready
 
-変更点:
-- 今日を 2026-08-10 QUACKSTRONAUT に復元
-- SHARKQUACK (2026-08-11) はデータとして保存するが、まだ未公開
-- Archiveカードをクリックすると、その日の記事をトップ表示
-- 過去記事URL:
-  `https://www.thedailyduck.ai/?date=YYYY-MM-DD`
-- 未公開日のURLは表示しない
+Adds:
+- richer bilingual About section
+- Open Graph social sharing metadata
+- X/Twitter large image metadata
+- SEO description + canonical URL
+- Schema.org WebSite structured data
+- robots.txt
+- sitemap.xml
+- clickable archive date pages (from v3.3)
+- custom 404 page
 
-## 現在の公開状態
-- 2026-08-10 QUACKSTRONAUT: published
-- 2026-08-11 SHARKQUACK: prepared / unpublished
+Current public day remains:
+2026-08-10 — QUACKSTRONAUT
 
-## 8/11になったら
-`data/content.js` で:
-- `today` を SHARKQUACK に変更
-- SHARKQUACK の `"published": false` を `true` に変更
+SHARKQUACK remains prepared but unpublished for 2026-08-11.
 
-通常は画像ファイルはすでに置いてあるので、
-その日は `data/content.js` だけ更新すれば公開できます。
+Note:
+For the strongest social preview for every historical URL, a future version can generate
+a separate static HTML page per duck. Version 3.4 updates metadata in the browser, which
+works for the site UI, while some social crawlers may only read the initial HTML metadata.
