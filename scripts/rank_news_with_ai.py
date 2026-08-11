@@ -12,7 +12,24 @@ def load_candidates():
     with open(INPUT_FILE, "r", encoding="utf-8") as file:
         data = json.load(file)
 
-    return data["candidates"]
+    # Current Daily Duck collector format
+    if "candidates" in data:
+        return data["candidates"]
+
+    # Compatibility with previous collector versions
+    if "all_candidates" in data:
+        return data["all_candidates"]
+
+    if "shortlist" in data:
+        return data["shortlist"]
+
+    if "filtered" in data:
+        return data["filtered"]
+
+    raise RuntimeError(
+        "No candidate list found in news_candidates.json. "
+        f"Available keys: {list(data.keys())}"
+    )
 
 
 def build_prompt(candidates):
