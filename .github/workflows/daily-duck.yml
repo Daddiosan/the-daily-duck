@@ -33,11 +33,21 @@ jobs:
         run: |
           python scripts/rank_news_with_ai.py
 
-      - name: Upload Daily Duck ranking results
+      - name: Send Daily Duck email
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: |
+          python scripts/send_email.py
+
+      - name: Upload Daily Duck results
         uses: actions/upload-artifact@v4
         with:
           name: daily-duck-news-results
           path: |
             news_candidates.json
             ai_ranked_news.json
+            daily_duck_email.txt
           retention-days: 7
