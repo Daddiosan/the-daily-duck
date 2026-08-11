@@ -45,7 +45,7 @@ jobs:
       - name: Upload Daily Duck results
         uses: actions/upload-artifact@v4
         with:
-          name: daily-duck-news-results
+          name: daily-duck-results
           path: |
             news_candidates.json
             ai_ranked_news.json
