@@ -3,36 +3,75 @@ name: The Daily Duck Automation
 on:
   workflow_dispatch:
 
-  # Every morning at 7:00 JST
-  # GitHub Actions cron uses UTC.
   schedule:
     - cron: "0 22 * * *"
+
+permissions:
+  contents: read
 
 jobs:
   daily-duck:
     runs-on: ubuntu-latest
 
     steps:
+      # ------------------------------------------------------------
+      # 1. Checkout repository
+      # ------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show Daily Duck start message
-        run: |
-          echo "The Daily Duck automation started."
-          echo "Current UTC time:"
-          date
-          echo "Target timezone: Asia/Tokyo"
+      # ------------------------------------------------------------
+      # 2. Set up Python
+      # ------------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Collect Daily Duck news candidates
+      # ------------------------------------------------------------
+      # 3. Install Python dependencies
+      #
+      # send_email.py uses:
+      #   from google import genai
+      #
+      # google-genai is therefore required.
+      # ------------------------------------------------------------
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-phase2.txt
+
+      # ------------------------------------------------------------
+      # 4. Collect news
+      # ------------------------------------------------------------
+      - name: Collect Daily Duck news
         run: |
           python scripts/collect_news.py
 
-      - name: Rank candidates with Gemini AI
+      # ------------------------------------------------------------
+      # 5. Rank news with Gemini
+      # ------------------------------------------------------------
+      - name: Rank Daily Duck news
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python scripts/rank_news_with_ai.py
 
+      # ------------------------------------------------------------
+      # 6. Send Gate A email
+      #
+      # This now:
+      # - generates exactly five image concepts
+      # - stores them in gate_a_package.json
+      # - emails the Gate A package
+      #
+      # Valid approval replies later:
+      #   1 OK
+      #   2 OK
+      #   3 OK
+      #   4 OK
+      #   5 OK
+      # ------------------------------------------------------------
       - name: Send Daily Duck email
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -42,6 +81,16 @@ jobs:
         run: |
           python scripts/send_email.py
 
+      # ------------------------------------------------------------
+      # 7. Upload Gate A results
+      #
+      # IMPORTANT:
+      # approval-check.yml downloads this exact artifact name:
+      #
+      #   daily-duck-results
+      #
+      # Do not rename it.
+      # ------------------------------------------------------------
       - name: Upload Daily Duck results
         uses: actions/upload-artifact@v4
         with:
