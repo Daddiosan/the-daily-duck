@@ -126,6 +126,7 @@ def clean_json_text(text: str) -> str:
 
 def generate_editorial_package(
     recommended: dict[str, Any],
+    top_five: list[dict[str, Any]],
 ) -> dict[str, Any]:
     api_key = required_env("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
@@ -194,42 +195,67 @@ Return ONLY one valid JSON object with exactly these keys:
   "duck_en": "short playful English duck line",
   "x_jp": "Japanese X draft",
   "x_en": "English X draft",
+  "top_five_ja": [
+    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
+    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
+    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
+    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
+    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}
+  ],
   "image_concepts": [
     {{
       "number": 1,
-      "title": "short title",
-      "concept": "2-4 sentence scene description",
-      "visual_direction": "short composition/style direction"
+      "title": "short English title",
+      "title_ja": "natural Japanese title",
+      "concept": "2-4 sentence English scene description",
+      "concept_ja": "natural Japanese translation of the scene description",
+      "visual_direction": "short English composition/style direction",
+      "visual_direction_ja": "natural Japanese translation of the visual direction"
     }},
     {{
       "number": 2,
-      "title": "short title",
-      "concept": "2-4 sentence scene description",
-      "visual_direction": "short composition/style direction"
+      "title": "short English title",
+      "title_ja": "natural Japanese title",
+      "concept": "2-4 sentence English scene description",
+      "concept_ja": "natural Japanese translation of the scene description",
+      "visual_direction": "short English composition/style direction",
+      "visual_direction_ja": "natural Japanese translation of the visual direction"
     }},
     {{
       "number": 3,
-      "title": "short title",
-      "concept": "2-4 sentence scene description",
-      "visual_direction": "short composition/style direction"
+      "title": "short English title",
+      "title_ja": "natural Japanese title",
+      "concept": "2-4 sentence English scene description",
+      "concept_ja": "natural Japanese translation of the scene description",
+      "visual_direction": "short English composition/style direction",
+      "visual_direction_ja": "natural Japanese translation of the visual direction"
     }},
     {{
       "number": 4,
-      "title": "short title",
-      "concept": "2-4 sentence scene description",
-      "visual_direction": "short composition/style direction"
+      "title": "short English title",
+      "title_ja": "natural Japanese title",
+      "concept": "2-4 sentence English scene description",
+      "concept_ja": "natural Japanese translation of the scene description",
+      "visual_direction": "short English composition/style direction",
+      "visual_direction_ja": "natural Japanese translation of the visual direction"
     }},
     {{
       "number": 5,
-      "title": "short title",
-      "concept": "2-4 sentence scene description",
-      "visual_direction": "short composition/style direction"
+      "title": "short English title",
+      "title_ja": "natural Japanese title",
+      "concept": "2-4 sentence English scene description",
+      "concept_ja": "natural Japanese translation of the scene description",
+      "visual_direction": "short English composition/style direction",
+      "visual_direction_ja": "natural Japanese translation of the visual direction"
     }}
   ]
 }}
 
 SOURCE STORY:
 {json.dumps(source_story, ensure_ascii=False, indent=2)}
+
+TOP FIVE STORIES TO TRANSLATE:
+{json.dumps(top_five, ensure_ascii=False, indent=2)}
 """.strip()
 
     response = client.models.generate_content(
@@ -266,6 +292,33 @@ SOURCE STORY:
         if not isinstance(value, str) or not value.strip():
             raise ValueError(f"Gemini response is missing non-empty '{field}'.")
 
+    top_five_ja = generated.get("top_five_ja")
+    if not isinstance(top_five_ja, list) or len(top_five_ja) != 5:
+        raise ValueError("Gemini must return exactly five top_five_ja entries.")
+
+    ja_by_id = {}
+    for item in top_five_ja:
+        if not isinstance(item, dict):
+            raise ValueError("Every top_five_ja entry must be an object.")
+        story_id = str(item.get("id", ""))
+        title_ja = str(item.get("title_ja", "")).strip()
+        reason_ja = str(item.get("reason_ja", "")).strip()
+        if not story_id or not title_ja or not reason_ja:
+            raise ValueError("Each top_five_ja entry requires id, title_ja and reason_ja.")
+        ja_by_id[story_id] = {
+            "title_ja": title_ja,
+            "reason_ja": reason_ja,
+        }
+
+    for story in top_five:
+        translation = ja_by_id.get(str(story.get("id")))
+        if translation is None:
+            raise ValueError(
+                f"Japanese translation missing for story id={story.get('id')!r}."
+            )
+        story["title_ja"] = translation["title_ja"]
+        story["reason_ja"] = translation["reason_ja"]
+
     concepts = generated.get("image_concepts")
     if not isinstance(concepts, list) or len(concepts) != 5:
         raise ValueError("Gemini must return exactly five image_concepts.")
@@ -276,21 +329,26 @@ SOURCE STORY:
             raise ValueError(f"Image concept {number} must be an object.")
 
         title = str(item.get("title", "")).strip()
+        title_ja = str(item.get("title_ja", "")).strip()
         concept = str(item.get("concept", "")).strip()
+        concept_ja = str(item.get("concept_ja", "")).strip()
         visual = str(item.get("visual_direction", "")).strip()
+        visual_ja = str(item.get("visual_direction_ja", "")).strip()
 
-        if not title or not concept or not visual:
+        if not all([title, title_ja, concept, concept_ja, visual, visual_ja]):
             raise ValueError(
-                f"Image concept {number} must contain title, concept, "
-                "and visual_direction."
+                f"Image concept {number} must contain complete English/Japanese fields."
             )
 
         normalized_concepts.append(
             {
                 "number": number,
                 "title": title,
+                "title_ja": title_ja,
                 "concept": concept,
+                "concept_ja": concept_ja,
                 "visual_direction": visual,
+                "visual_direction_ja": visual_ja,
             }
         )
 
@@ -341,25 +399,28 @@ def format_top_five(top_five: list[dict[str, Any]]) -> str:
 
     for index, item in enumerate(top_five, start=1):
         title = str(item.get("title", "")).strip()
+        title_ja = str(item.get("title_ja", "")).strip()
         source = str(item.get("source", "")).strip()
         url = str(item.get("url", "")).strip()
         score = item.get("total_score")
         reason = str(item.get("reason", "")).strip()
+        reason_ja = str(item.get("reason_ja", "")).strip()
 
-        lines.append(f"{index}. {title}")
+        lines.append(f"{index}. {title_ja}")
+        lines.append(f"   EN: {title}")
 
         meta: list[str] = []
         if source:
             meta.append(source)
         if score is not None:
             meta.append(f"Score: {score}")
-
         if meta:
             lines.append("   " + " | ".join(meta))
 
+        if reason_ja:
+            lines.append(f"   日本語: {reason_ja}")
         if reason:
-            lines.append(f"   {reason}")
-
+            lines.append(f"   English: {reason}")
         if url:
             lines.append(f"   {url}")
 
@@ -373,15 +434,17 @@ def format_image_concepts(concepts: list[dict[str, Any]]) -> str:
 
     for item in concepts:
         number = item["number"]
-        title = item["title"]
-        concept = item["concept"]
-        visual = item["visual_direction"]
-
         lines.extend(
             [
-                f"[{number}] {title}",
-                concept,
-                f"Visual: {visual}",
+                f"[{number}] {item['title_ja']} / {item['title']}",
+                "",
+                "日本語:",
+                item["concept_ja"],
+                f"構図・スタイル: {item['visual_direction_ja']}",
+                "",
+                "English:",
+                item["concept"],
+                f"Visual: {item['visual_direction']}",
                 "",
             ]
         )
@@ -416,7 +479,7 @@ Source:
 {story.get("url", "")}
 
 ==================================================
-TOP 5 SHORTLIST
+TOP 5 SHORTLIST / 候補ニュース5件
 ==================================================
 
 {format_top_five(package["top_five"])}
@@ -447,7 +510,7 @@ X EN:
 {package["x_en"]}
 
 ==================================================
-IMAGE CONCEPTS — CHOOSE ONE
+IMAGE CONCEPTS — CHOOSE ONE / 画像コンセプト — 1案選択
 ==================================================
 
 {format_image_concepts(package["image_concepts"])}
@@ -518,7 +581,7 @@ def main() -> int:
         recommended.get("title"),
     )
 
-    editorial = generate_editorial_package(recommended)
+    editorial = generate_editorial_package(recommended, top_five)
 
     package = build_package(
         ranked=ranked,
