@@ -49,5 +49,6 @@ jobs:
           path: |
             news_candidates.json
             ai_ranked_news.json
+            gate_a_package.json
             daily_duck_email.txt
           retention-days: 7
