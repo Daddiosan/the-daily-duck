@@ -10,90 +10,143 @@ from email.mime.text import MIMEText
 
 
 INPUT_FILE = "ai_ranked_news.json"
+OUTPUT_FILE = "daily_duck_email.txt"
+GATE_FILE = "gate_a_package.json"
+
 MODEL = "gemini-3.6-flash"
 
 
+# ============================================================
+# Load AI-ranked news
+# ============================================================
+
 def load_ranked_news():
-    with open(INPUT_FILE, "r", encoding="utf-8") as file:
+    with open(
+        INPUT_FILE,
+        "r",
+        encoding="utf-8",
+    ) as file:
         return json.load(file)
 
 
-def create_japanese_email(news_data):
+# ============================================================
+# Ask Gemini to prepare the full Gate A editorial package
+# ============================================================
+
+def create_gate_a_package(news_data):
+
     api_key = os.environ.get("GEMINI_API_KEY")
 
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY is not configured.")
+        raise RuntimeError(
+            "GEMINI_API_KEY is not configured."
+        )
 
     top_five = news_data["top_five"]
     recommended_id = news_data["recommended_id"]
+    recommended_reason = news_data.get(
+        "recommended_reason",
+        "",
+    )
 
     prompt = f"""
-あなたは The Daily Duck の日本語編集者です。
+You are the editorial assistant for The Daily Duck.
 
-以下は今日、AIが選んだ「読んだ人が少し幸せになるニュース」
-TOP 5です。
+The Daily Duck publishes one uplifting, interesting,
+accurate news story every day.
 
-これを日本語のメールとして読みやすく編集してください。
+You have already ranked today's five best candidates.
 
-ルール：
+Your task now is to prepare the Gate A editorial package
+for human approval.
 
-- 日本語は自然で親しみやすくする
-- 大げさにしない
-- 原文にない事実を追加しない
-- 各記事のタイトルを自然な日本語に翻訳する
-- 各記事について2～3文で内容を説明する
-- なぜ楽しい・希望がある記事なのかも簡潔に伝える
-- 専門用語はできるだけ分かりやすくする
-- URLは変更しない
-- 1位の推薦記事には「今日のおすすめ」と付ける
-- 絵文字は少なめに使う
-- Markdownは使わない
-- HTMLも使わない
+IMPORTANT EDITORIAL RULES:
 
-以下のJSONを基に作成してください。
+- Do not invent facts.
+- Use only information contained in the supplied candidate data.
+- Preserve uncertainty.
+- Do not exaggerate.
+- Do not turn correlation into causation.
+- Keep dates, names and numbers accurate.
+- The tone should be warm, intelligent and lightly playful.
+- Do not make the writing childish.
+- Do not use clickbait.
+- The Japanese and English versions must communicate
+  the same factual content.
+- The X post must accurately represent the article.
+- The source URL must remain unchanged.
+
+For the recommended story, create:
+
+1. Japanese headline
+2. Japanese article
+3. English headline
+4. English article
+5. Japanese X post
+6. English X post
+7. Short Japanese recommendation reason
+8. A short image concept for later illustration generation
+
+ARTICLE LENGTH:
+
+Japanese article:
+approximately 250-450 Japanese characters.
+
+English article:
+approximately 120-200 words.
+
+X POSTS:
+
+Keep each X post concise enough for X.
+Do not include invented hashtags.
+Include the source URL separately in the JSON.
+
+Also prepare short Japanese summaries for ALL FIVE candidates.
+
+Return JSON only.
+
+Required JSON structure:
+
+{{
+  "recommended_id": integer,
+
+  "recommended": {{
+    "source": "string",
+    "source_url": "string",
+    "headline_ja": "string",
+    "article_ja": "string",
+    "headline_en": "string",
+    "article_en": "string",
+    "x_post_ja": "string",
+    "x_post_en": "string",
+    "recommendation_ja": "string",
+    "image_concept": "string"
+  }},
+
+  "top_five": [
+    {{
+      "rank": integer,
+      "id": integer,
+      "title_original": "string",
+      "title_ja": "string",
+      "summary_ja": "string",
+      "source": "string",
+      "url": "string"
+    }}
+  ]
+}}
+
+Previously selected recommendation:
 
 recommended_id:
 {recommended_id}
 
-TOP 5:
+recommendation reason:
+{recommended_reason}
+
+Today's TOP 5 candidate data:
+
 {json.dumps(top_five, ensure_ascii=False, indent=2)}
-
-次の形式で出力してください。
-
-🦆 THE DAILY DUCK
-今日のハッピーニュース TOP 5
-
-【今日のおすすめ】
-
-1. 日本語タイトル
-概要
-おすすめポイント
-URL
-
-2. 日本語タイトル
-概要
-おすすめポイント
-URL
-
-3. 日本語タイトル
-概要
-おすすめポイント
-URL
-
-4. 日本語タイトル
-概要
-おすすめポイント
-URL
-
-5. 日本語タイトル
-概要
-おすすめポイント
-URL
-
-最後に短い一言：
-「今日もいい一日を。QUACK! 🦆」
-
-出力はメール本文だけにしてください。
 """
 
     url = (
@@ -113,7 +166,8 @@ URL
             }
         ],
         "generationConfig": {
-            "temperature": 0.3
+            "temperature": 0.2,
+            "responseMimeType": "application/json",
         },
     }
 
@@ -131,11 +185,13 @@ URL
             request,
             timeout=120,
         ) as response:
+
             response_data = json.loads(
                 response.read().decode("utf-8")
             )
 
     except urllib.error.HTTPError as error:
+
         details = error.read().decode(
             "utf-8",
             errors="replace",
@@ -145,40 +201,209 @@ URL
             f"Gemini API HTTP {error.code}: {details}"
         )
 
-    return (
+    text = (
         response_data["candidates"][0]
         ["content"]["parts"][0]["text"]
         .strip()
     )
 
+    # Defensive cleanup in case a model wraps JSON
+    # in a Markdown code fence.
+    if text.startswith("```"):
+        text = text.strip("`")
+
+        if text.startswith("json"):
+            text = text[4:]
+
+        text = text.strip()
+
+    return json.loads(text)
+
+
+# ============================================================
+# Build human-readable Gate A email
+# ============================================================
+
+def build_email_body(package):
+
+    recommended = package["recommended"]
+    top_five = package["top_five"]
+
+    lines = []
+
+    lines.append("🦆 THE DAILY DUCK")
+    lines.append("GATE A — ARTICLE APPROVAL")
+    lines.append("")
+    lines.append("=" * 48)
+    lines.append("")
+    lines.append("【今日のおすすめ】")
+    lines.append("")
+    lines.append(
+        recommended["headline_ja"]
+    )
+    lines.append("")
+    lines.append(
+        recommended["recommendation_ja"]
+    )
+    lines.append("")
+
+    lines.append("■ 日本語原稿")
+    lines.append("")
+    lines.append(
+        recommended["article_ja"]
+    )
+    lines.append("")
+
+    lines.append("■ English")
+    lines.append("")
+    lines.append(
+        recommended["headline_en"]
+    )
+    lines.append("")
+    lines.append(
+        recommended["article_en"]
+    )
+    lines.append("")
+
+    lines.append("■ X 日本語案")
+    lines.append("")
+    lines.append(
+        recommended["x_post_ja"]
+    )
+    lines.append("")
+
+    lines.append("■ X English draft")
+    lines.append("")
+    lines.append(
+        recommended["x_post_en"]
+    )
+    lines.append("")
+
+    lines.append("■ 画像コンセプト")
+    lines.append("")
+    lines.append(
+        recommended["image_concept"]
+    )
+    lines.append("")
+
+    lines.append("■ Source")
+    lines.append("")
+    lines.append(
+        recommended["source"]
+    )
+    lines.append(
+        recommended["source_url"]
+    )
+    lines.append("")
+
+    lines.append("=" * 48)
+    lines.append("")
+    lines.append("【今日の候補 TOP 5】")
+    lines.append("")
+
+    for story in top_five:
+
+        lines.append(
+            f"{story['rank']}. "
+            f"{story['title_ja']}"
+        )
+
+        lines.append(
+            story["summary_ja"]
+        )
+
+        lines.append(
+            f"Source: {story['source']}"
+        )
+
+        lines.append(
+            story["url"]
+        )
+
+        lines.append("")
+
+    lines.append("=" * 48)
+    lines.append("")
+    lines.append("【承認方法】")
+    lines.append("")
+    lines.append(
+        "この記事で進めてよければ、"
+        "このメールに次の1語だけ返信してください。"
+    )
+    lines.append("")
+    lines.append("OK")
+    lines.append("")
+    lines.append(
+        "修正したい場合は、"
+        "OKとは書かずに修正内容を返信してください。"
+    )
+    lines.append("")
+    lines.append(
+        "例：タイトルをもう少し短くして"
+    )
+    lines.append("")
+    lines.append(
+        "例：候補3の記事に変更"
+    )
+    lines.append("")
+    lines.append(
+        "※ OK以外は承認として扱いません。"
+    )
+    lines.append("")
+    lines.append("QUACK! 🦆")
+
+    return "\n".join(lines)
+
+
+# ============================================================
+# Send Gate A email
+# ============================================================
 
 def send_email(body):
-    gmail_address = os.environ.get("GMAIL_ADDRESS")
-    app_password = os.environ.get("GMAIL_APP_PASSWORD")
-    email_to = os.environ.get("EMAIL_TO")
+
+    gmail_address = os.environ.get(
+        "GMAIL_ADDRESS"
+    )
+
+    app_password = os.environ.get(
+        "GMAIL_APP_PASSWORD"
+    )
+
+    email_to = os.environ.get(
+        "EMAIL_TO"
+    )
 
     if not gmail_address:
-        raise RuntimeError("GMAIL_ADDRESS is not configured.")
+        raise RuntimeError(
+            "GMAIL_ADDRESS is not configured."
+        )
 
     if not app_password:
-        raise RuntimeError("GMAIL_APP_PASSWORD is not configured.")
+        raise RuntimeError(
+            "GMAIL_APP_PASSWORD is not configured."
+        )
 
     if not email_to:
-        raise RuntimeError("EMAIL_TO is not configured.")
+        raise RuntimeError(
+            "EMAIL_TO is not configured."
+        )
 
-    # Remove spaces just in case the Google app password
-    # was copied in groups of four characters.
-    app_password = app_password.replace(" ", "")
+    app_password = (
+        app_password
+        .replace(" ", "")
+    )
 
     now_jst = datetime.now(
         ZoneInfo("Asia/Tokyo")
     )
 
-    date_text = now_jst.strftime("%Y/%m/%d")
+    date_text = now_jst.strftime(
+        "%Y/%m/%d"
+    )
 
     subject = (
-        f"🦆 The Daily Duck — "
-        f"今日のTOP 5 ({date_text})"
+        "🦆 The Daily Duck — "
+        f"記事承認 Gate A ({date_text})"
     )
 
     message = MIMEMultipart()
@@ -195,7 +420,9 @@ def send_email(body):
         )
     )
 
-    print("Connecting to Gmail SMTP...")
+    print(
+        "Connecting to Gmail SMTP..."
+    )
 
     with smtplib.SMTP_SSL(
         "smtp.gmail.com",
@@ -214,39 +441,83 @@ def send_email(body):
             message.as_string(),
         )
 
-    print("Email sent successfully.")
+    print(
+        "Gate A email sent successfully."
+    )
 
+
+# ============================================================
+# Main
+# ============================================================
 
 def main():
+
     print()
-    print("THE DAILY DUCK EMAIL")
-    print("=" * 50)
+    print(
+        "THE DAILY DUCK — GATE A"
+    )
+    print(
+        "=" * 50
+    )
 
     news_data = load_ranked_news()
 
-    print("Creating Japanese email with Gemini...")
+    print(
+        "Creating Gate A editorial package..."
+    )
 
-    email_body = create_japanese_email(
+    package = create_gate_a_package(
         news_data
     )
 
-    print("Japanese email created.")
-
-    # Save a copy for debugging / artifacts.
+    # Save machine-readable package
     with open(
-        "daily_duck_email.txt",
+        GATE_FILE,
         "w",
         encoding="utf-8",
     ) as file:
-        file.write(email_body)
 
-    print("Saved to daily_duck_email.txt")
+        json.dump(
+            package,
+            file,
+            ensure_ascii=False,
+            indent=2,
+        )
 
-    send_email(email_body)
+    print(
+        f"Saved to {GATE_FILE}"
+    )
+
+    email_body = build_email_body(
+        package
+    )
+
+    # Save human-readable email
+    with open(
+        OUTPUT_FILE,
+        "w",
+        encoding="utf-8",
+    ) as file:
+
+        file.write(
+            email_body
+        )
+
+    print(
+        f"Saved to {OUTPUT_FILE}"
+    )
+
+    send_email(
+        email_body
+    )
 
     print()
-    print("THE DAILY DUCK EMAIL COMPLETE")
-    print("=" * 50)
+    print(
+        "GATE A EMAIL COMPLETE"
+    )
+    print(
+        "=" * 50
+    )
 
 
 if __name__ == "__main__":
