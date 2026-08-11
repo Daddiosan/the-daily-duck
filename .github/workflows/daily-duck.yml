@@ -1,11 +1,10 @@
 name: The Daily Duck Automation
 
 on:
-  # 手動テスト用
   workflow_dispatch:
 
-  # 毎朝 7:00 JST に自動実行
-  # GitHub Actions の cron は UTC
+  # Every morning at 7:00 JST
+  # GitHub Actions cron uses UTC.
   schedule:
     - cron: "0 22 * * *"
 
@@ -19,7 +18,7 @@ jobs:
 
       - name: Show Daily Duck start message
         run: |
-          echo "The Daily Duck automation started successfully."
+          echo "The Daily Duck automation started."
           echo "Current UTC time:"
           date
           echo "Target timezone: Asia/Tokyo"
@@ -27,3 +26,18 @@ jobs:
       - name: Collect Daily Duck news candidates
         run: |
           python scripts/collect_news.py
+
+      - name: Rank candidates with Gemini AI
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/rank_news_with_ai.py
+
+      - name: Upload Daily Duck ranking results
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-news-results
+          path: |
+            news_candidates.json
+            ai_ranked_news.json
+          retention-days: 7
