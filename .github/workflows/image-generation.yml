@@ -1,0 +1,56 @@
+name: The Daily Duck - Phase 2 Image Generation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-phase2.txt
+
+      - name: Generate exactly five image candidates
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ENABLE_PAID_IMAGE_GENERATION: ${{ secrets.ENABLE_PAID_IMAGE_GENERATION }}
+          GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
+          GEMINI_TEXT_MODEL: gemini-2.5-flash
+        run: python scripts/generate_image_candidates.py
+
+      - name: Send image selection email
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python scripts/send_image_selection_email.py
+
+      - name: Commit Phase 2 candidate state and images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation_state/image_candidates.json automation_images/
+          git diff --cached --quiet && exit 0
+          git commit -m "Phase 2: generate image candidates"
+          git push
+
+      - name: Upload candidate artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-image-candidates
+          path: |
+            automation_state/image_candidates.json
+            automation_images/
+          retention-days: 7

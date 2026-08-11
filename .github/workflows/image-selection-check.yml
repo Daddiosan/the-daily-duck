@@ -1,0 +1,75 @@
+name: The Daily Duck - Gate B Image Selection Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  check-selection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-phase2.txt
+
+      - name: Check Gate B reply
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python scripts/check_image_selection.py
+
+      - name: Read Gate B action
+        id: gateb
+        shell: bash
+        run: |
+          ACTION=$(python -c "import json; print(json.load(open('automation_state/gate_b_result.json', encoding='utf-8'))['action'])")
+          echo "action=$ACTION" >> "$GITHUB_OUTPUT"
+          echo "Gate B action: $ACTION"
+
+      - name: Generate NEXT 5
+        if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ENABLE_PAID_IMAGE_GENERATION: ${{ secrets.ENABLE_PAID_IMAGE_GENERATION }}
+          GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
+          GEMINI_TEXT_MODEL: gemini-2.5-flash
+        run: python scripts/generate_image_candidates.py
+
+      - name: Email NEXT 5
+        if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python scripts/send_image_selection_email.py
+
+      - name: Commit Gate B state
+        if: steps.gateb.outputs.action != 'WAIT'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation_state/ automation_images/
+          git diff --cached --quiet && exit 0
+          git commit -m "Phase 2: Gate B ${{ steps.gateb.outputs.action }}"
+          git push
+
+      - name: Guard Phase 3 boundary
+        if: steps.gateb.outputs.action == 'READY_TO_PUBLISH'
+        run: |
+          echo "READY_TO_PUBLISH created."
+          echo "Phase 2 stops here. Website and X publishing are intentionally NOT started."

@@ -1,0 +1,53 @@
+name: The Daily Duck - Gate A Approval Check (Phase 2 format)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  check-approval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-phase2.txt
+
+      # Keep your existing Phase 1 artifact-download step here if gate_a_package.json
+      # is produced only as an artifact and not committed to the repository.
+      # The current Phase 1 handoff confirms that approval-check.yml already
+      # downloads the latest Gate A artifact. Preserve that working step.
+
+      - name: Check story + image-concept approval
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python scripts/check_story_approval.py
+
+      - name: Commit APPROVED_STORY when created
+        run: |
+          if [ ! -f automation_state/approved_story.json ]; then
+            echo "No APPROVED_STORY yet."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation_state/approved_story.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Gate A: approve story and image concept"
+          git push
