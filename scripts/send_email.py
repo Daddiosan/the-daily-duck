@@ -57,7 +57,7 @@ EMAIL_TEXT_PATH = Path("daily_duck_email.txt")
 
 TEXT_MODEL = os.getenv(
     "GEMINI_TEXT_MODEL",
-    "gemini-2.5-flash",
+    "gemini-3.6-flash",
 )
 
 
