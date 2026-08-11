@@ -16,10 +16,6 @@ GATE_FILE = "gate_a_package.json"
 MODEL = "gemini-3.6-flash"
 
 
-# ============================================================
-# Load AI-ranked news
-# ============================================================
-
 def load_ranked_news():
     with open(
         INPUT_FILE,
@@ -29,12 +25,7 @@ def load_ranked_news():
         return json.load(file)
 
 
-# ============================================================
-# Ask Gemini to prepare the full Gate A editorial package
-# ============================================================
-
 def create_gate_a_package(news_data):
-
     api_key = os.environ.get("GEMINI_API_KEY")
 
     if not api_key:
@@ -57,10 +48,10 @@ accurate news story every day.
 
 You have already ranked today's five best candidates.
 
-Your task now is to prepare the Gate A editorial package
+Your task is to prepare the Gate A editorial package
 for human approval.
 
-IMPORTANT EDITORIAL RULES:
+IMPORTANT RULES:
 
 - Do not invent facts.
 - Use only information contained in the supplied candidate data.
@@ -68,13 +59,12 @@ IMPORTANT EDITORIAL RULES:
 - Do not exaggerate.
 - Do not turn correlation into causation.
 - Keep dates, names and numbers accurate.
-- The tone should be warm, intelligent and lightly playful.
+- Tone should be warm, intelligent and lightly playful.
 - Do not make the writing childish.
 - Do not use clickbait.
-- The Japanese and English versions must communicate
-  the same factual content.
-- The X post must accurately represent the article.
-- The source URL must remain unchanged.
+- Japanese and English must communicate the same facts.
+- X copy must accurately represent the article.
+- Keep the source URL unchanged.
 
 For the recommended story, create:
 
@@ -85,23 +75,13 @@ For the recommended story, create:
 5. Japanese X post
 6. English X post
 7. Short Japanese recommendation reason
-8. A short image concept for later illustration generation
-
-ARTICLE LENGTH:
+8. Short image concept for later illustration generation
 
 Japanese article:
 approximately 250-450 Japanese characters.
 
 English article:
 approximately 120-200 words.
-
-X POSTS:
-
-Keep each X post concise enough for X.
-Do not include invented hashtags.
-Include the source URL separately in the JSON.
-
-Also prepare short Japanese summaries for ALL FIVE candidates.
 
 Return JSON only.
 
@@ -144,7 +124,7 @@ recommended_id:
 recommendation reason:
 {recommended_reason}
 
-Today's TOP 5 candidate data:
+Today's TOP 5:
 
 {json.dumps(top_five, ensure_ascii=False, indent=2)}
 """
@@ -185,13 +165,11 @@ Today's TOP 5 candidate data:
             request,
             timeout=120,
         ) as response:
-
             response_data = json.loads(
                 response.read().decode("utf-8")
             )
 
     except urllib.error.HTTPError as error:
-
         details = error.read().decode(
             "utf-8",
             errors="replace",
@@ -207,8 +185,6 @@ Today's TOP 5 candidate data:
         .strip()
     )
 
-    # Defensive cleanup in case a model wraps JSON
-    # in a Markdown code fence.
     if text.startswith("```"):
         text = text.strip("`")
 
@@ -220,12 +196,7 @@ Today's TOP 5 candidate data:
     return json.loads(text)
 
 
-# ============================================================
-# Build human-readable Gate A email
-# ============================================================
-
 def build_email_body(package):
-
     recommended = package["recommended"]
     top_five = package["top_five"]
 
@@ -302,7 +273,6 @@ def build_email_body(package):
     lines.append("")
 
     for story in top_five:
-
         lines.append(
             f"{story['rank']}. "
             f"{story['title_ja']}"
@@ -339,14 +309,6 @@ def build_email_body(package):
     )
     lines.append("")
     lines.append(
-        "例：タイトルをもう少し短くして"
-    )
-    lines.append("")
-    lines.append(
-        "例：候補3の記事に変更"
-    )
-    lines.append("")
-    lines.append(
         "※ OK以外は承認として扱いません。"
     )
     lines.append("")
@@ -355,22 +317,35 @@ def build_email_body(package):
     return "\n".join(lines)
 
 
-# ============================================================
-# Send Gate A email
-# ============================================================
+def get_recipients():
+    email_to = os.environ.get("EMAIL_TO")
+
+    if not email_to:
+        raise RuntimeError(
+            "EMAIL_TO is not configured."
+        )
+
+    recipients = [
+        address.strip()
+        for address in email_to.split(",")
+        if address.strip()
+    ]
+
+    if not recipients:
+        raise RuntimeError(
+            "No valid email recipients found."
+        )
+
+    return recipients
+
 
 def send_email(body):
-
     gmail_address = os.environ.get(
         "GMAIL_ADDRESS"
     )
 
     app_password = os.environ.get(
         "GMAIL_APP_PASSWORD"
-    )
-
-    email_to = os.environ.get(
-        "EMAIL_TO"
     )
 
     if not gmail_address:
@@ -383,10 +358,7 @@ def send_email(body):
             "GMAIL_APP_PASSWORD is not configured."
         )
 
-    if not email_to:
-        raise RuntimeError(
-            "EMAIL_TO is not configured."
-        )
+    recipients = get_recipients()
 
     app_password = (
         app_password
@@ -409,7 +381,9 @@ def send_email(body):
     message = MIMEMultipart()
 
     message["From"] = gmail_address
-    message["To"] = email_to
+    message["To"] = ", ".join(
+        recipients
+    )
     message["Subject"] = subject
 
     message.attach(
@@ -424,6 +398,15 @@ def send_email(body):
         "Connecting to Gmail SMTP..."
     )
 
+    print(
+        f"Sending to {len(recipients)} recipient(s)."
+    )
+
+    for recipient in recipients:
+        print(
+            f"  -> {recipient}"
+        )
+
     with smtplib.SMTP_SSL(
         "smtp.gmail.com",
         465,
@@ -437,7 +420,7 @@ def send_email(body):
 
         server.sendmail(
             gmail_address,
-            [email_to],
+            recipients,
             message.as_string(),
         )
 
@@ -446,12 +429,7 @@ def send_email(body):
     )
 
 
-# ============================================================
-# Main
-# ============================================================
-
 def main():
-
     print()
     print(
         "THE DAILY DUCK — GATE A"
@@ -470,7 +448,6 @@ def main():
         news_data
     )
 
-    # Save machine-readable package
     with open(
         GATE_FILE,
         "w",
@@ -492,7 +469,6 @@ def main():
         package
     )
 
-    # Save human-readable email
     with open(
         OUTPUT_FILE,
         "w",
