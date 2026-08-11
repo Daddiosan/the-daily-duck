@@ -23,3 +23,7 @@ jobs:
           echo "Current UTC time:"
           date
           echo "Target timezone: Asia/Tokyo"
+
+      - name: Collect Daily Duck news candidates
+        run: |
+          python scripts/collect_news.py
