@@ -196,11 +196,11 @@ Return ONLY one valid JSON object with exactly these keys:
   "x_jp": "Japanese X draft",
   "x_en": "English X draft",
   "top_five_ja": [
-    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
-    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
-    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
-    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"},
-    {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}
+    {{{"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}}},
+    {{{"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}}},
+    {{{"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}}},
+    {{{"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}}},
+    {{"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}}
   ],
   "image_concepts": [
     {{
