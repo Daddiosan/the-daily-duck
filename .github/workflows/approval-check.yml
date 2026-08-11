@@ -17,24 +17,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
       # 1. Checkout repository
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ------------------------------------------------------
-      # 2. Show start message
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 2. Set up Python
+      # ------------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ------------------------------------------------------------
+      # 3. Show start message
+      # ------------------------------------------------------------
       - name: Show approval check start message
         run: |
           echo "The Daily Duck approval check started."
           echo "Current UTC time:"
           date
 
-      # ------------------------------------------------------
-      # 3. Find latest successful Daily Duck workflow run
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 4. Find latest successful Daily Duck workflow run
+      # ------------------------------------------------------------
       - name: Find latest Daily Duck workflow run
         id: find-run
         env:
@@ -56,9 +64,9 @@ jobs:
           echo "Latest successful run ID: $RUN_ID"
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
 
-      # ------------------------------------------------------
-      # 4. Download latest Gate A artifact
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 5. Download latest Gate A artifact
+      # ------------------------------------------------------------
       - name: Download latest Daily Duck results
         env:
           GH_TOKEN: ${{ github.token }}
@@ -68,15 +76,15 @@ jobs:
 
           gh run download \
             "${{ steps.find-run.outputs.run_id }}" \
-            --name daily-duck-news-results \
+            --name daily-duck-results \
             --dir downloaded-results
 
           echo "Downloaded files:"
           find downloaded-results -maxdepth 2 -type f -print
 
-      # ------------------------------------------------------
-      # 5. Copy Gate A package to working directory
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 6. Copy Gate A package to working directory
+      # ------------------------------------------------------------
       - name: Prepare Gate A package
         run: |
           if [ ! -f downloaded-results/gate_a_package.json ]; then
@@ -88,33 +96,59 @@ jobs:
 
           echo "Gate A package prepared."
 
-      # ------------------------------------------------------
-      # 6. Check Gmail for exact OK approval
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 7. Check Gmail for exact Gate A approval
+      #
+      # Valid replies:
+      #   1 OK
+      #   2 OK
+      #   3 OK
+      #   4 OK
+      #   5 OK
+      #
+      # Plain OK is NOT valid.
+      # ------------------------------------------------------------
       - name: Check Gate A email approval
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: |
           python scripts/check_story_approval.py
 
-      # ------------------------------------------------------
-      # 7. Check whether approval was created
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 8. Check whether APPROVED_STORY was created
+      # ------------------------------------------------------------
       - name: Check approval result
         id: approval-result
         run: |
           if [ -f automation_state/approved_story.json ]; then
             echo "approved=true" >> "$GITHUB_OUTPUT"
             echo "APPROVED_STORY detected."
+
+            python - <<'PY'
+          import json
+
+          path = "automation_state/approved_story.json"
+
+          with open(path, "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          print("State:", data.get("state"))
+          print(
+              "Selected image concept:",
+              data.get("selected_image_concept_number")
+          )
+          PY
+
           else
             echo "approved=false" >> "$GITHUB_OUTPUT"
             echo "No approval detected."
           fi
 
-      # ------------------------------------------------------
-      # 8. Commit APPROVED_STORY only when exact OK was found
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 9. Commit APPROVED_STORY only after valid Gate A approval
+      # ------------------------------------------------------------
       - name: Save approved story
         if: steps.approval-result.outputs.approved == 'true'
         run: |
@@ -128,13 +162,18 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Approve Daily Duck story"
-
+          git commit -m "Approve Daily Duck story and image concept"
           git push
 
-      # ------------------------------------------------------
-      # 9. Complete
-      # ------------------------------------------------------
+      # ------------------------------------------------------------
+      # 10. Complete
+      # ------------------------------------------------------------
       - name: Complete approval check
         run: |
           echo "The Daily Duck approval check completed."
+
+          if [ "${{ steps.approval-result.outputs.approved }}" = "true" ]; then
+            echo "STATE: APPROVED_STORY"
+          else
+            echo "STATE: WAITING_STORY_APPROVAL"
+          fi
