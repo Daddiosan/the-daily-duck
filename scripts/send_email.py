@@ -29,7 +29,7 @@ Environment:
 - EMAIL_TO
 
 Optional:
-- GEMINI_TEXT_MODEL (default: gemini-2.5-flash)
+- GEMINI_TEXT_MODEL (default: gemini-3.6-flash)
 """
 
 from __future__ import annotations
