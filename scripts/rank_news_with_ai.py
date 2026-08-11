@@ -5,7 +5,7 @@ import urllib.error
 
 INPUT_FILE = "news_candidates.json"
 OUTPUT_FILE = "ai_ranked_news.json"
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.6-flash"
 
 
 def load_candidates():
