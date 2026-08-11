@@ -37,20 +37,30 @@ def decode_text(value):
 
 
 def get_plain_text(message):
+    """
+    Extract plain-text body from an email.
+    """
+
     if message.is_multipart():
         texts = []
 
         for part in message.walk():
             content_type = part.get_content_type()
+
             disposition = str(
-                part.get("Content-Disposition", "")
-            )
+                part.get(
+                    "Content-Disposition",
+                    ""
+                )
+            ).lower()
 
             if (
                 content_type == "text/plain"
-                and "attachment" not in disposition.lower()
+                and "attachment" not in disposition
             ):
-                payload = part.get_payload(decode=True)
+                payload = part.get_payload(
+                    decode=True
+                )
 
                 if payload:
                     charset = (
@@ -67,7 +77,9 @@ def get_plain_text(message):
 
         return "\n".join(texts)
 
-    payload = message.get_payload(decode=True)
+    payload = message.get_payload(
+        decode=True
+    )
 
     if not payload:
         return ""
@@ -83,76 +95,161 @@ def get_plain_text(message):
     )
 
 
+def strip_html_tags(text):
+    """
+    Defensive cleanup if HTML-like fragments appear
+    inside plain-text content.
+    """
+
+    return re.sub(
+        r"<[^>]+>",
+        " ",
+        text or "",
+    )
+
+
 def extract_new_reply(text):
     """
-    Try to remove quoted copies of the original email.
+    Keep only the newly written reply section.
 
-    We only want the text newly written by the user.
+    Everything after common reply separators or
+    quoted original-message markers is discarded.
     """
 
-    text = text.replace("\r\n", "\n")
+    if not text:
+        return ""
 
-    cleaned_lines = []
+    text = strip_html_tags(text)
 
-    for line in text.split("\n"):
+    text = text.replace(
+        "\r\n",
+        "\n",
+    )
+
+    text = text.replace(
+        "\r",
+        "\n",
+    )
+
+    lines = text.split("\n")
+
+    cleaned = []
+
+    separator_patterns = [
+        r"^On .+ wrote:$",
+        r"^On .+wrote:$",
+        r"^.+ wrote:$",
+        r"^From:",
+        r"^Sent:",
+        r"^To:",
+        r"^Subject:",
+        r"^Date:",
+        r"^差出人:",
+        r"^送信日時:",
+        r"^宛先:",
+        r"^件名:",
+        r"^日時:",
+        r"^-{2,}\s*Original Message\s*-{2,}$",
+        r"^-{2,}\s*元のメッセージ\s*-{2,}$",
+        r"^_{5,}$",
+    ]
+
+    for line in lines:
         stripped = line.strip()
 
-        # Standard quoted email lines
+        # Gmail / mail-client quoted content
         if stripped.startswith(">"):
             break
 
-        # Common Gmail / mail-client reply separators
-        if re.match(
-            r"^On .+ wrote:$",
-            stripped,
-            flags=re.IGNORECASE,
-        ):
+        matched_separator = False
+
+        for pattern in separator_patterns:
+            if re.match(
+                pattern,
+                stripped,
+                flags=re.IGNORECASE,
+            ):
+                matched_separator = True
+                break
+
+        if matched_separator:
             break
 
-        if stripped.startswith("-----Original Message-----"):
-            break
+        cleaned.append(line)
 
-        if stripped.startswith("差出人:"):
-            break
+    reply = "\n".join(cleaned)
 
-        if stripped.startswith("From:"):
-            break
+    # Remove common signature separator.
+    if "\n-- \n" in reply:
+        reply = reply.split(
+            "\n-- \n",
+            1,
+        )[0]
 
-        cleaned_lines.append(line)
-
-    return "\n".join(cleaned_lines).strip()
+    return reply.strip()
 
 
 def normalize_reply(text):
-    text = extract_new_reply(text)
+    """
+    Normalize only the user's newly typed reply.
+    """
 
-    # Remove surrounding whitespace.
-    text = text.strip()
-
-    # Collapse whitespace/newlines.
-    text = re.sub(
-        r"\s+",
-        " ",
-        text,
+    reply = extract_new_reply(
+        text
     )
 
-    return text.strip()
+    # Remove zero-width and non-breaking spaces.
+    reply = reply.replace(
+        "\u200b",
+        "",
+    )
+
+    reply = reply.replace(
+        "\ufeff",
+        "",
+    )
+
+    reply = reply.replace(
+        "\xa0",
+        " ",
+    )
+
+    # Collapse all whitespace.
+    reply = re.sub(
+        r"\s+",
+        " ",
+        reply,
+    )
+
+    return reply.strip()
 
 
 def is_exact_approval(text):
     """
-    Gate A approval rule:
+    Approval is ONLY the exact word OK.
 
-    Only the exact word OK is approval.
+    Accepted:
+    OK
+    ok
+    Ok
+
+    Not accepted:
+    OK!
+    OKです
+    Yes
+    Proceed
     """
-
-    normalized = normalize_reply(text)
+    normalized = normalize_reply(
+        text
+    )
 
     return normalized.upper() == "OK"
 
 
 def load_gate_package():
-    if not os.path.exists(GATE_FILE):
+    if not os.path.exists(
+        GATE_FILE
+    ):
         raise RuntimeError(
             f"{GATE_FILE} was not found."
         )
@@ -163,6 +260,22 @@ def load_gate_package():
         encoding="utf-8",
     ) as file:
         return json.load(file)
+
+
+def sender_email_address(sender_text):
+    """
+    Extract email address from From header.
+    """
+
+    match = re.search(
+        r"<([^>]+)>",
+        sender_text,
+    )
+
+    if match:
+        return match.group(1).strip().lower()
+
+    return sender_text.strip().lower()
 
 
 def save_approved_story(
@@ -178,23 +291,39 @@ def save_approved_story(
 
     approved = {
         "state": "APPROVED_STORY",
-        "approved_at": datetime.now(
-            timezone.utc
-        ).isoformat(),
-        "approval_channel": "email",
-        "approval_message_id": message_id,
-        "approval_sender": sender,
-        "approval_subject": subject,
-        "recommended_id": package.get(
-            "recommended_id"
-        ),
-        "story": package.get(
-            "recommended"
-        ),
-        "top_five": package.get(
-            "top_five",
-            [],
-        ),
+
+        "approved_at":
+            datetime.now(
+                timezone.utc
+            ).isoformat(),
+
+        "approval_channel":
+            "email",
+
+        "approval_message_id":
+            message_id,
+
+        "approval_sender":
+            sender,
+
+        "approval_subject":
+            subject,
+
+        "recommended_id":
+            package.get(
+                "recommended_id"
+            ),
+
+        "story":
+            package.get(
+                "recommended"
+            ),
+
+        "top_five":
+            package.get(
+                "top_five",
+                [],
+            ),
     }
 
     with open(
@@ -202,6 +331,7 @@ def save_approved_story(
         "w",
         encoding="utf-8",
     ) as file:
+
         json.dump(
             approved,
             file,
@@ -210,14 +340,21 @@ def save_approved_story(
         )
 
     print(
-        f"Saved approved story to {APPROVED_FILE}"
+        f"Saved approved story to "
+        f"{APPROVED_FILE}"
     )
 
 
 def main():
     print()
-    print("THE DAILY DUCK — GATE A APPROVAL CHECK")
-    print("=" * 55)
+    print(
+        "THE DAILY DUCK — "
+        "GATE A APPROVAL CHECK"
+    )
+
+    print(
+        "=" * 55
+    )
 
     gmail_address = os.environ.get(
         "GMAIL_ADDRESS"
@@ -229,22 +366,32 @@ def main():
 
     if not gmail_address:
         raise RuntimeError(
-            "GMAIL_ADDRESS is not configured."
+            "GMAIL_ADDRESS "
+            "is not configured."
         )
 
     if not app_password:
         raise RuntimeError(
-            "GMAIL_APP_PASSWORD is not configured."
+            "GMAIL_APP_PASSWORD "
+            "is not configured."
         )
 
-    app_password = app_password.replace(
-        " ",
-        "",
+    gmail_address = (
+        gmail_address
+        .strip()
+        .lower()
+    )
+
+    app_password = (
+        app_password
+        .replace(" ", "")
     )
 
     package = load_gate_package()
 
-    print("Connecting to Gmail IMAP...")
+    print(
+        "Connecting to Gmail IMAP..."
+    )
 
     mail = imaplib.IMAP4_SSL(
         GMAIL_IMAP_SERVER,
@@ -257,17 +404,21 @@ def main():
             app_password,
         )
 
-        print("Gmail login successful.")
+        print(
+            "Gmail login successful."
+        )
 
-        status, _ = mail.select("INBOX")
+        status, _ = mail.select(
+            "INBOX"
+        )
 
         if status != "OK":
             raise RuntimeError(
                 "Could not open Gmail INBOX."
             )
 
-        # Search recent messages whose subject contains
-        # The Daily Duck.
+        # Search messages containing
+        # The Daily Duck in subject.
         status, data = mail.search(
             None,
             'SUBJECT',
@@ -279,7 +430,11 @@ def main():
                 "Gmail search failed."
             )
 
-        message_ids = data[0].split()
+        message_ids = (
+            data[0].split()
+            if data and data[0]
+            else []
+        )
 
         print(
             f"Matching messages found: "
@@ -287,67 +442,132 @@ def main():
         )
 
         if not message_ids:
-            print("No Gate A replies found.")
+            print(
+                "No Gate A replies found."
+            )
             return
 
         # Check newest messages first.
+        recent_ids = (
+            message_ids[-50:]
+        )
+
         for raw_id in reversed(
-            message_ids[-30:]
+            recent_ids
         ):
-            status, message_data = mail.fetch(
-                raw_id,
-                "(RFC822)",
+            status, message_data = (
+                mail.fetch(
+                    raw_id,
+                    "(RFC822)",
+                )
             )
 
             if status != "OK":
                 continue
 
-            raw_email = message_data[0][1]
+            if not message_data:
+                continue
 
-            message = email.message_from_bytes(
-                raw_email
+            raw_email = None
+
+            for item in message_data:
+                if (
+                    isinstance(item, tuple)
+                    and len(item) >= 2
+                ):
+                    raw_email = item[1]
+                    break
+
+            if not raw_email:
+                continue
+
+            message = (
+                email.message_from_bytes(
+                    raw_email
+                )
             )
 
             subject = decode_text(
-                message.get("Subject", "")
+                message.get(
+                    "Subject",
+                    ""
+                )
             )
 
             sender = decode_text(
-                message.get("From", "")
+                message.get(
+                    "From",
+                    ""
+                )
             )
 
             message_id = (
-                message.get("Message-ID", "")
+                message.get(
+                    "Message-ID",
+                    ""
+                )
             )
 
-            # Only Gate A mail threads.
-            if "gate a" not in subject.lower():
+            # Only Gate A thread.
+            subject_lower = (
+                subject.lower()
+            )
+
+            if (
+                "the daily duck"
+                not in subject_lower
+            ):
                 continue
 
-            # Never approve our own outgoing email.
-            if gmail_address.lower() in sender.lower():
+            if (
+                "story approval"
+                not in subject_lower
+                and "gate a"
+                not in subject_lower
+            ):
+                continue
+
+            sender_address = (
+                sender_email_address(
+                    sender
+                )
+            )
+
+            # Ignore our own outgoing mail.
+            if (
+                sender_address
+                == gmail_address
+            ):
                 continue
 
             body = get_plain_text(
                 message
             )
 
-            reply = normalize_reply(
+            normalized = normalize_reply(
                 body
             )
 
             print()
             print(
-                f"Checking reply from: {sender}"
+                f"Checking reply from: "
+                f"{sender_address}"
             )
+
             print(
                 f"Subject: {subject}"
             )
 
-            # Do not print the full private email body.
             print(
-                f"Normalized reply length: "
-                f"{len(reply)}"
+                "New reply normalized as:"
+            )
+
+            # Safe debug output:
+            # only normalized short reply.
+            print(
+                repr(
+                    normalized[:200]
+                )
             )
 
             if is_exact_approval(
@@ -361,7 +581,7 @@ def main():
                 save_approved_story(
                     package,
                     message_id,
-                    sender,
+                    sender_address,
                     subject,
                 )
 
