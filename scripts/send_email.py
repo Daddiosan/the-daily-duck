@@ -1,35 +1,41 @@
 #!/usr/bin/env python3
 """
-The Daily Duck - Gate A editorial email (Phase 2 compatible)
+The Daily Duck - Gate A email generator (Phase 2)
 
-Correct Phase 1 -> Phase 2 flow:
+Input:
+    ai_ranked_news.json
 
-news_candidates.json
-    ->
-ai_ranked_news.json
-    ->
-THIS SCRIPT creates gate_a_package.json
-    ->
-generates exactly five IMAGE CONCEPTS
-    ->
-sends Gate A email
-    ->
-user replies exactly:
-    1 OK / 2 OK / 3 OK / 4 OK / 5 OK
+Actual Phase 1 input schema:
+    {
+      "recommended_id": 28,
+      "recommended_reason": "...",
+      "top_five": [
+        {"id": 28, "title": "...", "source": "...", "url": "...", ...},
+        ...
+      ]
+    }
 
-Important:
-- gate_a_package.json does NOT need to exist before this script runs.
-- The script loads ai_ranked_news.json and creates gate_a_package.json itself.
-- Plain "OK" is no longer a valid Gate A approval.
+Output:
+    gate_a_package.json
+    daily_duck_email.txt
+    Gate A email via Gmail SMTP
 
-Environment:
-- GEMINI_API_KEY
-- GMAIL_ADDRESS
-- GMAIL_APP_PASSWORD
-- EMAIL_TO
+Gate A reply format:
+    1 OK
+    2 OK
+    3 OK
+    4 OK
+    5 OK
 
-Optional:
-- GEMINI_TEXT_MODEL (default: gemini-3.6-flash)
+Plain "OK" is invalid in Phase 2.
+
+This script:
+1. Resolves recommended_id against top_five.
+2. Uses Gemini to create the editorial package:
+   JP/EN copy, Duck JP/EN, X JP/EN, and exactly five image concepts.
+3. Preserves source/title/url from ai_ranked_news.json as authoritative.
+4. Saves gate_a_package.json before the workflow uploads the artifact.
+5. Sends the Gate A email.
 """
 
 from __future__ import annotations
@@ -47,624 +53,183 @@ from typing import Any
 from google import genai
 
 
-# ============================================================
-# Paths / configuration
-# ============================================================
-
 RANKED_PATH = Path("ai_ranked_news.json")
 PACKAGE_PATH = Path("gate_a_package.json")
 EMAIL_TEXT_PATH = Path("daily_duck_email.txt")
 
-TEXT_MODEL = os.getenv(
-    "GEMINI_TEXT_MODEL",
-    "gemini-3.6-flash",
-)
+# This is the model that is working in the current GitHub/API environment.
+TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
 
-
-# ============================================================
-# Basic helpers
-# ============================================================
 
 def required_env(name: str) -> str:
     value = os.getenv(name, "").strip()
-
     if not value:
-        raise RuntimeError(
-            f"Missing required environment variable: {name}"
-        )
-
+        raise RuntimeError(f"Missing required environment variable: {name}")
     return value
 
 
-def load_json(path: Path) -> Any:
+def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
-        raise FileNotFoundError(
-            f"Required file not found: {path}"
-        )
+        raise FileNotFoundError(f"Required file not found: {path}")
 
-    with path.open(
-        "r",
-        encoding="utf-8",
-    ) as f:
-        return json.load(f)
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
 
+    if not isinstance(data, dict):
+        raise ValueError(f"{path} must contain a JSON object.")
 
-def first_value(
-    data: dict[str, Any],
-    *keys: str,
-    default: str = "",
-) -> str:
-    for key in keys:
-        value = data.get(key)
-
-        if value is not None:
-            text = str(value).strip()
-
-            if text:
-                return text
-
-    return default
+    return data
 
 
-def first_any(
-    data: dict[str, Any],
-    keys: list[str],
-) -> Any:
-    for key in keys:
-        if key in data and data[key] is not None:
-            return data[key]
-    return None
+def resolve_recommended_story(
+    ranked: dict[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    top_five = ranked.get("top_five")
 
-
-# ============================================================
-# Normalize ranked-news input
-# ============================================================
-
-def extract_ranked_list(
-    ranked: Any,
-) -> list[Any]:
-    """
-    Supports several possible Phase 1 JSON shapes.
-
-    Examples:
-      {"top5": [...]}
-      {"top_5": [...]}
-      {"ranked_news": [...]}
-      {"candidates": [...]}
-      [...]
-    """
-
-    if isinstance(ranked, list):
-        return ranked
-
-    if not isinstance(ranked, dict):
+    if not isinstance(top_five, list) or not top_five:
         raise ValueError(
-            "ai_ranked_news.json must be a JSON object or array."
+            "ai_ranked_news.json must contain a non-empty 'top_five' array."
         )
 
-    possible = first_any(
-        ranked,
-        [
-            "top5",
-            "top_5",
-            "top5_stories",
-            "top_stories",
-            "ranked_news",
-            "ranked",
-            "stories",
-            "candidates",
-            "results",
-        ],
-    )
+    normalized: list[dict[str, Any]] = []
+    for item in top_five[:5]:
+        if not isinstance(item, dict):
+            raise ValueError("Every item in 'top_five' must be a JSON object.")
+        normalized.append(dict(item))
 
-    if isinstance(possible, list):
-        return possible
+    recommended_id = ranked.get("recommended_id")
+    recommended: dict[str, Any] | None = None
 
-    # Sometimes recommendation + shortlist are nested.
-    for value in ranked.values():
-        if isinstance(value, dict):
-            nested = first_any(
-                value,
-                [
-                    "top5",
-                    "top_5",
-                    "top_stories",
-                    "ranked_news",
-                    "stories",
-                    "candidates",
-                ],
-            )
-            if isinstance(nested, list):
-                return nested
+    for item in normalized:
+        if str(item.get("id")) == str(recommended_id):
+            recommended = dict(item)
+            break
 
-    return []
-
-
-def extract_recommended_story(
-    ranked: Any,
-    shortlist: list[Any],
-) -> Any:
-    if isinstance(ranked, dict):
-        recommended = first_any(
-            ranked,
-            [
-                "recommended_story",
-                "recommendation",
-                "recommended",
-                "winner",
-                "selected_story",
-                "top_pick",
-                "best_story",
-            ],
+    if recommended is None:
+        raise ValueError(
+            f"recommended_id={recommended_id!r} was not found in top_five."
         )
 
-        if recommended is not None:
-            # Some schemas store an index / rank instead of object.
-            if isinstance(recommended, int):
-                idx = recommended - 1
+    recommended["recommended_reason"] = str(
+        ranked.get("recommended_reason", "")
+    ).strip()
 
-                if 0 <= idx < len(shortlist):
-                    return shortlist[idx]
-
-            return recommended
-
-    if shortlist:
-        return shortlist[0]
-
-    return {}
+    return recommended, normalized
 
 
-def normalize_story(
-    story: Any,
-) -> dict[str, Any]:
-    if isinstance(story, dict):
-        return dict(story)
-
-    return {
-        "title": str(story),
-    }
-
-
-# ============================================================
-# Build Gate A package from Phase 1 output
-# ============================================================
-
-def build_gate_a_package(
-    ranked: Any,
-) -> dict[str, Any]:
-    if isinstance(ranked, dict):
-        package = dict(ranked)
-    else:
-        package = {
-            "ranked_news": ranked,
-        }
-
-    shortlist_raw = extract_ranked_list(
-        ranked
-    )
-
-    shortlist = [
-        normalize_story(item)
-        for item in shortlist_raw[:5]
-    ]
-
-    recommended_raw = extract_recommended_story(
-        ranked,
-        shortlist_raw,
-    )
-
-    recommended = normalize_story(
-        recommended_raw
-    )
-
-    # Preserve/standardize fields used later by Gate A + Phase 2.
-    package["recommended_story"] = recommended
-    package["top5"] = shortlist
-
-    issue_date = first_value(
-        package,
-        "date",
-        "issue_date",
-        "publication_date",
-        default=datetime.now().date().isoformat(),
-    )
-
-    package["date"] = issue_date
-    package["issue_date"] = issue_date
-
-    # Copy likely editorial fields from recommendation to top-level
-    # only when they are not already present.
-    aliases: dict[str, list[str]] = {
-        "title": [
-            "title",
-            "headline",
-            "name",
-        ],
-        "summary": [
-            "summary",
-            "description",
-            "reason",
-            "why_selected",
-        ],
-        "source": [
-            "source",
-            "source_name",
-            "publisher",
-        ],
-        "source_url": [
-            "source_url",
-            "url",
-            "link",
-        ],
-        "jp_copy": [
-            "jp_copy",
-            "story_jp",
-            "copy_jp",
-            "japanese_copy",
-            "jp",
-        ],
-        "en_copy": [
-            "en_copy",
-            "story_en",
-            "copy_en",
-            "english_copy",
-            "en",
-        ],
-        "duck_name": [
-            "duck_name",
-            "name",
-        ],
-        "duck_jp": [
-            "duck_jp",
-            "duck_copy_jp",
-            "duck_comment_jp",
-        ],
-        "duck_en": [
-            "duck_en",
-            "duck_copy_en",
-            "duck_comment_en",
-        ],
-        "x_jp": [
-            "x_jp",
-            "x_copy_jp",
-            "twitter_jp",
-        ],
-        "x_en": [
-            "x_en",
-            "x_copy_en",
-            "twitter_en",
-        ],
-        "image_concept": [
-            "image_concept",
-            "visual_concept",
-        ],
-    }
-
-    for target, source_keys in aliases.items():
-        if str(package.get(target, "")).strip():
-            continue
-
-        value = first_value(
-            recommended,
-            *source_keys,
-        )
-
-        if value:
-            package[target] = value
-
-    package["phase"] = 2
-    package["gate_a_approval_format"] = "<1-5> OK"
-    package["gate_a_package_created_at"] = (
-        datetime.now(timezone.utc).isoformat()
-    )
-
-    return package
-
-
-# ============================================================
-# Story context for concept generation
-# ============================================================
-
-def story_context(
-    pkg: dict[str, Any],
-) -> str:
-    recommended = pkg.get(
-        "recommended_story"
-    )
-
-    if not isinstance(
-        recommended,
-        dict,
-    ):
-        recommended = {}
-
-    title = first_value(
-        recommended,
-        "title",
-        "headline",
-        "name",
-        default=first_value(
-            pkg,
-            "title",
-            "headline",
-        ),
-    )
-
-    summary = first_value(
-        recommended,
-        "summary",
-        "description",
-        "reason",
-        "why_selected",
-        default=first_value(
-            pkg,
-            "summary",
-            "description",
-            "jp_copy",
-        ),
-    )
-
-    source = first_value(
-        recommended,
-        "source",
-        "source_name",
-        "publisher",
-        default=first_value(
-            pkg,
-            "source",
-            "source_name",
-        ),
-    )
-
-    url = first_value(
-        recommended,
-        "url",
-        "source_url",
-        "link",
-        default=first_value(
-            pkg,
-            "source_url",
-            "url",
-            "link",
-        ),
-    )
-
-    existing_concept = first_value(
-        pkg,
-        "image_concept",
-        "visual_concept",
-    )
-
-    return "\n".join(
-        [
-            f"TITLE: {title}",
-            f"SUMMARY: {summary}",
-            f"SOURCE: {source}",
-            f"URL: {url}",
-            f"JP COPY: {first_value(pkg, 'jp_copy', 'story_jp', 'jp')}",
-            f"EN COPY: {first_value(pkg, 'en_copy', 'story_en', 'en')}",
-            f"EXISTING IMAGE IDEA: {existing_concept}",
-        ]
-    )
-
-
-# ============================================================
-# Parse Gemini JSON safely
-# ============================================================
-
-def extract_json_array(
-    text: str,
-) -> list[Any]:
+def clean_json_text(text: str) -> str:
     cleaned = text.strip()
-
-    cleaned = re.sub(
-        r"^```(?:json)?\s*",
-        "",
-        cleaned,
-        flags=re.IGNORECASE,
-    )
-
-    cleaned = re.sub(
-        r"\s*```$",
-        "",
-        cleaned,
-    )
-
-    start = cleaned.find("[")
-    end = cleaned.rfind("]")
-
-    if (
-        start == -1
-        or end == -1
-        or end <= start
-    ):
-        raise ValueError(
-            "Gemini did not return a JSON array."
-        )
-
-    result = json.loads(
-        cleaned[start : end + 1]
-    )
-
-    if not isinstance(
-        result,
-        list,
-    ):
-        raise ValueError(
-            "Gemini image concepts were not a list."
-        )
-
-    return result
+    cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s*```$", "", cleaned)
+    return cleaned.strip()
 
 
-def normalize_concepts(
-    raw: list[Any],
-) -> list[dict[str, Any]]:
-    if len(raw) != 5:
-        raise ValueError(
-            "Exactly five image concepts are required."
-        )
+def generate_editorial_package(
+    recommended: dict[str, Any],
+) -> dict[str, Any]:
+    api_key = required_env("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
 
-    concepts: list[dict[str, Any]] = []
-
-    for idx, item in enumerate(
-        raw,
-        start=1,
-    ):
-        if not isinstance(
-            item,
-            dict,
-        ):
-            raise ValueError(
-                f"Image concept {idx} is not a JSON object."
-            )
-
-        title = str(
-            item.get(
-                "title",
-                "",
-            )
-        ).strip()
-
-        concept = str(
-            item.get(
-                "concept",
-                item.get(
-                    "description",
-                    "",
-                ),
-            )
-        ).strip()
-
-        visual_direction = str(
-            item.get(
-                "visual_direction",
-                item.get(
-                    "visual",
-                    "",
-                ),
-            )
-        ).strip()
-
-        if not title:
-            title = f"Concept {idx}"
-
-        if not concept:
-            raise ValueError(
-                f"Image concept {idx} has no concept description."
-            )
-
-        concepts.append(
-            {
-                "number": idx,
-                "title": title,
-                "concept": concept,
-                "visual_direction": visual_direction,
-            }
-        )
-
-    return concepts
-
-
-# ============================================================
-# Generate exactly five image concepts
-# ============================================================
-
-def generate_image_concepts(
-    pkg: dict[str, Any],
-) -> list[dict[str, Any]]:
-    # Reuse them if an upstream stage already supplied exactly five.
-    existing = pkg.get(
-        "image_concepts"
-    )
-
-    if (
-        isinstance(existing, list)
-        and len(existing) == 5
-    ):
-        return normalize_concepts(
-            existing
-        )
-
-    api_key = required_env(
-        "GEMINI_API_KEY"
-    )
-
-    client = genai.Client(
-        api_key=api_key
-    )
+    source_story = {
+        "id": recommended.get("id"),
+        "title": recommended.get("title", ""),
+        "source": recommended.get("source", ""),
+        "url": recommended.get("url", ""),
+        "reason": recommended.get("reason", ""),
+        "recommended_reason": recommended.get("recommended_reason", ""),
+    }
 
     prompt = f"""
-You are the visual editor for The Daily Duck.
+You are the editorial assistant for The Daily Duck.
 
-The Daily Duck selects category-neutral uplifting news:
-stories that make people feel happier, hopeful, amused,
-inspired, warm, or positively curious.
+The Daily Duck publishes category-neutral uplifting news.
+The goal is to make readers feel happier, hopeful, amused, inspired,
+warm, or positively curious.
 
-For the story below, create EXACTLY five IMAGE CONCEPTS.
+Create the Gate A editorial package for the selected story below.
 
-IMPORTANT:
-These are concept directions only.
-Do NOT generate actual images now.
-The human editor will choose one concept using:
-1 OK / 2 OK / 3 OK / 4 OK / 5 OK
+STRICT FACTUAL RULE:
+Use ONLY the facts present in SOURCE STORY.
+Do not invent names, numbers, dates, places, quotations, study details,
+scientific findings, or other factual claims that are not present there.
+If the source information is sparse, keep the copy general and faithful
+rather than filling gaps.
 
-Later, Phase 2 will generate five actual images from the selected concept.
+STYLE:
+- Warm, simple, intelligent, concise.
+- Not clickbait.
+- JP should sound natural in Japanese.
+- EN should sound natural in English.
+- Duck lines can be playful but must not add unsupported facts.
+- X drafts should be concise and suitable for a social post.
+- Do not include hashtags unless they genuinely help.
+- Do not put URLs into the generated copy fields.
 
+IMAGE CONCEPT RULES:
+Create EXACTLY five meaningfully different image concepts for THIS story.
+Every concept must clearly relate to the selected story.
 Permanent mascot identity:
 - recognizable yellow duck
 - orange beak
 - large dark glossy eyes
 - small feather tuft
 - friendly expression
-- story-specific clothing and props are allowed
-
-Brand direction:
+Story-specific clothing and props are allowed.
+Visual direction:
 - simple and clean
 - modern editorial feeling
 - warm and charming
-- avoid an overly vintage look
-- suitable for both The Daily Duck website hero and X post
-- no long article text inside the image
-- do not invent factual claims not supported by the story
+- not overly vintage
+- suitable for both The Daily Duck website hero and X
+- no long article text embedded in the image
+- no unsupported factual details
 
-The five concepts must be meaningfully different.
-Vary composition, setting, action, viewpoint, props,
-scale, visual metaphor, or storytelling approach.
+Return ONLY one valid JSON object with exactly these keys:
 
-Return ONLY valid JSON.
-Return an array of EXACTLY five objects:
+{{
+  "jp_copy": "Japanese editorial copy",
+  "en_copy": "English editorial copy",
+  "duck_name": "short English mascot/story nickname",
+  "duck_jp": "short playful Japanese duck line",
+  "duck_en": "short playful English duck line",
+  "x_jp": "Japanese X draft",
+  "x_en": "English X draft",
+  "image_concepts": [
+    {{
+      "number": 1,
+      "title": "short title",
+      "concept": "2-4 sentence scene description",
+      "visual_direction": "short composition/style direction"
+    }},
+    {{
+      "number": 2,
+      "title": "short title",
+      "concept": "2-4 sentence scene description",
+      "visual_direction": "short composition/style direction"
+    }},
+    {{
+      "number": 3,
+      "title": "short title",
+      "concept": "2-4 sentence scene description",
+      "visual_direction": "short composition/style direction"
+    }},
+    {{
+      "number": 4,
+      "title": "short title",
+      "concept": "2-4 sentence scene description",
+      "visual_direction": "short composition/style direction"
+    }},
+    {{
+      "number": 5,
+      "title": "short title",
+      "concept": "2-4 sentence scene description",
+      "visual_direction": "short composition/style direction"
+    }}
+  ]
+}}
 
-[
-  {{
-    "title": "short title",
-    "concept": "2-4 sentence scene description",
-    "visual_direction": "short composition/style direction"
-  }},
-  {{
-    "title": "short title",
-    "concept": "2-4 sentence scene description",
-    "visual_direction": "short composition/style direction"
-  }},
-  {{
-    "title": "short title",
-    "concept": "2-4 sentence scene description",
-    "visual_direction": "short composition/style direction"
-  }},
-  {{
-    "title": "short title",
-    "concept": "2-4 sentence scene description",
-    "visual_direction": "short composition/style direction"
-  }},
-  {{
-    "title": "short title",
-    "concept": "2-4 sentence scene description",
-    "visual_direction": "short composition/style direction"
-  }}
-]
-
-STORY:
-{story_context(pkg)}
+SOURCE STORY:
+{json.dumps(source_story, ensure_ascii=False, indent=2)}
 """.strip()
 
     response = client.models.generate_content(
@@ -672,207 +237,165 @@ STORY:
         contents=prompt,
     )
 
-    response_text = getattr(
-        response,
-        "text",
-        None,
-    )
-
+    response_text = getattr(response, "text", None)
     if not response_text:
-        raise RuntimeError(
-            "Gemini returned no text while generating image concepts."
+        raise RuntimeError("Gemini returned no editorial text.")
+
+    try:
+        generated = json.loads(clean_json_text(response_text))
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Gemini did not return valid JSON: {exc}"
+        ) from exc
+
+    if not isinstance(generated, dict):
+        raise ValueError("Gemini editorial response must be a JSON object.")
+
+    required_text_fields = [
+        "jp_copy",
+        "en_copy",
+        "duck_name",
+        "duck_jp",
+        "duck_en",
+        "x_jp",
+        "x_en",
+    ]
+
+    for field in required_text_fields:
+        value = generated.get(field)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"Gemini response is missing non-empty '{field}'.")
+
+    concepts = generated.get("image_concepts")
+    if not isinstance(concepts, list) or len(concepts) != 5:
+        raise ValueError("Gemini must return exactly five image_concepts.")
+
+    normalized_concepts: list[dict[str, Any]] = []
+    for number, item in enumerate(concepts, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f"Image concept {number} must be an object.")
+
+        title = str(item.get("title", "")).strip()
+        concept = str(item.get("concept", "")).strip()
+        visual = str(item.get("visual_direction", "")).strip()
+
+        if not title or not concept or not visual:
+            raise ValueError(
+                f"Image concept {number} must contain title, concept, "
+                "and visual_direction."
+            )
+
+        normalized_concepts.append(
+            {
+                "number": number,
+                "title": title,
+                "concept": concept,
+                "visual_direction": visual,
+            }
         )
 
-    raw = extract_json_array(
-        response_text
-    )
-
-    return normalize_concepts(
-        raw
-    )
+    generated["image_concepts"] = normalized_concepts
+    return generated
 
 
-# ============================================================
-# Shortlist formatting
-# ============================================================
+def build_package(
+    ranked: dict[str, Any],
+    recommended: dict[str, Any],
+    top_five: list[dict[str, Any]],
+    editorial: dict[str, Any],
+) -> dict[str, Any]:
+    issue_date = datetime.now().date().isoformat()
 
-def shortlist_text(
-    pkg: dict[str, Any],
-) -> str:
-    shortlist = (
-        pkg.get("top5")
-        or pkg.get("top_5")
-        or pkg.get("shortlist")
-        or pkg.get("candidates")
-        or []
-    )
+    package: dict[str, Any] = {
+        "date": issue_date,
+        "issue_date": issue_date,
+        "phase": 2,
+        "state": "WAITING_STORY_APPROVAL",
+        "recommended_id": ranked.get("recommended_id"),
+        "recommended_reason": ranked.get("recommended_reason", ""),
+        "recommended_story": recommended,
+        "top_five": top_five,
+        # Compatibility alias for Phase 2 scripts.
+        "top5": top_five,
+        "jp_copy": editorial["jp_copy"].strip(),
+        "en_copy": editorial["en_copy"].strip(),
+        "duck_name": editorial["duck_name"].strip(),
+        "duck_jp": editorial["duck_jp"].strip(),
+        "duck_en": editorial["duck_en"].strip(),
+        "x_jp": editorial["x_jp"].strip(),
+        "x_en": editorial["x_en"].strip(),
+        "source": str(recommended.get("source", "")).strip(),
+        "source_url": str(recommended.get("url", "")).strip(),
+        "image_concepts": editorial["image_concepts"],
+        "gate_a_approval_format": "<1-5> OK",
+        "gate_a_package_created_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
+    }
 
-    if not isinstance(
-        shortlist,
-        list,
-    ):
-        return str(shortlist)
+    return package
 
+
+def format_top_five(top_five: list[dict[str, Any]]) -> str:
     lines: list[str] = []
 
-    for idx, item in enumerate(
-        shortlist[:5],
-        start=1,
-    ):
-        if isinstance(
-            item,
-            dict,
-        ):
-            title = first_value(
-                item,
-                "title",
-                "headline",
-                "name",
-                default=f"Candidate {idx}",
-            )
+    for index, item in enumerate(top_five, start=1):
+        title = str(item.get("title", "")).strip()
+        source = str(item.get("source", "")).strip()
+        url = str(item.get("url", "")).strip()
+        score = item.get("total_score")
+        reason = str(item.get("reason", "")).strip()
 
-            reason = first_value(
-                item,
-                "reason",
-                "summary",
-                "description",
-                "why_selected",
-            )
+        lines.append(f"{index}. {title}")
 
-            source = first_value(
-                item,
-                "source",
-                "source_name",
-                "publisher",
-            )
+        meta: list[str] = []
+        if source:
+            meta.append(source)
+        if score is not None:
+            meta.append(f"Score: {score}")
 
-            url = first_value(
-                item,
-                "url",
-                "source_url",
-                "link",
-            )
+        if meta:
+            lines.append("   " + " | ".join(meta))
 
-            lines.append(
-                f"{idx}. {title}"
-            )
+        if reason:
+            lines.append(f"   {reason}")
 
-            if reason:
-                lines.append(
-                    f"   {reason}"
-                )
+        if url:
+            lines.append(f"   {url}")
 
-            if source or url:
-                lines.append(
-                    f"   Source: {source} {url}".rstrip()
-                )
+        lines.append("")
 
-        else:
-            lines.append(
-                f"{idx}. {item}"
-            )
-
-    return "\n".join(lines)
+    return "\n".join(lines).rstrip()
 
 
-# ============================================================
-# Email
-# ============================================================
+def format_image_concepts(concepts: list[dict[str, Any]]) -> str:
+    lines: list[str] = []
 
-def build_email(
-    pkg: dict[str, Any],
-    concepts: list[dict[str, Any]],
-) -> tuple[str, str]:
-    issue_date = first_value(
-        pkg,
-        "date",
-        "issue_date",
-        default=datetime.now().date().isoformat(),
-    )
+    for item in concepts:
+        number = item["number"]
+        title = item["title"]
+        concept = item["concept"]
+        visual = item["visual_direction"]
 
-    subject = (
-        f"The Daily Duck — Story Approval — {issue_date}"
-    )
-
-    recommended = pkg.get(
-        "recommended_story"
-    )
-
-    if not isinstance(
-        recommended,
-        dict,
-    ):
-        recommended = {}
-
-    rec_title = first_value(
-        recommended,
-        "title",
-        "headline",
-        "name",
-        default=first_value(
-            pkg,
-            "title",
-            "headline",
-        ),
-    )
-
-    rec_summary = first_value(
-        recommended,
-        "summary",
-        "description",
-        "reason",
-        "why_selected",
-        default=first_value(
-            pkg,
-            "summary",
-            "description",
-        ),
-    )
-
-    rec_source = first_value(
-        recommended,
-        "source",
-        "source_name",
-        "publisher",
-        default=first_value(
-            pkg,
-            "source",
-            "source_name",
-        ),
-    )
-
-    rec_url = first_value(
-        recommended,
-        "url",
-        "source_url",
-        "link",
-        default=first_value(
-            pkg,
-            "source_url",
-            "url",
-            "link",
-        ),
-    )
-
-    concept_lines: list[str] = []
-
-    for concept in concepts:
-        concept_lines.extend(
+        lines.extend(
             [
-                f"[{concept['number']}] {concept['title']}",
-                str(concept["concept"]),
-                (
-                    "Visual: "
-                    + str(
-                        concept.get(
-                            "visual_direction",
-                            "",
-                        )
-                    )
-                ),
+                f"[{number}] {title}",
+                concept,
+                f"Visual: {visual}",
                 "",
             ]
         )
+
+    return "\n".join(lines).rstrip()
+
+
+def build_email(
+    package: dict[str, Any],
+) -> tuple[str, str]:
+    story = package["recommended_story"]
+    issue_date = package["issue_date"]
+
+    subject = f"The Daily Duck — Story Approval — {issue_date}"
 
     body = f"""The Daily Duck — Gate A
 
@@ -883,51 +406,51 @@ def build_email(
 RECOMMENDED STORY
 ==================================================
 
-{rec_title}
+{story.get("title", "")}
 
-{rec_summary}
+Why recommended:
+{package.get("recommended_reason", "")}
 
 Source:
-{rec_source}
-
-{rec_url}
+{story.get("source", "")}
+{story.get("url", "")}
 
 ==================================================
 TOP 5 SHORTLIST
 ==================================================
 
-{shortlist_text(pkg)}
+{format_top_five(package["top_five"])}
 
 ==================================================
 EDITORIAL COPY
 ==================================================
 
 JP:
-{first_value(pkg, "jp_copy", "story_jp", "jp")}
+{package["jp_copy"]}
 
 EN:
-{first_value(pkg, "en_copy", "story_en", "en")}
+{package["en_copy"]}
 
 Duck name:
-{first_value(pkg, "duck_name", "name")}
+{package["duck_name"]}
 
 Duck JP:
-{first_value(pkg, "duck_jp", "duck_copy_jp")}
+{package["duck_jp"]}
 
 Duck EN:
-{first_value(pkg, "duck_en", "duck_copy_en")}
+{package["duck_en"]}
 
 X JP:
-{first_value(pkg, "x_jp", "x_copy_jp")}
+{package["x_jp"]}
 
 X EN:
-{first_value(pkg, "x_en", "x_copy_en")}
+{package["x_en"]}
 
 ==================================================
 IMAGE CONCEPTS — CHOOSE ONE
 ==================================================
 
-{chr(10).join(concept_lines).rstrip()}
+{format_image_concepts(package["image_concepts"])}
 
 ==================================================
 GATE A APPROVAL
@@ -942,71 +465,67 @@ GATE A APPROVAL
 5 OK
 
 例:
-
 3 OK
 
 IMPORTANT:
-
 - 「OK」だけでは承認されません。
 - 1〜5のコンセプト番号が必要です。
-- 上記5つ以外の返信では APPROVED_STORY に進みません。
-- この段階では実画像は生成しません。
+- この段階では実画像はまだ生成しません。
 - Gate B完了前にWebサイト/Xへ公開しません。
 """
 
-    return (
-        subject,
-        body,
-    )
+    return subject, body
 
 
-# ============================================================
-# Main
-# ============================================================
+def send_email(subject: str, body: str) -> int:
+    gmail_address = required_env("GMAIL_ADDRESS")
+    gmail_password = required_env("GMAIL_APP_PASSWORD")
+
+    recipients = [
+        value.strip()
+        for value in required_env("EMAIL_TO").split(",")
+        if value.strip()
+    ]
+
+    if not recipients:
+        raise RuntimeError("EMAIL_TO contains no valid recipients.")
+
+    msg = EmailMessage()
+    msg["From"] = gmail_address
+    msg["To"] = ", ".join(recipients)
+    msg["Subject"] = subject
+    msg.set_content(body)
+
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com",
+        465,
+        timeout=30,
+    ) as smtp:
+        smtp.login(gmail_address, gmail_password)
+        smtp.send_message(msg)
+
+    return len(recipients)
+
 
 def main() -> int:
-    # --------------------------------------------------------
-    # Phase 1 output
-    # --------------------------------------------------------
+    ranked = load_json(RANKED_PATH)
 
-    ranked = load_json(
-        RANKED_PATH
+    recommended, top_five = resolve_recommended_story(ranked)
+
+    print(
+        "Resolved recommended story:",
+        recommended.get("id"),
+        recommended.get("title"),
     )
 
-    # --------------------------------------------------------
-    # THIS SCRIPT creates Gate A package.
-    # gate_a_package.json is NOT an input requirement.
-    # --------------------------------------------------------
+    editorial = generate_editorial_package(recommended)
 
-    package = build_gate_a_package(
-        ranked
+    package = build_package(
+        ranked=ranked,
+        recommended=recommended,
+        top_five=top_five,
+        editorial=editorial,
     )
-
-    # --------------------------------------------------------
-    # Create exactly five image concept choices.
-    # --------------------------------------------------------
-
-    concepts = generate_image_concepts(
-        package
-    )
-
-    package["image_concepts"] = (
-        concepts
-    )
-
-    package[
-        "gate_a_approval_format"
-    ] = "<1-5> OK"
-
-    package[
-        "gate_a_updated_at"
-    ] = datetime.now(
-        timezone.utc
-    ).isoformat()
-
-    # --------------------------------------------------------
-    # Save package BEFORE artifact upload.
-    # --------------------------------------------------------
 
     PACKAGE_PATH.write_text(
         json.dumps(
@@ -1018,130 +537,33 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    # --------------------------------------------------------
-    # Build email.
-    # --------------------------------------------------------
-
-    subject, body = build_email(
-        package,
-        concepts,
-    )
+    subject, body = build_email(package)
 
     EMAIL_TEXT_PATH.write_text(
         body,
         encoding="utf-8",
     )
 
-    # --------------------------------------------------------
-    # Gmail SMTP.
-    # --------------------------------------------------------
-
-    gmail_address = required_env(
-        "GMAIL_ADDRESS"
+    recipient_count = send_email(
+        subject,
+        body,
     )
 
-    gmail_password = required_env(
-        "GMAIL_APP_PASSWORD"
-    )
-
-    recipients = [
-        value.strip()
-        for value in required_env(
-            "EMAIL_TO"
-        ).split(",")
-        if value.strip()
-    ]
-
-    if not recipients:
-        raise RuntimeError(
-            "EMAIL_TO contains no valid recipients."
-        )
-
-    msg = EmailMessage()
-
-    msg["From"] = (
-        gmail_address
-    )
-
-    msg["To"] = ", ".join(
-        recipients
-    )
-
-    msg["Subject"] = (
-        subject
-    )
-
-    msg.set_content(
-        body
-    )
-
-    with smtplib.SMTP_SSL(
-        "smtp.gmail.com",
-        465,
-        timeout=30,
-    ) as smtp:
-
-        smtp.login(
-            gmail_address,
-            gmail_password,
-        )
-
-        smtp.send_message(
-            msg
-        )
-
-    # --------------------------------------------------------
-    # Logs
-    # --------------------------------------------------------
-
-    print(
-        f"Gate A package created: {PACKAGE_PATH}"
-    )
-
-    print(
-        "Exactly five image concepts created."
-    )
-
-    print(
-        f"Gate A email sent to {len(recipients)} recipient(s)."
-    )
-
-    print(
-        f"Subject: {subject}"
-    )
-
-    print(
-        "Valid Gate A replies:"
-    )
-
-    print(
-        "1 OK / 2 OK / 3 OK / 4 OK / 5 OK"
-    )
-
-    print(
-        "STATE: WAITING_STORY_APPROVAL"
-    )
+    print(f"Gate A package created: {PACKAGE_PATH}")
+    print(f"Recommended story ID: {package['recommended_id']}")
+    print(f"TOP 5 count: {len(package['top_five'])}")
+    print(f"Image concept count: {len(package['image_concepts'])}")
+    print(f"Gate A email sent to {recipient_count} recipient(s).")
+    print(f"Subject: {subject}")
+    print("Valid replies: 1 OK / 2 OK / 3 OK / 4 OK / 5 OK")
+    print("STATE: WAITING_STORY_APPROVAL")
 
     return 0
 
 
-# ============================================================
-# Entry point
-# ============================================================
-
 if __name__ == "__main__":
-
     try:
-
-        raise SystemExit(
-            main()
-        )
-
+        raise SystemExit(main())
     except Exception as exc:
-
-        print(
-            f"ERROR: {exc}",
-            file=sys.stderr,
-        )
-
+        print(f"ERROR: {exc}", file=sys.stderr)
         raise
