@@ -15,7 +15,7 @@ This script refuses to call the image API unless:
   ENABLE_PAID_IMAGE_GENERATION=true
 
 Recommended low-cost model:
-  gemini-3.1-flash-lite-image
+  gemini-3.6-flash-lite-image
 
 NEXT 5 handling:
 - If automation_state/image_regeneration_request.json exists and is valid,
@@ -43,8 +43,8 @@ CANDIDATES_PATH = STATE_DIR / "image_candidates.json"
 REGEN_REQUEST_PATH = STATE_DIR / "image_regeneration_request.json"
 IMAGE_ROOT = Path("automation_images")
 
-IMAGE_MODEL = os.getenv("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-lite-image")
-TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "gemini-2.5-flash")
+IMAGE_MODEL = os.getenv("GEMINI_IMAGE_MODEL", "gemini-3.6-flash-lite-image")
+TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
 ASPECT_RATIO = os.getenv("DAILY_DUCK_IMAGE_ASPECT_RATIO", "1:1")
 
 
