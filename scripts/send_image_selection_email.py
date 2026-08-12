@@ -1,27 +1,17 @@
 #!/usr/bin/env python3
-"""
-The Daily Duck - Gate B image selection email
-
-Sends exactly five attached candidate images.
-Valid replies:
-- 1 / 2 / 3 / 4 / 5 = choose final image
-- NEXT 5 = reject this batch and generate five new executions
-"""
-
 from __future__ import annotations
 
 import json
 import mimetypes
 import os
 import smtplib
-import sys
-from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
 
-STATE_DIR = Path("automation_state")
-CANDIDATES_PATH = STATE_DIR / "image_candidates.json"
+STATE_PATH = Path("automation_state/image_candidates.json")
+PREVIEW_PATH = Path("image_selection_email.txt")
+SUBJECT_PREFIX = "The Daily Duck — Final Image Selection"
 
 
 def required_env(name: str) -> str:
@@ -31,108 +21,176 @@ def required_env(name: str) -> str:
     return value
 
 
-def load_candidates() -> dict[str, Any]:
-    if not CANDIDATES_PATH.exists():
-        raise FileNotFoundError(f"Missing {CANDIDATES_PATH}")
-    data = json.loads(CANDIDATES_PATH.read_text(encoding="utf-8"))
-    if data.get("state") != "WAITING_IMAGE_SELECTION":
-        raise RuntimeError("image_candidates.json is not WAITING_IMAGE_SELECTION.")
-    candidates = data.get("candidates")
-    if not isinstance(candidates, list) or len(candidates) != 5:
-        raise ValueError("Exactly five image candidates are required.")
+def load_json(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        raise FileNotFoundError(f"Required file not found: {path}")
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path} must contain a JSON object.")
     return data
 
 
-def main() -> int:
-    data = load_candidates()
-    issue_date = str(data.get("issue_date") or datetime.now().date().isoformat())
-    batch = int(data.get("batch", 1))
-    subject = f"The Daily Duck — Image Selection — {issue_date} — Batch {batch}"
+def validate_state(data: dict[str, Any]) -> list[dict[str, Any]]:
+    state = str(data.get("state", "")).strip().upper()
+    if state != "IMAGE_CANDIDATES_READY":
+        raise ValueError(f"Expected IMAGE_CANDIDATES_READY, got {state!r}.")
 
-    concept = data.get("selected_image_concept") or {}
-    concept_title = concept.get("title", "") if isinstance(concept, dict) else ""
+    candidates = data.get("candidates")
+    if not isinstance(candidates, list) or len(candidates) != 5:
+        raise ValueError("Exactly five image candidates are required.")
 
-    body = f"""The Daily Duck — Gate B
-
-Gate Aで選択した画像コンセプト:
-{concept_title}
-
-Batch {batch} の画像候補を5枚添付しました。
-
-==================================================
-FINAL SELECTION
-==================================================
-気に入った画像がある場合:
-1
-2
-3
-4
-5
-
-のいずれか1文字だけを返信してください。
-
-5枚すべて気に入らない場合:
-NEXT 5
-
-だけを返信してください。
-
-NEXT 5 の場合:
-- Gate Aで選んだ画像コンセプトは変更しません。
-- 同じコンセプトから新しい画像を5枚生成します。
-- READY_TO_PUBLISH には進みません。
-- 新しいBatchのメールを送ります。
-
-重要:
-- 1〜5以外では画像確定しません。
-- NEXT 5 は承認ではありません。
-- Gate B完了前にWebサイト/Xへ公開しません。
-"""
-
-    gmail = required_env("GMAIL_ADDRESS")
-    password = required_env("GMAIL_APP_PASSWORD")
-    recipients = [x.strip() for x in required_env("EMAIL_TO").split(",") if x.strip()]
-
-    msg = EmailMessage()
-    msg["From"] = gmail
-    msg["To"] = ", ".join(recipients)
-    msg["Subject"] = subject
-    msg.set_content(body)
-
-    for candidate in sorted(data["candidates"], key=lambda x: int(x["number"])):
-        number = int(candidate["number"])
-        path = Path(candidate["image_path"])
+    for i, item in enumerate(candidates, start=1):
+        if not isinstance(item, dict) or int(item.get("number", 0)) != i:
+            raise ValueError("Image candidates must be numbered exactly 1-5.")
+        path = Path(str(item.get("image_path", "")))
         if not path.exists():
-            raise FileNotFoundError(f"Candidate image missing: {path}")
-        mime, _ = mimetypes.guess_type(path.name)
-        maintype, subtype = (mime or "image/png").split("/", 1)
-        msg.add_attachment(
-            path.read_bytes(),
-            maintype=maintype,
-            subtype=subtype,
-            filename=f"{number}-{path.name}",
+            raise FileNotFoundError(f"Candidate image not found: {path}")
+
+    return candidates
+
+
+def get_story_title(data: dict[str, Any]) -> str:
+    story = data.get("story")
+    if isinstance(story, dict):
+        for key in ("title_ja", "title", "headline_ja", "headline"):
+            value = story.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+    return "Approved Daily Duck Story"
+
+
+def parse_recipients(raw: str) -> list[str]:
+    recipients = [x.strip() for x in raw.split(",") if x.strip()]
+    if not recipients:
+        raise RuntimeError("EMAIL_TO contains no valid recipients.")
+    return recipients
+
+
+def build_plain(data: dict[str, Any], candidates: list[dict[str, Any]]) -> str:
+    lines = [
+        "THE DAILY DUCK — 最終画像を選択",
+        "",
+        f"承認済み記事: {get_story_title(data)}",
+        "",
+        "承認済みの記事から、5つの異なる画像コンセプトを実画像にしました。",
+        "添付画像 1〜5 を確認して、最終的に使用する画像を1つ選んでください。",
+        "",
+    ]
+
+    for item in candidates:
+        n = item["number"]
+        title = item.get("concept_title_ja") or item.get("concept_title_en") or ""
+        lines.append(f"{n}. {title}")
+
+    lines += [
+        "",
+        "返信方法:",
+        "このメールに 1 / 2 / 3 / 4 / 5 のいずれか1文字だけ返信してください。",
+        "",
+        "例:",
+        "3",
+        "",
+        "選択した画像そのものをWebサイトとXで共通使用するcanonical imageとして固定します。",
+        "選択が完了するまで公開は行いません。",
+        "",
+        "The Daily Duck",
+        "One day. One story. One duck. 🐤",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_html(data: dict[str, Any], candidates: list[dict[str, Any]]) -> str:
+    cards = []
+    for item in candidates:
+        n = int(item["number"])
+        title = str(item.get("concept_title_ja") or item.get("concept_title_en") or "")
+        cid = f"daily-duck-candidate-{n}"
+        cards.append(
+            f"""
+            <div style="margin:22px 0;padding:16px;border:1px solid #ddd;border-radius:14px;">
+              <div style="font-size:28px;font-weight:700;margin-bottom:10px;">{n}</div>
+              <img src="cid:{cid}" alt="Candidate {n}"
+                   style="width:100%;max-width:760px;height:auto;border-radius:10px;display:block;">
+              <div style="font-size:18px;font-weight:600;margin-top:10px;">{title}</div>
+            </div>
+            """
         )
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=30) as smtp:
-        smtp.login(gmail, password)
+    return f"""
+    <html>
+      <body style="font-family:Arial,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+                   max-width:820px;margin:auto;color:#14233b;">
+        <h1>The Daily Duck — 最終画像を選択</h1>
+        <p><strong>承認済み記事:</strong> {get_story_title(data)}</p>
+        <p>5つの画像を確認して、気に入った画像の番号だけを返信してください。</p>
+        {''.join(cards)}
+        <div style="margin:28px 0;padding:18px;background:#fff6d8;border-radius:12px;">
+          <strong>返信:</strong> 1 / 2 / 3 / 4 / 5 のいずれか1文字だけ<br>
+          例: <strong>3</strong>
+        </div>
+        <p>選択した画像そのものをWebサイトとXの共通canonical imageとして固定します。</p>
+        <p>One day. One story. One duck. 🐤</p>
+      </body>
+    </html>
+    """
+
+
+def main() -> None:
+    data = load_json(STATE_PATH)
+    candidates = validate_state(data)
+
+    gmail_address = required_env("GMAIL_ADDRESS")
+    gmail_app_password = required_env("GMAIL_APP_PASSWORD")
+    recipients = parse_recipients(required_env("EMAIL_TO"))
+
+    plain = build_plain(data, candidates)
+    html = build_html(data, candidates)
+    PREVIEW_PATH.write_text(plain, encoding="utf-8")
+
+    msg = EmailMessage()
+    msg["Subject"] = f"{SUBJECT_PREFIX} — {get_story_title(data)}"
+    msg["From"] = gmail_address
+    msg["To"] = ", ".join(recipients)
+    msg.set_content(plain)
+    msg.add_alternative(html, subtype="html")
+
+    html_part = msg.get_payload()[-1]
+
+    for item in candidates:
+        n = int(item["number"])
+        image_path = Path(str(item["image_path"]))
+        image_bytes = image_path.read_bytes()
+        mime_type, _ = mimetypes.guess_type(image_path.name)
+        maintype, subtype = (mime_type or "image/png").split("/", 1)
+
+        # Inline image for HTML email.
+        html_part.add_related(
+            image_bytes,
+            maintype=maintype,
+            subtype=subtype,
+            cid=f"<daily-duck-candidate-{n}>",
+            filename=f"DailyDuck_{n}.png",
+            disposition="inline",
+        )
+
+        # Also attach each image explicitly so it is easy to open/save on phones.
+        msg.add_attachment(
+            image_bytes,
+            maintype=maintype,
+            subtype=subtype,
+            filename=f"DailyDuck_{n}.png",
+        )
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=60) as smtp:
+        smtp.login(gmail_address, gmail_app_password)
         smtp.send_message(msg)
 
-    data["email_subject"] = subject
-    data["email_sent_at"] = datetime.now(timezone.utc).isoformat()
-    CANDIDATES_PATH.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-    print(f"Gate B email sent. Batch: {batch}")
-    print(f"Subject: {subject}")
-    print("Valid replies: 1 / 2 / 3 / 4 / 5 / NEXT 5")
-    print("STATE: WAITING_IMAGE_SELECTION")
-    return 0
+    print("Final image selection email sent.")
+    print("Candidate count: 5")
+    print("Valid replies: 1 / 2 / 3 / 4 / 5")
+    print(f"Preview saved: {PREVIEW_PATH}")
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except Exception as exc:
-        print(f"ERROR: {exc}", file=sys.stderr)
-        raise
+    main()
