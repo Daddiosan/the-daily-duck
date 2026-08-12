@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-08-12",
+    "displayDate": "August 12, 2026",
+    "slug": "trunkquack",
+    "title": "TRUNKQUACK",
+    "image": "assets/ducks/2026-08-12-trunkquack.png",
+    "imageAltJa": "水辺でゾウと一緒に水浴びを楽しむサファリ姿の黄色いダック",
+    "imageAltEn": "A yellow duck in safari gear splashing in the water beside an elephant on World Elephant Day",
+    "storyJa": "8月12日は「世界ゾウの日（World Elephant Day）」。2012年8月12日に始まり、アフリカゾウとアジアゾウが直面する密猟、生息地の減少、人とゾウの衝突などの課題に目を向け、ゾウの保護を考える日です。",
+    "storyEn": "August 12 is World Elephant Day. Launched on August 12, 2012, it draws attention to the challenges facing African and Asian elephants, including poaching, habitat loss and human-elephant conflict, and encourages action to protect them.",
+    "duckJa": "今日のダックはTRUNKQUACK。大きなゾウたちと一緒に水浴びしながら、彼らがこれからも自然の中でのびのび暮らせる未来を応援します。",
+    "duckEn": "Today's duck is TRUNKQUACK, making a splash with some very big friends and cheering for a future where elephants can continue to thrive.",
+    "sourceLabel": "World Elephant Day",
+    "sourceUrl": "https://worldelephantday.org/about/",
+    "archiveSummaryJa": "8月12日は世界ゾウの日。ゾウの未来を考える一日",
+    "archiveSummaryEn": "August 12 is World Elephant Day — a day to help protect elephants",
+    "published": true
+  },
+  {
     "date": "2026-08-11",
     "displayDate": "August 11, 2026",
     "slug": "sharkquack",
@@ -15,7 +33,7 @@
     "sourceUrl": "https://www.reuters.com/business/environment/scientists-turn-sharks-improve-hurricane-predictions-2026-08-08/",
     "archiveSummaryJa": "サメが海の観測員に。ハリケーン予測を助ける研究",
     "archiveSummaryEn": "Sharks become ocean observers to help improve hurricane forecasts",
-    "published": false
+    "published": true
   },
   {
     "date": "2026-08-10",
