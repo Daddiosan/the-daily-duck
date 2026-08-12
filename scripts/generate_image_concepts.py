@@ -12,7 +12,7 @@ from google import genai
 
 APPROVED_STORY_PATH = Path("automation_state/approved_story.json")
 OUTPUT_PATH = Path("automation_state/image_concepts.json")
-TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
+TEXT_MODEL = (os.getenv("GEMINI_TEXT_MODEL") or "").strip() or "gemini-3.6-flash"
 
 
 def required_env(name: str) -> str:
