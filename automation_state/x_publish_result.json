@@ -1,0 +1,7 @@
+{
+  "action": "WEBSITE_NOT_PUBLISHED_BLOCKED",
+  "at": "2026-08-12T14:41:20.791146+00:00",
+  "issue_date": "2026-08-11",
+  "website_action": "DUPLICATE_DATE_BLOCKED",
+  "message": "X posting was blocked because website publication did not succeed."
+}
