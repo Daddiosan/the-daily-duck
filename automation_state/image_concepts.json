@@ -1,0 +1,86 @@
+{
+  "state": "IMAGE_CONCEPT_REVIEW",
+  "generated_at": "2026-08-12T12:41:13.467839+00:00",
+  "source_state": "APPROVED_STORY",
+  "approved_story_path": "automation_state/approved_story.json",
+  "story": {
+    "id": 28,
+    "title": "For 15,000 years, humans and dogs have been changing each other",
+    "source": "ScienceDaily Environment",
+    "url": "https://www.sciencedaily.com/releases/2026/08/260810015700.htm",
+    "happiness": 9,
+    "hope": 9,
+    "general_interest": 9,
+    "surprise": 8,
+    "duck_visual": 8,
+    "source_quality": 9,
+    "freshness": 10,
+    "total_score": 93,
+    "reason": "A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.",
+    "recommended_reason": "A deeply heartwarming and uplifting look at the 15,000-year bond between humans and dogs, showcasing how companionship and mutual adaptation shaped both species across history."
+  },
+  "concepts": [
+    {
+      "number": 1,
+      "title_ja": "星空に刻まれた1万5千年の絆",
+      "title_en": "Constellations of a 15,000-Year Bond",
+      "concept_ja": "1万5千年にわたる人間と犬の歴史的な絆を、夜空に浮かぶ星座と黄昏の丘で表現した幻想的で心温まるコンセプト。",
+      "concept_en": "A magical twilight concept illustrating the 15,000-year history of human and dog companionship through glowing sky constellations above a serene hill.",
+      "composition_ja": "パノラマの黄昏の丘の上で、イエローダックと優しい犬が並んで座り、夜空を見上げている。空には人と犬が共に歩んできた姿を描いた繊細な光の星座が浮かんである。",
+      "composition_en": "Wide landscape composition. On a grassy hill in the foreground, the yellow duck and a friendly dog sit side-by-side looking up at a twilight starry sky where faint glowing constellations form shapes of humans and dogs walking together across time.",
+      "generation_prompt_en": "A warm visual editorial illustration for The Daily Duck. A cute, friendly yellow duck with an orange beak, large glossy dark eyes, and a small feather tuft on its head sits happily on a soft grassy hill next to a loyal golden-retriever-style dog. They are looking up together at a magical twilight sky filled with stars. Faint, soft glowing constellation lines in the sky subtly trace out the shapes of humans and dogs walking together throughout history. Deep evening blue and warm twilight orange lighting, clean modern editorial style, high resolution, wide aspect ratio suitable for web hero banner, no text, no logo, no watermark.",
+      "alt_ja": "黄昏の丘で星空を見上げるアヒルのマスコットと犬。空には人と犬の1万5千年の絆を象徴する星座が輝く。",
+      "alt_en": "The Daily Duck mascot sitting beside a friendly dog on a grassy hill, gazing at a starry twilight sky featuring human and dog constellations."
+    },
+    {
+      "number": 2,
+      "title_ja": "歴史を映す温かな焚き火",
+      "title_en": "Warm Campfire Through the Ages",
+      "concept_ja": "太古から現代まで続く人間と犬の相棒関係を、温かい焚き火を囲む和やかな情景で表現したアットホームなコンセプト。",
+      "concept_en": "A cozy campfire concept showcasing the enduring partnership between humans and dogs, warmed by glowing firelight on a scenic cliffside.",
+      "composition_ja": "夕暮れの崖の上で、小さな焚き火を挟んでスカーフを巻いたイエローダックと犬がくつろいでいる。周囲の岩には歴史を象徴する手形と肉球の刻印があしらわれている。",
+      "composition_en": "Medium-wide landscape composition. On a scenic cliff overlooking a sunset valley, the yellow duck wearing a tiny stylish neck scarf sits comfortably by a crackling campfire next to a resting dog. The surrounding natural stone wall features subtle decorative artistic carvings of paired human handprints and dog pawprints.",
+      "generation_prompt_en": "A cozy modern visual editorial digital illustration for The Daily Duck. The mascot, a friendly yellow duck with a bright orange beak, large dark glossy eyes, and a small feather tuft on its head, wearing a small red bandanna neck scarf, sits comfortably on a wooden bench around a warm glowing campfire next to a gentle dog. Setting is a sunset scenic overlook with soft golden-hour ambient lighting. Subtle artistic relief on nearby rocks displays paired handprints and pawprints. Clean modern art style, vibrant golden and orange tones, inviting mood, high quality, landscape ratio, no text, no logo.",
+      "alt_ja": "夕暮れの丘で焚き火を囲み、リラックスするアヒルのマスコットと犬。岩には長い歴史を示す刻印が添えられている。",
+      "alt_en": "The Daily Duck mascot wearing a small bandana sitting near a campfire with a dog on a golden-hour cliffside overlooking a sunset valley."
+    },
+    {
+      "number": 3,
+      "title_ja": "1万5千年展のギャラリー壁画",
+      "title_en": "The 15,000-Year Timeline Gallery",
+      "concept_ja": "現代的なミュージアムの展示壁画を通じて、15,000年の人間と犬の歴史をわかりやすく伝える知的で洗練されたコンセプト。",
+      "concept_en": "An intellectual gallery concept where the mascot and a dog explore a stylish wall mural depicting the historical timeline of human-dog co-evolution.",
+      "composition_ja": "明るく洗練されたギャラリー内。壁面に描かれた人と犬の歴史シルエットイラストの前で、可愛い虫眼鏡を持ったイエローダックと犬が楽しそうに展示を鑑賞している。",
+      "composition_en": "Eye-level interior view in a bright, modern minimalist exhibition gallery. A stylish visual wall graphics display shows artistic silhouettes of humans and dogs walking together across eras. The yellow duck holding a cute stylized magnifying glass stands next to a dog looking thoughtfully at the display.",
+      "generation_prompt_en": "Modern visual editorial digital artwork for The Daily Duck. A cute friendly yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft, holding a small decorative magnifying glass, stands cheerfully in a sunlit art gallery next to a friendly dog. In the background is a sleek modern wall mural showcasing artistic silhouettes of humans and dogs strolling together across history. Bright airy gallery lighting, soft warm pastel color palette, clean vector-inspired editorial aesthetic, charming atmosphere, widescreen hero layout, no text, no typography, no logo.",
+      "alt_ja": "明るいギャラリーで人と犬の歴史を描いた壁画を鑑賞するアヒルのマスコットと犬。",
+      "alt_en": "The Daily Duck mascot with a magnifying glass standing alongside a dog in a modern exhibition room facing a historic mural of humans and dogs."
+    },
+    {
+      "number": 4,
+      "title_ja": "1万5千年のハイタッチ",
+      "title_en": "The Historic High-Five",
+      "concept_ja": "人間と犬の特別な絆と信頼を、ダックの羽と犬の肉球（パウ）の笑顔あふれるハイタッチで象徴的に表現したポップで魅力的なコンセプト。",
+      "concept_en": "A vibrant studio concept capturing the celebratory moment of a friendly wing-and-paw high-five, symbolizing 15,000 years of joy and partnership.",
+      "composition_ja": "明るい温もりあるスタジオ背景を中心にした構図。イエローダックが片方の羽をあげて、大好きな犬の肉球と笑顔でハイタッチしている躍動感あるショット。",
+      "composition_en": "Centered medium shot on a clean warm backdrop. The recognizable yellow duck is joyfully giving a high-five with its wing to a friendly dog's raised front paw. Floating soft golden light sparks and subtle heart accents surround the pair in celebration.",
+      "generation_prompt_en": "A vibrant and charming editorial vector digital illustration. The iconic Daily Duck mascot, a cheerful yellow duck with a bright orange beak, large dark glossy eyes, and a small feather tuft on its head, gives a joyful wing-to-paw high-five with a happy golden dog. Centered composition on a warm cream and light yellow gradient background. Subtle soft glowing spark particles float lightly in the background. Bright, happy, high contrast, crisp line art with warm soft shading, modern editorial style, 16:9 ratio, no text, no logo.",
+      "alt_ja": "アヒルのマスコットと犬が楽しそうに羽と肉球でハイタッチを交わす、あたたかく明るいイラスト。",
+      "alt_en": "The Daily Duck mascot giving a high-five with its wing to a friendly dog's paw on a warm studio background."
+    },
+    {
+      "number": 5,
+      "title_ja": "絆をたどる光の散歩道",
+      "title_en": "The Pathway of Partnership",
+      "concept_ja": "1万5千年という長い歳月を、美しく伸びる一本の緑豊かな散歩道に見立て、人と犬が歩んできた旅路を爽やかに表現したコンセプト。",
+      "concept_en": "A refreshing outdoor adventure concept featuring a sunlit path through a lush meadow, symbolizing the long journey walked together over 15,000 years.",
+      "composition_ja": "朝日の差し込む美しい草原の道。小さなリュックを背負ったイエローダックと元気な犬が並んで歩いている。道端には肉球マークが刻まれた可愛い石の道標が置かれている。",
+      "composition_en": "Wide angle outdoor scene. A gentle winding dirt pathway cuts through a lush green sunlit meadow. The yellow duck wearing a tiny adventurer's backpack walks happily alongside a cheerful dog, passing by a small charming stone mile marker etched with a stylized paw symbol.",
+      "generation_prompt_en": "Crisp and refreshing visual editorial digital artwork for The Daily Duck. The cute mascot, a bright yellow duck with an orange beak, glossy dark eyes, and a small feather tuft on top, wearing a tiny dark-green backpack, walks enthusiastically on a sunlit dirt path through a flower-filled meadow next to an energetic happy dog. Sunlight filters through soft trees, creating radiant morning light rays. On the roadside sits a small carved stone marker with a smooth dog paw engraving. Clean aesthetic, vibrant natural colors, inspiring atmosphere, 16:9 editorial hero composition, no text, no logo.",
+      "alt_ja": "朝日のあたる草原の道をバックパックを背負って犬と元気に歩くアヒルのマスコット。",
+      "alt_en": "The Daily Duck mascot wearing a small backpack walking along a sunlit meadow path next to a happy dog."
+    }
+  ],
+  "selection_rule": "Reply with exactly one digit: 1, 2, 3, 4, or 5.",
+  "next_state_after_valid_selection": "APPROVED_IMAGE_CONCEPT"
+}
