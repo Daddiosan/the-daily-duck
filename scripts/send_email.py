@@ -91,18 +91,6 @@ def generate_editorial_package(recommended: dict[str, Any], top_five: list[dict[
             {"id": "same story id", "title_ja": "natural Japanese title", "reason_ja": "natural Japanese summary/reason"}
             for _ in range(5)
         ],
-        "image_concepts": [
-            {
-                "number": n,
-                "title": "short English title",
-                "title_ja": "natural Japanese title",
-                "concept": "2-4 sentence English scene description",
-                "concept_ja": "natural Japanese translation of the scene description",
-                "visual_direction": "short English composition/style direction",
-                "visual_direction_ja": "natural Japanese translation of the visual direction",
-            }
-            for n in range(1, 6)
-        ],
     }
 
     prompt = """
@@ -130,18 +118,6 @@ TOP FIVE JAPANESE RULES:
 - Preserve each story id exactly.
 - title_ja must naturally translate the English headline.
 - reason_ja must naturally translate/summarize that story's supplied reason.
-
-IMAGE CONCEPT RULES:
-- Create EXACTLY five meaningfully different concepts for the RECOMMENDED story.
-- Every concept must clearly relate to that story.
-- Permanent mascot: recognizable yellow duck, orange beak, large dark glossy
-  eyes, small feather tuft, friendly expression.
-- Story-specific clothing/props are allowed.
-- Simple, clean, modern editorial feeling; warm and charming; not overly vintage.
-- Suitable for both website hero and X.
-- No long article text embedded in the image.
-- No unsupported factual details.
-- Provide complete English and Japanese fields for every concept.
 
 Return ONLY one valid JSON object matching this structure exactly:
 """ + json.dumps(output_example, ensure_ascii=False, indent=2) + """
@@ -191,27 +167,6 @@ TOP FIVE STORIES TO TRANSLATE:
         story["title_ja"] = translation["title_ja"]
         story["reason_ja"] = translation["reason_ja"]
 
-    concepts = generated.get("image_concepts")
-    if not isinstance(concepts, list) or len(concepts) != 5:
-        raise ValueError("Gemini must return exactly five image_concepts.")
-
-    normalized_concepts = []
-    for number, item in enumerate(concepts, start=1):
-        if not isinstance(item, dict):
-            raise ValueError(f"Image concept {number} must be an object.")
-        fields = {
-            "title": str(item.get("title", "")).strip(),
-            "title_ja": str(item.get("title_ja", "")).strip(),
-            "concept": str(item.get("concept", "")).strip(),
-            "concept_ja": str(item.get("concept_ja", "")).strip(),
-            "visual_direction": str(item.get("visual_direction", "")).strip(),
-            "visual_direction_ja": str(item.get("visual_direction_ja", "")).strip(),
-        }
-        if not all(fields.values()):
-            raise ValueError(f"Image concept {number} must contain complete English/Japanese fields.")
-        normalized_concepts.append({"number": number, **fields})
-
-    generated["image_concepts"] = normalized_concepts
     return generated
 
 
@@ -236,8 +191,7 @@ def build_package(ranked, recommended, top_five, editorial):
         "x_en": editorial["x_en"].strip(),
         "source": str(recommended.get("source", "")).strip(),
         "source_url": str(recommended.get("url", "")).strip(),
-        "image_concepts": editorial["image_concepts"],
-        "gate_a_approval_format": "<1-5> OK",
+        "gate_a_approval_format": "OK",
         "gate_a_package_created_at": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -263,25 +217,13 @@ def format_top_five(top_five):
     return "\n".join(lines).rstrip()
 
 
-def format_image_concepts(concepts):
-    lines = []
-    for item in concepts:
-        lines += [
-            f"[{item['number']}] {item['title_ja']} / {item['title']}", "",
-            "日本語:", item["concept_ja"],
-            f"構図・スタイル: {item['visual_direction_ja']}", "",
-            "English:", item["concept"],
-            f"Visual: {item['visual_direction']}", "",
-        ]
-    return "\n".join(lines).rstrip()
-
 
 def build_email(package):
     story = package["recommended_story"]
     subject = f"The Daily Duck — Story Approval — {package['issue_date']}"
     body = f"""The Daily Duck — Gate A
 
-今日の記事・コピーと、使用する画像コンセプトを同時に承認してください。
+今日の記事・コピーを確認し、この記事を採用する場合は承認してください。
 
 ==================================================
 RECOMMENDED STORY / 本日のおすすめ
@@ -332,31 +274,18 @@ X EN:
 {package['x_en']}
 
 ==================================================
-IMAGE CONCEPTS — CHOOSE ONE / 画像コンセプト — 1案選択
-==================================================
-
-{format_image_concepts(package['image_concepts'])}
-
-==================================================
 GATE A APPROVAL / 承認
 ==================================================
 
-使用したい画像コンセプト番号 + OK だけを返信してください。
+この記事を採用する場合は、次の文字だけを返信してください。
 
-1 OK
-2 OK
-3 OK
-4 OK
-5 OK
-
-例:
-3 OK
+OK
 
 IMPORTANT:
-- 「OK」だけでは承認されません。
-- 1〜5のコンセプト番号が必要です。
-- この段階では実画像はまだ生成しません。
-- Gate B完了前にWebサイト/Xへ公開しません。
+- 正確に「OK」だけを返信してください。
+- このGate Aでは記事だけを承認します。
+- 画像コンセプトは記事承認後に5案作成し、別メールで送信します。
+- 画像コンセプト選択前にWebサイト/Xへ公開しません。
 """
     return subject, body
 
@@ -394,10 +323,9 @@ def main():
     print(f"Gate A package created: {PACKAGE_PATH}")
     print(f"Recommended story ID: {package['recommended_id']}")
     print(f"TOP 5 count: {len(package['top_five'])}")
-    print(f"Image concept count: {len(package['image_concepts'])}")
     print(f"Gate A email sent to {recipient_count} recipient(s).")
     print(f"Subject: {subject}")
-    print("Valid replies: 1 OK / 2 OK / 3 OK / 4 OK / 5 OK")
+    print("Valid reply: OK")
     print("STATE: WAITING_STORY_APPROVAL")
     return 0
 
