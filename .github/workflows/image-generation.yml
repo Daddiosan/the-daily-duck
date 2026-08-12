@@ -1,56 +1,113 @@
-name: The Daily Duck - Phase 2 Image Generation
+name: Daily Duck Real Images
 
 on:
   workflow_dispatch:
 
+  push:
+    branches:
+      - main
+    paths:
+      - "automation_state/image_concepts.json"
+
 permissions:
   contents: write
 
+concurrency:
+  group: daily-duck-real-images
+  cancel-in-progress: false
+
 jobs:
-  generate-and-email:
+  generate-and-email-images:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install -r requirements-phase2.txt
+      - name: Install OpenAI SDK
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade openai
 
-      - name: Generate exactly five image candidates
+      - name: Verify image concepts exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f automation_state/image_concepts.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(
+              Path("automation_state/image_concepts.json").read_text(encoding="utf-8")
+          )
+          state = str(data.get("state", "")).strip().upper()
+          concepts = data.get("concepts")
+
+          print(f"Detected state: {state}")
+
+          if state != "IMAGE_CONCEPT_REVIEW":
+              raise SystemExit(
+                  f"ERROR: Expected IMAGE_CONCEPT_REVIEW, got {state!r}."
+              )
+
+          if not isinstance(concepts, list) or len(concepts) != 5:
+              raise SystemExit("ERROR: Exactly five concepts are required.")
+
+          print("Five image concepts confirmed.")
+          PY
+
+      - name: Generate five real images with OpenAI
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ENABLE_PAID_IMAGE_GENERATION: ${{ secrets.ENABLE_PAID_IMAGE_GENERATION }}
-          GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
-          GEMINI_TEXT_MODEL: gemini-2.5-flash
-        run: python scripts/generate_image_candidates.py
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: gpt-image-2
+          OPENAI_IMAGE_SIZE: 1536x1024
+          OPENAI_IMAGE_QUALITY: medium
+        run: |
+          python scripts/generate_image_candidates_openai.py
 
-      - name: Send image selection email
+      - name: Send five real images by email
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python scripts/send_image_selection_email.py
-
-      - name: Commit Phase 2 candidate state and images
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add automation_state/image_candidates.json automation_images/
-          git diff --cached --quiet && exit 0
-          git commit -m "Phase 2: generate image candidates"
-          git push
+          python scripts/send_image_selection_email.py
 
-      - name: Upload candidate artifact
+      - name: Upload image artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: daily-duck-image-candidates
+          name: daily-duck-real-images
           path: |
             automation_state/image_candidates.json
-            automation_images/
+            automation_state/image_candidates/*.png
+            image_selection_email.txt
           retention-days: 7
+
+      - name: Commit image candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add automation_state/image_candidates.json
+          git add automation_state/image_candidates/*.png
+
+          if git diff --cached --quiet; then
+            echo "No image candidate changes to commit."
+            exit 0
+          fi
+
+          git commit -m "automation: generate five real image candidates"
+          git pull --rebase origin main
+          git push origin HEAD:main
