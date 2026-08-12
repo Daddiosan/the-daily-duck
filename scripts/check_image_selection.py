@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-The Daily Duck - Gate B reply checker
+The Daily Duck - final image reply checker
 
-Accepts ONLY:
-- exact "1" through "5" => lock canonical image; READY_TO_PUBLISH
-- exact "NEXT 5"        => request five new images; does NOT approve
+Current Phase 2 flow:
+- Five real OpenAI images already exist in automation_state/image_candidates/
+- User replies with exact "1" through "5"
+- That exact existing PNG becomes the canonical image
+- State becomes READY_TO_PUBLISH
 
-Only the latest/current batch subject is inspected.
+No NEXT 5 path is used in this version.
 """
 
 from __future__ import annotations
@@ -28,12 +30,11 @@ STATE_DIR = Path("automation_state")
 CANDIDATES_PATH = STATE_DIR / "image_candidates.json"
 APPROVED_PATH = STATE_DIR / "approved_story.json"
 READY_PATH = STATE_DIR / "ready_to_publish.json"
-REGEN_PATH = STATE_DIR / "image_regeneration_request.json"
 RESULT_PATH = STATE_DIR / "gate_b_result.json"
 CANONICAL_DIR = Path("automation_images") / "canonical"
 
 CHOICE_RE = re.compile(r"^[1-5]$")
-NEXT_RE = re.compile(r"^NEXT\s+5$", re.IGNORECASE)
+SUBJECT_PREFIX = "The Daily Duck — Final Image Selection"
 
 
 def required_env(name: str) -> str:
@@ -53,7 +54,7 @@ def decode_mime(value: str | None) -> str:
 
 
 def plain_text(msg: email.message.Message) -> str:
-    chunks = []
+    chunks: list[str] = []
     if msg.is_multipart():
         for part in msg.walk():
             if part.get_content_type() != "text/plain":
@@ -62,16 +63,26 @@ def plain_text(msg: email.message.Message) -> str:
                 continue
             payload = part.get_payload(decode=True)
             if payload is not None:
-                chunks.append(payload.decode(part.get_content_charset() or "utf-8", errors="replace"))
+                chunks.append(
+                    payload.decode(
+                        part.get_content_charset() or "utf-8",
+                        errors="replace",
+                    )
+                )
     else:
         payload = msg.get_payload(decode=True)
         if payload is not None:
-            chunks.append(payload.decode(msg.get_content_charset() or "utf-8", errors="replace"))
+            chunks.append(
+                payload.decode(
+                    msg.get_content_charset() or "utf-8",
+                    errors="replace",
+                )
+            )
     return "\n".join(chunks)
 
 
 def strip_quoted(text: str) -> str:
-    out = []
+    out: list[str] = []
     for line in text.replace("\r\n", "\n").replace("\r", "\n").splitlines():
         s = line.strip()
         if s.startswith(">"):
@@ -95,43 +106,66 @@ def normalize(text: str) -> str:
 def load_candidates() -> dict[str, Any]:
     if not CANDIDATES_PATH.exists():
         raise FileNotFoundError(f"Missing {CANDIDATES_PATH}")
+
     data = json.loads(CANDIDATES_PATH.read_text(encoding="utf-8"))
-    if data.get("state") != "WAITING_IMAGE_SELECTION":
-        raise RuntimeError("Not currently waiting for image selection.")
-    if len(data.get("candidates", [])) != 5:
+
+    if data.get("state") != "IMAGE_CANDIDATES_READY":
+        raise RuntimeError(
+            "image_candidates.json is not IMAGE_CANDIDATES_READY."
+        )
+
+    candidates = data.get("candidates")
+    if not isinstance(candidates, list) or len(candidates) != 5:
         raise ValueError("Exactly five candidates are required.")
-    if not data.get("email_subject"):
-        raise ValueError("Gate B email has not been sent yet (email_subject missing).")
+
+    for i, candidate in enumerate(candidates, start=1):
+        if not isinstance(candidate, dict):
+            raise ValueError(f"Candidate {i} must be an object.")
+        if int(candidate.get("number", 0)) != i:
+            raise ValueError("Candidates must be numbered exactly 1-5.")
+        path = Path(str(candidate.get("image_path", "")))
+        if not path.exists():
+            raise FileNotFoundError(f"Candidate image missing: {path}")
+
     return data
 
 
 def allowed_senders() -> set[str]:
-    return {x.strip().lower() for x in required_env("EMAIL_TO").split(",") if x.strip()}
+    return {
+        x.strip().lower()
+        for x in required_env("EMAIL_TO").split(",")
+        if x.strip()
+    }
 
 
-def newest_command(imap: imaplib.IMAP4_SSL, subject: str) -> tuple[str, str] | None:
+def newest_choice(imap: imaplib.IMAP4_SSL) -> tuple[str, str] | None:
     allowed = allowed_senders()
+
     status, data = imap.search(None, "ALL")
     if status != "OK":
         raise RuntimeError("IMAP search failed.")
+
     ids = data[0].split()
 
     for msg_id in reversed(ids[-250:]):
         status, payload = imap.fetch(msg_id, "(RFC822)")
         if status != "OK" or not payload or not isinstance(payload[0], tuple):
             continue
+
         msg = email.message_from_bytes(payload[0][1])
-        msg_subject = decode_mime(msg.get("Subject"))
+        subject = decode_mime(msg.get("Subject"))
         sender = parseaddr(decode_mime(msg.get("From")))[1].lower()
 
-        if subject not in msg_subject:
+        # Replies normally become "Re: The Daily Duck — Final Image Selection — ..."
+        if SUBJECT_PREFIX not in subject:
             continue
+
         if allowed and sender not in allowed:
             continue
 
-        cmd = normalize(plain_text(msg))
-        if CHOICE_RE.fullmatch(cmd) or NEXT_RE.fullmatch(cmd):
-            return cmd.upper(), sender
+        command = normalize(plain_text(msg))
+        if CHOICE_RE.fullmatch(command):
+            return command, sender
 
     return None
 
@@ -143,79 +177,84 @@ def write_result(action: str, **extra: Any) -> None:
         "checked_at": datetime.now(timezone.utc).isoformat(),
         **extra,
     }
-    RESULT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    RESULT_PATH.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def issue_date_from(data: dict[str, Any], approved: dict[str, Any]) -> str:
+    for source in (data, approved):
+        for key in ("issue_date", "date"):
+            value = source.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+
+    story = data.get("story")
+    if isinstance(story, dict):
+        for key in ("issue_date", "date"):
+            value = story.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+
+    return datetime.now(timezone.utc).date().isoformat()
 
 
 def main() -> int:
     data = load_candidates()
-    subject = str(data["email_subject"])
     gmail = required_env("GMAIL_ADDRESS")
     password = required_env("GMAIL_APP_PASSWORD")
 
     with imaplib.IMAP4_SSL("imap.gmail.com", 993) as imap:
         imap.login(gmail, password)
         imap.select("INBOX")
-        found = newest_command(imap, subject)
+        found = newest_choice(imap)
 
     if not found:
         write_result("WAIT")
-        print("No exact Gate B command found for the current batch.")
-        print("STATE: WAITING_IMAGE_SELECTION")
+        print("No exact image selection reply found.")
+        print("STATE: IMAGE_CANDIDATES_READY")
         return 0
 
     command, sender = found
-    batch = int(data.get("batch", 1))
-    issue_date = str(data.get("issue_date", ""))
-
-    if command == "NEXT 5":
-        request = {
-            "action": "NEXT_5",
-            "issue_date": issue_date,
-            "rejected_batch": batch,
-            "requested_at": datetime.now(timezone.utc).isoformat(),
-            "requested_by": sender,
-        }
-        REGEN_PATH.write_text(
-            json.dumps(request, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
-        write_result("REGENERATE_IMAGES", batch=batch, command=command)
-        print(f"NEXT 5 accepted for batch {batch}.")
-        print("No image was approved.")
-        print("STATE: REGENERATE_IMAGES")
-        return 0
-
     choice = int(command)
+
     selected = next(
-        (x for x in data["candidates"] if int(x.get("number", 0)) == choice),
+        (
+            x
+            for x in data["candidates"]
+            if int(x.get("number", 0)) == choice
+        ),
         None,
     )
     if selected is None:
         raise RuntimeError(f"Candidate {choice} not found.")
 
-    src = Path(selected["image_path"])
+    src = Path(str(selected["image_path"]))
     if not src.exists():
         raise FileNotFoundError(f"Selected image missing: {src}")
+
+    if not APPROVED_PATH.exists():
+        raise FileNotFoundError(f"Missing {APPROVED_PATH}")
+    approved = json.loads(APPROVED_PATH.read_text(encoding="utf-8"))
+
+    issue_date = issue_date_from(data, approved)
 
     CANONICAL_DIR.mkdir(parents=True, exist_ok=True)
     ext = src.suffix.lower() or ".png"
     canonical_path = CANONICAL_DIR / f"{issue_date}{ext}"
     shutil.copy2(src, canonical_path)
 
-    approved = json.loads(APPROVED_PATH.read_text(encoding="utf-8"))
     ready = {
         "state": "READY_TO_PUBLISH",
         "issue_date": issue_date,
         "ready_at": datetime.now(timezone.utc).isoformat(),
         "gate_a_approved_story": approved,
-        "selected_image_concept_number": data.get("selected_image_concept_number"),
-        "selected_image_concept": data.get("selected_image_concept"),
         "selected_image_number": choice,
-        "selected_image_batch": batch,
         "selected_candidate": selected,
         "canonical_image_path": canonical_path.as_posix(),
-        "gate_b_reply": command,
-        "gate_b_sender": sender,
+        "final_image_reply": command,
+        "final_image_sender": sender,
         "publish_started": False,
     }
 
@@ -226,17 +265,22 @@ def main() -> int:
 
     data["state"] = "IMAGE_SELECTED"
     data["selected_image_number"] = choice
+    data["selected_candidate"] = selected
     data["selected_at"] = datetime.now(timezone.utc).isoformat()
+    data["canonical_image_path"] = canonical_path.as_posix()
+
     CANDIDATES_PATH.write_text(
         json.dumps(data, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
 
-    if REGEN_PATH.exists():
-        REGEN_PATH.unlink()
+    write_result(
+        "READY_TO_PUBLISH",
+        selected=choice,
+        canonical_image_path=canonical_path.as_posix(),
+    )
 
-    write_result("READY_TO_PUBLISH", batch=batch, selected=choice)
-    print(f"EXACT GATE B SELECTION FOUND: {choice}")
+    print(f"EXACT IMAGE SELECTION FOUND: {choice}")
     print(f"Canonical image: {canonical_path}")
     print("STATE: READY_TO_PUBLISH")
     print("Publishing is NOT started in Phase 2.")
