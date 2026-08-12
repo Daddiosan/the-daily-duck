@@ -67,7 +67,6 @@ jobs:
       - name: Generate five image concepts
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
         run: |
           python scripts/generate_image_concepts.py
 
