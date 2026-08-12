@@ -1,5 +1,5 @@
 {
-  "state": "IMAGE_CANDIDATES_READY",
+  "state": "IMAGE_SELECTED",
   "generated_at": "2026-08-12T13:33:18.343104+00:00",
   "source_state": "IMAGE_CONCEPT_REVIEW",
   "source_path": "automation_state/image_concepts.json",
@@ -87,5 +87,21 @@
     }
   ],
   "selection_rule": "Reply with exactly one digit: 1, 2, 3, 4, or 5.",
-  "next_state_after_valid_selection": "READY_TO_PUBLISH"
+  "next_state_after_valid_selection": "READY_TO_PUBLISH",
+  "selected_image_number": 4,
+  "selected_candidate": {
+    "number": 4,
+    "concept_title_ja": "一本の道を歩むパートナー",
+    "concept_title_en": "Walking the Path Together",
+    "concept_ja": "歴史の流れを象徴する一本の小道を、ダックと犬が仲良く歩んでいくパノラマ感あふれる構図。",
+    "concept_en": "A panoramic side-view illustration showing the duck mascot and dog walking side-by-side along a winding path through a scenic natural landscape.",
+    "image_path": "automation_state/image_candidates/candidate_4.png",
+    "generation_prompt": "Create one polished editorial hero image for The Daily Duck.\n\nAPPROVED STORY\nTitle: For 15,000 years, humans and dogs have been changing each other\nSource: ScienceDaily Environment\nStory meaning: A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.\n\nSELECTED VISUAL CONCEPT #4: Walking the Path Together\nConcept: A panoramic side-view illustration showing the duck mascot and dog walking side-by-side along a winding path through a scenic natural landscape.\nComposition: Wide side-profile shot showing a gentle winding path from left to right. The yellow duck mascot and a tail-wagging dog walk side-by-side along the path through a lush landscape blending natural stone and vibrant greenery.\nProduction direction: Simple modern editorial horizontal illustration. A cute recognizable yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a happy expression, walking side-by-side with a friendly dog along a winding dirt path through a bright scenic countryside landscape. Soft daylight, clear blue sky with fluffy clouds, fresh green grass, gentle hills. Panoramic 16:9 view, smooth shapes, vector style, clean aesthetic, no embedded text, no logos, no watermarks.\n\nPERMANENT THE DAILY DUCK MASCOT\n- a recognizable cheerful yellow duck\n- orange beak\n- large dark glossy eyes\n- a small feather tuft\n- friendly, warm expression\n- consistent proportions and identity across Daily Duck images\n\nVISUAL STYLE\n- premium, charming, modern editorial illustration / soft 3D illustration\n- simple rather than overly vintage\n- warm, emotionally uplifting\n- clean composition with strong single focal point\n- suitable as both a website hero image and an X post image\n- landscape composition\n- rich but natural lighting\n- polished enough for publication\n\nIMPORTANT\n- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.\n- Do not invent unsupported factual claims.\n- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.\n- Keep the duck clearly recognizable as The Daily Duck mascot.",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "5d69001d64d44c13a6e9af3998e27298b3a228dc09d313d9b85308e123e49bfc"
+  },
+  "selected_at": "2026-08-12T13:52:31.904152+00:00",
+  "canonical_image_path": "automation_images/canonical/2026-08-11.png"
 }
