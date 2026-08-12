@@ -1,0 +1,111 @@
+name: Daily Duck Image Concepts
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    paths:
+      - "automation_state/approved_story.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-duck-image-concepts
+  cancel-in-progress: false
+
+jobs:
+  generate-and-email-concepts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-genai
+
+      - name: Verify approved story exists
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f automation_state/approved_story.json ]; then
+            echo "ERROR: automation_state/approved_story.json not found."
+            exit 1
+          fi
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("automation_state/approved_story.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          state = str(data.get("state", "")).strip().upper()
+
+          print(f"Detected state: {state}")
+
+          if state != "APPROVED_STORY":
+              raise SystemExit(
+                  f"ERROR: Image concepts require APPROVED_STORY, got {state!r}."
+              )
+
+          print("APPROVED_STORY confirmed.")
+          PY
+
+      - name: Generate five image concepts
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
+        run: |
+          python scripts/generate_image_concepts.py
+
+      - name: Send image concept selection email
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: |
+          python scripts/send_image_concept_email.py
+
+      - name: Upload image concept artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-image-concepts
+          path: |
+            automation_state/image_concepts.json
+            image_concept_email.txt
+          retention-days: 7
+
+      - name: Commit image concept review state
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add automation_state/image_concepts.json
+
+          if git diff --cached --quiet; then
+            echo "No image concept state changes to commit."
+            exit 0
+          fi
+
+          git commit -m "automation: generate image concepts"
+
+          # approval-check.yml may have committed around the same time.
+          # Rebase once before pushing so the automation does not overwrite it.
+          git pull --rebase origin main
+          git push origin HEAD:main
