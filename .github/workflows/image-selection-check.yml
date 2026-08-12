@@ -1,4 +1,4 @@
-name: The Daily Duck - Gate B Image Selection Check
+name: The Daily Duck - Final Image Selection Check
 
 on:
   workflow_dispatch:
@@ -7,6 +7,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: daily-duck-final-image-selection
+  cancel-in-progress: false
 
 jobs:
   check-selection:
@@ -23,53 +27,48 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
-        run: pip install -r requirements-phase2.txt
-
-      - name: Check Gate B reply
+      - name: Check final image reply
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python scripts/check_image_selection.py
+        run: |
+          python scripts/check_image_selection.py
 
-      - name: Read Gate B action
-        id: gateb
+      - name: Read final image action
+        id: finalimage
         shell: bash
         run: |
           ACTION=$(python -c "import json; print(json.load(open('automation_state/gate_b_result.json', encoding='utf-8'))['action'])")
           echo "action=$ACTION" >> "$GITHUB_OUTPUT"
-          echo "Gate B action: $ACTION"
+          echo "Final image action: $ACTION"
 
-      - name: Generate NEXT 5
-        if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ENABLE_PAID_IMAGE_GENERATION: ${{ secrets.ENABLE_PAID_IMAGE_GENERATION }}
-          GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
-          GEMINI_TEXT_MODEL: gemini-2.5-flash
-        run: python scripts/generate_image_candidates.py
-
-      - name: Email NEXT 5
-        if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
-        env:
-          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python scripts/send_image_selection_email.py
-
-      - name: Commit Gate B state
-        if: steps.gateb.outputs.action != 'WAIT'
+      - name: Commit final image state
+        if: steps.finalimage.outputs.action == 'READY_TO_PUBLISH'
+        shell: bash
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add automation_state/ automation_images/
-          git diff --cached --quiet && exit 0
-          git commit -m "Phase 2: Gate B ${{ steps.gateb.outputs.action }}"
-          git push
 
-      - name: Guard Phase 3 boundary
-        if: steps.gateb.outputs.action == 'READY_TO_PUBLISH'
+          git add automation_state/image_candidates.json
+          git add automation_state/ready_to_publish.json
+          git add automation_state/gate_b_result.json
+          git add automation_images/canonical/
+
+          if git diff --cached --quiet; then
+            echo "No final image state changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Phase 2: lock canonical image and mark READY_TO_PUBLISH"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Phase 2 boundary
+        if: steps.finalimage.outputs.action == 'READY_TO_PUBLISH'
         run: |
           echo "READY_TO_PUBLISH created."
-          echo "Phase 2 stops here. Website and X publishing are intentionally NOT started."
+          echo "The selected existing PNG is now the canonical image."
+          echo "Website/X publishing is intentionally NOT started here."
