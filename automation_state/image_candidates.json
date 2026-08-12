@@ -1,0 +1,91 @@
+{
+  "state": "IMAGE_CANDIDATES_READY",
+  "generated_at": "2026-08-12T13:33:18.343104+00:00",
+  "source_state": "IMAGE_CONCEPT_REVIEW",
+  "source_path": "automation_state/image_concepts.json",
+  "story": {
+    "id": 28,
+    "title": "For 15,000 years, humans and dogs have been changing each other",
+    "source": "ScienceDaily Environment",
+    "url": "https://www.sciencedaily.com/releases/2026/08/260810015700.htm",
+    "happiness": 9,
+    "hope": 9,
+    "general_interest": 9,
+    "surprise": 8,
+    "duck_visual": 8,
+    "source_quality": 9,
+    "freshness": 10,
+    "total_score": 93,
+    "reason": "A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.",
+    "recommended_reason": "A deeply heartwarming and uplifting look at the 15,000-year bond between humans and dogs, showcasing how companionship and mutual adaptation shaped both species across history."
+  },
+  "candidates": [
+    {
+      "number": 1,
+      "concept_title_ja": "星空の下での遥かな旅路",
+      "concept_title_en": "Journey Under the Starry Sky",
+      "concept_ja": "1万5千年の絆をテーマに、黄色のダックとやさしい犬が夜空を見上げる静かで温かいイラスト。",
+      "concept_en": "A peaceful and heartwarming illustration depicting the yellow duck mascot and a gentle dog gazing up at a starry night sky, symbolizing a 15,000-year journey.",
+      "image_path": "automation_state/image_candidates/candidate_1.png",
+      "generation_prompt": "Create one polished editorial hero image for The Daily Duck.\n\nAPPROVED STORY\nTitle: For 15,000 years, humans and dogs have been changing each other\nSource: ScienceDaily Environment\nStory meaning: A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.\n\nSELECTED VISUAL CONCEPT #1: Journey Under the Starry Sky\nConcept: A peaceful and heartwarming illustration depicting the yellow duck mascot and a gentle dog gazing up at a starry night sky, symbolizing a 15,000-year journey.\nComposition: Low-angle wide shot featuring the yellow duck mascot and a friendly dog sitting side-by-side slightly left of center, looking up at a vast starry night sky over gentle rolling hills.\nProduction direction: Clean modern editorial vector-style illustration for a news feature. A recognizable cute yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft on its head, and a warm friendly expression, sitting comfortably next to a happy, loyal golden dog on a grassy hill. They are both looking up at a beautiful night sky filled with soft glowing stars and a gentle crescent moon. Warm twilight color palette with navy blue, soft gold, and deep turquoise. Wide horizontal 16:9 aspect ratio suitable for web hero image. No text, no logos, no watermarks, simple and charming design.\n\nPERMANENT THE DAILY DUCK MASCOT\n- a recognizable cheerful yellow duck\n- orange beak\n- large dark glossy eyes\n- a small feather tuft\n- friendly, warm expression\n- consistent proportions and identity across Daily Duck images\n\nVISUAL STYLE\n- premium, charming, modern editorial illustration / soft 3D illustration\n- simple rather than overly vintage\n- warm, emotionally uplifting\n- clean composition with strong single focal point\n- suitable as both a website hero image and an X post image\n- landscape composition\n- rich but natural lighting\n- polished enough for publication\n\nIMPORTANT\n- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.\n- Do not invent unsupported factual claims.\n- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.\n- Keep the duck clearly recognizable as The Daily Duck mascot.",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "a154effc6ca0fbd729c1c0e663c069400354cb2635b932fe9a6740f5081ab8f9"
+    },
+    {
+      "number": 2,
+      "concept_title_ja": "足跡の歴史展示",
+      "concept_title_en": "The Exhibit of Shared Footprints",
+      "concept_ja": "明るくモダンな展示スペースで、人間と犬の長い歴史を示す足跡のレリーフを好奇心旺盛に眺めるダックと犬。",
+      "concept_en": "In a bright modern editorial gallery space, the duck mascot and a friendly dog curiously examine a stone relief showing side-by-side human and canine footprints.",
+      "image_path": "automation_state/image_candidates/candidate_2.png",
+      "generation_prompt": "Create one polished editorial hero image for The Daily Duck.\n\nAPPROVED STORY\nTitle: For 15,000 years, humans and dogs have been changing each other\nSource: ScienceDaily Environment\nStory meaning: A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.\n\nSELECTED VISUAL CONCEPT #2: The Exhibit of Shared Footprints\nConcept: In a bright modern editorial gallery space, the duck mascot and a friendly dog curiously examine a stone relief showing side-by-side human and canine footprints.\nComposition: Eye-level medium shot centered on a stylish museum display stone plaque with embossed footprints. On the left stands the yellow duck wearing a tiny stylized explorer cap, and on the right stands a cheerful dog looking on happily.\nProduction direction: Clean modern editorial illustration. A cute recognizable yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm smiling expression, wearing a tiny stylish explorer cap. The duck stands next to a joyful brown and white dog inside a warm, softly lit modern gallery room. Between them is a stylized minimalist stone display showing carved human and dog footprints side by side. Bright, warm lighting, pastel earth tones, warm cream background. Minimalist studio layout, no text, no logos, no watermarks, clear visual hierarchy.\n\nPERMANENT THE DAILY DUCK MASCOT\n- a recognizable cheerful yellow duck\n- orange beak\n- large dark glossy eyes\n- a small feather tuft\n- friendly, warm expression\n- consistent proportions and identity across Daily Duck images\n\nVISUAL STYLE\n- premium, charming, modern editorial illustration / soft 3D illustration\n- simple rather than overly vintage\n- warm, emotionally uplifting\n- clean composition with strong single focal point\n- suitable as both a website hero image and an X post image\n- landscape composition\n- rich but natural lighting\n- polished enough for publication\n\nIMPORTANT\n- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.\n- Do not invent unsupported factual claims.\n- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.\n- Keep the duck clearly recognizable as The Daily Duck mascot.",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "9bedc3c83f7e7a71ecb3db267792e4166940c48caa8c5fd65153ce0b74633920"
+    },
+    {
+      "number": 3,
+      "concept_title_ja": "夕暮れ公園の絆ハイタッチ",
+      "concept_title_en": "High-Five at Golden Hour",
+      "concept_ja": "夕陽の光に包まれた公園の芝生で、ダックと犬が楽しそうにハイタッチ（前脚タッチ）を交わす心温まる瞬間。",
+      "concept_en": "A heartwarming close-up moment in a sunlit park during golden hour, where the duck mascot and a dog playfully high-five.",
+      "image_path": "automation_state/image_candidates/candidate_3.png",
+      "generation_prompt": "Create one polished editorial hero image for The Daily Duck.\n\nAPPROVED STORY\nTitle: For 15,000 years, humans and dogs have been changing each other\nSource: ScienceDaily Environment\nStory meaning: A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.\n\nSELECTED VISUAL CONCEPT #3: High-Five at Golden Hour\nConcept: A heartwarming close-up moment in a sunlit park during golden hour, where the duck mascot and a dog playfully high-five.\nComposition: Close-up horizontal framing on a picnic blanket over green park grass. In the center, the yellow duck mascot warmly reaches out its wing to touch the friendly dog's front paw in a high-five gesture.\nProduction direction: Charming and heartwarming modern vector editorial illustration. A recognizable cute yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft on top, and a joyful smile, sharing a gentle high-five gesture with the paw of a happy fluffy dog on a red-and-white checkered picnic blanket. Warm sunset golden hour lighting, soft background bokeh of park trees, vibrant orange, yellow, and warm green colors. 16:9 aspect ratio, clean minimalist style, no text, no watermarks, no logos.\n\nPERMANENT THE DAILY DUCK MASCOT\n- a recognizable cheerful yellow duck\n- orange beak\n- large dark glossy eyes\n- a small feather tuft\n- friendly, warm expression\n- consistent proportions and identity across Daily Duck images\n\nVISUAL STYLE\n- premium, charming, modern editorial illustration / soft 3D illustration\n- simple rather than overly vintage\n- warm, emotionally uplifting\n- clean composition with strong single focal point\n- suitable as both a website hero image and an X post image\n- landscape composition\n- rich but natural lighting\n- polished enough for publication\n\nIMPORTANT\n- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.\n- Do not invent unsupported factual claims.\n- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.\n- Keep the duck clearly recognizable as The Daily Duck mascot.",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "2c0d556dab98cba4bbfa01fb28b5e3d9334abeba235898b2c8b5bcd384bfd1d4"
+    },
+    {
+      "number": 4,
+      "concept_title_ja": "一本の道を歩むパートナー",
+      "concept_title_en": "Walking the Path Together",
+      "concept_ja": "歴史の流れを象徴する一本の小道を、ダックと犬が仲良く歩んでいくパノラマ感あふれる構図。",
+      "concept_en": "A panoramic side-view illustration showing the duck mascot and dog walking side-by-side along a winding path through a scenic natural landscape.",
+      "image_path": "automation_state/image_candidates/candidate_4.png",
+      "generation_prompt": "Create one polished editorial hero image for The Daily Duck.\n\nAPPROVED STORY\nTitle: For 15,000 years, humans and dogs have been changing each other\nSource: ScienceDaily Environment\nStory meaning: A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.\n\nSELECTED VISUAL CONCEPT #4: Walking the Path Together\nConcept: A panoramic side-view illustration showing the duck mascot and dog walking side-by-side along a winding path through a scenic natural landscape.\nComposition: Wide side-profile shot showing a gentle winding path from left to right. The yellow duck mascot and a tail-wagging dog walk side-by-side along the path through a lush landscape blending natural stone and vibrant greenery.\nProduction direction: Simple modern editorial horizontal illustration. A cute recognizable yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a happy expression, walking side-by-side with a friendly dog along a winding dirt path through a bright scenic countryside landscape. Soft daylight, clear blue sky with fluffy clouds, fresh green grass, gentle hills. Panoramic 16:9 view, smooth shapes, vector style, clean aesthetic, no embedded text, no logos, no watermarks.\n\nPERMANENT THE DAILY DUCK MASCOT\n- a recognizable cheerful yellow duck\n- orange beak\n- large dark glossy eyes\n- a small feather tuft\n- friendly, warm expression\n- consistent proportions and identity across Daily Duck images\n\nVISUAL STYLE\n- premium, charming, modern editorial illustration / soft 3D illustration\n- simple rather than overly vintage\n- warm, emotionally uplifting\n- clean composition with strong single focal point\n- suitable as both a website hero image and an X post image\n- landscape composition\n- rich but natural lighting\n- polished enough for publication\n\nIMPORTANT\n- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.\n- Do not invent unsupported factual claims.\n- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.\n- Keep the duck clearly recognizable as The Daily Duck mascot.",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "5d69001d64d44c13a6e9af3998e27298b3a228dc09d313d9b85308e123e49bfc"
+    },
+    {
+      "number": 5,
+      "concept_title_ja": "あたたかな部屋での憩い",
+      "concept_title_en": "Cozy Living Room Togetherness",
+      "concept_ja": "温かい暖炉の光が灯る部屋で、クッションの上でリラックスして寄り添うダックと犬の日常の一コマ。",
+      "concept_en": "A cozy indoor scene in a warm living room where the duck mascot and a dog relax side-by-side on a rug, reflecting comfort and long-standing companionship.",
+      "image_path": "automation_state/image_candidates/candidate_5.png",
+      "generation_prompt": "Create one polished editorial hero image for The Daily Duck.\n\nAPPROVED STORY\nTitle: For 15,000 years, humans and dogs have been changing each other\nSource: ScienceDaily Environment\nStory meaning: A deeply heartwarming look at the 15,000-year bond between humans and dogs, highlighting mutual adaptation and companionship.\n\nSELECTED VISUAL CONCEPT #5: Cozy Living Room Togetherness\nConcept: A cozy indoor scene in a warm living room where the duck mascot and a dog relax side-by-side on a rug, reflecting comfort and long-standing companionship.\nComposition: Warm indoor medium shot. On a cozy rug, the yellow duck mascot leans happily against a small cushion next to a resting dog curled up peacefully.\nProduction direction: Heartwarming modern editorial vector illustration. A cute recognizable yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft on its head, and a relaxed friendly smile, resting cozy on a soft circular rug next to a sleeping companion dog. Warm indoor ambient glow, soft yellow and coral tones, clean Scandinavian-style living room background with minimal furniture. 16:9 horizontal format, charming atmosphere, no typography, no watermarks, no logos.\n\nPERMANENT THE DAILY DUCK MASCOT\n- a recognizable cheerful yellow duck\n- orange beak\n- large dark glossy eyes\n- a small feather tuft\n- friendly, warm expression\n- consistent proportions and identity across Daily Duck images\n\nVISUAL STYLE\n- premium, charming, modern editorial illustration / soft 3D illustration\n- simple rather than overly vintage\n- warm, emotionally uplifting\n- clean composition with strong single focal point\n- suitable as both a website hero image and an X post image\n- landscape composition\n- rich but natural lighting\n- polished enough for publication\n\nIMPORTANT\n- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.\n- Do not invent unsupported factual claims.\n- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.\n- Keep the duck clearly recognizable as The Daily Duck mascot.",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "2f64838d9486fc8ca953a9f048635119e7b289d644ad8e950c1b3851493d4cc7"
+    }
+  ],
+  "selection_rule": "Reply with exactly one digit: 1, 2, 3, 4, or 5.",
+  "next_state_after_valid_selection": "READY_TO_PUBLISH"
+}
