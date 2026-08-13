@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
 """
-The Daily Duck - Gate A approval checker
+The Daily Duck - Gate A story selection checker
 
 Gate A valid replies:
-    1 OK
-    2 OK
-    3 OK
-    4 OK
-    5 OK
+    1
+    2
+    3
+    4
+    5
 
-Plain "OK" is NOT valid.
+Only an exact single number is valid.
 
-A valid reply approves:
-1. the story/copy
-2. one of the five image concepts
+A valid reply:
+1. selects ONE of the five completed editorial story proposals
+2. saves that story as APPROVED_STORY
+3. preserves the selected story's JP/EN/Duck/X copy
+4. does NOT select an image concept
+5. does NOT publish anything
 
-Then writes:
-    automation_state/approved_story.json
-
-with:
-    state = APPROVED_STORY
+Image concepts are generated only AFTER this Gate A selection.
 """
 
 from __future__ import annotations
@@ -38,51 +37,47 @@ from pathlib import Path
 from typing import Any
 
 
-# ============================================================
-# Paths
-# ============================================================
-
 PACKAGE_PATH = Path("gate_a_package.json")
 
 STATE_DIR = Path("automation_state")
 
-APPROVED_PATH = STATE_DIR / "approved_story.json"
-
-
-# ============================================================
-# Valid Gate A command
-# ============================================================
-
-VALID_APPROVAL_RE = re.compile(
-    r"^([1-5])\s+OK$",
-    re.IGNORECASE,
+APPROVED_PATH = (
+    STATE_DIR / "approved_story.json"
 )
 
 
-# ============================================================
-# Environment
-# ============================================================
+# Exact single number only.
+VALID_APPROVAL_RE = re.compile(
+    r"^[1-5]$"
+)
+
 
 def required_env(name: str) -> str:
-    value = os.getenv(name, "").strip()
+
+    value = os.getenv(
+        name,
+        "",
+    ).strip()
 
     if not value:
+
         raise RuntimeError(
-            f"Missing required environment variable: {name}"
+            "Missing required environment "
+            f"variable: {name}"
         )
 
     return value
 
 
-# ============================================================
-# MIME helpers
-# ============================================================
+def decode_mime(
+    value: str | None,
+) -> str:
 
-def decode_mime(value: str | None) -> str:
     if not value:
         return ""
 
     try:
+
         return str(
             make_header(
                 decode_header(value)
@@ -90,12 +85,9 @@ def decode_mime(value: str | None) -> str:
         )
 
     except Exception:
+
         return value
 
-
-# ============================================================
-# Extract plain text from email
-# ============================================================
 
 def message_text(
     msg: email.message.Message,
@@ -107,12 +99,14 @@ def message_text(
 
         for part in msg.walk():
 
-            content_type = part.get_content_type()
+            content_type = (
+                part.get_content_type()
+            )
 
             disposition = str(
                 part.get(
                     "Content-Disposition",
-                    ""
+                    "",
                 )
             ).lower()
 
@@ -164,11 +158,9 @@ def message_text(
     return "\n".join(parts)
 
 
-# ============================================================
-# Remove quoted original email
-# ============================================================
-
-def strip_quoted_reply(text: str) -> str:
+def strip_quoted_reply(
+    text: str,
+) -> str:
 
     kept: list[str] = []
 
@@ -182,11 +174,9 @@ def strip_quoted_reply(text: str) -> str:
 
         stripped = line.strip()
 
-        # Gmail / common quote
         if stripped.startswith(">"):
             break
 
-        # English Gmail
         if re.match(
             r"^On .+ wrote:$",
             stripped,
@@ -194,21 +184,19 @@ def strip_quoted_reply(text: str) -> str:
         ):
             break
 
-        # Japanese Gmail style
         if re.match(
-            r"^\d{4}年\d{1,2}月\d{1,2}日.+<.+>:$",
+            r"^\d{4}年\d{1,2}月\d{1,2}日"
+            r".+<.+>:$",
             stripped,
         ):
             break
 
-        # Original message separators
         if stripped in (
             "-----Original Message-----",
             "-----元のメッセージ-----",
         ):
             break
 
-        # Mail headers from quoted message
         if re.match(
             r"^(From|Sent|To|Subject):\s",
             stripped,
@@ -218,16 +206,18 @@ def strip_quoted_reply(text: str) -> str:
 
         kept.append(line)
 
-    return "\n".join(kept).strip()
+    return "\n".join(
+        kept
+    ).strip()
 
 
-# ============================================================
-# Normalize reply
-# ============================================================
+def normalize_reply(
+    text: str,
+) -> str:
 
-def normalize_reply(text: str) -> str:
-
-    fresh_reply = strip_quoted_reply(text)
+    fresh_reply = strip_quoted_reply(
+        text
+    )
 
     lines = [
         line.strip()
@@ -238,15 +228,13 @@ def normalize_reply(text: str) -> str:
     if not lines:
         return ""
 
-    # All meaningful new-reply text is joined.
+    # Joining all meaningful text intentionally
+    # makes anything other than one exact digit invalid.
     #
-    # Examples:
-    #
-    # "3 OK"     -> "3 OK"
-    # "3   OK"   -> "3 OK"
-    # "OK"       -> "OK"      (invalid)
-    # "3 OK yes" -> invalid
-    #
+    # "3"       -> valid
+    # "3 OK"    -> invalid
+    # "3 yes"   -> invalid
+    # "OK"      -> invalid
 
     normalized = " ".join(lines)
 
@@ -258,10 +246,6 @@ def normalize_reply(text: str) -> str:
 
     return normalized.strip()
 
-
-# ============================================================
-# Load Gate A package
-# ============================================================
 
 def load_package() -> dict[str, Any]:
 
@@ -277,37 +261,67 @@ def load_package() -> dict[str, Any]:
         )
     )
 
-    if not isinstance(data, dict):
+    if not isinstance(
+        data,
+        dict,
+    ):
 
         raise ValueError(
             "gate_a_package.json "
             "must contain a JSON object."
         )
 
-    concepts = data.get(
-        "image_concepts"
+    story_options = data.get(
+        "story_options"
     )
 
-    if not isinstance(concepts, list):
+    if not isinstance(
+        story_options,
+        list,
+    ):
 
         raise ValueError(
             "gate_a_package.json does not "
-            "contain image_concepts."
+            "contain story_options."
         )
 
-    if len(concepts) != 5:
+    if len(story_options) != 5:
 
         raise ValueError(
             "Gate A requires exactly "
-            "five image concepts."
+            "five story options."
         )
+
+    for index, story in enumerate(
+        story_options,
+        start=1,
+    ):
+
+        if not isinstance(
+            story,
+            dict,
+        ):
+
+            raise ValueError(
+                f"Story option {index} "
+                "must be an object."
+            )
+
+        candidate_number = (
+            story.get(
+                "candidate_number"
+            )
+        )
+
+        if candidate_number != index:
+
+            raise ValueError(
+                "Story candidate numbering "
+                "must be exactly 1-5."
+            )
 
     return data
 
-
-# ============================================================
-# Authorized reply addresses
-# ============================================================
 
 def authorized_senders() -> set[str]:
 
@@ -317,31 +331,22 @@ def authorized_senders() -> set[str]:
 
     return {
         address.strip().lower()
-        for address in email_to.split(",")
+        for address
+        in email_to.split(",")
         if address.strip()
     }
 
-
-# ============================================================
-# Issue date
-# ============================================================
 
 def get_issue_date(
     package: dict[str, Any],
 ) -> str:
 
-    issue_date = str(
-        package.get("date")
-        or package.get("issue_date")
+    return str(
+        package.get("issue_date")
+        or package.get("date")
         or ""
     ).strip()
 
-    return issue_date
-
-
-# ============================================================
-# Check whether existing approval is for SAME issue
-# ============================================================
 
 def same_issue_already_approved(
     package: dict[str, Any],
@@ -362,7 +367,11 @@ def same_issue_already_approved(
 
         return False
 
-    if existing.get("state") != "APPROVED_STORY":
+    if (
+        existing.get("state")
+        != "APPROVED_STORY"
+    ):
+
         return False
 
     current_date = get_issue_date(
@@ -370,50 +379,64 @@ def same_issue_already_approved(
     )
 
     existing_date = str(
-        existing.get("date")
-        or existing.get("issue_date")
+        existing.get("issue_date")
+        or existing.get("date")
         or ""
     ).strip()
 
-    # --------------------------------------------------------
-    # Important Phase 2 behavior
-    #
-    # Same day's approval:
-    #   do not process again
-    #
-    # Old approval from another day:
-    #   DO NOT block today's Gate A approval
-    # --------------------------------------------------------
-
-    if current_date and existing_date:
+    if (
+        current_date
+        and existing_date
+    ):
 
         return (
             current_date
             == existing_date
         )
 
-    # If date is unavailable, compare a few stable story fields.
-    current_story = package.get(
-        "recommended_story"
+    current_options = package.get(
+        "story_options"
     )
 
-    existing_story = existing.get(
-        "recommended_story"
+    selected_story = existing.get(
+        "selected_story"
     )
 
     if (
-        current_story
-        and existing_story
-        and current_story == existing_story
+        isinstance(
+            current_options,
+            list,
+        )
+        and isinstance(
+            selected_story,
+            dict,
+        )
     ):
-        return True
+
+        selected_id = str(
+            selected_story.get(
+                "id",
+                "",
+            )
+        )
+
+        for story in current_options:
+
+            if (
+                isinstance(story, dict)
+                and str(
+                    story.get(
+                        "id",
+                        "",
+                    )
+                )
+                == selected_id
+            ):
+
+                return True
 
     return False
 
-
-# ============================================================
-# Find exact Gate A approval
-# ============================================================
 
 def find_valid_approval(
     imap: imaplib.IMAP4_SSL,
@@ -425,7 +448,8 @@ def find_valid_approval(
     )
 
     expected_subject = (
-        "The Daily Duck — Story Approval"
+        "The Daily Duck — "
+        "Choose Today's Story"
     )
 
     if issue_date:
@@ -449,18 +473,19 @@ def find_valid_approval(
             "IMAP search failed."
         )
 
-    message_ids = data[0].split()
+    message_ids = (
+        data[0].split()
+    )
 
-    # Check newest messages first.
-    #
-    # Limit prevents scanning an enormous mailbox.
     for msg_id in reversed(
         message_ids[-250:]
     ):
 
-        status, payload = imap.fetch(
-            msg_id,
-            "(RFC822)",
+        status, payload = (
+            imap.fetch(
+                msg_id,
+                "(RFC822)",
+            )
         )
 
         if status != "OK":
@@ -475,8 +500,10 @@ def find_valid_approval(
         ):
             continue
 
-        msg = email.message_from_bytes(
-            payload[0][1]
+        msg = (
+            email.message_from_bytes(
+                payload[0][1]
+            )
         )
 
         subject = decode_mime(
@@ -489,16 +516,11 @@ def find_valid_approval(
             )
         )[1].lower()
 
-        # ----------------------------------------------------
-        # Subject must belong to current Gate A email.
-        # ----------------------------------------------------
-
-        if expected_subject not in subject:
+        if (
+            expected_subject
+            not in subject
+        ):
             continue
-
-        # ----------------------------------------------------
-        # Only configured recipients may approve.
-        # ----------------------------------------------------
 
         if (
             allowed_senders
@@ -507,7 +529,9 @@ def find_valid_approval(
         ):
             continue
 
-        body = message_text(msg)
+        body = message_text(
+            msg
+        )
 
         normalized = normalize_reply(
             body
@@ -515,23 +539,25 @@ def find_valid_approval(
 
         print(
             "Gate A candidate reply "
-            f"normalized as: {normalized!r}"
+            f"normalized as: "
+            f"{normalized!r}"
         )
 
-        match = (
+        if not (
             VALID_APPROVAL_RE
-            .fullmatch(normalized)
-        )
+            .fullmatch(
+                normalized
+            )
+        ):
 
-        if not match:
             continue
 
-        concept_number = int(
-            match.group(1)
+        story_number = int(
+            normalized
         )
 
         return (
-            concept_number,
+            story_number,
             sender,
             normalized,
         )
@@ -539,50 +565,128 @@ def find_valid_approval(
     return None
 
 
-# ============================================================
-# Save APPROVED_STORY
-# ============================================================
-
 def save_approved_story(
     package: dict[str, Any],
-    concept_number: int,
+    story_number: int,
     sender: str,
     normalized_reply: str,
 ) -> None:
 
-    concepts = package[
-        "image_concepts"
+    story_options = package[
+        "story_options"
     ]
 
-    selected_concept = concepts[
-        concept_number - 1
-    ]
-
-    # Preserve the complete approved Gate A package.
-    approved = dict(package)
-
-    approved.update(
-        {
-            "state": "APPROVED_STORY",
-
-            "approved_at":
-                datetime.now(
-                    timezone.utc
-                ).isoformat(),
-
-            "approval_reply":
-                normalized_reply,
-
-            "approval_sender":
-                sender,
-
-            "selected_image_concept_number":
-                concept_number,
-
-            "selected_image_concept":
-                selected_concept,
-        }
+    selected_story = dict(
+        story_options[
+            story_number - 1
+        ]
     )
+
+    issue_date = get_issue_date(
+        package
+    )
+
+    # Store the selected story in both a clear
+    # selected_story field and compatibility fields
+    # used by downstream Daily Duck scripts.
+
+    approved: dict[str, Any] = {
+        "date": issue_date,
+        "issue_date": issue_date,
+
+        "phase": 2,
+
+        "state":
+            "APPROVED_STORY",
+
+        "approved_at":
+            datetime.now(
+                timezone.utc
+            ).isoformat(),
+
+        "approval_reply":
+            normalized_reply,
+
+        "approval_sender":
+            sender,
+
+        "selected_story_number":
+            story_number,
+
+        "selected_story":
+            selected_story,
+
+        "recommended_story":
+            selected_story,
+
+        "recommended_id":
+            selected_story.get(
+                "id"
+            ),
+
+        "jp_copy":
+            selected_story.get(
+                "jp_copy",
+                "",
+            ),
+
+        "en_copy":
+            selected_story.get(
+                "en_copy",
+                "",
+            ),
+
+        "duck_name":
+            selected_story.get(
+                "duck_name",
+                "",
+            ),
+
+        "duck_jp":
+            selected_story.get(
+                "duck_jp",
+                "",
+            ),
+
+        "duck_en":
+            selected_story.get(
+                "duck_en",
+                "",
+            ),
+
+        "x_jp":
+            selected_story.get(
+                "x_jp",
+                "",
+            ),
+
+        "x_en":
+            selected_story.get(
+                "x_en",
+                "",
+            ),
+
+        "source":
+            selected_story.get(
+                "source",
+                "",
+            ),
+
+        "source_url":
+            selected_story.get(
+                "url",
+                "",
+            ),
+
+        # Preserve original Gate A information.
+        "gate_a_package":
+            package,
+
+        # Image concepts intentionally do not
+        # exist yet. They are generated next.
+        "image_concept_status":
+            "NOT_GENERATED",
+    }
 
     STATE_DIR.mkdir(
         parents=True,
@@ -600,20 +704,9 @@ def save_approved_story(
     )
 
 
-# ============================================================
-# Main
-# ============================================================
-
 def main() -> int:
 
     package = load_package()
-
-    # --------------------------------------------------------
-    # Do not process the SAME issue twice.
-    #
-    # But an APPROVED_STORY from yesterday or another issue
-    # must NOT block today's approval.
-    # --------------------------------------------------------
 
     if same_issue_already_approved(
         package
@@ -638,10 +731,6 @@ def main() -> int:
         "GMAIL_APP_PASSWORD"
     )
 
-    # --------------------------------------------------------
-    # Gmail
-    # --------------------------------------------------------
-
     with imaplib.IMAP4_SSL(
         "imap.gmail.com",
         993,
@@ -665,15 +754,11 @@ def main() -> int:
             package,
         )
 
-    # --------------------------------------------------------
-    # No valid approval
-    # --------------------------------------------------------
-
     if not found:
 
         print(
             "No exact Gate A "
-            "approval found."
+            "story selection found."
         )
 
         print(
@@ -681,46 +766,42 @@ def main() -> int:
         )
 
         print(
-            "1 OK / 2 OK / 3 OK / "
-            "4 OK / 5 OK"
+            "1 / 2 / 3 / 4 / 5"
         )
 
         print(
-            "Plain OK is invalid."
+            "Anything else is invalid."
         )
 
         print(
             "STATE: "
-            "WAITING_STORY_APPROVAL"
+            "WAITING_STORY_SELECTION"
         )
 
         return 0
 
-    # --------------------------------------------------------
-    # Valid approval
-    # --------------------------------------------------------
-
     (
-        concept_number,
+        story_number,
         sender,
         normalized_reply,
     ) = found
 
     save_approved_story(
         package=package,
-        concept_number=concept_number,
+        story_number=story_number,
         sender=sender,
         normalized_reply=normalized_reply,
     )
 
     print(
-        "EXACT GATE A APPROVAL FOUND: "
+        "EXACT GATE A "
+        "STORY SELECTION FOUND: "
         f"{normalized_reply}"
     )
 
     print(
-        "Selected image concept: "
-        f"{concept_number}"
+        "Selected story: "
+        f"{story_number}"
     )
 
     print(
@@ -729,15 +810,16 @@ def main() -> int:
     )
 
     print(
+        "Next stage: "
+        "generate five image concepts."
+    )
+
+    print(
         "STATE: APPROVED_STORY"
     )
 
     return 0
 
-
-# ============================================================
-# Entry point
-# ============================================================
 
 if __name__ == "__main__":
 
