@@ -1,0 +1,135 @@
+name: The Daily Duck - Image Concept Selection Check
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-duck-image-concept-selection
+  cancel-in-progress: false
+
+jobs:
+  check-concept-selection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify image concept review state
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f automation_state/image_concepts.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(
+              Path(
+                  "automation_state/image_concepts.json"
+              ).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          state = str(
+              data.get("state", "")
+          ).strip().upper()
+
+          print(
+              f"Detected state: {state}"
+          )
+
+          if state != "IMAGE_CONCEPT_REVIEW":
+              raise SystemExit(
+                  "ERROR: Expected IMAGE_CONCEPT_REVIEW, "
+                  f"got {state!r}."
+              )
+
+          concepts = data.get("concepts")
+
+          if (
+              not isinstance(concepts, list)
+              or len(concepts) != 5
+          ):
+              raise SystemExit(
+                  "ERROR: Exactly five concepts are required."
+              )
+
+          print(
+              "IMAGE_CONCEPT_REVIEW confirmed."
+          )
+          PY
+
+      - name: Check image concept email reply
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: |
+          python scripts/check_image_concept_selection.py
+
+      - name: Commit approved image concept when selected
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f automation_state/approved_image_concept.json ]; then
+            echo "No approved image concept yet."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add automation_state/approved_image_concept.json
+
+          if git diff --cached --quiet; then
+            echo "No new concept selection to commit."
+            exit 0
+          fi
+
+          git commit -m "Gate B1: select Daily Duck image concept"
+
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Report result
+        shell: bash
+        run: |
+          if [ -f automation_state/approved_image_concept.json ]; then
+            python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/approved_image_concept.json",
+              encoding="utf-8"
+          ) as f:
+              data = json.load(f)
+
+          print("STATE:", data.get("state"))
+          print(
+              "Selected concept:",
+              data.get(
+                  "selected_image_concept_number"
+              )
+          )
+          PY
+          else
+            echo "STATE: IMAGE_CONCEPT_REVIEW"
+          fi
