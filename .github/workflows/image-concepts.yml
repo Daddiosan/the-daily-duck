@@ -1,159 +1,242 @@
-#!/usr/bin/env python3
-from __future__ import annotations
+name: Daily Duck Image Concepts
 
-import json
-import shutil
-from datetime import datetime, timezone
-from pathlib import Path
+on:
+  workflow_dispatch:
 
+  push:
+    branches:
+      - main
+    paths:
+      - "automation_state/approved_story.json"
 
-APPROVED_STORY = Path(
-    "automation_state/approved_story.json"
-)
+permissions:
+  contents: write
 
-APPROVED_IMAGE = Path(
-    "automation_state/approved_image_concept.json"
-)
+concurrency:
+  group: daily-duck-image-concepts
+  cancel-in-progress: false
 
-READY = Path(
-    "automation_state/ready_to_publish.json"
-)
+jobs:
+  generate-and-email-concepts:
+    runs-on: ubuntu-latest
 
-CANONICAL_DIR = Path(
-    "automation_state/canonical"
-)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-def load(path: Path):
-    return json.loads(
-        path.read_text(encoding="utf-8")
-    )
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install google-genai openai pillow
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
 
+      - name: Verify approved story
+        shell: bash
+        run: |
+          set -euo pipefail
 
-def main() -> None:
-    story = load(
-        APPROVED_STORY
-    )
+          python - <<'PY'
+          import json
+          from pathlib import Path
 
-    selected = load(
-        APPROVED_IMAGE
-    )
+          path = Path("automation_state/approved_story.json")
 
-    if selected.get("state") != "APPROVED_IMAGE_CONCEPT":
-        raise ValueError(
-            "Expected APPROVED_IMAGE_CONCEPT."
-        )
+          if not path.exists():
+              raise SystemExit(
+                  "ERROR: automation_state/approved_story.json missing."
+              )
 
-    issue = str(
-        selected.get("issue_date", "")
-    ).strip()
+          data = json.loads(
+              path.read_text(encoding="utf-8")
+          )
 
-    web_source = Path(
-        selected["selected_web_image_path"]
-    )
+          state = str(
+              data.get("state", "")
+          ).strip().upper()
 
-    x_source = Path(
-        selected["selected_x_image_path"]
-    )
+          print(f"Detected state: {state}")
 
-    if not web_source.exists():
-        raise FileNotFoundError(
-            web_source
-        )
+          if state != "APPROVED_STORY":
+              raise SystemExit(
+                  f"ERROR: Expected APPROVED_STORY, got {state!r}."
+              )
 
-    if not x_source.exists():
-        raise FileNotFoundError(
-            x_source
-        )
+          print("APPROVED_STORY confirmed.")
+          PY
 
-    CANONICAL_DIR.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+      - name: Generate three image concepts
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/generate_image_concepts.py
 
-    web_final = (
-        CANONICAL_DIR
-        / f"{issue}-web.png"
-    )
+      - name: Generate three website images
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: "gpt-image-2"
+          OPENAI_WEB_IMAGE_SIZE: "1536x1024"
+          OPENAI_WEB_IMAGE_QUALITY: "low"
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/generate_concept_preview_images.py
 
-    x_final = (
-        CANONICAL_DIR
-        / f"{issue}-x.png"
-    )
+      - name: Generate three X brand cards
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/generate_x_cards.py
 
-    shutil.copy2(
-        web_source,
-        web_final,
-    )
+      - name: Verify generated assets
+        shell: bash
+        run: |
+          set -euo pipefail
 
-    shutil.copy2(
-        x_source,
-        x_final,
-    )
+          python - <<'PY'
+          import json
+          from pathlib import Path
 
-    ready = {
-        "date": issue,
-        "issue_date": issue,
-        "state": "READY_TO_PUBLISH",
+          path = Path(
+              "automation_state/image_concepts.json"
+          )
 
-        "ready_at": datetime.now(
-            timezone.utc
-        ).isoformat(),
+          if not path.exists():
+              raise SystemExit(
+                  "ERROR: image_concepts.json not found."
+              )
 
-        "gate_a_approved_story":
-            story,
+          data = json.loads(
+              path.read_text(encoding="utf-8")
+          )
 
-        "selected_image_concept_number":
-            selected[
-                "selected_image_concept_number"
-            ],
+          state = str(
+              data.get("state", "")
+          ).strip().upper()
 
-        "selected_image_concept":
-            selected[
-                "selected_image_concept"
-            ],
+          if state != "IMAGE_CONCEPT_REVIEW":
+              raise SystemExit(
+                  f"ERROR: Expected IMAGE_CONCEPT_REVIEW, got {state!r}."
+              )
 
-        "selected_candidate":
-            selected[
-                "selected_image_concept"
-            ],
+          concepts = data.get("concepts")
 
-        # Compatibility
-        "canonical_image_path":
-            web_final.as_posix(),
+          if (
+              not isinstance(concepts, list)
+              or len(concepts) != 3
+          ):
+              raise SystemExit(
+                  "ERROR: Exactly 3 concepts are required."
+              )
 
-        # New explicit paths
-        "canonical_web_image_path":
-            web_final.as_posix(),
+          for index, concept in enumerate(
+              concepts,
+              start=1
+          ):
+              if not isinstance(concept, dict):
+                  raise SystemExit(
+                      f"ERROR: Concept {index} is invalid."
+                  )
 
-        "canonical_x_image_path":
-            x_final.as_posix(),
+              if int(
+                  concept.get("number", 0)
+              ) != index:
+                  raise SystemExit(
+                      f"ERROR: Concept numbering error at {index}."
+                  )
 
-        "x_posted": False,
-    }
+              web_path = Path(
+                  str(
+                      concept.get(
+                          "web_image_path",
+                          ""
+                      )
+                  )
+              )
 
-    READY.write_text(
-        json.dumps(
-            ready,
-            ensure_ascii=False,
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+              x_path = Path(
+                  str(
+                      concept.get(
+                          "x_image_path",
+                          ""
+                      )
+                  )
+              )
 
-    print(
-        f"WEB canonical: {web_final}"
-    )
+              if not web_path.exists():
+                  raise SystemExit(
+                      f"ERROR: Missing WEB image: {web_path}"
+                  )
 
-    print(
-        f"X canonical: {x_final}"
-    )
+              if not x_path.exists():
+                  raise SystemExit(
+                      f"ERROR: Missing X image: {x_path}"
+                  )
 
-    print(
-        "STATE: READY_TO_PUBLISH"
-    )
+          print("3 WEB images confirmed.")
+          print("3 X brand cards confirmed.")
+          print("STATE: IMAGE_CONCEPT_REVIEW")
+          PY
 
+      - name: Send three WEB and X image sets by email
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/send_image_concept_email.py
 
-if __name__ == "__main__":
-    main()
+      - name: Upload image set artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-image-sets
+          path: |
+            automation_state/image_concepts.json
+            automation_state/concept_assets/web/
+            automation_state/concept_assets/x/
+            image_concept_email.txt
+          retention-days: 7
+
+      - name: Commit generated image sets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add automation_state/image_concepts.json
+          git add automation_state/concept_assets/
+
+          if git diff --cached --quiet; then
+            echo "No image set changes to commit."
+            exit 0
+          fi
+
+          git commit -m "automation: generate three WEB and X image sets"
+
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Report result
+        shell: bash
+        run: |
+          echo "Daily Duck image workflow completed."
+          echo "WEB images: 3"
+          echo "X brand cards: 3"
+          echo "Email attachments: 6"
+          echo "Valid selection replies: 1 / 2 / 3"
+          echo "STATE: IMAGE_CONCEPT_REVIEW"
