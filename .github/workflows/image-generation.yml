@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - "automation_state/image_concepts.json"
+      - "automation_state/approved_image_concept.json"
 
 permissions:
   contents: write
@@ -21,10 +21,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ======================================================
+      # Checkout
+      # ======================================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      # ======================================================
+      # Python
+      # ======================================================
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -36,36 +44,103 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade openai
 
-      - name: Verify image concepts exist
+      # ======================================================
+      # Verify selected image concept
+      # ======================================================
+
+      - name: Verify approved image concept
         shell: bash
         run: |
           set -euo pipefail
-          test -f automation_state/image_concepts.json
+
+          if [ ! -f automation_state/approved_image_concept.json ]; then
+            echo "ERROR: automation_state/approved_image_concept.json not found."
+            exit 1
+          fi
 
           python - <<'PY'
           import json
           from pathlib import Path
 
-          data = json.loads(
-              Path("automation_state/image_concepts.json").read_text(encoding="utf-8")
+          path = Path(
+              "automation_state/approved_image_concept.json"
           )
-          state = str(data.get("state", "")).strip().upper()
-          concepts = data.get("concepts")
 
-          print(f"Detected state: {state}")
+          data = json.loads(
+              path.read_text(
+                  encoding="utf-8"
+              )
+          )
 
-          if state != "IMAGE_CONCEPT_REVIEW":
+          state = str(
+              data.get("state", "")
+          ).strip().upper()
+
+          print(
+              f"Detected state: {state}"
+          )
+
+          if state != "APPROVED_IMAGE_CONCEPT":
               raise SystemExit(
-                  f"ERROR: Expected IMAGE_CONCEPT_REVIEW, got {state!r}."
+                  "ERROR: Final image generation requires "
+                  "APPROVED_IMAGE_CONCEPT, "
+                  f"got {state!r}."
               )
 
-          if not isinstance(concepts, list) or len(concepts) != 5:
-              raise SystemExit("ERROR: Exactly five concepts are required.")
+          number = int(
+              data.get(
+                  "selected_image_concept_number",
+                  0
+              )
+          )
 
-          print("Five image concepts confirmed.")
+          if number not in (1, 2, 3, 4, 5):
+              raise SystemExit(
+                  "ERROR: selected_image_concept_number "
+                  "must be 1-5."
+              )
+
+          concept = data.get(
+              "selected_image_concept"
+          )
+
+          if not isinstance(concept, dict):
+              raise SystemExit(
+                  "ERROR: selected_image_concept is missing."
+              )
+
+          prompt = str(
+              concept.get(
+                  "generation_prompt_en",
+                  ""
+              )
+          ).strip()
+
+          if not prompt:
+              raise SystemExit(
+                  "ERROR: Selected concept has no "
+                  "generation_prompt_en."
+              )
+
+          print(
+              "APPROVED_IMAGE_CONCEPT confirmed."
+          )
+
+          print(
+              f"Selected concept: {number}"
+          )
+
+          print(
+              "Exactly five final images will be "
+              "generated from ONLY this concept."
+          )
           PY
 
-      - name: Generate five real images with OpenAI
+      # ======================================================
+      # Generate five FINAL candidates
+      # ======================================================
+
+      - name: Generate five final images from selected concept
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_IMAGE_MODEL: gpt-image-2
@@ -74,7 +149,134 @@ jobs:
         run: |
           python scripts/generate_image_candidates_openai.py
 
-      - name: Send five real images by email
+      # ======================================================
+      # Verify output
+      # ======================================================
+
+      - name: Verify five final image candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          state_path = Path(
+              "automation_state/image_candidates.json"
+          )
+
+          if not state_path.exists():
+              raise SystemExit(
+                  "ERROR: image_candidates.json not found."
+              )
+
+          data = json.loads(
+              state_path.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          state = str(
+              data.get("state", "")
+          ).strip().upper()
+
+          if state != "IMAGE_CANDIDATES_READY":
+              raise SystemExit(
+                  "ERROR: Expected IMAGE_CANDIDATES_READY, "
+                  f"got {state!r}."
+              )
+
+          selected_number = int(
+              data.get(
+                  "selected_image_concept_number",
+                  0
+              )
+          )
+
+          if selected_number not in (1, 2, 3, 4, 5):
+              raise SystemExit(
+                  "ERROR: Invalid selected concept number."
+              )
+
+          candidates = data.get(
+              "candidates"
+          )
+
+          if (
+              not isinstance(candidates, list)
+              or len(candidates) != 5
+          ):
+              raise SystemExit(
+                  "ERROR: Exactly five final candidates "
+                  "are required."
+              )
+
+          for index, candidate in enumerate(
+              candidates,
+              start=1
+          ):
+              if not isinstance(candidate, dict):
+                  raise SystemExit(
+                      f"ERROR: Candidate {index} "
+                      "is not an object."
+                  )
+
+              if int(
+                  candidate.get("number", 0)
+              ) != index:
+                  raise SystemExit(
+                      f"ERROR: Candidate numbering "
+                      f"problem at {index}."
+                  )
+
+              candidate_concept = int(
+                  candidate.get(
+                      "selected_concept_number",
+                      0
+                  )
+              )
+
+              if candidate_concept != selected_number:
+                  raise SystemExit(
+                      f"ERROR: Candidate {index} "
+                      "does not use the selected concept."
+                  )
+
+              image_path = Path(
+                  str(
+                      candidate.get(
+                          "image_path",
+                          ""
+                      )
+                  )
+              )
+
+              if not image_path.exists():
+                  raise SystemExit(
+                      f"ERROR: Missing image: {image_path}"
+                  )
+
+          print(
+              "Exactly five final image candidates confirmed."
+          )
+
+          print(
+              "All five candidates use selected concept "
+              f"#{selected_number}."
+          )
+
+          print(
+              "Generation round:",
+              data.get("generation_round")
+          )
+          PY
+
+      # ======================================================
+      # Email
+      # ======================================================
+
+      - name: Send five final images by email
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -82,17 +284,26 @@ jobs:
         run: |
           python scripts/send_image_selection_email.py
 
-      - name: Upload image artifacts
+      # ======================================================
+      # Artifact
+      # ======================================================
+
+      - name: Upload final image artifacts
         uses: actions/upload-artifact@v4
         with:
           name: daily-duck-real-images
           path: |
+            automation_state/approved_image_concept.json
             automation_state/image_candidates.json
             automation_state/image_candidates/*.png
             image_selection_email.txt
           retention-days: 7
 
-      - name: Commit image candidates
+      # ======================================================
+      # Commit
+      # ======================================================
+
+      - name: Commit final image candidates
         shell: bash
         run: |
           set -euo pipefail
@@ -108,6 +319,50 @@ jobs:
             exit 0
           fi
 
-          git commit -m "automation: generate five real image candidates"
+          git commit -m "automation: generate five final images from selected concept"
+
           git pull --rebase origin main
           git push origin HEAD:main
+
+      # ======================================================
+      # Report
+      # ======================================================
+
+      - name: Report final image generation
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/image_candidates.json",
+              encoding="utf-8"
+          ) as f:
+              data = json.load(f)
+
+          print("STATE:", data.get("state"))
+
+          print(
+              "Selected concept:",
+              data.get(
+                  "selected_image_concept_number"
+              )
+          )
+
+          print(
+              "Generation round:",
+              data.get(
+                  "generation_round"
+              )
+          )
+
+          print(
+              "Final candidates:",
+              len(
+                  data.get(
+                      "candidates",
+                      []
+                  )
+              )
+          )
+          PY
