@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: daily-duck-image-concept-selection
@@ -18,31 +19,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ======================================================
+      # Checkout
+      # ======================================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      # ======================================================
+      # Python
+      # ======================================================
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # ======================================================
+      # Verify image concepts
+      # ======================================================
+
       - name: Verify image concept review state
         shell: bash
         run: |
           set -euo pipefail
 
-          test -f automation_state/image_concepts.json
+          if [ ! -f automation_state/image_concepts.json ]; then
+            echo "ERROR: image_concepts.json not found."
+            exit 1
+          fi
 
           python - <<'PY'
           import json
           from pathlib import Path
 
+          path = Path(
+              "automation_state/image_concepts.json"
+          )
+
           data = json.loads(
-              Path(
-                  "automation_state/image_concepts.json"
-              ).read_text(
+              path.read_text(
                   encoding="utf-8"
               )
           )
@@ -51,7 +69,9 @@ jobs:
               data.get("state", "")
           ).strip().upper()
 
-          print(f"Detected state: {state}")
+          print(
+              f"Detected state: {state}"
+          )
 
           if state != "IMAGE_CONCEPT_REVIEW":
               raise SystemExit(
@@ -59,20 +79,26 @@ jobs:
                   f"got {state!r}."
               )
 
-          concepts = data.get("concepts")
+          concepts = data.get(
+              "concepts"
+          )
 
           if (
               not isinstance(concepts, list)
               or len(concepts) != 5
           ):
               raise SystemExit(
-                  "ERROR: Exactly five concepts required."
+                  "ERROR: Exactly five concepts are required."
               )
 
           print(
               "IMAGE_CONCEPT_REVIEW confirmed."
           )
           PY
+
+      # ======================================================
+      # Read email reply
+      # ======================================================
 
       - name: Check image concept email reply
         env:
@@ -82,32 +108,44 @@ jobs:
         run: |
           python scripts/check_image_concept_selection.py
 
+      # ======================================================
+      # Promote selected preview
+      # ======================================================
+
       - name: Promote selected preview to canonical image
+        id: promote
         shell: bash
         run: |
           set -euo pipefail
 
           if [ ! -f automation_state/approved_image_concept.json ]; then
             echo "No approved image concept yet."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           python scripts/promote_selected_concept.py
 
+          STATE=$(python -c "import json; print(json.load(open('automation_state/ready_to_publish.json', encoding='utf-8')).get('state',''))")
+
+          echo "Generated state: $STATE"
+
+          if [ "$STATE" = "READY_TO_PUBLISH" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ======================================================
+      # Commit READY_TO_PUBLISH
+      # ======================================================
+
       - name: Commit selected concept and READY_TO_PUBLISH
+        if: steps.promote.outputs.ready == 'true'
+        id: commit_ready
         shell: bash
         run: |
           set -euo pipefail
-
-          if [ ! -f automation_state/approved_image_concept.json ]; then
-            echo "No approved concept."
-            exit 0
-          fi
-
-          if [ ! -f automation_state/ready_to_publish.json ]; then
-            echo "No READY_TO_PUBLISH."
-            exit 0
-          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -117,7 +155,8 @@ jobs:
           git add automation_state/canonical/
 
           if git diff --cached --quiet; then
-            echo "No new publish state to commit."
+            echo "No new READY_TO_PUBLISH changes to commit."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -126,10 +165,41 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+      # ======================================================
+      # Trigger Website Publish DIRECTLY
+      # ======================================================
+
+      - name: Trigger Website Publish
+        if: |
+          steps.promote.outputs.ready == 'true' &&
+          steps.commit_ready.outputs.committed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "READY_TO_PUBLISH committed."
+          echo "Triggering Website Publish..."
+
+          gh workflow run website-publish.yml \
+            --ref main
+
+          echo "Website Publish workflow triggered."
+
+      # ======================================================
+      # Report
+      # ======================================================
+
       - name: Report result
         shell: bash
         run: |
+          echo "Image concept selection workflow finished."
+
           if [ -f automation_state/ready_to_publish.json ]; then
+
             python - <<'PY'
           import json
 
@@ -139,13 +209,18 @@ jobs:
           ) as f:
               data = json.load(f)
 
-          print("STATE:", data.get("state"))
+          print(
+              "STATE:",
+              data.get("state")
+          )
+
           print(
               "Selected concept:",
               data.get(
                   "selected_image_concept_number"
               )
           )
+
           print(
               "Canonical image:",
               data.get(
@@ -153,6 +228,7 @@ jobs:
               )
           )
           PY
+
           else
-            echo "STATE: IMAGE_CONCEPT_REVIEW"
+            echo "No READY_TO_PUBLISH yet."
           fi
