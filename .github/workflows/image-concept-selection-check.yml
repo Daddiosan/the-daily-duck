@@ -51,9 +51,7 @@ jobs:
               data.get("state", "")
           ).strip().upper()
 
-          print(
-              f"Detected state: {state}"
-          )
+          print(f"Detected state: {state}")
 
           if state != "IMAGE_CONCEPT_REVIEW":
               raise SystemExit(
@@ -68,7 +66,7 @@ jobs:
               or len(concepts) != 5
           ):
               raise SystemExit(
-                  "ERROR: Exactly five concepts are required."
+                  "ERROR: Exactly five concepts required."
               )
 
           print(
@@ -84,7 +82,7 @@ jobs:
         run: |
           python scripts/check_image_concept_selection.py
 
-      - name: Commit approved image concept when selected
+      - name: Promote selected preview to canonical image
         shell: bash
         run: |
           set -euo pipefail
@@ -94,17 +92,36 @@ jobs:
             exit 0
           fi
 
+          python scripts/promote_selected_concept.py
+
+      - name: Commit selected concept and READY_TO_PUBLISH
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f automation_state/approved_image_concept.json ]; then
+            echo "No approved concept."
+            exit 0
+          fi
+
+          if [ ! -f automation_state/ready_to_publish.json ]; then
+            echo "No READY_TO_PUBLISH."
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add automation_state/approved_image_concept.json
+          git add automation_state/ready_to_publish.json
+          git add automation_state/canonical/
 
           if git diff --cached --quiet; then
-            echo "No new concept selection to commit."
+            echo "No new publish state to commit."
             exit 0
           fi
 
-          git commit -m "Gate B1: select Daily Duck image concept"
+          git commit -m "Gate B: approve canonical Daily Duck image"
 
           git pull --rebase origin main
           git push origin HEAD:main
@@ -112,12 +129,12 @@ jobs:
       - name: Report result
         shell: bash
         run: |
-          if [ -f automation_state/approved_image_concept.json ]; then
+          if [ -f automation_state/ready_to_publish.json ]; then
             python - <<'PY'
           import json
 
           with open(
-              "automation_state/approved_image_concept.json",
+              "automation_state/ready_to_publish.json",
               encoding="utf-8"
           ) as f:
               data = json.load(f)
@@ -127,6 +144,12 @@ jobs:
               "Selected concept:",
               data.get(
                   "selected_image_concept_number"
+              )
+          )
+          print(
+              "Canonical image:",
+              data.get(
+                  "canonical_image_path"
               )
           )
           PY
