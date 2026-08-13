@@ -1,7 +1,7 @@
 {
   "date": "2026-08-13",
   "issue_date": "2026-08-13",
-  "state": "READY_TO_PUBLISH",
+  "state": "PUBLISHED",
   "ready_at": "2026-08-13T09:16:22.380841+00:00",
   "gate_a_approved_story": {
     "date": "2026-08-13",
@@ -516,5 +516,9 @@
   "canonical_selection_reply": "3",
   "canonical_selected_at": "2026-08-13T08:38:29.869389+00:00",
   "website_published": false,
-  "x_posted": false
+  "x_posted": false,
+  "published_at": "2026-08-13T09:22:57.192672+00:00",
+  "published_image_path": "assets/ducks/2026-08-13-clever-dodo.png",
+  "published_page_path": "ducks/2026-08-13/index.html",
+  "publish_started": true
 }

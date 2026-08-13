@@ -1,6 +1,8 @@
 {
-  "action": "DUPLICATE_DATE_BLOCKED",
-  "at": "2026-08-12T14:09:36.611454+00:00",
-  "issue_date": "2026-08-11",
-  "message": "Date already exists. No website files changed."
+  "action": "PUBLISHED",
+  "at": "2026-08-13T09:22:57.193259+00:00",
+  "issue_date": "2026-08-13",
+  "image": "assets/ducks/2026-08-13-clever-dodo.png",
+  "page": "ducks/2026-08-13/index.html",
+  "title": "CLEVER DODO"
 }
