@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import re
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -11,13 +13,22 @@ from typing import Any
 from google import genai
 
 
-APPROVED_STORY_PATH = Path("automation_state/approved_story.json")
-OUTPUT_PATH = Path("automation_state/image_concepts.json")
+APPROVED_STORY_PATH = Path(
+    "automation_state/approved_story.json"
+)
+
+OUTPUT_PATH = Path(
+    "automation_state/image_concepts.json"
+)
 
 TEXT_MODEL = (
     os.getenv("GEMINI_TEXT_MODEL") or ""
 ).strip() or "gemini-3.6-flash"
 
+
+# ============================================================
+# Environment
+# ============================================================
 
 def required_env(name: str) -> str:
     value = os.getenv(name, "").strip()
@@ -30,13 +41,22 @@ def required_env(name: str) -> str:
     return value
 
 
-def load_json(path: Path) -> dict[str, Any]:
+# ============================================================
+# JSON helpers
+# ============================================================
+
+def load_json(
+    path: Path,
+) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(
             f"Required file not found: {path}"
         )
 
-    with path.open("r", encoding="utf-8") as f:
+    with path.open(
+        "r",
+        encoding="utf-8",
+    ) as f:
         data = json.load(f)
 
     if not isinstance(data, dict):
@@ -47,7 +67,9 @@ def load_json(path: Path) -> dict[str, Any]:
     return data
 
 
-def clean_json_text(text: str) -> str:
+def clean_json_text(
+    text: str,
+) -> str:
     cleaned = text.strip()
 
     cleaned = re.sub(
@@ -65,6 +87,10 @@ def clean_json_text(text: str) -> str:
 
     return cleaned.strip()
 
+
+# ============================================================
+# Find selected / approved story
+# ============================================================
 
 def find_story_container(
     data: dict[str, Any],
@@ -90,7 +116,6 @@ def find_story_container(
     package = data.get("package")
 
     if isinstance(package, dict):
-
         for key in candidate_keys:
             value = package.get(key)
 
@@ -101,14 +126,17 @@ def find_story_container(
         "gate_a_package"
     )
 
-    if isinstance(gate_a_package, dict):
-
+    if isinstance(
+        gate_a_package,
+        dict,
+    ):
         for key in candidate_keys:
             value = gate_a_package.get(key)
 
             if isinstance(value, dict):
                 return value
 
+    # Compatibility with older state shapes
     if any(
         key in data
         for key in (
@@ -127,6 +155,10 @@ def find_story_container(
     )
 
 
+# ============================================================
+# State validation
+# ============================================================
+
 def validate_approved_state(
     data: dict[str, Any],
 ) -> None:
@@ -141,6 +173,154 @@ def validate_approved_state(
             f"got {state!r}."
         )
 
+
+# ============================================================
+# Gemini retry logic
+# ============================================================
+
+def is_retryable_gemini_error(
+    exc: Exception,
+) -> bool:
+    """
+    Retry temporary API/server/load failures only.
+
+    Examples:
+    - 429 RESOURCE_EXHAUSTED
+    - 500 INTERNAL
+    - 502
+    - 503 UNAVAILABLE / high demand
+    - 504 timeout/gateway issues
+    """
+
+    message = str(exc).upper()
+
+    retry_tokens = (
+        "429",
+        "RESOURCE_EXHAUSTED",
+        "500",
+        "INTERNAL",
+        "502",
+        "503",
+        "UNAVAILABLE",
+        "HIGH DEMAND",
+        "504",
+        "DEADLINE_EXCEEDED",
+        "TIMEOUT",
+        "TIMED OUT",
+        "TEMPORAR",
+    )
+
+    return any(
+        token in message
+        for token in retry_tokens
+    )
+
+
+def generate_content_with_retry(
+    client: genai.Client,
+    prompt: str,
+    max_attempts: int = 5,
+) -> Any:
+    """
+    Call Gemini with exponential backoff.
+
+    Approximate waits:
+    attempt 1 failure -> ~10 sec
+    attempt 2 failure -> ~20 sec
+    attempt 3 failure -> ~40 sec
+    attempt 4 failure -> ~60 sec
+
+    Non-temporary errors fail immediately.
+    """
+
+    last_exception: Exception | None = None
+
+    for attempt in range(
+        1,
+        max_attempts + 1,
+    ):
+        try:
+            print(
+                f"Gemini request attempt "
+                f"{attempt}/{max_attempts}..."
+            )
+
+            response = (
+                client.models.generate_content(
+                    model=TEXT_MODEL,
+                    contents=prompt,
+                )
+            )
+
+            print(
+                "Gemini request succeeded."
+            )
+
+            return response
+
+        except Exception as exc:
+            last_exception = exc
+
+            if not is_retryable_gemini_error(
+                exc
+            ):
+                print(
+                    "Gemini error is not considered temporary."
+                )
+                raise
+
+            print(
+                "Temporary Gemini API error detected."
+            )
+
+            print(
+                f"Error: {str(exc)[:800]}"
+            )
+
+            if attempt >= max_attempts:
+                print(
+                    "Gemini retry limit reached."
+                )
+                raise
+
+            # Exponential backoff:
+            # 10, 20, 40, 60 sec max
+            base_wait = min(
+                60,
+                (2 ** attempt) * 5,
+            )
+
+            # Add small jitter so simultaneous jobs
+            # do not all retry at exactly the same time.
+            jitter = random.uniform(
+                0,
+                3,
+            )
+
+            wait_seconds = (
+                base_wait + jitter
+            )
+
+            print(
+                f"Waiting {wait_seconds:.1f} seconds "
+                "before retry..."
+            )
+
+            time.sleep(
+                wait_seconds
+            )
+
+    if last_exception:
+        raise last_exception
+
+    raise RuntimeError(
+        "Gemini request failed unexpectedly."
+    )
+
+
+# ============================================================
+# Generate five image concepts
+# ============================================================
 
 def generate_concepts(
     approved_state: dict[str, Any],
@@ -157,6 +337,7 @@ def generate_concepts(
         "concepts": [
             {
                 "number": 1,
+
                 "title_ja":
                     "短い日本語タイトル",
 
@@ -316,20 +497,37 @@ generation_prompt_en must:
 
 Return ONLY valid JSON matching this structure:
 
-{json.dumps(output_example, ensure_ascii=False, indent=2)}
+{json.dumps(
+    output_example,
+    ensure_ascii=False,
+    indent=2,
+)}
 
 APPROVED STORY:
 
-{json.dumps(story, ensure_ascii=False, indent=2)}
+{json.dumps(
+    story,
+    ensure_ascii=False,
+    indent=2,
+)}
 
 FULL APPROVED STATE / EDITORIAL PACKAGE:
 
-{json.dumps(approved_state, ensure_ascii=False, indent=2)}
+{json.dumps(
+    approved_state,
+    ensure_ascii=False,
+    indent=2,
+)}
 """.strip()
 
-    response = client.models.generate_content(
-        model=TEXT_MODEL,
-        contents=prompt,
+    # --------------------------------------------------------
+    # Gemini request with automatic retry
+    # --------------------------------------------------------
+
+    response = generate_content_with_retry(
+        client=client,
+        prompt=prompt,
+        max_attempts=5,
     )
 
     raw = getattr(
@@ -343,9 +541,15 @@ FULL APPROVED STATE / EDITORIAL PACKAGE:
             "Gemini returned no text."
         )
 
+    # --------------------------------------------------------
+    # Parse returned JSON
+    # --------------------------------------------------------
+
     try:
         parsed = json.loads(
-            clean_json_text(raw)
+            clean_json_text(
+                raw
+            )
         )
 
     except json.JSONDecodeError as exc:
@@ -354,12 +558,23 @@ FULL APPROVED STATE / EDITORIAL PACKAGE:
             f"{exc}"
         ) from exc
 
+    if not isinstance(
+        parsed,
+        dict,
+    ):
+        raise ValueError(
+            "Gemini response must be a JSON object."
+        )
+
     concepts = parsed.get(
         "concepts"
     )
 
     if (
-        not isinstance(concepts, list)
+        not isinstance(
+            concepts,
+            list,
+        )
         or len(concepts) != 5
     ):
         raise ValueError(
@@ -382,6 +597,10 @@ FULL APPROVED STATE / EDITORIAL PACKAGE:
         "alt_en",
     )
 
+    # --------------------------------------------------------
+    # Normalize and validate all five concepts
+    # --------------------------------------------------------
+
     for index, item in enumerate(
         concepts,
         start=1,
@@ -398,14 +617,13 @@ FULL APPROVED STATE / EDITORIAL PACKAGE:
             item
         )
 
-        # Numbering is controlled locally.
         # Never trust model numbering.
-        normalized_item["number"] = (
-            index
-        )
+        # Number locally and deterministically.
+        normalized_item[
+            "number"
+        ] = index
 
         for field in required_fields:
-
             value = str(
                 normalized_item.get(
                     field,
@@ -419,12 +637,11 @@ FULL APPROVED STATE / EDITORIAL PACKAGE:
                     f"required field: {field}"
                 )
 
-            normalized_item[field] = (
-                value
-            )
+            normalized_item[
+                field
+            ] = value
 
-        # Preview image information is populated
-        # by generate_concept_preview_images.py.
+        # Preview generation happens in the next script.
         normalized_item[
             "preview_status"
         ] = "NOT_GENERATED"
@@ -440,6 +657,10 @@ FULL APPROVED STATE / EDITORIAL PACKAGE:
     return normalized
 
 
+# ============================================================
+# Main
+# ============================================================
+
 def main() -> None:
 
     approved_state = load_json(
@@ -454,16 +675,22 @@ def main() -> None:
         approved_state
     )
 
+    print(
+        "APPROVED_STORY confirmed."
+    )
+
+    print(
+        "Generating exactly five image concepts..."
+    )
+
     concepts = generate_concepts(
         approved_state,
         story,
     )
 
-    generated_at = (
-        datetime.now(
-            timezone.utc
-        ).isoformat()
-    )
+    generated_at = datetime.now(
+        timezone.utc
+    ).isoformat()
 
     issue_date = str(
         approved_state.get(
@@ -545,7 +772,6 @@ def main() -> None:
         "w",
         encoding="utf-8",
     ) as f:
-
         json.dump(
             result,
             f,
@@ -567,7 +793,6 @@ def main() -> None:
     )
 
     for concept in concepts:
-
         print(
             f"{concept['number']}: "
             f"{concept['title_ja']}"
