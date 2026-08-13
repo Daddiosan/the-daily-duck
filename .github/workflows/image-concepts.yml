@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install google-genai
+          pip install google-genai openai pillow
 
       - name: Verify approved story exists
         shell: bash
@@ -64,13 +64,88 @@ jobs:
           print("APPROVED_STORY confirmed.")
           PY
 
+      # ------------------------------------------------------
+      # 1. Generate five written image concepts
+      # ------------------------------------------------------
+
       - name: Generate five image concepts
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python scripts/generate_image_concepts.py
 
-      - name: Send image concept selection email
+      # ------------------------------------------------------
+      # 2. Generate ONE preview image for EACH concept
+      #    Concept 1 -> preview 1
+      #    Concept 2 -> preview 2
+      #    ...
+      #    Concept 5 -> preview 5
+      # ------------------------------------------------------
+
+      - name: Generate five concept preview images
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python scripts/generate_concept_preview_images.py
+
+      - name: Verify five preview images
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          meta_path = Path("automation_state/image_concepts.json")
+
+          if not meta_path.exists():
+              raise SystemExit(
+                  "ERROR: automation_state/image_concepts.json not found."
+              )
+
+          data = json.loads(
+              meta_path.read_text(encoding="utf-8")
+          )
+
+          concepts = data.get("image_concepts")
+
+          if not isinstance(concepts, list) or len(concepts) != 5:
+              raise SystemExit(
+                  "ERROR: Exactly five image concepts are required."
+              )
+
+          missing = []
+
+          for index, concept in enumerate(concepts, start=1):
+              image_path = str(
+                  concept.get("preview_image_path", "")
+              ).strip()
+
+              if not image_path:
+                  missing.append(
+                      f"Concept {index}: preview_image_path missing"
+                  )
+                  continue
+
+              if not Path(image_path).exists():
+                  missing.append(
+                      f"Concept {index}: {image_path} not found"
+                  )
+
+          if missing:
+              raise SystemExit(
+                  "ERROR:\n" + "\n".join(missing)
+              )
+
+          print("Exactly five concept preview images confirmed.")
+          PY
+
+      # ------------------------------------------------------
+      # 3. Email descriptions + five preview images
+      # ------------------------------------------------------
+
+      - name: Send image concept selection email with previews
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -78,14 +153,23 @@ jobs:
         run: |
           python scripts/send_image_concept_email.py
 
+      # ------------------------------------------------------
+      # Artifacts
+      # ------------------------------------------------------
+
       - name: Upload image concept artifacts
         uses: actions/upload-artifact@v4
         with:
           name: daily-duck-image-concepts
           path: |
             automation_state/image_concepts.json
+            automation_state/concept_previews/
             image_concept_email.txt
           retention-days: 7
+
+      # ------------------------------------------------------
+      # Commit concept state + preview files
+      # ------------------------------------------------------
 
       - name: Commit image concept review state
         shell: bash
@@ -96,15 +180,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add automation_state/image_concepts.json
+          git add automation_state/concept_previews/
 
           if git diff --cached --quiet; then
             echo "No image concept state changes to commit."
             exit 0
           fi
 
-          git commit -m "automation: generate image concepts"
+          git commit -m "automation: generate image concepts with previews"
 
-          # approval-check.yml may have committed around the same time.
-          # Rebase once before pushing so the automation does not overwrite it.
           git pull --rebase origin main
           git push origin HEAD:main
