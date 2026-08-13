@@ -23,6 +23,10 @@ SUBJECT_PREFIX = (
 )
 
 
+# ============================================================
+# Environment
+# ============================================================
+
 def required_env(name: str) -> str:
     value = os.getenv(
         name,
@@ -37,9 +41,14 @@ def required_env(name: str) -> str:
     return value
 
 
+# ============================================================
+# JSON
+# ============================================================
+
 def load_json(
     path: Path,
 ) -> dict[str, Any]:
+
     if not path.exists():
         raise FileNotFoundError(
             f"Required file not found: {path}"
@@ -62,9 +71,14 @@ def load_json(
     return data
 
 
+# ============================================================
+# Validation
+# ============================================================
+
 def validate_package(
     data: dict[str, Any],
 ) -> None:
+
     state = str(
         data.get("state", "")
     ).strip().upper()
@@ -91,6 +105,7 @@ def validate_package(
         concepts,
         start=1,
     ):
+
         if not isinstance(
             concept,
             dict,
@@ -129,30 +144,32 @@ def validate_package(
             )
 
 
-def story_title(
+# ============================================================
+# Story helpers
+# ============================================================
+
+def get_story(
     data: dict[str, Any],
-) -> str:
+) -> dict[str, Any]:
+
     story = data.get(
         "story"
     )
 
-    if not isinstance(
+    if isinstance(
         story,
         dict,
     ):
-        return (
-            "Approved Daily Duck Story"
-        )
+        return story
 
-    for key in (
-        "title_ja",
-        "title",
-        "headline_ja",
-        "headline",
-    ):
-        value = story.get(
-            key
-        )
+    return {}
+
+
+def first_text(
+    *values: Any,
+) -> str:
+
+    for value in values:
 
         if (
             isinstance(value, str)
@@ -160,50 +177,187 @@ def story_title(
         ):
             return value.strip()
 
-    return (
-        "Approved Daily Duck Story"
+    return ""
+
+
+def story_title_ja(
+    data: dict[str, Any],
+) -> str:
+
+    story = get_story(
+        data
     )
 
+    return first_text(
+        story.get("title_ja"),
+        story.get("headline_ja"),
+        story.get("title"),
+        story.get("headline"),
+        "承認済み Daily Duck 記事",
+    )
+
+
+def story_title_en(
+    data: dict[str, Any],
+) -> str:
+
+    story = get_story(
+        data
+    )
+
+    return first_text(
+        story.get("title"),
+        story.get("headline"),
+    )
+
+
+def story_reason_ja(
+    data: dict[str, Any],
+) -> str:
+
+    story = get_story(
+        data
+    )
+
+    return first_text(
+        story.get("reason_ja"),
+        story.get("why_this_story_ja"),
+        story.get("reason"),
+        "記事のポイント情報はありません。",
+    )
+
+
+def story_reason_en(
+    data: dict[str, Any],
+) -> str:
+
+    story = get_story(
+        data
+    )
+
+    return first_text(
+        story.get("reason"),
+        story.get("why_this_story"),
+    )
+
+
+# ============================================================
+# Email body
+# ============================================================
 
 def build_body(
     data: dict[str, Any],
 ) -> str:
+
     concepts = data[
         "concepts"
     ]
 
+    title_ja = story_title_ja(
+        data
+    )
+
+    title_en = story_title_en(
+        data
+    )
+
+    reason_ja = story_reason_ja(
+        data
+    )
+
+    reason_en = story_reason_en(
+        data
+    )
+
     lines: list[str] = []
+
+    # --------------------------------------------------------
+    # Header
+    # --------------------------------------------------------
 
     lines.extend(
         [
             "THE DAILY DUCK — 画像コンセプト選択",
             "",
-            "記事の承認が完了しました。",
+            "記事の選択・承認が完了しました。",
             "",
-            "承認済みの記事について、",
-            "異なる画像コンセプトを5案作成し、",
-            "それぞれの実際のプレビュー画像も1枚ずつ生成しました。",
-            "",
-            f"承認済み記事: {story_title(data)}",
-            "",
-            "添付画像 1〜5 を見比べて、",
-            "今後の最終画像に使いたいコンセプトを1つ選んでください。",
+            "忘れないように、今回選択した記事を最初に再掲します。",
             "",
             "==================================================",
-            "画像コンセプト 1〜5",
+            "SELECTED STORY / 選択した記事",
             "==================================================",
+            "",
+            "TITLE / タイトル",
+            "",
+            title_ja,
+        ]
+    )
+
+    if title_en:
+        lines.extend(
+            [
+                "",
+                "EN:",
+                title_en,
+            ]
+        )
+
+    lines.extend(
+        [
+            "",
+            "",
+            "WHY THIS STORY / 記事のポイント",
+            "",
+            reason_ja,
+        ]
+    )
+
+    if reason_en:
+        lines.extend(
+            [
+                "",
+                "English:",
+                reason_en,
+            ]
+        )
+
+    # --------------------------------------------------------
+    # Image concepts
+    # --------------------------------------------------------
+
+    lines.extend(
+        [
+            "",
+            "",
+            "==================================================",
+            "IMAGE CONCEPTS / 画像コンセプト 1〜5",
+            "==================================================",
+            "",
+            "この承認済み記事について、",
+            "異なる画像コンセプトを5案作成しました。",
+            "",
+            "各コンセプトについて、実際のプレビュー画像も",
+            "1枚ずつ生成してこのメールに添付しています。",
+            "",
+            "画像1〜5を見比べて、",
+            "今後の最終画像に使用したいコンセプトを",
+            "1つ選んでください。",
             "",
         ]
     )
 
     for concept in concepts:
+
         number = concept[
             "number"
         ]
 
         lines.extend(
             [
-                f"【{number}】{concept.get('title_ja', '').strip()}",
+                "--------------------------------------------------",
+                "",
+                f"【{number}】"
+                f"{concept.get('title_ja', '').strip()}",
                 "",
                 "コンセプト:",
                 concept.get(
@@ -219,22 +373,32 @@ def build_body(
                 "",
                 f"添付画像: concept_{number}.png",
                 "",
-                f"English: {concept.get('title_en', '').strip()}",
+                "English:",
+                concept.get(
+                    "title_en",
+                    "",
+                ).strip(),
+                "",
                 concept.get(
                     "concept_en",
                     "",
                 ).strip(),
                 "",
-                "--------------------------------------------------",
-                "",
             ]
         )
 
+    # --------------------------------------------------------
+    # Selection
+    # --------------------------------------------------------
+
     lines.extend(
         [
-            "選択方法",
+            "==================================================",
+            "IMAGE CONCEPT SELECTION / 画像コンセプト選択",
+            "==================================================",
             "",
-            "このメールに、使用したいコンセプトの番号だけを返信してください。",
+            "このメールに、使用したいコンセプトの",
+            "番号だけを返信してください。",
             "",
             "1",
             "2",
@@ -243,9 +407,11 @@ def build_body(
             "5",
             "",
             "例:",
+            "",
             "3",
             "",
             "IMPORTANT:",
+            "",
             "- 返信は 1〜5 の数字1文字だけにしてください。",
             "- それ以外の返信では次の工程へ進みません。",
             "- 選択したコンセプト自体が今後の画像方針になります。",
@@ -265,9 +431,14 @@ def build_body(
     )
 
 
+# ============================================================
+# Recipients
+# ============================================================
+
 def parse_recipients(
     raw: str,
 ) -> list[str]:
+
     recipients = [
         x.strip()
         for x in raw.split(",")
@@ -282,10 +453,15 @@ def parse_recipients(
     return recipients
 
 
+# ============================================================
+# Attachment
+# ============================================================
+
 def attach_image(
     msg: EmailMessage,
     image_path: Path,
 ) -> None:
+
     mime_type, _ = (
         mimetypes.guess_type(
             image_path.name
@@ -311,7 +487,12 @@ def attach_image(
     )
 
 
+# ============================================================
+# Main
+# ============================================================
+
 def main() -> None:
+
     data = load_json(
         CONCEPTS_PATH
     )
@@ -371,11 +552,11 @@ def main() -> None:
         body
     )
 
-    concepts = data[
+    # Attach exactly five concept preview images.
+    for concept in data[
         "concepts"
-    ]
+    ]:
 
-    for concept in concepts:
         image_path = Path(
             str(
                 concept[
@@ -394,6 +575,7 @@ def main() -> None:
         465,
         timeout=60,
     ) as smtp:
+
         smtp.login(
             gmail_address,
             gmail_app_password,
@@ -409,6 +591,14 @@ def main() -> None:
 
     print(
         f"Recipients: {len(recipients)}"
+    )
+
+    print(
+        "Selected story TITLE included."
+    )
+
+    print(
+        "Selected story WHY THIS STORY included."
     )
 
     print(
