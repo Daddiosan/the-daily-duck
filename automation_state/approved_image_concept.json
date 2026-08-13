@@ -57,5 +57,5 @@
   "regeneration_rule": "NEXT 5 generates five new final images while preserving this same selected concept.",
   "selected_web_image_path": "automation_state/concept_assets/web/concept_3_web.png",
   "selected_x_image_path": "automation_state/concept_assets/x/concept_3_x.png",
-  "schema_upgraded_at": "2026-08-13T10:11:13.137662+00:00"
+  "schema_upgraded_at": "2026-08-13T11:26:15.959119+00:00"
 }
