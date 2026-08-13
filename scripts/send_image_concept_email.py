@@ -2,92 +2,410 @@
 from __future__ import annotations
 
 import json
-import mimetypes
-import os
-import smtplib
-from email.message import EmailMessage
+import textwrap
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 CONCEPTS_PATH = Path(
     "automation_state/image_concepts.json"
 )
 
-EMAIL_PREVIEW_PATH = Path(
-    "image_concept_email.txt"
+X_DIR = Path(
+    "automation_state/concept_assets/x"
 )
 
-SUBJECT_PREFIX = (
-    "The Daily Duck — Image Concept Selection"
+BRAND_LOGO = Path(
+    "assets/brand/the-daily-duck-emblem-128.png"
+)
+
+CARD_WIDTH = 1600
+CARD_HEIGHT = 900
+
+FONT_REGULAR = Path(
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+)
+
+FONT_BOLD = Path(
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
 )
 
 
-# ============================================================
-# Environment
-# ============================================================
+def load_json(path: Path) -> dict[str, Any]:
+    return json.loads(
+        path.read_text(encoding="utf-8")
+    )
 
-def required_env(name: str) -> str:
-    value = os.getenv(
-        name,
-        "",
-    ).strip()
 
-    if not value:
-        raise RuntimeError(
-            f"Missing required environment variable: {name}"
+def save_json(path: Path, data: dict[str, Any]) -> None:
+    path.write_text(
+        json.dumps(
+            data,
+            ensure_ascii=False,
+            indent=2,
         )
+        + "\n",
+        encoding="utf-8",
+    )
 
-    return value
 
-
-# ============================================================
-# JSON
-# ============================================================
-
-def load_json(
-    path: Path,
-) -> dict[str, Any]:
+def font(size: int, bold: bool = False):
+    path = (
+        FONT_BOLD
+        if bold
+        else FONT_REGULAR
+    )
 
     if not path.exists():
         raise FileNotFoundError(
-            f"Required file not found: {path}"
+            f"Font not found: {path}"
         )
 
-    with path.open(
-        "r",
-        encoding="utf-8",
-    ) as f:
-        data = json.load(f)
+    return ImageFont.truetype(
+        str(path),
+        size=size,
+    )
 
-    if not isinstance(
-        data,
-        dict,
-    ):
-        raise ValueError(
-            f"{path} must contain a JSON object."
+
+def first_text(*values: Any) -> str:
+    for value in values:
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def fit_image(
+    image: Image.Image,
+    size: tuple[int, int],
+) -> Image.Image:
+
+    return ImageOps.fit(
+        image.convert("RGB"),
+        size,
+        method=Image.Resampling.LANCZOS,
+        centering=(0.5, 0.5),
+    )
+
+
+def wrap_by_pixels(
+    draw: ImageDraw.ImageDraw,
+    text: str,
+    fnt,
+    max_width: int,
+) -> list[str]:
+
+    words = text.split()
+
+    if not words:
+        return []
+
+    lines: list[str] = []
+    current = words[0]
+
+    for word in words[1:]:
+        test = current + " " + word
+
+        bbox = draw.textbbox(
+            (0, 0),
+            test,
+            font=fnt,
         )
 
-    return data
+        if bbox[2] <= max_width:
+            current = test
+        else:
+            lines.append(current)
+            current = word
+
+    lines.append(current)
+
+    return lines
 
 
-# ============================================================
-# Validation
-# ============================================================
+def draw_multiline(
+    draw: ImageDraw.ImageDraw,
+    xy: tuple[int, int],
+    lines: list[str],
+    fnt,
+    fill,
+    spacing: int,
+):
+    x, y = xy
 
-def validate_package(
+    for line in lines:
+        draw.text(
+            (x, y),
+            line,
+            font=fnt,
+            fill=fill,
+        )
+
+        bbox = draw.textbbox(
+            (x, y),
+            line,
+            font=fnt,
+        )
+
+        y += (
+            bbox[3] - bbox[1]
+            + spacing
+        )
+
+    return y
+
+
+def create_card(
     data: dict[str, Any],
-) -> None:
+    concept: dict[str, Any],
+) -> Path:
 
-    state = str(
-        data.get("state", "")
-    ).strip().upper()
+    number = int(
+        concept["number"]
+    )
 
-    if state != "IMAGE_CONCEPT_REVIEW":
-        raise ValueError(
-            "Expected IMAGE_CONCEPT_REVIEW state, "
-            f"got {state!r}."
+    story = data.get("story")
+
+    if not isinstance(story, dict):
+        story = {}
+
+    title_ja = first_text(
+        story.get("title_ja"),
+        story.get("title"),
+    )
+
+    reason_ja = first_text(
+        story.get("reason_ja"),
+        story.get("reason"),
+    )
+
+    duck_name = first_text(
+        story.get("duck_name"),
+        "DUCK OF THE DAY",
+    )
+
+    issue_date = first_text(
+        data.get("issue_date")
+    )
+
+    web_path = Path(
+        concept["web_image_path"]
+    )
+
+    if not web_path.exists():
+        raise FileNotFoundError(
+            web_path
         )
+
+    canvas = Image.new(
+        "RGB",
+        (CARD_WIDTH, CARD_HEIGHT),
+        "#f7f2e5",
+    )
+
+    draw = ImageDraw.Draw(
+        canvas
+    )
+
+    # Outer border
+    draw.rounded_rectangle(
+        (18, 18, CARD_WIDTH - 18, CARD_HEIGHT - 18),
+        radius=28,
+        outline="#1b2636",
+        width=3,
+    )
+
+    # Header
+    draw.rectangle(
+        (20, 20, CARD_WIDTH - 20, 112),
+        fill="#fbf5e7",
+    )
+
+    if BRAND_LOGO.exists():
+        logo = Image.open(
+            BRAND_LOGO
+        ).convert("RGBA")
+
+        logo.thumbnail(
+            (70, 70),
+            Image.Resampling.LANCZOS,
+        )
+
+        canvas.paste(
+            logo,
+            (42, 30),
+            logo,
+        )
+
+    draw.text(
+        (125, 43),
+        "THE DAILY DUCK",
+        font=font(34, True),
+        fill="#111827",
+    )
+
+    draw.text(
+        (1185, 51),
+        "ONE DAY. ONE STORY. ONE DUCK.",
+        font=font(18, True),
+        fill="#364152",
+    )
+
+    # Main visual on right
+    visual = fit_image(
+        Image.open(web_path),
+        (870, 650),
+    )
+
+    canvas.paste(
+        visual,
+        (700, 125),
+    )
+
+    # Left information panel
+    draw.rounded_rectangle(
+        (55, 150, 330, 206),
+        radius=16,
+        fill="#ffc400",
+    )
+
+    draw.text(
+        (78, 164),
+        "DUCK OF THE DAY",
+        font=font(23, True),
+        fill="#111111",
+    )
+
+    display_title = (
+        duck_name.upper()
+        if duck_name
+        else "DAILY DUCK"
+    )
+
+    title_font = font(
+        70,
+        True,
+    )
+
+    title_lines = wrap_by_pixels(
+        draw,
+        display_title,
+        title_font,
+        570,
+    )
+
+    y = draw_multiline(
+        draw,
+        (65, 238),
+        title_lines[:3],
+        title_font,
+        "#111827",
+        2,
+    )
+
+    draw.rectangle(
+        (65, y + 10, 165, y + 18),
+        fill="#ffc400",
+    )
+
+    y += 42
+
+    draw.text(
+        (65, y),
+        issue_date,
+        font=font(25, True),
+        fill="#253044",
+    )
+
+    y += 48
+
+    # Japanese story title
+    jp_title_font = font(
+        27,
+        True,
+    )
+
+    # Japanese needs character-based wrapping.
+    jp_title_lines = textwrap.wrap(
+        title_ja,
+        width=21,
+    )[:3]
+
+    y = draw_multiline(
+        draw,
+        (65, y),
+        jp_title_lines,
+        jp_title_font,
+        "#111827",
+        9,
+    )
+
+    y += 20
+
+    reason_font = font(
+        21,
+        False,
+    )
+
+    reason_lines = textwrap.wrap(
+        reason_ja,
+        width=29,
+    )[:5]
+
+    draw_multiline(
+        draw,
+        (65, y),
+        reason_lines,
+        reason_font,
+        "#374151",
+        8,
+    )
+
+    # Footer
+    draw.rectangle(
+        (20, 790, CARD_WIDTH - 20, CARD_HEIGHT - 20),
+        fill="#142033",
+    )
+
+    draw.text(
+        (62, 823),
+        "thedailyduck.ai",
+        font=font(23, True),
+        fill="#ffffff",
+    )
+
+    draw.text(
+        (1260, 823),
+        "#TheDailyDuck",
+        font=font(22, True),
+        fill="#ffffff",
+    )
+
+    X_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    output = (
+        X_DIR
+        / f"concept_{number}_x.png"
+    )
+
+    canvas.save(
+        output,
+        format="PNG",
+        optimize=True,
+    )
+
+    return output
+
+
+def main() -> None:
+    data = load_json(
+        CONCEPTS_PATH
+    )
 
     concepts = data.get(
         "concepts"
@@ -95,527 +413,55 @@ def validate_package(
 
     if (
         not isinstance(concepts, list)
-        or len(concepts) != 5
+        or len(concepts) != 3
     ):
         raise ValueError(
-            "Exactly five image concepts are required."
+            "Exactly three concepts required."
         )
 
-    for index, concept in enumerate(
-        concepts,
-        start=1,
+    if str(
+        data.get("state", "")
+    ).upper() != "WEB_IMAGES_READY":
+        raise ValueError(
+            "Expected WEB_IMAGES_READY."
+        )
+
+    X_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    for old in X_DIR.glob(
+        "concept_*_x.png"
     ):
-
-        if not isinstance(
-            concept,
-            dict,
-        ):
-            raise ValueError(
-                f"Concept {index} must be an object."
-            )
-
-        if int(
-            concept.get("number", 0)
-        ) != index:
-            raise ValueError(
-                "Concept numbering must be exactly 1-5; "
-                f"problem at {index}."
-            )
-
-        preview_path = str(
-            concept.get(
-                "preview_image_path",
-                "",
-            )
-        ).strip()
-
-        if not preview_path:
-            raise ValueError(
-                f"Concept {index} has no preview_image_path."
-            )
-
-        path = Path(
-            preview_path
-        )
-
-        if not path.exists():
-            raise FileNotFoundError(
-                f"Concept {index} preview not found: {path}"
-            )
-
-
-# ============================================================
-# Story helpers
-# ============================================================
-
-def get_story(
-    data: dict[str, Any],
-) -> dict[str, Any]:
-
-    story = data.get(
-        "story"
-    )
-
-    if isinstance(
-        story,
-        dict,
-    ):
-        return story
-
-    return {}
-
-
-def first_text(
-    *values: Any,
-) -> str:
-
-    for value in values:
-
-        if (
-            isinstance(value, str)
-            and value.strip()
-        ):
-            return value.strip()
-
-    return ""
-
-
-def story_title_ja(
-    data: dict[str, Any],
-) -> str:
-
-    story = get_story(
-        data
-    )
-
-    return first_text(
-        story.get("title_ja"),
-        story.get("headline_ja"),
-        story.get("title"),
-        story.get("headline"),
-        "承認済み Daily Duck 記事",
-    )
-
-
-def story_title_en(
-    data: dict[str, Any],
-) -> str:
-
-    story = get_story(
-        data
-    )
-
-    return first_text(
-        story.get("title"),
-        story.get("headline"),
-    )
-
-
-def story_reason_ja(
-    data: dict[str, Any],
-) -> str:
-
-    story = get_story(
-        data
-    )
-
-    return first_text(
-        story.get("reason_ja"),
-        story.get("why_this_story_ja"),
-        story.get("reason"),
-        "記事のポイント情報はありません。",
-    )
-
-
-def story_reason_en(
-    data: dict[str, Any],
-) -> str:
-
-    story = get_story(
-        data
-    )
-
-    return first_text(
-        story.get("reason"),
-        story.get("why_this_story"),
-    )
-
-
-# ============================================================
-# Email body
-# ============================================================
-
-def build_body(
-    data: dict[str, Any],
-) -> str:
-
-    concepts = data[
-        "concepts"
-    ]
-
-    title_ja = story_title_ja(
-        data
-    )
-
-    title_en = story_title_en(
-        data
-    )
-
-    reason_ja = story_reason_ja(
-        data
-    )
-
-    reason_en = story_reason_en(
-        data
-    )
-
-    lines: list[str] = []
-
-    # --------------------------------------------------------
-    # Header
-    # --------------------------------------------------------
-
-    lines.extend(
-        [
-            "THE DAILY DUCK — 画像コンセプト選択",
-            "",
-            "記事の選択・承認が完了しました。",
-            "",
-            "忘れないように、今回選択した記事を最初に再掲します。",
-            "",
-            "==================================================",
-            "SELECTED STORY / 選択した記事",
-            "==================================================",
-            "",
-            "TITLE / タイトル",
-            "",
-            title_ja,
-        ]
-    )
-
-    if title_en:
-        lines.extend(
-            [
-                "",
-                "EN:",
-                title_en,
-            ]
-        )
-
-    lines.extend(
-        [
-            "",
-            "",
-            "WHY THIS STORY / 記事のポイント",
-            "",
-            reason_ja,
-        ]
-    )
-
-    if reason_en:
-        lines.extend(
-            [
-                "",
-                "English:",
-                reason_en,
-            ]
-        )
-
-    # --------------------------------------------------------
-    # Image concepts
-    # --------------------------------------------------------
-
-    lines.extend(
-        [
-            "",
-            "",
-            "==================================================",
-            "IMAGE CONCEPTS / 画像コンセプト 1〜5",
-            "==================================================",
-            "",
-            "この承認済み記事について、",
-            "異なる画像コンセプトを5案作成しました。",
-            "",
-            "各コンセプトについて、実際のプレビュー画像も",
-            "1枚ずつ生成してこのメールに添付しています。",
-            "",
-            "画像1〜5を見比べて、",
-            "今後の最終画像に使用したいコンセプトを",
-            "1つ選んでください。",
-            "",
-        ]
-    )
+        old.unlink()
 
     for concept in concepts:
-
-        number = concept[
-            "number"
-        ]
-
-        lines.extend(
-            [
-                "--------------------------------------------------",
-                "",
-                f"【{number}】"
-                f"{concept.get('title_ja', '').strip()}",
-                "",
-                "コンセプト:",
-                concept.get(
-                    "concept_ja",
-                    "",
-                ).strip(),
-                "",
-                "構図:",
-                concept.get(
-                    "composition_ja",
-                    "",
-                ).strip(),
-                "",
-                f"添付画像: concept_{number}.png",
-                "",
-                "English:",
-                concept.get(
-                    "title_en",
-                    "",
-                ).strip(),
-                "",
-                concept.get(
-                    "concept_en",
-                    "",
-                ).strip(),
-                "",
-            ]
+        output = create_card(
+            data,
+            concept,
         )
 
-    # --------------------------------------------------------
-    # Selection
-    # --------------------------------------------------------
+        concept["x_image_status"] = "GENERATED"
+        concept["x_image_path"] = output.as_posix()
+        concept["x_generated_at"] = datetime.now(
+            timezone.utc
+        ).isoformat()
 
-    lines.extend(
-        [
-            "==================================================",
-            "IMAGE CONCEPT SELECTION / 画像コンセプト選択",
-            "==================================================",
-            "",
-            "このメールに、使用したいコンセプトの",
-            "番号だけを返信してください。",
-            "",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "",
-            "例:",
-            "",
-            "3",
-            "",
-            "IMPORTANT:",
-            "",
-            "- 返信は 1〜5 の数字1文字だけにしてください。",
-            "- それ以外の返信では次の工程へ進みません。",
-            "- 選択したコンセプト自体が今後の画像方針になります。",
-            "- 次の工程では、選択した1コンセプトだけから実画像候補を5枚生成します。",
-            "- その5枚から最終画像を1〜5で選択できます。",
-            "- 気に入らない場合は NEXT 5 で、同じコンセプトのまま新しい5枚を生成します。",
-            "- 最終画像確定までWebサイト/Xには公開しません。",
-            "",
-            "The Daily Duck",
-            "One day. One story. One duck. 🐤",
-        ]
-    )
-
-    return (
-        "\n".join(lines).strip()
-        + "\n"
-    )
-
-
-# ============================================================
-# Recipients
-# ============================================================
-
-def parse_recipients(
-    raw: str,
-) -> list[str]:
-
-    recipients = [
-        x.strip()
-        for x in raw.split(",")
-        if x.strip()
-    ]
-
-    if not recipients:
-        raise RuntimeError(
-            "EMAIL_TO contains no valid recipients."
+        print(
+            f"Created X card: {output}"
         )
 
-    return recipients
+    data["state"] = "IMAGE_CONCEPT_REVIEW"
+    data["x_image_count"] = 3
 
-
-# ============================================================
-# Attachment
-# ============================================================
-
-def attach_image(
-    msg: EmailMessage,
-    image_path: Path,
-) -> None:
-
-    mime_type, _ = (
-        mimetypes.guess_type(
-            image_path.name
-        )
+    save_json(
+        CONCEPTS_PATH,
+        data,
     )
 
-    if mime_type:
-        maintype, subtype = (
-            mime_type.split(
-                "/",
-                1,
-            )
-        )
-    else:
-        maintype = "image"
-        subtype = "png"
-
-    msg.add_attachment(
-        image_path.read_bytes(),
-        maintype=maintype,
-        subtype=subtype,
-        filename=image_path.name,
-    )
-
-
-# ============================================================
-# Main
-# ============================================================
-
-def main() -> None:
-
-    data = load_json(
-        CONCEPTS_PATH
-    )
-
-    validate_package(
-        data
-    )
-
-    gmail_address = required_env(
-        "GMAIL_ADDRESS"
-    )
-
-    gmail_app_password = required_env(
-        "GMAIL_APP_PASSWORD"
-    )
-
-    recipients = parse_recipients(
-        required_env(
-            "EMAIL_TO"
-        )
-    )
-
-    body = build_body(
-        data
-    )
-
-    EMAIL_PREVIEW_PATH.write_text(
-        body,
-        encoding="utf-8",
-    )
-
-    issue_date = str(
-        data.get(
-            "issue_date",
-            "",
-        )
-    ).strip()
-
-    subject = (
-        f"{SUBJECT_PREFIX}"
-        + (
-            f" — {issue_date}"
-            if issue_date
-            else ""
-        )
-    )
-
-    msg = EmailMessage()
-
-    msg["Subject"] = subject
-    msg["From"] = gmail_address
-    msg["To"] = ", ".join(
-        recipients
-    )
-
-    msg.set_content(
-        body
-    )
-
-    # Attach exactly five concept preview images.
-    for concept in data[
-        "concepts"
-    ]:
-
-        image_path = Path(
-            str(
-                concept[
-                    "preview_image_path"
-                ]
-            )
-        )
-
-        attach_image(
-            msg,
-            image_path,
-        )
-
-    with smtplib.SMTP_SSL(
-        "smtp.gmail.com",
-        465,
-        timeout=60,
-    ) as smtp:
-
-        smtp.login(
-            gmail_address,
-            gmail_app_password,
-        )
-
-        smtp.send_message(
-            msg
-        )
-
-    print(
-        "Image concept selection email sent."
-    )
-
-    print(
-        f"Recipients: {len(recipients)}"
-    )
-
-    print(
-        "Selected story TITLE included."
-    )
-
-    print(
-        "Selected story WHY THIS STORY included."
-    )
-
-    print(
-        "Concept count: 5"
-    )
-
-    print(
-        "Attached preview images: 5"
-    )
-
-    print(
-        "Valid replies: 1 / 2 / 3 / 4 / 5"
-    )
-
-    print(
-        f"Preview saved: {EMAIL_PREVIEW_PATH}"
-    )
+    print("Generated exactly 3 X cards.")
+    print("STATE: IMAGE_CONCEPT_REVIEW")
 
 
 if __name__ == "__main__":
