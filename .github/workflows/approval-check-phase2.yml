@@ -1,4 +1,4 @@
-name: The Daily Duck - Gate A Approval Check (Phase 2 format)
+name: The Daily Duck - Gate A Approval Check
 
 on:
   workflow_dispatch:
@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
   actions: read
+
+concurrency:
+  group: daily-duck-gate-a-approval
+  cancel-in-progress: false
 
 jobs:
   check-approval:
@@ -25,29 +29,158 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements-phase2.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-phase2.txt
 
-      # Keep your existing Phase 1 artifact-download step here if gate_a_package.json
-      # is produced only as an artifact and not committed to the repository.
-      # The current Phase 1 handoff confirms that approval-check.yml already
-      # downloads the latest Gate A artifact. Preserve that working step.
+      # ======================================================
+      # Download the latest successful Daily Duck Gate A package
+      # ======================================================
 
-      - name: Check story + image-concept approval
+      - name: Find latest successful Daily Duck Automation run
+        id: dailyduck
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RUN_ID=$(gh run list \
+            --workflow daily-duck.yml \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId')
+
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo "ERROR: No successful daily-duck.yml run found."
+            exit 1
+          fi
+
+          echo "Latest successful Daily Duck run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Download latest Daily Duck results artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RUN_ID="${{ steps.dailyduck.outputs.run_id }}"
+
+          rm -rf gate-a-artifact
+          mkdir -p gate-a-artifact
+
+          gh run download "$RUN_ID" \
+            --name daily-duck-results \
+            --dir gate-a-artifact
+
+          echo "Downloaded artifact contents:"
+          find gate-a-artifact -maxdepth 3 -type f -print
+
+      # ======================================================
+      # Locate gate_a_package.json regardless of artifact folder
+      # layout and copy it to the repository root.
+      # ======================================================
+
+      - name: Prepare Gate A package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PACKAGE=$(find gate-a-artifact \
+            -type f \
+            -name "gate_a_package.json" \
+            -print \
+            -quit)
+
+          if [ -z "$PACKAGE" ]; then
+            echo "ERROR: gate_a_package.json was not found in the artifact."
+            echo "Artifact contents:"
+            find gate-a-artifact -maxdepth 5 -type f -print
+            exit 1
+          fi
+
+          cp "$PACKAGE" gate_a_package.json
+
+          echo "Gate A package copied from:"
+          echo "$PACKAGE"
+
+          echo "Gate A package summary:"
+          python - <<'PY'
+          import json
+
+          with open("gate_a_package.json", encoding="utf-8") as f:
+              data = json.load(f)
+
+          print("issue_date:", data.get("issue_date") or data.get("date"))
+          print("state:", data.get("state"))
+          print("story_options:", len(data.get("story_options", [])))
+          print("gate_a_approval_format:", data.get("gate_a_approval_format"))
+          PY
+
+      # ======================================================
+      # Current Gate A:
+      # user replies EXACTLY 1 / 2 / 3 / 4 / 5
+      # ======================================================
+
+      - name: Check Gate A story selection
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python scripts/check_story_approval.py
+        run: |
+          python scripts/check_story_approval.py
+
+      # ======================================================
+      # Commit only when approved_story.json actually changed
+      # ======================================================
 
       - name: Commit APPROVED_STORY when created
+        shell: bash
         run: |
+          set -euo pipefail
+
           if [ ! -f automation_state/approved_story.json ]; then
             echo "No APPROVED_STORY yet."
             exit 0
           fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add automation_state/approved_story.json
-          git diff --cached --quiet && exit 0
-          git commit -m "Gate A: approve story and image concept"
-          git push
+
+          if git diff --cached --quiet; then
+            echo "No new Gate A approval state to commit."
+            exit 0
+          fi
+
+          git commit -m "Gate A: select Daily Duck story"
+
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Report Gate A result
+        shell: bash
+        run: |
+          echo "Gate A approval check finished."
+
+          if [ -f automation_state/approved_story.json ]; then
+            python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/approved_story.json",
+              encoding="utf-8"
+          ) as f:
+              data = json.load(f)
+
+          print("STATE:", data.get("state"))
+          print("Selected story:", data.get("selected_story_number"))
+          print("Issue date:", data.get("issue_date"))
+          PY
+          else
+            echo "STATE: WAITING_STORY_SELECTION"
+          fi
