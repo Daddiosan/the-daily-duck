@@ -1,314 +1,69 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-
-import json
-import mimetypes
-import os
-import smtplib
-from email.message import EmailMessage
+import email, imaplib, json, os, re
+from datetime import datetime, timezone
+from email.header import decode_header, make_header
+from email.utils import parseaddr
 from pathlib import Path
-from typing import Any
 
-
-CONCEPTS_PATH = Path(
-    "automation_state/image_concepts.json"
-)
-
-EMAIL_PREVIEW_PATH = Path(
-    "image_concept_email.txt"
-)
-
-SUBJECT_PREFIX = (
-    "The Daily Duck — Image Selection"
-)
-
-
-def required_env(name: str) -> str:
-    value = os.getenv(name, "").strip()
-
-    if not value:
-        raise RuntimeError(
-            f"Missing environment variable: {name}"
-        )
-
-    return value
-
-
-def load_json(path: Path) -> dict[str, Any]:
-    return json.loads(
-        path.read_text(encoding="utf-8")
-    )
-
-
-def first_text(*values: Any) -> str:
-    for value in values:
-        if isinstance(value, str) and value.strip():
-            return value.strip()
-
-    return ""
-
-
-def validate(data: dict[str, Any]) -> None:
-    if str(
-        data.get("state", "")
-    ).upper() != "IMAGE_CONCEPT_REVIEW":
-        raise ValueError(
-            "Expected IMAGE_CONCEPT_REVIEW."
-        )
-
-    concepts = data.get("concepts")
-
-    if (
-        not isinstance(concepts, list)
-        or len(concepts) != 3
-    ):
-        raise ValueError(
-            "Exactly three concepts required."
-        )
-
-    for number, concept in enumerate(
-        concepts,
-        start=1,
-    ):
-        if int(
-            concept.get("number", 0)
-        ) != number:
-            raise ValueError(
-                "Concept numbering error."
-            )
-
-        for field in (
-            "web_image_path",
-            "x_image_path",
-        ):
-            path = Path(
-                str(concept.get(field, ""))
-            )
-
-            if not path.exists():
-                raise FileNotFoundError(path)
-
-
-def build_body(data: dict[str, Any]) -> str:
-    story = data.get("story")
-
-    if not isinstance(story, dict):
-        story = {}
-
-    title_ja = first_text(
-        story.get("title_ja"),
-        story.get("title"),
-    )
-
-    title_en = first_text(
-        story.get("title")
-    )
-
-    reason_ja = first_text(
-        story.get("reason_ja"),
-        story.get("reason"),
-    )
-
-    lines = [
-        "THE DAILY DUCK — IMAGE SELECTION",
-        "",
-        "==================================================",
-        "SELECTED STORY / 選択した記事",
-        "==================================================",
-        "",
-        "TITLE / タイトル",
-        "",
-        title_ja,
-        "",
-    ]
-
-    if title_en:
-        lines.extend(
-            [
-                "EN:",
-                title_en,
-                "",
-            ]
-        )
-
-    lines.extend(
-        [
-            "WHY THIS STORY / 記事のポイント",
-            "",
-            reason_ja,
-            "",
-            "==================================================",
-            "IMAGE SETS / 画像案 1〜3",
-            "==================================================",
-            "",
-            "各案には2枚あります。",
-            "",
-            "WEB：The Daily Duckサイト用",
-            "X：X投稿用のDaily Duckブランドカード",
-            "",
-        ]
-    )
-
-    for concept in data["concepts"]:
-        number = concept["number"]
-
-        lines.extend(
-            [
-                f"【案 {number}】",
-                "",
-                concept.get(
-                    "title_ja",
-                    "",
-                ),
-                "",
-                "コンセプト:",
-                concept.get(
-                    "concept_ja",
-                    "",
-                ),
-                "",
-                "構図:",
-                concept.get(
-                    "composition_ja",
-                    "",
-                ),
-                "",
-                f"WEB画像: concept_{number}_web.png",
-                f"X画像:   concept_{number}_x.png",
-                "",
-                "--------------------------------------------------",
-                "",
-            ]
-        )
-
-    lines.extend(
-        [
-            "選択方法",
-            "",
-            "使用したい画像セットの番号だけ返信してください。",
-            "",
-            "1",
-            "2",
-            "3",
-            "",
-            "例:",
-            "",
-            "2",
-            "",
-            "番号を選ぶと、同じ番号の",
-            "WEB画像とX画像をセットで正式採用します。",
-            "",
-            "選択後は自動でHPを更新し、",
-            "HP公開成功後にXへ投稿します。",
-            "",
-            "The Daily Duck",
-            "One day. One story. One duck.",
-        ]
-    )
-
-    return "\n".join(lines) + "\n"
-
-
-def attach(
-    msg: EmailMessage,
-    path: Path,
-) -> None:
-
-    mime, _ = mimetypes.guess_type(
-        path.name
-    )
-
-    if mime:
-        maintype, subtype = mime.split("/", 1)
-    else:
-        maintype, subtype = "image", "png"
-
-    msg.add_attachment(
-        path.read_bytes(),
-        maintype=maintype,
-        subtype=subtype,
-        filename=path.name,
-    )
-
-
-def main() -> None:
-    data = load_json(
-        CONCEPTS_PATH
-    )
-
-    validate(data)
-
-    recipients = [
-        x.strip()
-        for x in required_env(
-            "EMAIL_TO"
-        ).split(",")
-        if x.strip()
-    ]
-
-    body = build_body(data)
-
-    EMAIL_PREVIEW_PATH.write_text(
-        body,
-        encoding="utf-8",
-    )
-
-    issue_date = first_text(
-        data.get("issue_date")
-    )
-
-    msg = EmailMessage()
-
-    msg["From"] = required_env(
-        "GMAIL_ADDRESS"
-    )
-
-    msg["To"] = ", ".join(
-        recipients
-    )
-
-    msg["Subject"] = (
-        f"{SUBJECT_PREFIX} — {issue_date}"
-    )
-
-    msg.set_content(body)
-
-    for concept in data["concepts"]:
-        attach(
-            msg,
-            Path(concept["web_image_path"]),
-        )
-
-        attach(
-            msg,
-            Path(concept["x_image_path"]),
-        )
-
-    with smtplib.SMTP_SSL(
-        "smtp.gmail.com",
-        465,
-        timeout=90,
-    ) as smtp:
-
-        smtp.login(
-            required_env("GMAIL_ADDRESS"),
-            required_env("GMAIL_APP_PASSWORD"),
-        )
-
-        smtp.send_message(msg)
-
-    print(
-        "Sent 3 WEB/X image sets."
-    )
-
-    print(
-        "Attachments: 6"
-    )
-
-    print(
-        "Valid replies: 1 / 2 / 3"
-    )
-
-
-if __name__ == "__main__":
-    main()
+STATE=Path("automation_state"); P=STATE/"design_options.json"; OUT=STATE/"selected_design.json"; RESULT=STATE/"design_selection_result.json"
+VALID=re.compile(r"^([1-3])\s+([1-3])$")
+def env(n):
+    v=os.getenv(n,"").strip()
+    if not v: raise RuntimeError(f"Missing {n}")
+    return v
+def dec(v):
+    try:return str(make_header(decode_header(v or "")))
+    except:return v or ""
+def body(msg):
+    chunks=[]
+    for p in msg.walk() if msg.is_multipart() else [msg]:
+        if p.get_content_type()!="text/plain": continue
+        b=p.get_payload(decode=True)
+        if b: chunks.append(b.decode(p.get_content_charset() or "utf-8",errors="replace"))
+    return "\n".join(chunks)
+def normalize(t):
+    out=[]
+    for line in t.replace("\r","").split("\n"):
+        s=line.strip()
+        if s.startswith(">") or re.match(r"^On .+ wrote:$",s,re.I) or s in ("-----Original Message-----","-----元のメッセージ-----"): break
+        if re.match(r"^(From|Sent|To|Subject):\s",s,re.I): break
+        if s: out.append(s)
+    return re.sub(r"\s+"," "," ".join(out)).strip()
+def result(action,**kw):
+    RESULT.write_text(json.dumps({"action":action,"checked_at":datetime.now(timezone.utc).isoformat(),**kw},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+def main():
+    d=json.loads(P.read_text(encoding="utf-8")); subject=d["email_subject"]
+    allowed={x.strip().lower() for x in env("EMAIL_TO").split(",") if x.strip()}
+    found=None
+    with imaplib.IMAP4_SSL("imap.gmail.com",993) as im:
+        im.login(env("GMAIL_ADDRESS"),env("GMAIL_APP_PASSWORD")); im.select("INBOX")
+        st,ids=im.search(None,"ALL")
+        for mid in reversed(ids[0].split()[-250:]):
+            st,p=im.fetch(mid,"(RFC822)")
+            if st!="OK" or not p or not isinstance(p[0],tuple): continue
+            m=email.message_from_bytes(p[0][1]); sender=parseaddr(dec(m.get("From")))[1].lower()
+            if subject not in dec(m.get("Subject")) or (allowed and sender not in allowed): continue
+            cmd=normalize(body(m)); mm=VALID.fullmatch(cmd)
+            if mm: found=(int(mm.group(1)),int(mm.group(2)),sender,cmd); break
+    if not found:
+        result("WAIT"); print("STATE: WAITING_DESIGN_SELECTION"); return
+    ic,tc,sender,cmd=found
+    concept=d["image_concepts"][ic-1]; title=d["title_ideas"][tc-1]
+    approved=d["approved_story"]
+    selected={
+      "state":"DESIGN_SELECTED","issue_date":d["issue_date"],
+      "selected_at":datetime.now(timezone.utc).isoformat(),
+      "selected_image_concept_number":ic,"selected_image_concept":concept,
+      "selected_title_number":tc,"selected_title":title["title"],
+      "selected_title_detail":title,"approval_reply":cmd,"approval_sender":sender,
+      "approved_story":approved
+    }
+    OUT.write_text(json.dumps(selected,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    # Also enrich approved_story for compatibility with downstream scripts.
+    approved["selected_image_concept_number"]=ic; approved["selected_image_concept"]=concept
+    approved["selected_title_number"]=tc; approved["selected_title"]=title["title"]
+    (STATE/"approved_story.json").write_text(json.dumps(approved,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    result("DESIGN_SELECTED",image_concept=ic,title=tc)
+    print(f"DESIGN SELECTED: image {ic}, title {tc}")
+if __name__=="__main__": main()

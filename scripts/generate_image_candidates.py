@@ -1,51 +1,23 @@
 #!/usr/bin/env python3
-"""
-The Daily Duck - Phase 2 image candidate generator
-
-Precondition:
-- automation_state/approved_story.json
-- state == APPROVED_STORY
-- selected_image_concept is present
-
-Generates EXACTLY five images for the selected concept.
-
-Cost safety:
-Image generation is paid on the Gemini API at the time this file was prepared.
-This script refuses to call the image API unless:
-  ENABLE_PAID_IMAGE_GENERATION=true
-
-Recommended low-cost model:
-  gemini-3.6-flash-lite-image
-
-NEXT 5 handling:
-- If automation_state/image_regeneration_request.json exists and is valid,
-  generation batch increments and five NEW prompts are created.
-- The selected Gate A concept does not change.
-"""
-
 from __future__ import annotations
 
 import base64
 import hashlib
 import json
 import os
-import shutil
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from google import genai
+from openai import OpenAI
 
-STATE_DIR = Path("automation_state")
-APPROVED_PATH = STATE_DIR / "approved_story.json"
-CANDIDATES_PATH = STATE_DIR / "image_candidates.json"
-REGEN_REQUEST_PATH = STATE_DIR / "image_regeneration_request.json"
-IMAGE_ROOT = Path("automation_images")
+CONCEPTS_PATH = Path("automation_state/image_concepts.json")
+OUTPUT_STATE_PATH = Path("automation_state/image_candidates.json")
+OUTPUT_DIR = Path("automation_state/image_candidates")
 
-IMAGE_MODEL = os.getenv("GEMINI_IMAGE_MODEL", "gemini-3.6-flash-lite-image")
-TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
-ASPECT_RATIO = os.getenv("DAILY_DUCK_IMAGE_ASPECT_RATIO", "1:1")
+IMAGE_MODEL = (os.getenv("OPENAI_IMAGE_MODEL") or "").strip() or "gpt-image-2"
+IMAGE_SIZE = (os.getenv("OPENAI_IMAGE_SIZE") or "").strip() or "1536x1024"
+IMAGE_QUALITY = (os.getenv("OPENAI_IMAGE_QUALITY") or "").strip() or "medium"
 
 
 def required_env(name: str) -> str:
@@ -55,160 +27,99 @@ def required_env(name: str) -> str:
     return value
 
 
-def paid_generation_enabled() -> bool:
-    return os.getenv("ENABLE_PAID_IMAGE_GENERATION", "").strip().lower() == "true"
-
-
 def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Required file not found: {path}")
-    data = json.loads(path.read_text(encoding="utf-8"))
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
     if not isinstance(data, dict):
         raise ValueError(f"{path} must contain a JSON object.")
     return data
 
 
-def issue_date(approved: dict[str, Any]) -> str:
-    return str(
-        approved.get("date")
-        or approved.get("issue_date")
-        or datetime.now().date().isoformat()
+def validate_concepts(data: dict[str, Any]) -> list[dict[str, Any]]:
+    state = str(data.get("state", "")).strip().upper()
+    if state != "IMAGE_CONCEPT_REVIEW":
+        raise ValueError(
+            f"Expected IMAGE_CONCEPT_REVIEW state, got {state!r}."
+        )
+
+    concepts = data.get("concepts")
+    if not isinstance(concepts, list) or len(concepts) != 5:
+        raise ValueError("Exactly five image concepts are required.")
+
+    normalized: list[dict[str, Any]] = []
+    for i, concept in enumerate(concepts, start=1):
+        if not isinstance(concept, dict):
+            raise ValueError(f"Concept {i} must be an object.")
+        c = dict(concept)
+        c["number"] = i
+        normalized.append(c)
+
+    return normalized
+
+
+def compact_story(data: dict[str, Any]) -> dict[str, Any]:
+    story = data.get("story")
+    return story if isinstance(story, dict) else {}
+
+
+def build_prompt(story: dict[str, Any], concept: dict[str, Any]) -> str:
+    title = str(story.get("title") or story.get("title_ja") or "").strip()
+    source = str(story.get("source") or "").strip()
+    reason = str(story.get("reason") or story.get("recommended_reason") or "").strip()
+
+    concept_title = str(
+        concept.get("title_en") or concept.get("title_ja") or f"Concept {concept['number']}"
     ).strip()
+    concept_en = str(
+        concept.get("concept_en") or concept.get("concept_ja") or ""
+    ).strip()
+    composition_en = str(
+        concept.get("composition_en") or concept.get("composition_ja") or ""
+    ).strip()
+    production_prompt = str(concept.get("generation_prompt_en") or "").strip()
 
+    return f"""
+Create one polished editorial hero image for The Daily Duck.
 
-def story_summary(approved: dict[str, Any]) -> str:
-    rec = approved.get("recommended_story")
-    if isinstance(rec, dict):
-        title = rec.get("title") or rec.get("headline") or ""
-        summary = rec.get("summary") or rec.get("description") or ""
-    else:
-        title = approved.get("title") or approved.get("headline") or ""
-        summary = approved.get("summary") or approved.get("jp_copy") or ""
-    return f"{title}\n{summary}".strip()
+APPROVED STORY
+Title: {title}
+Source: {source}
+Story meaning: {reason}
 
+SELECTED VISUAL CONCEPT #{concept['number']}: {concept_title}
+Concept: {concept_en}
+Composition: {composition_en}
+Production direction: {production_prompt}
 
-def current_batch() -> int:
-    if not CANDIDATES_PATH.exists():
-        return 0
-    try:
-        data = load_json(CANDIDATES_PATH)
-        return int(data.get("batch", 0))
-    except Exception:
-        return 0
-
-
-def validate_regeneration_request(approved: dict[str, Any]) -> bool:
-    if not REGEN_REQUEST_PATH.exists():
-        return False
-    req = load_json(REGEN_REQUEST_PATH)
-    if req.get("action") != "NEXT_5":
-        return False
-    req_date = str(req.get("issue_date", "")).strip()
-    return not req_date or req_date == issue_date(approved)
-
-
-def build_prompt_variations(
-    client: genai.Client,
-    approved: dict[str, Any],
-    batch: int,
-) -> list[str]:
-    concept = approved.get("selected_image_concept")
-    if not isinstance(concept, dict):
-        raise ValueError("selected_image_concept is missing from approved_story.json")
-
-    concept_title = str(concept.get("title", "")).strip()
-    concept_body = str(concept.get("concept", "")).strip()
-    concept_visual = str(concept.get("visual_direction", "")).strip()
-
-    prompt = f"""
-You are preparing image-generation prompts for The Daily Duck.
-
-The human editor already selected ONE concept at Gate A.
-Do NOT change that concept. Create exactly five distinct visual executions of it.
-
-This is generation batch {batch}.
-If batch > 1, the previous five images were rejected. Push for fresher compositions,
-poses, viewpoints, scene arrangements, and props while staying within the SAME concept.
-
-Permanent mascot identity:
-- same recognizable yellow duck
+PERMANENT THE DAILY DUCK MASCOT
+- a recognizable cheerful yellow duck
 - orange beak
 - large dark glossy eyes
-- small feather tuft
-- friendly expression
-- story-specific clothing/props allowed
+- a small feather tuft
+- friendly, warm expression
+- consistent proportions and identity across Daily Duck images
 
-Visual direction:
-- clean, modern editorial
-- not heavy vintage
-- polished and charming
-- readable at social-media size
-- no long text, logos, watermarks, fake headlines, or UI
-- no fabricated factual details
-- image should work as the same canonical image for website and X
-- square-friendly composition
+VISUAL STYLE
+- premium, charming, modern editorial illustration / soft 3D illustration
+- simple rather than overly vintage
+- warm, emotionally uplifting
+- clean composition with strong single focal point
+- suitable as both a website hero image and an X post image
+- landscape composition
+- rich but natural lighting
+- polished enough for publication
 
-APPROVED STORY:
-{story_summary(approved)}
-
-SELECTED CONCEPT:
-Title: {concept_title}
-Concept: {concept_body}
-Direction: {concept_visual}
-
-Return ONLY valid JSON:
-[
-  {{"number":1,"prompt":"complete image prompt","alt_ja":"...","alt_en":"..."}},
-  {{"number":2,"prompt":"complete image prompt","alt_ja":"...","alt_en":"..."}},
-  {{"number":3,"prompt":"complete image prompt","alt_ja":"...","alt_en":"..."}},
-  {{"number":4,"prompt":"complete image prompt","alt_ja":"...","alt_en":"..."}},
-  {{"number":5,"prompt":"complete image prompt","alt_ja":"...","alt_en":"..."}}
-]
+IMPORTANT
+- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.
+- Do not invent unsupported factual claims.
+- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.
+- Keep the duck clearly recognizable as The Daily Duck mascot.
 """.strip()
 
-    response = client.models.generate_content(model=TEXT_MODEL, contents=prompt)
-    text = getattr(response, "text", "") or ""
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1] if "\n" in text else text
-        if text.rstrip().endswith("```"):
-            text = text.rstrip()[:-3]
-    start, end = text.find("["), text.rfind("]")
-    if start < 0 or end < 0:
-        raise ValueError("Could not parse five prompt variations from Gemini.")
-    data = json.loads(text[start : end + 1])
-    if not isinstance(data, list) or len(data) != 5:
-        raise ValueError("Gemini must return exactly five prompt variations.")
 
-    prompts = []
-    for idx, item in enumerate(data, start=1):
-        if not isinstance(item, dict):
-            raise ValueError("Prompt variation is not an object.")
-        item["number"] = idx
-        if not str(item.get("prompt", "")).strip():
-            raise ValueError(f"Prompt {idx} is empty.")
-        prompts.append(item)
-    return prompts
-
-
-def generate_one_image(client: genai.Client, prompt: str, output_path: Path) -> None:
-    interaction = client.interactions.create(
-        model=IMAGE_MODEL,
-        input=prompt,
-        response_format={
-            "type": "image",
-            "mime_type": "image/png",
-            "aspect_ratio": ASPECT_RATIO,
-        },
-    )
-    output_image = getattr(interaction, "output_image", None)
-    data = getattr(output_image, "data", None) if output_image is not None else None
-    if not data:
-        raise RuntimeError("Gemini returned no image data.")
-    output_path.write_bytes(base64.b64decode(data))
-
-
-def sha256(path: Path) -> str:
+def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(1024 * 1024), b""):
@@ -216,92 +127,76 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def main() -> int:
-    approved = load_json(APPROVED_PATH)
-    if approved.get("state") != "APPROVED_STORY":
-        raise RuntimeError("Image generation is allowed only from state APPROVED_STORY.")
-    if not approved.get("selected_image_concept"):
-        raise RuntimeError("No Gate A selected_image_concept is stored.")
+def main() -> None:
+    required_env("OPENAI_API_KEY")
+    data = load_json(CONCEPTS_PATH)
+    concepts = validate_concepts(data)
+    story = compact_story(data)
 
-    regen = validate_regeneration_request(approved)
-    previous_batch = current_batch()
-    batch = previous_batch + 1 if (regen or previous_batch == 0) else previous_batch
+    client = OpenAI()
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Do not silently regenerate the same batch.
-    if previous_batch > 0 and not regen:
-        print(f"Image candidates already exist for batch {previous_batch}. No regeneration request.")
-        print("STATE: WAITING_IMAGE_SELECTION")
-        return 0
+    candidates: list[dict[str, Any]] = []
 
-    if not paid_generation_enabled():
-        raise RuntimeError(
-            "PAID IMAGE GENERATION SAFETY LOCK: "
-            "Set ENABLE_PAID_IMAGE_GENERATION=true only after accepting Gemini image-generation charges."
+    for concept in concepts:
+        number = int(concept["number"])
+        prompt = build_prompt(story, concept)
+
+        print(
+            f"Generating image {number}/5 "
+            f"with model={IMAGE_MODEL}, size={IMAGE_SIZE}, quality={IMAGE_QUALITY}"
         )
 
-    api_key = required_env("GEMINI_API_KEY")
-    client = genai.Client(api_key=api_key)
+        result = client.images.generate(
+            model=IMAGE_MODEL,
+            prompt=prompt,
+            size=IMAGE_SIZE,
+            quality=IMAGE_QUALITY,
+            n=1,
+        )
 
-    prompts = build_prompt_variations(client, approved, batch)
+        if not result.data or not result.data[0].b64_json:
+            raise RuntimeError(f"OpenAI returned no image data for candidate {number}.")
 
-    date = issue_date(approved)
-    batch_dir = IMAGE_ROOT / date / f"batch-{batch}"
-    if batch_dir.exists():
-        shutil.rmtree(batch_dir)
-    batch_dir.mkdir(parents=True, exist_ok=True)
+        image_bytes = base64.b64decode(result.data[0].b64_json)
+        image_path = OUTPUT_DIR / f"candidate_{number}.png"
+        image_path.write_bytes(image_bytes)
 
-    candidates = []
-    for idx, item in enumerate(prompts, start=1):
-        path = batch_dir / f"candidate-{idx}.png"
-        print(f"Generating candidate {idx}/5 for batch {batch}...")
-        generate_one_image(client, str(item["prompt"]), path)
         candidates.append(
             {
-                "number": idx,
-                "batch": batch,
-                "image_path": path.as_posix(),
-                "prompt": str(item["prompt"]),
-                "alt_ja": str(item.get("alt_ja", "")).strip(),
-                "alt_en": str(item.get("alt_en", "")).strip(),
-                "sha256": sha256(path),
-                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "number": number,
+                "concept_title_ja": str(concept.get("title_ja", "")).strip(),
+                "concept_title_en": str(concept.get("title_en", "")).strip(),
+                "concept_ja": str(concept.get("concept_ja", "")).strip(),
+                "concept_en": str(concept.get("concept_en", "")).strip(),
+                "image_path": str(image_path),
+                "generation_prompt": prompt,
+                "model": IMAGE_MODEL,
+                "size": IMAGE_SIZE,
+                "quality": IMAGE_QUALITY,
+                "sha256": sha256_file(image_path),
             }
         )
 
-    if len(candidates) != 5:
-        raise RuntimeError("Internal error: exactly five candidates were not generated.")
-
-    metadata = {
-        "state": "WAITING_IMAGE_SELECTION",
-        "issue_date": date,
-        "batch": batch,
-        "selected_image_concept_number": approved.get("selected_image_concept_number"),
-        "selected_image_concept": approved.get("selected_image_concept"),
-        "image_model": IMAGE_MODEL,
-        "aspect_ratio": ASPECT_RATIO,
+    result_state = {
+        "state": "IMAGE_CANDIDATES_READY",
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source_state": "IMAGE_CONCEPT_REVIEW",
+        "source_path": str(CONCEPTS_PATH),
+        "story": story,
         "candidates": candidates,
-        "valid_replies": ["1", "2", "3", "4", "5", "NEXT 5"],
+        "selection_rule": "Reply with exactly one digit: 1, 2, 3, 4, or 5.",
+        "next_state_after_valid_selection": "READY_TO_PUBLISH",
     }
 
-    STATE_DIR.mkdir(parents=True, exist_ok=True)
-    CANDIDATES_PATH.write_text(
-        json.dumps(metadata, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    OUTPUT_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with OUTPUT_STATE_PATH.open("w", encoding="utf-8") as f:
+        json.dump(result_state, f, ensure_ascii=False, indent=2)
 
-    if REGEN_REQUEST_PATH.exists():
-        REGEN_REQUEST_PATH.unlink()
-
-    print(f"Generated exactly 5 candidates. Batch: {batch}")
-    print(f"Saved metadata to {CANDIDATES_PATH}")
-    print("STATE: WAITING_IMAGE_SELECTION")
-    return 0
+    print("STATE: IMAGE_CANDIDATES_READY")
+    print("Generated exactly 5 real image candidates.")
+    print(f"Saved state: {OUTPUT_STATE_PATH}")
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except Exception as exc:
-        print(f"ERROR: {exc}", file=sys.stderr)
-        raise
+    main()

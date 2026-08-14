@@ -130,7 +130,12 @@ def render_card(ready: dict[str, Any]) -> Path:
     if not hero_path.exists():
         raise FileNotFoundError(f"Canonical/website image missing: {hero_path}")
 
-    duck_name = first_text(approved.get("duck_name"), "DAILY DUCK").upper()
+    duck_name = first_text(
+        ready.get("selected_title"),
+        approved.get("selected_title"),
+        approved.get("duck_name"),
+        "DAILY DUCK",
+    ).upper()
     teaser = first_text(approved.get("x_jp"), approved.get("jp_copy"), approved.get("story_ja"))
     source = first_text(approved.get("source"), approved.get("source_name"), "Official source")
 
@@ -200,13 +205,22 @@ def render_card(ready: dict[str, Any]) -> Path:
         draw.text((left, y), line, font=nf, fill=NAVY)
         y += int(name_font_size * 0.92)
 
-    draw.rounded_rectangle((left, y+18, left+160, y+30), radius=6, fill=YELLOW)
+    # Yellow accent line: end around the right edge of the date, per approved design.
+    try:
+        _dt_for_line = datetime.strptime(issue_date, "%Y-%m-%d")
+        _date_for_line = _dt_for_line.strftime("%B %d, %Y").upper()
+    except Exception:
+        _date_for_line = issue_date.replace("-", ".")
+    _date_font_for_line = font(30, True)
+    _db = draw.textbbox((0, 0), _date_for_line, font=_date_font_for_line)
+    _line_w = max(170, min(panel_w, _db[2] - _db[0]))
+    draw.rounded_rectangle((left, y+18, left+_line_w, y+30), radius=6, fill=YELLOW)
     y += 64
 
     # Date
     try:
         dt = datetime.strptime(issue_date, "%Y-%m-%d")
-        date_text = f"{dt.year}.{dt.month}.{dt.day}"
+        date_text = dt.strftime("%B %d, %Y").upper()
     except Exception:
         date_text = issue_date.replace("-", ".")
     draw.text((left, y), date_text, font=font(30, True), fill=NAVY)
