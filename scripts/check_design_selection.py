@@ -78,6 +78,7 @@ def fresh_reply_lines(text: str) -> list[str]:
         if stripped in (
             "-----Original Message-----",
             "-----元のメッセージ-----",
+            "----- 引用元メッセージ -----",
             "---------- Forwarded message ---------",
         ):
             break
