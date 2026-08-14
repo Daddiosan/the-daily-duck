@@ -3,12 +3,6 @@ name: The Daily Duck - X Publish
 on:
   workflow_dispatch:
 
-  push:
-    branches:
-      - main
-    paths:
-      - "automation_state/website_publish_result.json"
-
 permissions:
   contents: write
 
@@ -31,34 +25,34 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install X publishing dependencies
+      - name: Install X card and publishing dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
           python -m pip install --upgrade pip
-          pip install requests requests-oauthlib
+          pip install Pillow requests requests-oauthlib
 
-      - name: Check website publish result
-        id: website
-        shell: bash
+      - name: Build fixed 5:4 Daily Duck X card
         run: |
-          set -euo pipefail
+          python scripts/build_x_card.py
 
-          if [ ! -f automation_state/website_publish_result.json ]; then
-            echo "should_post=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+      - name: Validate X card ratio
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
 
-          ACTION=$(python -c "import json; print(json.load(open('automation_state/website_publish_result.json', encoding='utf-8')).get('action',''))")
-
-          echo "Website action: $ACTION"
-
-          if [ "$ACTION" = "PUBLISHED" ]; then
-            echo "should_post=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_post=false" >> "$GITHUB_OUTPUT"
-          fi
+          ready = json.load(open('automation_state/ready_to_publish.json', encoding='utf-8'))
+          p = Path(ready['canonical_x_image_path'])
+          with Image.open(p) as im:
+              print('X image:', p)
+              print('Size:', im.size)
+              if im.size != (1500, 1200):
+                  raise SystemExit(f'Unexpected X image size: {im.size}; expected 1500x1200')
+          PY
 
       - name: Publish to X
-        if: steps.website.outputs.should_post == 'true'
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
@@ -68,44 +62,54 @@ jobs:
           python scripts/publish_x.py
 
       - name: Read X publish result
-        if: steps.website.outputs.should_post == 'true'
         id: xpublish
         shell: bash
         run: |
           ACTION=$(python -c "import json; print(json.load(open('automation_state/x_publish_result.json', encoding='utf-8'))['action'])")
-
           echo "action=$ACTION" >> "$GITHUB_OUTPUT"
           echo "X publish action: $ACTION"
 
-      - name: Commit X post state
-        if: |
-          steps.website.outputs.should_post == 'true' &&
-          steps.xpublish.outputs.action == 'X_POSTED'
+      - name: Commit X card and X post state
+        if: steps.xpublish.outputs.action == 'X_POSTED'
         shell: bash
         run: |
           set -euo pipefail
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add automation_state/ready_to_publish.json
           git add automation_state/x_publish_result.json
+          git add automation_images/x/
 
           if git diff --cached --quiet; then
-            echo "No X publish state changes."
+            echo "No X publish state changes to commit."
             exit 0
           fi
 
-          git commit -m "publish: Daily Duck to X"
-
+          git commit -m "publish: Daily Duck 5x4 card to X"
           git pull --rebase origin main
           git push origin HEAD:main
 
-      - name: Report X result
+      - name: Commit blocked X result
+        if: |
+          steps.xpublish.outputs.action == 'WEBSITE_NOT_PUBLISHED_BLOCKED' ||
+          steps.xpublish.outputs.action == 'WEBSITE_STATE_NOT_PUBLISHED_BLOCKED' ||
+          steps.xpublish.outputs.action == 'ALREADY_POSTED_BLOCKED'
         shell: bash
         run: |
-          if [ "${{ steps.website.outputs.should_post }}" != "true" ]; then
-            echo "X posting skipped because website is not PUBLISHED."
-          else
-            echo "X result: ${{ steps.xpublish.outputs.action }}"
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation_state/x_publish_result.json
+          if git diff --cached --quiet; then
+            echo "No blocked-state change to commit."
+            exit 0
           fi
+          git commit -m "automation: record blocked X publish"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Report X publish result
+        run: |
+          echo "X workflow finished."
+          echo "Result: ${{ steps.xpublish.outputs.action }}"
