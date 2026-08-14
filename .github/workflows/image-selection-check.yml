@@ -1,74 +1,52 @@
 name: The Daily Duck - Final Image Selection Check
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "*/15 * * * *"
-
 permissions:
   contents: write
-
-concurrency:
-  group: daily-duck-final-image-selection
-  cancel-in-progress: false
-
 jobs:
   check-selection:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements-phase2.txt
       - name: Check final image reply
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: |
-          python scripts/check_image_selection.py
-
-      - name: Read final image action
-        id: finalimage
+        run: python scripts/check_image_selection.py
+      - name: Read Gate B action
+        id: gateb
         shell: bash
         run: |
-          ACTION=$(python -c "import json; print(json.load(open('automation_state/gate_b_result.json', encoding='utf-8'))['action'])")
+          ACTION=$(python -c "import json; print(json.load(open('automation_state/gate_b_result.json',encoding='utf-8'))['action'])")
           echo "action=$ACTION" >> "$GITHUB_OUTPUT"
-          echo "Final image action: $ACTION"
-
-      - name: Commit final image state
-        if: steps.finalimage.outputs.action == 'READY_TO_PUBLISH'
-        shell: bash
+      - name: Generate NEXT 5
+        if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ENABLE_PAID_IMAGE_GENERATION: ${{ secrets.ENABLE_PAID_IMAGE_GENERATION }}
+        run: python scripts/generate_image_candidates.py
+      - name: Email NEXT 5
+        if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python scripts/send_image_selection_email.py
+      - name: Commit state
+        if: steps.gateb.outputs.action != 'WAIT'
         run: |
-          set -euo pipefail
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add automation_state/image_candidates.json
-          git add automation_state/ready_to_publish.json
-          git add automation_state/gate_b_result.json
-          git add automation_images/canonical/
-
-          if git diff --cached --quiet; then
-            echo "No final image state changes to commit."
-            exit 0
-          fi
-
-          git commit -m "Phase 2: lock canonical image and mark READY_TO_PUBLISH"
+          git add automation_state/ automation_images/
+          git diff --cached --quiet && exit 0
+          git commit -m "Phase 2: final image ${{ steps.gateb.outputs.action }}"
           git pull --rebase origin main
-          git push origin HEAD:main
-
-      - name: Phase 2 boundary
-        if: steps.finalimage.outputs.action == 'READY_TO_PUBLISH'
-        run: |
-          echo "READY_TO_PUBLISH created."
-          echo "The selected existing PNG is now the canonical image."
-          echo "Website/X publishing is intentionally NOT started here."
+          git push

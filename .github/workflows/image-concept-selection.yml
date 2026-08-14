@@ -1,34 +1,37 @@
-name: Daily Duck Design Options
+name: The Daily Duck - Design Selection Check
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
 permissions:
   contents: write
 jobs:
-  design-options:
+  check-design:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - run: pip install google-genai
-      - name: Generate 3 image concepts + 3 titles
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_TEXT_MODEL: gemini-2.5-flash
-        run: python scripts/generate_image_concepts.py
-      - name: Send combined approval email
+      - name: Check reply such as 2 1
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python scripts/send_image_concept_email.py
-      - name: Commit design options
+        run: python scripts/check_image_concept_selection.py
+      - name: Read action
+        id: design
+        shell: bash
+        run: |
+          ACTION=$(python -c "import json; print(json.load(open('automation_state/design_selection_result.json',encoding='utf-8'))['action'])")
+          echo "action=$ACTION" >> "$GITHUB_OUTPUT"
+      - name: Commit selected design
+        if: steps.design.outputs.action == 'DESIGN_SELECTED'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add automation_state/design_options.json
+          git add automation_state/
           git diff --cached --quiet && exit 0
-          git commit -m "Phase 2: create design options"
+          git commit -m "Phase 2: approve image concept and title"
           git pull --rebase origin main
           git push
