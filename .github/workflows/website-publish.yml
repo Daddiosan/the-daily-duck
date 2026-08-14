@@ -209,3 +209,15 @@ jobs:
             echo "STATE: DUPLICATE_DATE_BLOCKED"
             echo "Existing website content was NOT overwritten."
           fi
+
+
+      - name: Notify failure by email
+        if: failure()
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          FAILURE_STAGE: Website Publish
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/send_workflow_failure_email.py

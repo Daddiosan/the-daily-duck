@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: daily-duck-design-selection
@@ -44,15 +45,35 @@ jobs:
 
       - name: Commit final selection
         if: steps.result.outputs.action == 'READY_TO_PUBLISH'
+        id: selection_commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add automation_state/
           git add automation_images/canonical/
-          git diff --cached --quiet && exit 0
+          if git diff --cached --quiet; then
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git commit -m "Phase 2: approve final image and title"
           git pull --rebase origin main
           git push origin HEAD:main
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+
+      - name: Trigger Website Publish automatically
+        if: |
+          steps.result.outputs.action == 'READY_TO_PUBLISH' &&
+          steps.selection_commit.outputs.committed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Final image + title committed."
+          echo "Triggering Website Publish..."
+          gh workflow run website-publish.yml --ref main
+          echo "Website Publish triggered."
 
       - name: Phase boundary
         if: steps.result.outputs.action == 'READY_TO_PUBLISH'
@@ -61,3 +82,15 @@ jobs:
           echo "Selected preview image is now the canonical website image."
           echo "No 5-image generation / NEXT 5 / Gate B stage exists in this flow."
           echo "Website/X publishing remains a separate safety step."
+
+
+      - name: Notify failure by email
+        if: failure()
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          FAILURE_STAGE: Design Selection approval
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/send_workflow_failure_email.py

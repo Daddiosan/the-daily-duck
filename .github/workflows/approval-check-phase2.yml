@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: write
-  actions: read
+  actions: write
 
 concurrency:
   group: daily-duck-gate-a-approval
@@ -138,12 +138,14 @@ jobs:
       # ======================================================
 
       - name: Commit APPROVED_STORY when created
+        id: approval_commit
         shell: bash
         run: |
           set -euo pipefail
 
           if [ ! -f automation_state/approved_story.json ]; then
             echo "No APPROVED_STORY yet."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -154,6 +156,7 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "No new Gate A approval state to commit."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -161,6 +164,22 @@ jobs:
 
           git pull --rebase origin main
           git push origin HEAD:main
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+
+      - name: Trigger Design Options automatically
+        if: steps.approval_commit.outputs.committed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "New APPROVED_STORY committed."
+          echo "Triggering Design Options..."
+          gh workflow run design-options.yml \
+            --ref main \
+            -f force_regenerate=false
+          echo "Design Options triggered."
 
       - name: Report Gate A result
         shell: bash
@@ -184,3 +203,15 @@ jobs:
           else
             echo "STATE: WAITING_STORY_SELECTION"
           fi
+
+
+      - name: Notify failure by email
+        if: failure()
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          FAILURE_STAGE: Gate A approval check
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/send_workflow_failure_email.py
