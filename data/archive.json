@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-08-14",
+    "displayDate": "August 14, 2026",
+    "slug": "brainy-paws",
+    "title": "BRAINY PAWS",
+    "image": "assets/ducks/2026-08-14-brainy-paws.png",
+    "imageAltJa": "Brainy PawsをテーマにしたThe Daily Duckの黄色いダック",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Brainy Paws",
+    "storyJa": "愛犬家が以前から感じていたことが科学的に確認されました。研究によると、犬は人間の恐怖と悲しみを区別できるだけでなく、人間の笑顔を報酬に関連する脳の領域で処理していることが分かりました。人と犬の特別な感情の絆を改めて実感させてくれるニュースです。",
+    "storyEn": "Science has confirmed what dog lovers have long felt: dogs can distinguish human fear from sadness. Brain research reveals that dogs process human smiles in reward-linked regions, highlighting the special emotional connection we share with our canine companions.",
+    "duckJa": "笑顔を見せると、愛犬の脳も喜んでいるみたいです！",
+    "duckEn": "A smile goes straight to a dog's heart—and brain!",
+    "sourceLabel": "ScienceDaily Environment",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260811011132.htm",
+    "archiveSummaryJa": "犬は人間の恐怖と悲しみを区別できることが判明！笑顔を脳の報酬領域で処理しているという心温まる研究結果です。",
+    "archiveSummaryEn": "Science confirms dogs can tell human fear from sadness—and process our smiles in reward-linked brain regions!",
+    "published": true
+  },
+  {
     "date": "2026-08-13",
     "displayDate": "August 13, 2026",
     "slug": "clever-dodo",
