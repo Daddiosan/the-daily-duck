@@ -1,19 +1,25 @@
 name: The Daily Duck - Final Image Selection Check
+
 on:
   workflow_dispatch:
   schedule:
     - cron: "*/15 * * * *"
+
 permissions:
   contents: write
+
 jobs:
   check-selection:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - run: pip install -r requirements-phase2.txt
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements-phase2.txt
       - name: Check final image reply
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
@@ -29,9 +35,10 @@ jobs:
       - name: Generate NEXT 5
         if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ENABLE_PAID_IMAGE_GENERATION: ${{ secrets.ENABLE_PAID_IMAGE_GENERATION }}
+          GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
+          GEMINI_IMAGE_ASPECT_RATIO: "16:9"
+          GEMINI_IMAGE_SIZE: "1K"
         run: python scripts/generate_image_candidates.py
       - name: Email NEXT 5
         if: steps.gateb.outputs.action == 'REGENERATE_IMAGES'
@@ -49,4 +56,4 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "Phase 2: final image ${{ steps.gateb.outputs.action }}"
           git pull --rebase origin main
-          git push
+          git push origin HEAD:main
