@@ -130,10 +130,19 @@ def save_result(action: str, **extra: Any) -> None:
 
 def main() -> int:
     package = json.loads(OPTIONS_PATH.read_text(encoding="utf-8"))
-    if package.get("state") != "WAITING_DESIGN_SELECTION":
-        raise RuntimeError(
-            f"Expected WAITING_DESIGN_SELECTION, got {package.get('state')!r}"
+    package_state = package.get("state")
+
+    # Scheduled checks keep running every 15 minutes. Once this design has
+    # already been selected, return a harmless no-op instead of failing.
+    if package_state != "WAITING_DESIGN_SELECTION":
+        save_result(
+            "ALREADY_SELECTED",
+            state=package_state,
+            issue_date=package.get("issue_date"),
         )
+        print(f"Design selection already completed: {package_state!r}")
+        print("STATE: ALREADY_SELECTED")
+        return 0
 
     subject = str(package.get("email_subject", "")).strip()
     if not subject:
