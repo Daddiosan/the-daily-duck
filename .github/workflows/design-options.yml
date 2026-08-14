@@ -1,0 +1,81 @@
+name: The Daily Duck - Design Options
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - "The Daily Duck - Gate A Approval Check"
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-duck-design-options
+  cancel-in-progress: false
+
+jobs:
+  design-options:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-phase2.txt
+
+      - name: Check approved story exists
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("automation_state/approved_story.json")
+          if not p.exists():
+              raise SystemExit("approved_story.json not found.")
+          d=json.load(open(p,encoding="utf-8"))
+          if d.get("state")!="APPROVED_STORY":
+              raise SystemExit(f"Expected APPROVED_STORY, got {d.get('state')!r}")
+          print("APPROVED_STORY confirmed:", d.get("issue_date") or d.get("date"))
+          PY
+
+      - name: Generate 3 image concepts + 3 titles
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TEXT_MODEL: gemini-3.6-flash
+        run: python scripts/generate_image_concepts.py
+
+      - name: Generate one real image for each concept
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
+          GEMINI_IMAGE_ASPECT_RATIO: "16:9"
+          GEMINI_IMAGE_SIZE: "1K"
+        run: python scripts/generate_design_previews.py
+
+      - name: Send one email with 3 images + 3 titles
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python scripts/send_design_approval_email.py
+
+      - name: Commit design options and preview images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation_state/design_options.json
+          git add automation_images/design_previews/
+          git diff --cached --quiet && exit 0
+          git commit -m "Phase 2: create 3 final image candidates and 3 titles"
+          git pull --rebase origin main
+          git push origin HEAD:main

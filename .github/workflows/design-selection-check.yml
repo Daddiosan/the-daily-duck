@@ -1,0 +1,63 @@
+name: The Daily Duck - Design Selection Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-duck-design-selection
+  cancel-in-progress: false
+
+jobs:
+  check-selection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check image + title reply
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python scripts/check_design_selection.py
+
+      - name: Read result
+        id: result
+        shell: bash
+        run: |
+          ACTION=$(python -c "import json; print(json.load(open('automation_state/design_selection_result.json',encoding='utf-8'))['action'])")
+          echo "action=$ACTION" >> "$GITHUB_OUTPUT"
+          echo "Design action: $ACTION"
+
+      - name: Commit final selection
+        if: steps.result.outputs.action == 'READY_TO_PUBLISH'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation_state/
+          git add automation_images/canonical/
+          git diff --cached --quiet && exit 0
+          git commit -m "Phase 2: approve final image and title"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Phase boundary
+        if: steps.result.outputs.action == 'READY_TO_PUBLISH'
+        run: |
+          echo "READY_TO_PUBLISH created."
+          echo "Selected preview image is now the canonical website image."
+          echo "No 5-image generation / NEXT 5 / Gate B stage exists in this flow."
+          echo "Website/X publishing remains a separate safety step."
