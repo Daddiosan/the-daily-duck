@@ -57,21 +57,62 @@ def message_text(msg: email.message.Message) -> str:
     return "\n".join(chunks)
 
 
-def normalize_reply(text: str) -> str:
+def fresh_reply_lines(text: str) -> list[str]:
+    """Return only the newly written portion of a mail reply.
+
+    Gmail/iPhone replies can append signatures and quoted history.  We stop at
+    the quoted-history boundary, but do not require the whole fresh section to
+    contain only the approval command.
+    """
     fresh: list[str] = []
     for line in text.replace("\r\n", "\n").replace("\r", "\n").splitlines():
         stripped = line.strip()
+
+        # Quoted / previous-message boundaries.
         if stripped.startswith(">"):
             break
         if re.match(r"^On .+ wrote:$", stripped, flags=re.I):
             break
-        if stripped in ("-----Original Message-----", "-----元のメッセージ-----"):
+        if re.match(r"^.+ wrote:$", stripped, flags=re.I):
+            break
+        if stripped in (
+            "-----Original Message-----",
+            "-----元のメッセージ-----",
+            "---------- Forwarded message ---------",
+        ):
             break
         if re.match(r"^(From|Sent|To|Subject):\s", stripped, flags=re.I):
             break
-        if stripped:
-            fresh.append(stripped)
-    return re.sub(r"\s+", " ", " ".join(fresh)).strip()
+
+        fresh.append(stripped)
+    return fresh
+
+
+def extract_selection(text: str) -> tuple[int, int, str] | None:
+    """Find one standalone `1 1` .. `3 3` command in the fresh reply.
+
+    A signature such as "Sent from my iPhone" is allowed.  Commands appearing
+    only in quoted history are ignored.  If multiple different commands appear
+    in the fresh section, reject the message as ambiguous.
+    """
+    matches: list[tuple[int, int, str]] = []
+
+    for line in fresh_reply_lines(text):
+        candidate = re.sub(r"[\u00a0\t]+", " ", line).strip()
+        match = VALID_RE.fullmatch(candidate)
+        if match:
+            matches.append(
+                (int(match.group(1)), int(match.group(2)), candidate)
+            )
+
+    if not matches:
+        return None
+
+    unique = {(a, b) for a, b, _ in matches}
+    if len(unique) != 1:
+        return None
+
+    return matches[0]
 
 
 def save_result(action: str, **extra: Any) -> None:
@@ -128,14 +169,14 @@ def main() -> int:
             if allowed and sender not in allowed:
                 continue
 
-            normalized = normalize_reply(message_text(msg))
-            match = VALID_RE.fullmatch(normalized)
-            if match:
+            selection = extract_selection(message_text(msg))
+            if selection:
+                image_number, title_number, command = selection
                 found = (
-                    int(match.group(1)),
-                    int(match.group(2)),
+                    image_number,
+                    title_number,
                     sender,
-                    normalized,
+                    command,
                 )
                 break
 

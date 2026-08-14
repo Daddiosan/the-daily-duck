@@ -24,6 +24,7 @@ X_RESULT_PATH = STATE_DIR / "x_publish_result.json"
 
 MEDIA_UPLOAD_URL = "https://api.x.com/2/media/upload"
 CREATE_POST_URL = "https://api.x.com/2/tweets"
+ME_URL = "https://api.x.com/2/users/me"
 
 
 def required_env(name: str) -> str:
@@ -104,6 +105,67 @@ def oauth() -> OAuth1:
     )
 
 
+def find_existing_post(issue_date: str, auth: OAuth1) -> tuple[str, str] | None:
+    """Check recent posts on X before creating a new one.
+
+    This closes the important crash window where X accepted a previous post
+    but GitHub did not get a chance to commit x_posted=True.
+    """
+    if not issue_date:
+        raise ValueError("issue_date is missing.")
+
+    me = requests.get(
+        ME_URL,
+        auth=auth,
+        timeout=30,
+    )
+    if me.status_code != 200:
+        raise RuntimeError(
+            f"X duplicate preflight /users/me failed: "
+            f"HTTP {me.status_code}: {me.text[:1000]}"
+        )
+
+    me_data = me.json().get("data")
+    if not isinstance(me_data, dict) or not first_text(me_data.get("id")):
+        raise RuntimeError(
+            f"X duplicate preflight could not resolve user ID: {me.text[:1000]}"
+        )
+
+    user_id = first_text(me_data.get("id"))
+    page_url = f"https://www.thedailyduck.ai/ducks/{issue_date}/"
+
+    recent = requests.get(
+        f"https://api.x.com/2/users/{user_id}/tweets",
+        auth=auth,
+        params={
+            "max_results": 20,
+            "exclude": "retweets,replies",
+            "tweet.fields": "created_at",
+        },
+        timeout=30,
+    )
+    if recent.status_code != 200:
+        raise RuntimeError(
+            f"X duplicate preflight recent-post lookup failed: "
+            f"HTTP {recent.status_code}: {recent.text[:1000]}"
+        )
+
+    payload = recent.json()
+    rows = payload.get("data")
+    if not isinstance(rows, list):
+        return None
+
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        text = first_text(row.get("text"))
+        post_id = first_text(row.get("id"))
+        if post_id and page_url in text:
+            return post_id, f"https://x.com/i/web/status/{post_id}"
+
+    return None
+
+
 def upload_image(image_path: Path, auth: OAuth1) -> str:
     mime = "image/png"
     suffix = image_path.suffix.lower()
@@ -179,6 +241,29 @@ def main() -> int:
     image_path = resolve_image_path(ready)
     post_text = build_post_text(ready)
     auth = oauth()
+
+    # Second duplicate guard: verify X itself before uploading media.
+    # This protects against a previous successful X post whose local GitHub
+    # state failed to commit because the workflow was interrupted.
+    existing = find_existing_post(issue_date, auth)
+    if existing is not None:
+        existing_id, existing_url = existing
+        ready["x_posted"] = True
+        ready["x_post_id"] = existing_id
+        ready["x_post_url"] = existing_url
+        ready["state"] = "X_POSTED"
+        write_json(READY_PATH, ready)
+        write_result(
+            "ALREADY_POSTED_REMOTE_BLOCKED",
+            issue_date=issue_date,
+            x_post_id=existing_id,
+            x_post_url=existing_url,
+        )
+        print(
+            "X POST BLOCKED: an existing post for this issue "
+            "was found on X."
+        )
+        return 0
 
     print(f"Uploading 5:4 Daily Duck X card: {image_path}")
     media_id = upload_image(image_path, auth)
