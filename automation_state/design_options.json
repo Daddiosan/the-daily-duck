@@ -1,7 +1,7 @@
 {
   "state": "WAITING_DESIGN_SELECTION",
   "issue_date": "2026-08-13",
-  "created_at": "2026-08-14T02:40:12.287021+00:00",
+  "created_at": "2026-08-14T03:53:26.787013+00:00",
   "text_model": "gemini-3.6-flash",
   "approved_story": {
     "date": "2026-08-13",
@@ -476,46 +476,80 @@
   "image_concepts": [
     {
       "number": 1,
-      "title_ja": "ハイテク研究室で解明されるドードーの頭脳",
-      "title_en": "High-Tech Lab: Mapping the Dodo's Mind",
-      "concept_ja": "メガネをかけた洗練されたアヒル研究員が、浮遊するドードー鳥の3Dホログラム脳（感覚神経がカラフルに輝く）を興味深く分析している、明るく清潔感のある現代的な研究室のシーン。",
-      "concept_en": "A stylish duck scientist wearing trendy glasses examining a glowing 3D holographic neural map of a dodo bird in a sleek, bright modern laboratory.",
-      "visual_direction": "High-tech studio laboratory, subtle cyan and golden holographic lighting, modern clean editorial aesthetic, cinematic depth of field."
+      "title_ja": "感覚の世界を解き明かすドードー",
+      "title_en": "Unveiling the Dodo's Sensory Universe",
+      "concept_ja": "ドードー鳥の優れた感覚世界を視覚化した、明るくモダンなエディトリアル表現。ドードーの周囲に音波や香りを象徴するエレガントな光のエレメントが漂い、知的な素顔を表現しています。",
+      "concept_en": "A bright and modern editorial visualization of the dodo's rich sensory world, with elegant glowing abstract elements representing sound, scent, and vision floating gently around a curious dodo bird.",
+      "visual_direction": "Bright studio lighting, soft warm yellow and light blue pastel background, sharp focus on a stylish, curious dodo bird, modern minimalist design aesthetic."
     },
     {
       "number": 2,
-      "title_ja": "豊かな感覚世界に生きるドードーの楽園",
-      "title_en": "Sensory Paradise: The Enlightened Dodo",
-      "concept_ja": "光あふれる熱帯の自然の中で、スマートで誇らしげなドードー鳥が佇む様子。その周囲には、鋭い嗅覚や視界を表現する美しい光の波紋やオーラが広がり、アヒルが感嘆の眼差しで見つめている。",
-      "concept_en": "A regal, clever-looking dodo standing gracefully in a lush sanctuary, surrounded by beautiful glowing visual ripples that represent its rich sensory perception, with a friendly white duck admiring it.",
-      "visual_direction": "Modern botanical lifestyle shoot, bright sunlit greenery, sparkling sensory light effects, cheerful and warm color palette."
+      "title_ja": "楽園の賢者ドードー",
+      "title_en": "The Wise Bird of the Sunlit Island",
+      "concept_ja": "太陽が注ぐ美しいモーリシャスの自然の中で、生き生きとした知的な表情を見せるドードー鳥。周囲の光や蝶に鋭く反応する、豊かで賢い感覚を描きます。",
+      "concept_en": "A confident and intelligent dodo bird in a lush, sunlit tropical sanctuary, interacting thoughtfully with glowing butterflies and vibrant flora to highlight its sharp sensory awareness.",
+      "visual_direction": "Vibrant tropical greens and golden sunlight, clean high-key camera shot, rich natural textures with a soft depth of field, warm and joyful atmosphere."
     },
     {
       "number": 3,
-      "title_ja": "誤解が解けたドードーとアヒル記者のポップポトレ",
-      "title_en": "Clever Dodo: Pop Studio Portrait",
-      "concept_ja": "明るいイエロー＆ブルーのパステル背景で撮られたポップなスタジオポトレ。知的な表情のドードー鳥と新聞記者風のアヒルが並び、ドードーの頭上には知性を象徴するひらめきのアートライトが輝いている。",
-      "concept_en": "A cheerful modern studio portrait featuring a dignified, clever-looking dodo side-by-side with a cute duck reporter, with a stylized glowing bulb of brilliance light above the dodo.",
-      "visual_direction": "Pop magazine editorial portrait, soft dual-tone studio lighting, clean background, sharp focus, vibrant and punchy look."
+      "title_ja": "科学とひらめきのドードーディスプレイ",
+      "title_en": "A Modern Science Revelation",
+      "concept_ja": "洗練された現代的なミュージアムを思わせる空間で、ドードー鳥の周りに知的なニューロンや感覚のネットワークが美しい光の粒子として浮かび上がる新感覚のポップアート表現。",
+      "concept_en": "A sleek, modern exhibition scene featuring a stylish dodo bird surrounded by glowing golden sensory neural pathways, symbolizing cutting-edge scientific discovery redefining history.",
+      "visual_direction": "Minimalist gallery setting, high-end architectural lighting, striking contrast between soft teal and vibrant duck-yellow accents, clean modern editorial feel."
     }
   ],
   "title_ideas": [
     {
       "number": 1,
       "title": "QUACKING THE DODO CODE!",
-      "meaning_ja": "ドードーの秘密の暗号を解明！"
+      "meaning_ja": "ドードーの謎を解き明かせ！実は超スマートだった絶滅鳥の秘密"
     },
     {
       "number": 2,
-      "title": "WADDLE YOU KNOW? DODO WAS A GENIUS!",
-      "meaning_ja": "なんとビックリ！ドードーは実は天才だった！"
+      "title": "FEATHER-BRAINED? NO WAY, DODO!",
+      "meaning_ja": "おバカなんて言わせない！ドードー鳥の豊かな感覚世界が判明"
     },
     {
       "number": 3,
-      "title": "NOT SO DUMB: DODO'S QUACKING SECRET!",
-      "meaning_ja": "おバカなんて言わせない！ドードーの驚きの素顔"
+      "title": "DODO'S SENSES: QUACKING GENIUS!",
+      "meaning_ja": "驚きの感覚性能！ドードー鳥は隠れた天才だった"
     }
   ],
   "approval_format": "<image 1-3> <title 1-3>",
-  "email_subject": "The Daily Duck — Design Approval — 2026-08-13"
+  "design_previews": [
+    {
+      "number": 1,
+      "image_path": "automation_images/design_previews/2026-08-13/preview_1.png",
+      "mime_type": "image/png",
+      "provider": "OpenAI",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "d415c571cebe2b7155337676579f284090f939708122b21a8486ada20afc55b7"
+    },
+    {
+      "number": 2,
+      "image_path": "automation_images/design_previews/2026-08-13/preview_2.png",
+      "mime_type": "image/png",
+      "provider": "OpenAI",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "f2d7c1594045547b252eb1ccc084bf9ef1a35322af5a315ecdb9e23cf7614073"
+    },
+    {
+      "number": 3,
+      "image_path": "automation_images/design_previews/2026-08-13/preview_3.png",
+      "mime_type": "image/png",
+      "provider": "OpenAI",
+      "model": "gpt-image-2",
+      "size": "1536x1024",
+      "quality": "medium",
+      "sha256": "b058a8705fc21db9aa4978fb08f8d941120910462659ee0824e4f37ebfde7cb3"
+    }
+  ],
+  "image_provider": "OpenAI",
+  "image_model": "gpt-image-2",
+  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-13"
 }
