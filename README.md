@@ -1,20 +1,44 @@
-# The Daily Duck — Version 4.0 Daily Template
+# The Daily Duck — Gemini 3.6 Reviewed Complete Patch
 
-Version 4.0 is the reusable daily-update foundation.
+Replace the matching files in GitHub.
 
-It preserves the current live site and adds:
-- `daily-template/new-duck.json`
-- Japanese daily workflow guide
-- Daily publishing checklist
-- Stable naming rules for images and static duck pages
-- A publish/unpublish convention for future ducks
+## scripts/
+- model_config.py
+- generate_image_concepts.py
+- send_image_concept_email.py
+- check_image_concept_selection.py
+- generate_image_candidates.py
+- send_image_selection_email.py
+- check_image_selection.py
+- build_x_card.py
+- model_audit.py
 
-Existing features retained:
-- Vintage Emblem branding
-- Static archive pages
-- OGP / X Card metadata
-- sitemap.xml / robots.txt
-- Google Analytics 4
+## .github/workflows/
+- image-concepts.yml
+- image-concept-selection.yml
+- image-generation.yml
+- image-selection-check.yml
+- x-publish.yml
+- model-audit.yml
 
-This package does NOT prematurely publish a future duck.
-Upload the contents to the existing GitHub repository and preserve folders.
+## repository root
+- requirements-phase2.txt
+
+## Flow
+Story approval
+→ 3 image concepts + 3 duck-themed titles
+→ reply like `2 1`
+→ 5 actual images from that ONE selected concept/title
+→ reply `1`–`5`, or `NEXT 5`
+→ website canonical image
+→ website publish
+→ X card 1500×1200 (5:4)
+→ X publish
+
+## Test order
+1. Upload/replace the files.
+2. Actions → The Daily Duck - Model Audit → Run workflow.
+3. Confirm green.
+4. Actions → Daily Duck Design Options → Run workflow.
+5. Confirm the email has exactly 3 image concepts + 3 title ideas.
+6. Do NOT run X Publish during this test.
