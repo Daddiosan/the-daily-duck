@@ -123,12 +123,13 @@ def main() -> int:
             f"{IMAGE_MODEL}, {IMAGE_ASPECT_RATIO}, {IMAGE_SIZE}"
         )
 
+        # Gemini Interactions image output currently accepts JPEG for this model.
         interaction = client.interactions.create(
             model=IMAGE_MODEL,
             input=prompt,
             response_format={
                 "type": "image",
-                "mime_type": "image/png",
+                "mime_type": "image/jpeg",
                 "aspect_ratio": IMAGE_ASPECT_RATIO,
                 "image_size": IMAGE_SIZE,
             },
@@ -138,12 +139,13 @@ def main() -> int:
         if image is None or not image.data:
             raise RuntimeError(f"Gemini returned no image for preview {number}.")
 
-        path = issue_dir / f"preview_{number}.png"
+        path = issue_dir / f"preview_{number}.jpg"
         path.write_bytes(base64.b64decode(image.data))
 
         previews.append({
             "number": number,
             "image_path": path.as_posix(),
+            "mime_type": "image/jpeg",
             "sha256": sha256_file(path),
             "model": IMAGE_MODEL,
             "aspect_ratio": IMAGE_ASPECT_RATIO,
@@ -158,7 +160,7 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print("Generated exactly 3 real preview images.")
+    print("Generated exactly 3 real JPEG preview images.")
     print("STATE: DESIGN_PREVIEWS_READY")
     return 0
 

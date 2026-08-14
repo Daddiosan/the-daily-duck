@@ -169,7 +169,8 @@ def main() -> int:
 
     issue_date = str(package.get("issue_date", "")).strip()
     CANONICAL_DIR.mkdir(parents=True, exist_ok=True)
-    canonical_path = CANONICAL_DIR / f"{issue_date}.png"
+    suffix = source_image.suffix.lower() or ".jpg"
+    canonical_path = CANONICAL_DIR / f"{issue_date}{suffix}"
     shutil.copy2(source_image, canonical_path)
 
     approved = package.get("approved_story")
