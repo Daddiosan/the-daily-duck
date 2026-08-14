@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+from gemini_retry import call_with_retry
 
 import json
 import os

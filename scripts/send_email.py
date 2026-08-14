@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+from gemini_retry import call_with_retry
 
 import json
 import os
@@ -231,10 +232,10 @@ FIVE SOURCE STORIES:
         indent=2,
     )
 
-    response = client.models.generate_content(
+    response = call_with_retry(lambda: client.models.generate_content(
         model=TEXT_MODEL,
         contents=prompt.strip(),
-    )
+    ), label="Gemini generate_content")
 
     response_text = getattr(response, "text", None)
 
