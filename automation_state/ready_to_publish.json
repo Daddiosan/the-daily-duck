@@ -1,5 +1,5 @@
 {
-  "state": "PUBLISHED",
+  "state": "X_POSTED",
   "issue_date": "2026-08-14",
   "ready_at": "2026-08-14T05:42:56.449666+00:00",
   "gate_a_approved_story": {
@@ -515,5 +515,13 @@
   "publish_started": true,
   "published_at": "2026-08-14T05:44:50.791639+00:00",
   "published_image_path": "assets/ducks/2026-08-14-brainy-paws.png",
-  "published_page_path": "ducks/2026-08-14/index.html"
+  "published_page_path": "ducks/2026-08-14/index.html",
+  "canonical_x_image_path": "automation_images/x/2026-08-14-x-card.png",
+  "x_image_ratio": "5:4",
+  "x_image_size": "1500x1200",
+  "x_posted": true,
+  "x_posted_at": "2026-08-14T05:45:23.480949+00:00",
+  "x_post_id": "2088139902512967684",
+  "x_post_url": "https://x.com/i/web/status/2088139902512967684",
+  "x_media_id": "2088139899765682176"
 }
