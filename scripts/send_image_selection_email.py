@@ -73,7 +73,7 @@ def build_plain(data: dict[str, Any], candidates: list[dict[str, Any]]) -> str:
         "",
         f"承認済み記事: {get_story_title(data)}",
         "",
-        "承認済みの記事から、5つの異なる画像コンセプトを実画像にしました。",
+        "承認済みの1つの画像コンセプトから、実画像を5案作成しました。",
         "添付画像 1〜5 を確認して、最終的に使用する画像を1つ選んでください。",
         "",
     ]
@@ -86,7 +86,7 @@ def build_plain(data: dict[str, Any], candidates: list[dict[str, Any]]) -> str:
     lines += [
         "",
         "返信方法:",
-        "このメールに 1 / 2 / 3 / 4 / 5 のいずれか1文字だけ返信してください。",
+        "採用する場合は 1 / 2 / 3 / 4 / 5 のいずれか1文字だけ返信してください。\n気に入らない場合は NEXT 5 と返信してください。",
         "",
         "例:",
         "3",
@@ -123,11 +123,11 @@ def build_html(data: dict[str, Any], candidates: list[dict[str, Any]]) -> str:
                    max-width:820px;margin:auto;color:#14233b;">
         <h1>The Daily Duck — 最終画像を選択</h1>
         <p><strong>承認済み記事:</strong> {get_story_title(data)}</p>
-        <p>5つの画像を確認して、気に入った画像の番号だけを返信してください。</p>
+        <p>同じ承認済みコンセプトから作った5案です。採用番号、または NEXT 5 を返信してください。</p>
         {''.join(cards)}
         <div style="margin:28px 0;padding:18px;background:#fff6d8;border-radius:12px;">
           <strong>返信:</strong> 1 / 2 / 3 / 4 / 5 のいずれか1文字だけ<br>
-          例: <strong>3</strong>
+          例: <strong>3</strong><br>再生成: <strong>NEXT 5</strong>
         </div>
         <p>選択した画像そのものをWebサイトとXの共通canonical imageとして固定します。</p>
         <p>One day. One story. One duck. 🐤</p>

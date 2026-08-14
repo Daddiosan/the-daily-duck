@@ -9,114 +9,22 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from openai import OpenAI
+from google import genai
+from model_config import IMAGE_MODEL, IMAGE_ASPECT_RATIO, IMAGE_SIZE
 
-CONCEPTS_PATH = Path("automation_state/image_concepts.json")
-OUTPUT_STATE_PATH = Path("automation_state/image_candidates.json")
-OUTPUT_DIR = Path("automation_state/image_candidates")
-
-IMAGE_MODEL = (os.getenv("OPENAI_IMAGE_MODEL") or "").strip() or "gpt-image-2"
-IMAGE_SIZE = (os.getenv("OPENAI_IMAGE_SIZE") or "").strip() or "1536x1024"
-IMAGE_QUALITY = (os.getenv("OPENAI_IMAGE_QUALITY") or "").strip() or "medium"
-
-
-def required_env(name: str) -> str:
-    value = os.getenv(name, "").strip()
-    if not value:
-        raise RuntimeError(f"Missing required environment variable: {name}")
-    return value
+STATE_DIR = Path("automation_state")
+SELECTED_PATH = STATE_DIR / "selected_design.json"
+APPROVED_PATH = STATE_DIR / "approved_story.json"
+OUTPUT_PATH = STATE_DIR / "image_candidates.json"
+REGEN_PATH = STATE_DIR / "image_regeneration_request.json"
+OUTPUT_DIR = Path("automation_images") / "candidates"
 
 
-def load_json(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        raise FileNotFoundError(f"Required file not found: {path}")
-    with path.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-    if not isinstance(data, dict):
-        raise ValueError(f"{path} must contain a JSON object.")
-    return data
-
-
-def validate_concepts(data: dict[str, Any]) -> list[dict[str, Any]]:
-    state = str(data.get("state", "")).strip().upper()
-    if state != "IMAGE_CONCEPT_REVIEW":
-        raise ValueError(
-            f"Expected IMAGE_CONCEPT_REVIEW state, got {state!r}."
-        )
-
-    concepts = data.get("concepts")
-    if not isinstance(concepts, list) or len(concepts) != 5:
-        raise ValueError("Exactly five image concepts are required.")
-
-    normalized: list[dict[str, Any]] = []
-    for i, concept in enumerate(concepts, start=1):
-        if not isinstance(concept, dict):
-            raise ValueError(f"Concept {i} must be an object.")
-        c = dict(concept)
-        c["number"] = i
-        normalized.append(c)
-
-    return normalized
-
-
-def compact_story(data: dict[str, Any]) -> dict[str, Any]:
-    story = data.get("story")
-    return story if isinstance(story, dict) else {}
-
-
-def build_prompt(story: dict[str, Any], concept: dict[str, Any]) -> str:
-    title = str(story.get("title") or story.get("title_ja") or "").strip()
-    source = str(story.get("source") or "").strip()
-    reason = str(story.get("reason") or story.get("recommended_reason") or "").strip()
-
-    concept_title = str(
-        concept.get("title_en") or concept.get("title_ja") or f"Concept {concept['number']}"
-    ).strip()
-    concept_en = str(
-        concept.get("concept_en") or concept.get("concept_ja") or ""
-    ).strip()
-    composition_en = str(
-        concept.get("composition_en") or concept.get("composition_ja") or ""
-    ).strip()
-    production_prompt = str(concept.get("generation_prompt_en") or "").strip()
-
-    return f"""
-Create one polished editorial hero image for The Daily Duck.
-
-APPROVED STORY
-Title: {title}
-Source: {source}
-Story meaning: {reason}
-
-SELECTED VISUAL CONCEPT #{concept['number']}: {concept_title}
-Concept: {concept_en}
-Composition: {composition_en}
-Production direction: {production_prompt}
-
-PERMANENT THE DAILY DUCK MASCOT
-- a recognizable cheerful yellow duck
-- orange beak
-- large dark glossy eyes
-- a small feather tuft
-- friendly, warm expression
-- consistent proportions and identity across Daily Duck images
-
-VISUAL STYLE
-- premium, charming, modern editorial illustration / soft 3D illustration
-- simple rather than overly vintage
-- warm, emotionally uplifting
-- clean composition with strong single focal point
-- suitable as both a website hero image and an X post image
-- landscape composition
-- rich but natural lighting
-- polished enough for publication
-
-IMPORTANT
-- No headline, captions, numbers, logos, watermarks, labels, UI, or readable text in the image.
-- Do not invent unsupported factual claims.
-- Story-specific dog, clothing, props, setting, or historical cues are allowed only when they fit the approved story.
-- Keep the duck clearly recognizable as The Daily Duck mascot.
-""".strip()
+def first_text(*values: Any) -> str:
+    for value in values:
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
 
 
 def sha256_file(path: Path) -> str:
@@ -127,76 +35,149 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def main() -> None:
-    required_env("OPENAI_API_KEY")
-    data = load_json(CONCEPTS_PATH)
-    concepts = validate_concepts(data)
-    story = compact_story(data)
+def load_selected() -> dict[str, Any]:
+    if SELECTED_PATH.exists():
+        data = json.loads(SELECTED_PATH.read_text(encoding="utf-8"))
+        if data.get("state") != "DESIGN_SELECTED":
+            raise RuntimeError("selected_design.json is not DESIGN_SELECTED.")
+        return data
 
-    client = OpenAI()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    candidates: list[dict[str, Any]] = []
-
-    for concept in concepts:
-        number = int(concept["number"])
-        prompt = build_prompt(story, concept)
-
-        print(
-            f"Generating image {number}/5 "
-            f"with model={IMAGE_MODEL}, size={IMAGE_SIZE}, quality={IMAGE_QUALITY}"
-        )
-
-        result = client.images.generate(
-            model=IMAGE_MODEL,
-            prompt=prompt,
-            size=IMAGE_SIZE,
-            quality=IMAGE_QUALITY,
-            n=1,
-        )
-
-        if not result.data or not result.data[0].b64_json:
-            raise RuntimeError(f"OpenAI returned no image data for candidate {number}.")
-
-        image_bytes = base64.b64decode(result.data[0].b64_json)
-        image_path = OUTPUT_DIR / f"candidate_{number}.png"
-        image_path.write_bytes(image_bytes)
-
-        candidates.append(
-            {
-                "number": number,
-                "concept_title_ja": str(concept.get("title_ja", "")).strip(),
-                "concept_title_en": str(concept.get("title_en", "")).strip(),
-                "concept_ja": str(concept.get("concept_ja", "")).strip(),
-                "concept_en": str(concept.get("concept_en", "")).strip(),
-                "image_path": str(image_path),
-                "generation_prompt": prompt,
-                "model": IMAGE_MODEL,
-                "size": IMAGE_SIZE,
-                "quality": IMAGE_QUALITY,
-                "sha256": sha256_file(image_path),
-            }
-        )
-
-    result_state = {
-        "state": "IMAGE_CANDIDATES_READY",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "source_state": "IMAGE_CONCEPT_REVIEW",
-        "source_path": str(CONCEPTS_PATH),
-        "story": story,
-        "candidates": candidates,
-        "selection_rule": "Reply with exactly one digit: 1, 2, 3, 4, or 5.",
-        "next_state_after_valid_selection": "READY_TO_PUBLISH",
+    approved = json.loads(APPROVED_PATH.read_text(encoding="utf-8"))
+    concept = approved.get("selected_image_concept")
+    title = first_text(approved.get("selected_title"))
+    if not isinstance(concept, dict) or not title:
+        raise RuntimeError("Complete the Design Selection step first.")
+    return {
+        "state": "DESIGN_SELECTED",
+        "issue_date": first_text(approved.get("issue_date"), approved.get("date")),
+        "selected_image_concept_number": approved.get("selected_image_concept_number"),
+        "selected_image_concept": concept,
+        "selected_title_number": approved.get("selected_title_number"),
+        "selected_title": title,
+        "approved_story": approved,
     }
 
-    OUTPUT_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with OUTPUT_STATE_PATH.open("w", encoding="utf-8") as f:
-        json.dump(result_state, f, ensure_ascii=False, indent=2)
 
+def prompt_for(data: dict[str, Any], number: int, batch: int) -> str:
+    approved = data.get("approved_story") if isinstance(data.get("approved_story"), dict) else {}
+    story = approved.get("recommended_story") if isinstance(approved.get("recommended_story"), dict) else {}
+    concept = data["selected_image_concept"]
+
+    return f"""
+Create one polished hero image for The Daily Duck.
+
+This is execution {number} of 5 in batch {batch}.
+ALL FIVE images must use the SAME already-approved concept and approved title.
+Only vary pose, camera angle, framing, lighting, background details, and composition.
+
+NEWS
+Headline: {first_text(story.get("title"), story.get("title_ja"))}
+Source: {first_text(story.get("source"), approved.get("source"))}
+Meaning: {first_text(approved.get("en_copy"), approved.get("jp_copy"), story.get("reason"))}
+
+APPROVED DAILY DUCK TITLE
+{first_text(data.get("selected_title"))}
+
+APPROVED IMAGE CONCEPT
+Name: {first_text(concept.get("title_en"), concept.get("title_ja"))}
+Concept: {first_text(concept.get("concept_en"), concept.get("concept_ja"))}
+Visual direction: {first_text(concept.get("visual_direction"))}
+
+PERMANENT MASCOT
+- cheerful recognizable yellow duck
+- orange beak
+- large dark glossy eyes
+- small feather tuft
+- friendly warm expression
+- consistent Daily Duck identity
+
+STYLE
+- premium modern editorial hero image
+- cheerful and visually clean
+- simple rather than overly vintage
+- landscape composition
+- strong focal point
+- NO headline, captions, readable text, logos, UI, or watermarks inside the hero image
+""".strip()
+
+
+def main() -> int:
+    data = load_selected()
+    issue_date = first_text(data.get("issue_date"))
+
+    old_batch = 0
+    if OUTPUT_PATH.exists():
+        try:
+            old_batch = int(json.loads(OUTPUT_PATH.read_text(encoding="utf-8")).get("batch", 0))
+        except Exception:
+            old_batch = 0
+    batch = max(1, old_batch + 1)
+
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    batch_dir = OUTPUT_DIR / issue_date / f"batch-{batch}"
+    batch_dir.mkdir(parents=True, exist_ok=True)
+
+    candidates = []
+    for number in range(1, 6):
+        prompt = prompt_for(data, number, batch)
+        print(f"Generating {number}/5: {IMAGE_MODEL} {IMAGE_ASPECT_RATIO} {IMAGE_SIZE}")
+        interaction = client.interactions.create(
+            model=IMAGE_MODEL,
+            input=prompt,
+            response_format={
+                "type": "image",
+                "mime_type": "image/png",
+                "aspect_ratio": IMAGE_ASPECT_RATIO,
+                "image_size": IMAGE_SIZE,
+            },
+        )
+        image = interaction.output_image
+        if image is None or not image.data:
+            raise RuntimeError(f"No image returned for candidate {number}.")
+
+        path = batch_dir / f"candidate_{number}.png"
+        path.write_bytes(base64.b64decode(image.data))
+
+        concept = data["selected_image_concept"]
+        candidates.append({
+            "number": number,
+            "concept_title_ja": first_text(concept.get("title_ja")),
+            "concept_title_en": first_text(concept.get("title_en")),
+            "concept_ja": first_text(concept.get("concept_ja")),
+            "concept_en": first_text(concept.get("concept_en")),
+            "selected_title": first_text(data.get("selected_title")),
+            "image_path": path.as_posix(),
+            "generation_prompt": prompt,
+            "model": IMAGE_MODEL,
+            "aspect_ratio": IMAGE_ASPECT_RATIO,
+            "image_size": IMAGE_SIZE,
+            "sha256": sha256_file(path),
+        })
+
+    approved = data.get("approved_story") if isinstance(data.get("approved_story"), dict) else {}
+    story = approved.get("recommended_story") if isinstance(approved.get("recommended_story"), dict) else {}
+    result = {
+        "state": "IMAGE_CANDIDATES_READY",
+        "issue_date": issue_date,
+        "batch": batch,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "story": story,
+        "selected_image_concept_number": data.get("selected_image_concept_number"),
+        "selected_image_concept": data.get("selected_image_concept"),
+        "selected_title_number": data.get("selected_title_number"),
+        "selected_title": data.get("selected_title"),
+        "candidates": candidates,
+        "selection_rule": "Reply 1-5, or NEXT 5 for five more using the same approved concept/title.",
+    }
+    OUTPUT_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if REGEN_PATH.exists():
+        REGEN_PATH.unlink()
+
+    print(f"IMAGE MODEL: {IMAGE_MODEL}")
+    print(f"BATCH: {batch}")
     print("STATE: IMAGE_CANDIDATES_READY")
-    print("Generated exactly 5 real image candidates.")
-    print(f"Saved state: {OUTPUT_STATE_PATH}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
