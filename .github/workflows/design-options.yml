@@ -2,11 +2,6 @@ name: The Daily Duck - Design Options
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - "The Daily Duck - Gate A Approval Check"
-    types:
-      - completed
 
 permissions:
   contents: write
@@ -16,8 +11,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  design-options:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+  approved-story-to-design-email:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,48 +28,54 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements-phase2.txt
 
-      - name: Check approved story exists
+      - name: Verify APPROVED_STORY
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p=Path("automation_state/approved_story.json")
+          p = Path("automation_state/approved_story.json")
           if not p.exists():
               raise SystemExit("approved_story.json not found.")
-          d=json.load(open(p,encoding="utf-8"))
-          if d.get("state")!="APPROVED_STORY":
+          d = json.loads(p.read_text(encoding="utf-8"))
+          if d.get("state") != "APPROVED_STORY":
               raise SystemExit(f"Expected APPROVED_STORY, got {d.get('state')!r}")
-          print("APPROVED_STORY confirmed:", d.get("issue_date") or d.get("date"))
+          print("APPROVED_STORY OK:", d.get("issue_date") or d.get("date"))
           PY
 
-      - name: Generate 3 image concepts + 3 titles
+      - name: Clear only stale downstream state
+        run: python scripts/reset_after_approved_story.py
+
+      - name: Generate 3 concepts + 3 titles with Gemini
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TEXT_MODEL: gemini-3.6-flash
         run: python scripts/generate_image_concepts.py
 
-      - name: Generate one real image for each concept
+      - name: Generate exactly 3 real images with OpenAI
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
-          GEMINI_IMAGE_ASPECT_RATIO: "16:9"
-          GEMINI_IMAGE_SIZE: "1K"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: gpt-image-2
+          OPENAI_IMAGE_SIZE: "1536x1024"
+          OPENAI_IMAGE_QUALITY: medium
         run: python scripts/generate_design_previews.py
 
-      - name: Send one email with 3 images + 3 titles
+      - name: Send exactly one approval email
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: python scripts/send_design_approval_email.py
 
-      - name: Commit design options and preview images
+      - name: Commit only this recovery-stage output
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add automation_state/design_options.json
-          git add automation_images/design_previews/
-          git diff --cached --quiet && exit 0
-          git commit -m "Phase 2: create 3 final image candidates and 3 titles"
+          git add -A automation_state
+          git add -A automation_images
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Recovery: create 3 design candidates from approved story"
           git pull --rebase origin main
           git push origin HEAD:main
