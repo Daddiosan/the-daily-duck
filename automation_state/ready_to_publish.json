@@ -1,5 +1,5 @@
 {
-  "state": "PUBLISHED",
+  "state": "X_POSTED",
   "issue_date": "2026-08-15",
   "ready_at": "2026-08-15T15:44:01.889750+00:00",
   "gate_a_approved_story": {
@@ -515,5 +515,14 @@
   "publish_started": true,
   "published_at": "2026-08-15T15:44:14.397061+00:00",
   "published_image_path": "assets/ducks/2026-08-15-ocean-giants-return.png",
-  "published_page_path": "ducks/2026-08-15/index.html"
+  "published_page_path": "ducks/2026-08-15/index.html",
+  "canonical_x_image_path": "automation_images/x/2026-08-15-x-card.jpg",
+  "x_image_ratio": "5:4",
+  "x_image_size": "1500x1200",
+  "x_image_format": "JPEG",
+  "x_posted": true,
+  "x_posted_at": "2026-08-15T17:17:51.537854+00:00",
+  "x_post_id": "2088676555371258246",
+  "x_post_url": "https://x.com/i/web/status/2088676555371258246",
+  "x_media_id": "2088676553181769728"
 }
