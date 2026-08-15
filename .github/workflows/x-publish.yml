@@ -43,14 +43,43 @@ jobs:
           from pathlib import Path
           from PIL import Image
 
-          ready = json.load(open('automation_state/ready_to_publish.json', encoding='utf-8'))
-          p = Path(ready['canonical_x_image_path'])
+          ready = json.load(
+              open(
+                  'automation_state/ready_to_publish.json',
+                  encoding='utf-8'
+              )
+          )
+
+          p = Path(
+              ready['canonical_x_image_path']
+          )
+
           with Image.open(p) as im:
               print('X image:', p)
               print('Size:', im.size)
+
               if im.size != (1500, 1200):
-                  raise SystemExit(f'Unexpected X image size: {im.size}; expected 1500x1200')
+                  raise SystemExit(
+                      f'Unexpected X image size: '
+                      f'{im.size}; expected 1500x1200'
+                  )
           PY
+
+      # ======================================================
+      # Always preserve the generated X card as an artifact.
+      #
+      # This allows us to inspect the exact image even when
+      # X publishing later fails with HTTP 403.
+      # ======================================================
+
+      - name: Upload X card artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-x-card
+          path: automation_images/x/
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Publish to X
         env:
@@ -63,9 +92,26 @@ jobs:
 
       - name: Read X publish result
         id: xpublish
+        if: always()
         shell: bash
         run: |
-          ACTION=$(python -c "import json; print(json.load(open('automation_state/x_publish_result.json', encoding='utf-8'))['action'])")
+          if [ ! -f automation_state/x_publish_result.json ]; then
+            echo "No x_publish_result.json was created."
+            echo "action=FAILED_BEFORE_RESULT" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ACTION=$(python -c "
+          import json
+          data = json.load(
+              open(
+                  'automation_state/x_publish_result.json',
+                  encoding='utf-8'
+              )
+          )
+          print(data.get('action', 'UNKNOWN'))
+          ")
+
           echo "action=$ACTION" >> "$GITHUB_OUTPUT"
           echo "X publish action: $ACTION"
 
@@ -74,6 +120,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
@@ -99,25 +146,30 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add automation_state/x_publish_result.json
+
           if [ -f automation_state/ready_to_publish.json ]; then
             git add automation_state/ready_to_publish.json
           fi
+
           if git diff --cached --quiet; then
             echo "No blocked-state change to commit."
             exit 0
           fi
+
           git commit -m "automation: record blocked X publish"
           git pull --rebase origin main
           git push origin HEAD:main
 
       - name: Report X publish result
+        if: always()
         run: |
           echo "X workflow finished."
           echo "Result: ${{ steps.xpublish.outputs.action }}"
-
 
       - name: Notify failure by email
         if: failure()
