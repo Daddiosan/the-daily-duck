@@ -1,9 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-15",
-  "created_at": "2026-08-15T14:02:51.396990+00:00",
-  "text_model": "gemini-3.6-flash",
-  "approved_story": {
+  "ready_at": "2026-08-15T15:44:01.889750+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-15",
     "issue_date": "2026-08-15",
     "phase": 2,
@@ -471,18 +470,9 @@
       ],
       "gate_a_package_created_at": "2026-08-15T13:16:03.828646+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_ja": "大海原とカモの洋上観察記",
-      "title_en": "The Oceanic Encounter",
-      "concept_ja": "澄み渡る南東大西洋で、モダンな環境調査船のデッキに立つおしゃれなカモ研究員が、海面から力強く尾ぐきを覗かせる巨大なシロナガスクジラを感銘を受けて見つめる、希望に満ちた現代的ネーチャーフォトグラフィ風ビジュアル。",
-      "concept_en": "On the crystal-clear South Atlantic Ocean, a stylish duck researcher standing on the deck of a sleek eco-vessel watches in awe as a massive blue whale's tail fluke glisten above the surface. A sun-drenched, optimistic modern editorial marine scene.",
-      "visual_direction": "High-end modern editorial photography style. Bright cyan and deep Atlantic blue waters, sunlight breaking through water droplets. Minimalist deck setting with a charming yellow-billed duck with tiny marine binoculars."
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_ja": "空と海をつなぐ希望の二分割ビジュアル",
       "title_en": "Sunlit Depths & Sky Highs",
@@ -490,69 +480,37 @@
       "concept_en": "A modern split-level water composition. Below the illuminated surface, a magnificent fin whale and calf swim peacefully through shimmering sunbeams. Above, a cheerful yellow duck pilots a tiny light aircraft, celebrating their grand return from the sky.",
       "visual_direction": "Vibrant 3D digital art with sleek modern textures. Half-underwater perspective, glowing light rays piercing blue depths, cinematic lens flare, clean pastel color accents."
     },
-    {
-      "number": 3,
-      "title_ja": "黄金色の岬からの歓喜の鯨ウォッチング",
-      "title_en": "Golden Hour Whale Watch",
-      "concept_ja": "南東大西洋を見渡す美しいドラマチックな断崖絶壁。夕暮れ時の黄金の光の中で、小さなカモたちが双眼鏡を手に、遠くの海で潮を吹き上げるクジラのシルエットを歓喜しながら見守っている心温まるグラフィック。",
-      "concept_en": "A dramatic coastal cliff overlooking the Atlantic during golden hour. A group of friendly, stylish duck observers equipped with binoculars point excitedly toward the glowing horizon where whale blowholes spray mist into the sunset air.",
-      "visual_direction": "Warm golden hour light palette, rich contrast, soft depth-of-field, sleek contemporary illustration style with soft photographic textures."
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "WHALE, WHALE, WHALE... QUACKING GOOD NEWS!",
-      "meaning_ja": "「ホエール（クジラ）」と「ウェル（おやまあ）」をかけたダジャレ！カモも思わずクワックと歓声をあげる最高の帰還ニュース。"
-    },
-    {
-      "number": 2,
-      "title": "FEATHER & FIN: THE GREAT ATLANTIC RETURN!",
-      "meaning_ja": "「羽（カモ）」と「ひれ（クジラ）」が手を組む！大西洋への感動的な巨大クジラの復活劇。"
-    },
-    {
-      "number": 3,
-      "title": "A WHALE OF A QUACK!",
-      "meaning_ja": "「A whale of a〜（超ド級の〜）」という英語表現を使った、カモ新聞特製の超ド級ビッグニュース！"
-    }
-  ],
-  "approval_format": "<image 1-3> <title 1-3>",
-  "design_previews": [
-    {
-      "number": 1,
-      "image_path": "automation_images/design_previews/2026-08-15/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "68005ae052e161a036c29ff1c33d8a5ee3c6d31be90d1054f670f668a7ab7cf6"
-    },
-    {
-      "number": 2,
-      "image_path": "automation_images/design_previews/2026-08-15/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "121d48cce99747b51ba542d25395c6461bd25ab54ff6508cb71474e2da34de43"
-    },
-    {
-      "number": 3,
-      "image_path": "automation_images/design_previews/2026-08-15/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "b5c96eba55adcaae6c6c8550317566def62b21bca0d2caf2cf9fab6f6e8601eb"
-    }
-  ],
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-15",
-  "selected_image_number": 2,
+    "selected_title_number": 1,
+    "selected_title": "WHALE, WHALE, WHALE... QUACKING GOOD NEWS!"
+  },
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_ja": "空と海をつなぐ希望の二分割ビジュアル",
+    "title_en": "Sunlit Depths & Sky Highs",
+    "concept_ja": "海の上と下を同時に描くスプリットレベル構図。海中では巨大なナガスクジラの親子が太陽の光の筋の中を悠然と泳ぎ、海面上では小さな黄色いカモが軽飛行機に乗って彼らの復活を空から祝福するように飛んでいるデザイン。",
+    "concept_en": "A modern split-level water composition. Below the illuminated surface, a magnificent fin whale and calf swim peacefully through shimmering sunbeams. Above, a cheerful yellow duck pilots a tiny light aircraft, celebrating their grand return from the sky.",
+    "visual_direction": "Vibrant 3D digital art with sleek modern textures. Half-underwater perspective, glowing light rays piercing blue depths, cinematic lens flare, clean pastel color accents."
+  },
   "selected_title_number": 1,
-  "selected_title": "WHALE, WHALE, WHALE... QUACKING GOOD NEWS!"
+  "selected_title": "WHALE, WHALE, WHALE... QUACKING GOOD NEWS!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "WHALE, WHALE, WHALE... QUACKING GOOD NEWS!",
+    "meaning_ja": "「ホエール（クジラ）」と「ウェル（おやまあ）」をかけたダジャレ！カモも思わずクワックと歓声をあげる最高の帰還ニュース。"
+  },
+  "selected_preview": {
+    "number": 2,
+    "image_path": "automation_images/design_previews/2026-08-15/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "121d48cce99747b51ba542d25395c6461bd25ab54ff6508cb71474e2da34de43"
+  },
+  "canonical_image_path": "automation_images/canonical/2026-08-15.png",
+  "design_approval_reply": "2　1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false
 }
