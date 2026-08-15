@@ -61,7 +61,7 @@ ME_URL = (
 )
 
 
-X_MAX_WEIGHTED_LENGTH = 280
+X_MAX_WEIGHTED_LENGTH = 250
 
 
 URL_RE = re.compile(
