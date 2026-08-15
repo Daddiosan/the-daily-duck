@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-08-15",
+    "displayDate": "August 15, 2026",
+    "slug": "ocean-giants-return",
+    "title": "OCEAN GIANTS RETURN",
+    "image": "assets/ducks/2026-08-15-ocean-giants-return.png",
+    "imageAltJa": "Ocean Giants ReturnをテーマにしたThe Daily Duckの黄色いダック",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Ocean Giants Return",
+    "storyJa": "かつて商業捕鯨により絶滅寸前まで減少したシロナガスクジラとナガスクジラが、南東大西洋にゆっくりと戻ってきていることが報告されました。世界最大の雄大な生き物たちが再び海を泳ぐ姿は、自然の回復力とこれからの希望を感じさせてくれます。",
+    "storyEn": "After commercial whaling nearly erased them, blue and fin whales are slowly reclaiming the southeast Atlantic. The return of these majestic, world-largest creatures offers an inspiring picture of ecological recovery and hope for our oceans.",
+    "duckJa": "世界最大のクジラたちが海に戻ってくる姿は、希望そのものだね！",
+    "duckEn": "Seeing the world's largest whales reclaim their ocean home fills us with hope!",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-04-commercial-whaling-erased-blue-fin.html",
+    "archiveSummaryJa": "商業捕鯨で激減したシロナガスクジラとナガスクジラが南東大西洋に戻りつつあります。世界最大の生き物たちが見せる素晴らしい回復の兆しです。",
+    "archiveSummaryEn": "Blue and fin whales are slowly reclaiming the southeast Atlantic after commercial whaling nearly erased them. An inspiring sign of ocean recovery!",
+    "published": true
+  },
+  {
     "date": "2026-08-14",
     "displayDate": "August 14, 2026",
     "slug": "brainy-paws",

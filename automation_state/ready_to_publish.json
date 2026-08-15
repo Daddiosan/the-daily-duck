@@ -1,5 +1,5 @@
 {
-  "state": "READY_TO_PUBLISH",
+  "state": "PUBLISHED",
   "issue_date": "2026-08-15",
   "ready_at": "2026-08-15T15:44:01.889750+00:00",
   "gate_a_approved_story": {
@@ -512,5 +512,8 @@
   "canonical_image_path": "automation_images/canonical/2026-08-15.png",
   "design_approval_reply": "2　1",
   "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "publish_started": false
+  "publish_started": true,
+  "published_at": "2026-08-15T15:44:14.397061+00:00",
+  "published_image_path": "assets/ducks/2026-08-15-ocean-giants-return.png",
+  "published_page_path": "ducks/2026-08-15/index.html"
 }
