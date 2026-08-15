@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 """
 The Daily Duck - X publisher
-DIAGNOSTIC VERSION
 
-Purpose:
-- Upload the generated 5:4 X card.
-- Print safe diagnostic information from X API responses.
-- Never print API keys, access tokens, or secrets.
-- Preserve diagnostic result even when X Create Post fails.
+Production version.
 
-Uses ONLY canonical_x_image_path for X.
+Features:
+- Uses ONLY canonical_x_image_path for X.
+- Supports JPEG / PNG X cards.
+- Checks website publication before X posting.
+- Prevents duplicate X posts.
+- Calculates X weighted character length before posting.
+- Automatically shortens JP/EN copy only when required.
+- Always preserves the Daily Duck page URL.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import re
 import sys
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -26,49 +30,28 @@ from requests_oauthlib import OAuth1
 
 
 STATE_DIR = Path("automation_state")
+READY_PATH = STATE_DIR / "ready_to_publish.json"
+WEBSITE_RESULT_PATH = STATE_DIR / "website_publish_result.json"
+X_RESULT_PATH = STATE_DIR / "x_publish_result.json"
 
-READY_PATH = (
-    STATE_DIR
-    / "ready_to_publish.json"
-)
+MEDIA_UPLOAD_URL = "https://api.x.com/2/media/upload"
+CREATE_POST_URL = "https://api.x.com/2/tweets"
+ME_URL = "https://api.x.com/2/users/me"
 
-WEBSITE_RESULT_PATH = (
-    STATE_DIR
-    / "website_publish_result.json"
-)
+X_MAX_WEIGHTED_LENGTH = 280
 
-X_RESULT_PATH = (
-    STATE_DIR
-    / "x_publish_result.json"
-)
-
-
-MEDIA_UPLOAD_URL = (
-    "https://api.x.com/2/media/upload"
-)
-
-CREATE_POST_URL = (
-    "https://api.x.com/2/tweets"
-)
-
-ME_URL = (
-    "https://api.x.com/2/users/me"
+URL_RE = re.compile(
+    r"https?://[^\s]+",
+    flags=re.IGNORECASE,
 )
 
 
-def required_env(
-    name: str,
-) -> str:
-
-    value = os.getenv(
-        name,
-        "",
-    ).strip()
+def required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
 
     if not value:
         raise RuntimeError(
-            "Missing required environment "
-            f"variable: {name}"
+            f"Missing required environment variable: {name}"
         )
 
     return value
@@ -89,13 +72,9 @@ def load_json(
         )
     )
 
-    if not isinstance(
-        data,
-        dict,
-    ):
+    if not isinstance(data, dict):
         raise ValueError(
-            f"{path} must contain "
-            "a JSON object."
+            f"{path} must contain a JSON object."
         )
 
     return data
@@ -123,7 +102,6 @@ def write_json(
 
 
 def now_iso() -> str:
-
     return datetime.now(
         timezone.utc
     ).isoformat()
@@ -149,7 +127,6 @@ def first_text(
 ) -> str:
 
     for value in values:
-
         if (
             isinstance(value, str)
             and value.strip()
@@ -159,89 +136,146 @@ def first_text(
     return ""
 
 
-def safe_response_headers(
-    response: requests.Response,
-) -> dict[str, str]:
+# ============================================================
+# X character counting
+# ============================================================
 
-    wanted = {
-        "content-type",
-        "content-length",
-        "x-rate-limit-limit",
-        "x-rate-limit-remaining",
-        "x-rate-limit-reset",
-        "x-transaction-id",
-        "x-response-time",
-    }
+def is_cjk_codepoint(cp: int) -> bool:
+    """
+    Practical X-compatible handling for Daily Duck JP copy.
 
-    output: dict[str, str] = {}
+    Japanese / Chinese / Korean ranges count as weight 2.
+    """
 
-    for key, value in response.headers.items():
-
-        if key.lower() in wanted:
-            output[key] = value
-
-    return output
-
-
-def print_response_debug(
-    label: str,
-    response: requests.Response,
-) -> None:
-
-    print()
-    print("=" * 70)
-    print(label)
-    print("=" * 70)
-
-    print(
-        "URL:",
-        response.request.url,
+    ranges = (
+        (0x3040, 0x309F),  # Hiragana
+        (0x30A0, 0x30FF),  # Katakana
+        (0x31F0, 0x31FF),  # Katakana extensions
+        (0x3400, 0x4DBF),  # CJK Extension A
+        (0x4E00, 0x9FFF),  # CJK Unified
+        (0xF900, 0xFAFF),  # CJK Compatibility
+        (0xAC00, 0xD7AF),  # Hangul syllables
     )
 
-    print(
-        "HTTP status:",
-        response.status_code,
+    return any(
+        start <= cp <= end
+        for start, end in ranges
     )
 
-    print(
-        "Response headers:"
+
+def char_weight(ch: str) -> int:
+    """
+    X weighted-length approximation sufficient for
+    Daily Duck JP/EN/plain punctuation.
+
+    URLs are handled separately as 23.
+    """
+
+    cp = ord(ch)
+
+    if is_cjk_codepoint(cp):
+        return 2
+
+    # Emoji and most supplementary Unicode
+    if cp > 0xFFFF:
+        return 2
+
+    return 1
+
+
+def x_weighted_length(
+    text: str,
+) -> int:
+
+    text = unicodedata.normalize(
+        "NFC",
+        text,
     )
 
-    headers = safe_response_headers(
-        response
-    )
+    total = 0
+    position = 0
 
-    if headers:
+    for match in URL_RE.finditer(text):
 
-        for key, value in headers.items():
-            print(
-                f"  {key}: {value}"
-            )
+        before = text[
+            position:match.start()
+        ]
 
-    else:
-        print(
-            "  (no selected diagnostic headers)"
+        total += sum(
+            char_weight(ch)
+            for ch in before
         )
 
-    print(
-        "Response body:"
+        # X wraps URLs with t.co.
+        total += 23
+
+        position = match.end()
+
+    remaining = text[position:]
+
+    total += sum(
+        char_weight(ch)
+        for ch in remaining
     )
 
-    if response.text:
+    return total
 
-        print(
-            response.text[:5000]
-        )
 
-    else:
+def trim_to_weight(
+    text: str,
+    max_weight: int,
+    add_ellipsis: bool = True,
+) -> str:
 
-        print(
-            "(empty response body)"
-        )
+    text = text.strip()
 
-    print("=" * 70)
-    print()
+    if (
+        x_weighted_length(text)
+        <= max_weight
+    ):
+        return text
 
+    suffix = "…" if add_ellipsis else ""
+
+    suffix_weight = (
+        x_weighted_length(suffix)
+    )
+
+    allowed = max(
+        0,
+        max_weight - suffix_weight,
+    )
+
+    output: list[str] = []
+    used = 0
+
+    for ch in text:
+
+        weight = char_weight(ch)
+
+        if used + weight > allowed:
+            break
+
+        output.append(ch)
+        used += weight
+
+    trimmed = (
+        "".join(output)
+        .rstrip()
+    )
+
+    if not trimmed:
+        return ""
+
+    if add_ellipsis:
+        trimmed += suffix
+
+    return trimmed
+
+
+# ============================================================
+# Post text
+# ============================================================
 
 def build_post_text(
     ready: dict[str, Any],
@@ -256,20 +290,13 @@ def build_post_text(
         dict,
     ):
         raise ValueError(
-            "gate_a_approved_story "
-            "is missing."
+            "gate_a_approved_story is missing."
         )
 
     issue_date = first_text(
-        ready.get(
-            "issue_date"
-        ),
-        approved.get(
-            "issue_date"
-        ),
-        approved.get(
-            "date"
-        ),
+        ready.get("issue_date"),
+        approved.get("issue_date"),
+        approved.get("date"),
     )
 
     if not issue_date:
@@ -278,15 +305,11 @@ def build_post_text(
         )
 
     jp = first_text(
-        approved.get(
-            "x_jp"
-        )
+        approved.get("x_jp")
     )
 
     en = first_text(
-        approved.get(
-            "x_en"
-        )
+        approved.get("x_en")
     )
 
     if not jp or not en:
@@ -300,21 +323,190 @@ def build_post_text(
         f"ducks/{issue_date}/"
     )
 
-    post_text = (
+    original = (
         f"{jp}\n\n"
         f"{en}\n\n"
         f"{page_url}"
     )
 
-    if len(post_text) > 1000:
-        raise ValueError(
-            "Generated X post is "
-            "unexpectedly long "
-            f"({len(post_text)} characters)."
+    original_weight = (
+        x_weighted_length(
+            original
         )
+    )
+
+    print(
+        "Original X weighted length:",
+        original_weight,
+    )
+
+    if (
+        original_weight
+        <= X_MAX_WEIGHTED_LENGTH
+    ):
+        print(
+            "X text is within the "
+            "280 weighted-character limit."
+        )
+
+        return original
+
+    print(
+        "X text exceeds 280 weighted characters."
+    )
+
+    print(
+        "Automatically shortening JP/EN copy."
+    )
+
+    # Fixed cost:
+    # JP + two newlines + EN + two newlines + URL
+    separator_weight = (
+        x_weighted_length(
+            "\n\n"
+        )
+        * 2
+    )
+
+    url_weight = 23
+
+    available_for_copy = (
+        X_MAX_WEIGHTED_LENGTH
+        - separator_weight
+        - url_weight
+    )
+
+    # Prefer a balanced bilingual post.
+    # JP gets slightly more weighted space because
+    # Japanese characters consume weight 2.
+    jp_budget = int(
+        available_for_copy * 0.46
+    )
+
+    en_budget = (
+        available_for_copy
+        - jp_budget
+    )
+
+    jp_short = trim_to_weight(
+        jp,
+        jp_budget,
+    )
+
+    en_short = trim_to_weight(
+        en,
+        en_budget,
+    )
+
+    post_text = (
+        f"{jp_short}\n\n"
+        f"{en_short}\n\n"
+        f"{page_url}"
+    )
+
+    final_weight = (
+        x_weighted_length(
+            post_text
+        )
+    )
+
+    # Safety fallback in case punctuation / Unicode
+    # pushes the result slightly above the target.
+    while (
+        final_weight
+        > X_MAX_WEIGHTED_LENGTH
+        and en_short
+    ):
+
+        en_short = trim_to_weight(
+            en_short.rstrip("…"),
+            max(
+                1,
+                x_weighted_length(
+                    en_short
+                )
+                - 2,
+            ),
+        )
+
+        post_text = (
+            f"{jp_short}\n\n"
+            f"{en_short}\n\n"
+            f"{page_url}"
+        )
+
+        final_weight = (
+            x_weighted_length(
+                post_text
+            )
+        )
+
+    while (
+        final_weight
+        > X_MAX_WEIGHTED_LENGTH
+        and jp_short
+    ):
+
+        jp_short = trim_to_weight(
+            jp_short.rstrip("…"),
+            max(
+                1,
+                x_weighted_length(
+                    jp_short
+                )
+                - 2,
+            ),
+        )
+
+        post_text = (
+            f"{jp_short}\n\n"
+            f"{en_short}\n\n"
+            f"{page_url}"
+        )
+
+        final_weight = (
+            x_weighted_length(
+                post_text
+            )
+        )
+
+    if (
+        final_weight
+        > X_MAX_WEIGHTED_LENGTH
+    ):
+        raise ValueError(
+            "Unable to reduce X post "
+            f"below {X_MAX_WEIGHTED_LENGTH}. "
+            f"Final weight: {final_weight}"
+        )
+
+    print(
+        "Final X weighted length:",
+        final_weight,
+    )
+
+    print(
+        "Final X post text:"
+    )
+
+    print(
+        "-" * 60
+    )
+
+    print(
+        post_text
+    )
+
+    print(
+        "-" * 60
+    )
 
     return post_text
 
+
+# ============================================================
+# Image
+# ============================================================
 
 def resolve_image_path(
     ready: dict[str, Any],
@@ -336,17 +528,19 @@ def resolve_image_path(
             return path
 
     raise FileNotFoundError(
-        "canonical_x_image_path does not "
-        "point to an existing X image. "
+        "canonical_x_image_path does not point "
+        "to an existing X image. "
         "Run scripts/build_x_card.py "
         "before publish_x.py."
     )
 
 
+# ============================================================
+# OAuth
+# ============================================================
+
 def oauth() -> OAuth1:
 
-    # IMPORTANT:
-    # Never print any of these values.
     return OAuth1(
         required_env(
             "X_API_KEY"
@@ -363,6 +557,10 @@ def oauth() -> OAuth1:
     )
 
 
+# ============================================================
+# Duplicate protection
+# ============================================================
+
 def find_existing_post(
     issue_date: str,
     auth: OAuth1,
@@ -373,28 +571,13 @@ def find_existing_post(
             "issue_date is missing."
         )
 
-    print(
-        "Running X duplicate-post preflight..."
-    )
-
     me = requests.get(
         ME_URL,
         auth=auth,
         timeout=30,
     )
 
-    print(
-        "GET /2/users/me:",
-        me.status_code,
-    )
-
     if me.status_code != 200:
-
-        print_response_debug(
-            "X /users/me FAILURE",
-            me,
-        )
-
         raise RuntimeError(
             "X duplicate preflight "
             "/users/me failed: "
@@ -430,23 +613,16 @@ def find_existing_post(
         )
     )
 
-    print(
-        "Authenticated X user ID:",
-        user_id,
-    )
-
     page_url = (
         "https://www.thedailyduck.ai/"
         f"ducks/{issue_date}/"
     )
 
-    recent_url = (
-        "https://api.x.com/2/users/"
-        f"{user_id}/tweets"
-    )
-
     recent = requests.get(
-        recent_url,
+        (
+            "https://api.x.com/2/users/"
+            f"{user_id}/tweets"
+        ),
         auth=auth,
         params={
             "max_results": 20,
@@ -458,18 +634,7 @@ def find_existing_post(
         timeout=30,
     )
 
-    print(
-        "GET recent posts:",
-        recent.status_code,
-    )
-
     if recent.status_code != 200:
-
-        print_response_debug(
-            "X recent-post lookup FAILURE",
-            recent,
-        )
-
         raise RuntimeError(
             "X duplicate preflight "
             "recent-post lookup failed: "
@@ -498,15 +663,11 @@ def find_existing_post(
             continue
 
         text = first_text(
-            row.get(
-                "text"
-            )
+            row.get("text")
         )
 
         post_id = first_text(
-            row.get(
-                "id"
-            )
+            row.get("id")
         )
 
         if (
@@ -523,50 +684,14 @@ def find_existing_post(
     return None
 
 
+# ============================================================
+# Media upload
+# ============================================================
+
 def upload_image(
     image_path: Path,
     auth: OAuth1,
-) -> tuple[
-    str,
-    dict[str, Any],
-]:
-
-    if not image_path.exists():
-        raise FileNotFoundError(
-            image_path
-        )
-
-    file_size = (
-        image_path.stat().st_size
-    )
-
-    print()
-    print("=" * 70)
-    print("X MEDIA UPLOAD DIAGNOSTICS")
-    print("=" * 70)
-
-    print(
-        "Image path:",
-        image_path,
-    )
-
-    print(
-        "Filename:",
-        image_path.name,
-    )
-
-    print(
-        "File size:",
-        file_size,
-        "bytes",
-    )
-
-    print(
-        "File size MB:",
-        f"{file_size / 1024 / 1024:.3f}",
-    )
-
-    mime = "image/png"
+) -> str:
 
     suffix = (
         image_path
@@ -578,30 +703,38 @@ def upload_image(
         ".jpg",
         ".jpeg",
     ):
-
         mime = "image/jpeg"
 
-    elif suffix == ".webp":
+    elif suffix == ".png":
+        mime = "image/png"
 
+    elif suffix == ".webp":
         mime = "image/webp"
 
+    else:
+        raise ValueError(
+            "Unsupported X image format: "
+            f"{suffix}"
+        )
+
+    file_size = (
+        image_path.stat().st_size
+    )
+
     print(
-        "Detected MIME type:",
+        "Uploading X image:",
+        image_path,
+    )
+
+    print(
+        "Image bytes:",
+        file_size,
+    )
+
+    print(
+        "MIME:",
         mime,
     )
-
-    print(
-        "Media category:",
-        "tweet_image",
-    )
-
-    print(
-        "Upload endpoint:",
-        MEDIA_UPLOAD_URL,
-    )
-
-    print("=" * 70)
-    print()
 
     with image_path.open(
         "rb"
@@ -624,9 +757,9 @@ def upload_image(
             timeout=90,
         )
 
-    print_response_debug(
-        "X MEDIA UPLOAD RESPONSE",
-        response,
+    print(
+        "Media upload HTTP:",
+        response.status_code,
     )
 
     if response.status_code not in (
@@ -636,20 +769,12 @@ def upload_image(
 
         write_result(
             "MEDIA_UPLOAD_FAILED",
-            image_path=
-                image_path.as_posix(),
-            image_bytes=
-                file_size,
-            media_mime=
-                mime,
             http_status=
                 response.status_code,
             response_text=
-                response.text[:5000],
-            response_headers=
-                safe_response_headers(
-                    response
-                ),
+                response.text[:2000],
+            image_path=
+                image_path.as_posix(),
         )
 
         raise RuntimeError(
@@ -658,38 +783,7 @@ def upload_image(
             f"{response.text[:1000]}"
         )
 
-    try:
-
-        payload = (
-            response.json()
-        )
-
-    except Exception as exc:
-
-        write_result(
-            "MEDIA_UPLOAD_INVALID_JSON",
-            http_status=
-                response.status_code,
-            response_text=
-                response.text[:5000],
-        )
-
-        raise RuntimeError(
-            "X media upload returned "
-            "invalid JSON."
-        ) from exc
-
-    print(
-        "Parsed media upload JSON:"
-    )
-
-    print(
-        json.dumps(
-            payload,
-            ensure_ascii=False,
-            indent=2,
-        )
-    )
+    payload = response.json()
 
     data = payload.get(
         "data"
@@ -699,91 +793,70 @@ def upload_image(
         data,
         dict,
     ):
-
-        write_result(
-            "MEDIA_UPLOAD_MISSING_DATA",
-            response=payload,
-        )
-
         raise RuntimeError(
             "X media upload response "
             f"missing data: {payload}"
         )
 
     media_id = first_text(
-        data.get(
-            "id"
-        ),
-        data.get(
-            "media_id"
-        ),
-        data.get(
-            "media_id_string"
-        ),
+        data.get("id"),
+        data.get("media_id"),
+        data.get("media_id_string"),
     )
 
     if not media_id:
-
-        write_result(
-            "MEDIA_UPLOAD_MISSING_ID",
-            response=payload,
-        )
-
         raise RuntimeError(
             "X media upload response "
             f"missing media ID: {payload}"
         )
 
-    print()
     print(
-        "MEDIA ID SELECTED:",
+        "X media upload succeeded."
+    )
+
+    print(
+        "Media ID:",
         media_id,
     )
 
-    print(
-        "media_key:",
-        data.get(
-            "media_key"
-        ),
-    )
+    return media_id
 
-    print(
-        "expires_after_secs:",
-        data.get(
-            "expires_after_secs"
-        ),
-    )
 
-    print(
-        "processing_info:",
-        json.dumps(
-            data.get(
-                "processing_info"
-            ),
-            ensure_ascii=False,
-        ),
-    )
-
-    print()
-
-    return (
-        media_id,
-        payload,
-    )
-
+# ============================================================
+# Create Post
+# ============================================================
 
 def create_post(
     text: str,
     media_id: str,
     auth: OAuth1,
-    upload_payload: dict[str, Any],
-    image_path: Path,
 ) -> tuple[
     str,
     dict[str, Any],
 ]:
 
-    request_payload = {
+    weighted_length = (
+        x_weighted_length(
+            text
+        )
+    )
+
+    print(
+        "Create Post weighted length:",
+        weighted_length,
+    )
+
+    if (
+        weighted_length
+        > X_MAX_WEIGHTED_LENGTH
+    ):
+        raise ValueError(
+            "Refusing X Create Post because "
+            "weighted length exceeds 280: "
+            f"{weighted_length}"
+        )
+
+    payload = {
         "text":
             text,
 
@@ -792,53 +865,22 @@ def create_post(
                 media_id
             ]
         },
+
+        # The X card includes AI-generated media.
+        "made_with_ai":
+            True,
     }
-
-    print()
-    print("=" * 70)
-    print("X CREATE POST DIAGNOSTICS")
-    print("=" * 70)
-
-    print(
-        "Endpoint:",
-        CREATE_POST_URL,
-    )
-
-    print(
-        "Media ID being attached:",
-        media_id,
-    )
-
-    print(
-        "Post text length:",
-        len(text),
-    )
-
-    print(
-        "Request JSON:"
-    )
-
-    print(
-        json.dumps(
-            request_payload,
-            ensure_ascii=False,
-            indent=2,
-        )
-    )
-
-    print("=" * 70)
-    print()
 
     response = requests.post(
         CREATE_POST_URL,
         auth=auth,
-        json=request_payload,
+        json=payload,
         timeout=60,
     )
 
-    print_response_debug(
-        "X CREATE POST RESPONSE",
-        response,
+    print(
+        "Create Post HTTP:",
+        response.status_code,
     )
 
     if response.status_code not in (
@@ -848,20 +890,14 @@ def create_post(
 
         write_result(
             "CREATE_POST_FAILED",
-            image_path=
-                image_path.as_posix(),
             media_id=
                 media_id,
-            media_upload_response=
-                upload_payload,
-            create_post_http_status=
+            weighted_length=
+                weighted_length,
+            http_status=
                 response.status_code,
-            create_post_response=
-                response.text[:5000],
-            create_post_headers=
-                safe_response_headers(
-                    response
-                ),
+            response_text=
+                response.text[:2000],
             post_text=
                 text,
         )
@@ -872,29 +908,11 @@ def create_post(
             f"{response.text[:1000]}"
         )
 
-    try:
+    response_payload = (
+        response.json()
+    )
 
-        payload = (
-            response.json()
-        )
-
-    except Exception as exc:
-
-        write_result(
-            "CREATE_POST_INVALID_JSON",
-            media_id=media_id,
-            http_status=
-                response.status_code,
-            response_text=
-                response.text[:5000],
-        )
-
-        raise RuntimeError(
-            "X Create Post returned "
-            "invalid JSON."
-        ) from exc
-
-    data = payload.get(
+    data = response_payload.get(
         "data"
     )
 
@@ -902,16 +920,9 @@ def create_post(
         data,
         dict,
     ):
-
-        write_result(
-            "CREATE_POST_MISSING_DATA",
-            media_id=media_id,
-            response=payload,
-        )
-
         raise RuntimeError(
             "X Create Post response "
-            f"missing data: {payload}"
+            f"missing data: {response_payload}"
         )
 
     post_id = first_text(
@@ -921,23 +932,20 @@ def create_post(
     )
 
     if not post_id:
-
-        write_result(
-            "CREATE_POST_MISSING_ID",
-            media_id=media_id,
-            response=payload,
-        )
-
         raise RuntimeError(
             "X Create Post response "
-            f"missing post ID: {payload}"
+            f"missing post ID: {response_payload}"
         )
 
     return (
         post_id,
-        payload,
+        response_payload,
     )
 
+
+# ============================================================
+# Main
+# ============================================================
 
 def main() -> int:
 
@@ -954,33 +962,6 @@ def main() -> int:
             "issue_date"
         )
     )
-
-    print()
-    print("=" * 70)
-    print("THE DAILY DUCK X PUBLISH - DIAGNOSTIC MODE")
-    print("=" * 70)
-
-    print(
-        "Issue date:",
-        issue_date,
-    )
-
-    print(
-        "Ready state:",
-        ready.get(
-            "state"
-        ),
-    )
-
-    print(
-        "Website action:",
-        website.get(
-            "action"
-        ),
-    )
-
-    print("=" * 70)
-    print()
 
     if (
         website.get(
@@ -1001,8 +982,7 @@ def main() -> int:
 
         print(
             "X POST BLOCKED: "
-            "website publication "
-            "did not succeed."
+            "website publication did not succeed."
         )
 
         return 0
@@ -1074,6 +1054,17 @@ def main() -> int:
         )
     )
 
+    final_weight = (
+        x_weighted_length(
+            post_text
+        )
+    )
+
+    print(
+        "Final post weighted length:",
+        final_weight,
+    )
+
     auth = oauth()
 
     existing = find_existing_post(
@@ -1127,43 +1118,18 @@ def main() -> int:
 
         return 0
 
-    print(
-        "Uploading 5:4 Daily Duck "
-        f"X card: {image_path}"
-    )
-
-    (
-        media_id,
-        upload_payload,
-    ) = upload_image(
+    media_id = upload_image(
         image_path,
         auth,
-    )
-
-    print(
-        "Media upload succeeded."
-    )
-
-    print(
-        "Now attempting Create Post "
-        "with media ID:",
-        media_id,
     )
 
     (
         post_id,
         response_payload,
     ) = create_post(
-        text=
-            post_text,
-        media_id=
-            media_id,
-        auth=
-            auth,
-        upload_payload=
-            upload_payload,
-        image_path=
-            image_path,
+        post_text,
+        media_id,
+        auth,
     )
 
     post_url = (
@@ -1212,15 +1178,14 @@ def main() -> int:
             media_id,
         image_path=
             image_path.as_posix(),
+        weighted_length=
+            final_weight,
         post_text=
             post_text,
-        media_upload_response=
-            upload_payload,
         response=
             response_payload,
     )
 
-    print()
     print(
         f"X POSTED: {post_id}"
     )
@@ -1239,7 +1204,6 @@ def main() -> int:
 if __name__ == "__main__":
 
     try:
-
         raise SystemExit(
             main()
         )
