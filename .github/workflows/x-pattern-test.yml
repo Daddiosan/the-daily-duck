@@ -1,0 +1,101 @@
+name: The Daily Duck - X 3 Pattern Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-duck-x-pattern-test
+  cancel-in-progress: false
+
+jobs:
+  x-pattern-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install Pillow requests requests-oauthlib
+
+      - name: Build current Daily Duck X card
+        run: |
+          python scripts/build_x_card.py
+
+      - name: Verify X diagnostic image
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+
+          ready = json.load(
+              open(
+                  "automation_state/ready_to_publish.json",
+                  encoding="utf-8"
+              )
+          )
+
+          path = Path(
+              ready["canonical_x_image_path"]
+          )
+
+          if not path.exists():
+              raise SystemExit(
+                  f"Missing X image: {path}"
+              )
+
+          with Image.open(path) as image:
+              print(
+                  "Image:",
+                  path
+              )
+
+              print(
+                  "Format:",
+                  image.format
+              )
+
+              print(
+                  "Size:",
+                  image.size
+              )
+
+              if image.size != (
+                  1500,
+                  1200,
+              ):
+                  raise SystemExit(
+                      "Expected 1500x1200."
+                  )
+          PY
+
+      - name: Run X three-pattern diagnostic
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          python scripts/test_x_post_patterns.py
+
+      - name: Upload diagnostic results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: x-three-pattern-test
+          path: |
+            automation_state/x_pattern_test_result.json
+            automation_images/x/
+          if-no-files-found: warn
+          retention-days: 7
