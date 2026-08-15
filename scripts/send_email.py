@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from google import genai
 
@@ -21,23 +22,31 @@ EMAIL_TEXT_PATH = Path("daily_duck_email.txt")
 
 TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
 
+JST = ZoneInfo("Asia/Tokyo")
+
 
 def required_env(name: str) -> str:
     value = os.getenv(name, "").strip()
     if not value:
-        raise RuntimeError(f"Missing required environment variable: {name}")
+        raise RuntimeError(
+            f"Missing required environment variable: {name}"
+        )
     return value
 
 
 def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
-        raise FileNotFoundError(f"Required file not found: {path}")
+        raise FileNotFoundError(
+            f"Required file not found: {path}"
+        )
 
     with path.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
     if not isinstance(data, dict):
-        raise ValueError(f"{path} must contain a JSON object.")
+        raise ValueError(
+            f"{path} must contain a JSON object."
+        )
 
     return data
 
@@ -45,11 +54,13 @@ def load_json(path: Path) -> dict[str, Any]:
 def load_top_five(
     ranked: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], str]:
+
     top_five = ranked.get("top_five")
 
     if not isinstance(top_five, list) or len(top_five) < 5:
         raise ValueError(
-            "ai_ranked_news.json must contain at least five items in 'top_five'."
+            "ai_ranked_news.json must contain "
+            "at least five items in 'top_five'."
         )
 
     normalized: list[dict[str, Any]] = []
@@ -57,16 +68,28 @@ def load_top_five(
     for item in top_five[:5]:
         if not isinstance(item, dict):
             raise ValueError(
-                "Every item in 'top_five' must be a JSON object."
+                "Every item in 'top_five' "
+                "must be a JSON object."
             )
-        normalized.append(dict(item))
 
-    recommended_id = str(ranked.get("recommended_id", "")).strip()
+        normalized.append(
+            dict(item)
+        )
+
+    recommended_id = str(
+        ranked.get(
+            "recommended_id",
+            "",
+        )
+    ).strip()
 
     return normalized, recommended_id
 
 
-def clean_json_text(text: str) -> str:
+def clean_json_text(
+    text: str,
+) -> str:
+
     cleaned = text.strip()
 
     cleaned = re.sub(
@@ -90,7 +113,8 @@ def generate_five_editorial_packages(
     top_five: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """
-    Generate a complete Daily Duck editorial package for ALL five stories.
+    Generate a complete Daily Duck editorial package
+    for ALL five stories.
 
     One Gemini request is used so that:
     - exactly five candidates are returned
@@ -99,36 +123,84 @@ def generate_five_editorial_packages(
     """
 
     client = genai.Client(
-        api_key=required_env("GEMINI_API_KEY")
+        api_key=required_env(
+            "GEMINI_API_KEY"
+        )
     )
 
-    source_stories: list[dict[str, Any]] = []
+    source_stories: list[
+        dict[str, Any]
+    ] = []
 
     for story in top_five:
         source_stories.append(
             {
-                "id": story.get("id"),
-                "title": story.get("title", ""),
-                "source": story.get("source", ""),
-                "url": story.get("url", ""),
-                "reason": story.get("reason", ""),
-                "total_score": story.get("total_score"),
+                "id":
+                    story.get("id"),
+
+                "title":
+                    story.get(
+                        "title",
+                        "",
+                    ),
+
+                "source":
+                    story.get(
+                        "source",
+                        "",
+                    ),
+
+                "url":
+                    story.get(
+                        "url",
+                        "",
+                    ),
+
+                "reason":
+                    story.get(
+                        "reason",
+                        "",
+                    ),
+
+                "total_score":
+                    story.get(
+                        "total_score"
+                    ),
             }
         )
 
     output_example = {
         "stories": [
             {
-                "id": "exact original story id",
-                "title_ja": "自然な日本語タイトル",
-                "reason_ja": "日本語での記事選定理由・要約",
-                "jp_copy": "Daily Duck用の日本語記事本文",
-                "en_copy": "Daily Duck English editorial copy",
-                "duck_name": "short English duck/story nickname",
-                "duck_jp": "短い遊び心のある日本語Duckコメント",
-                "duck_en": "short playful English duck line",
-                "x_jp": "日本語X投稿文",
-                "x_en": "English X post draft",
+                "id":
+                    "exact original story id",
+
+                "title_ja":
+                    "自然な日本語タイトル",
+
+                "reason_ja":
+                    "日本語での記事選定理由・要約",
+
+                "jp_copy":
+                    "Daily Duck用の日本語記事本文",
+
+                "en_copy":
+                    "Daily Duck English editorial copy",
+
+                "duck_name":
+                    "short English duck/story nickname",
+
+                "duck_jp":
+                    "短い遊び心のある日本語Duckコメント",
+
+                "duck_en":
+                    "short playful English duck line",
+
+                "x_jp":
+                    "日本語X投稿文",
+
+                "x_en":
+                    "English X post draft",
             }
             for _ in range(5)
         ]
@@ -150,19 +222,23 @@ Editorial philosophy:
 - surprising
 - positively curious
 
-Do NOT favor science, technology, nature, space, or any particular category.
+Do NOT favor science, technology, nature, space,
+or any particular category.
 
 You are given exactly five candidate news stories.
 
 IMPORTANT:
-Create a COMPLETE editorial package for EACH of the five stories.
+Create a COMPLETE editorial package for EACH
+of the five stories.
 
-The human editor will receive all five finished editorial proposals and
-choose ONE by replying with the number 1, 2, 3, 4, or 5.
+The human editor will receive all five finished
+editorial proposals and choose ONE by replying
+with the number 1, 2, 3, 4, or 5.
 
 STRICT FACTUAL RULE:
 
-Use ONLY factual information present in the supplied story data.
+Use ONLY factual information present in the
+supplied story data.
 
 Do not invent:
 
@@ -177,13 +253,14 @@ Do not invent:
 - organizations
 - background facts
 
-If the source information is limited, keep the article general rather than
-adding facts.
+If the source information is limited, keep the
+article general rather than adding facts.
 
 JAPANESE:
 
 Japanese must sound natural and readable.
-Do not make it sound like a literal machine translation.
+Do not make it sound like a literal machine
+translation.
 
 ENGLISH:
 
@@ -191,15 +268,16 @@ English must be natural, concise and friendly.
 
 EDITORIAL COPY:
 
-jp_copy and en_copy should each be a short Daily Duck article suitable
-for publication.
+jp_copy and en_copy should each be a short
+Daily Duck article suitable for publication.
 
-They should explain why the story is interesting and leave the reader
-feeling positive.
+They should explain why the story is interesting
+and leave the reader feeling positive.
 
 DUCK COPY:
 
-duck_jp and duck_en may be playful, but must not introduce unsupported facts.
+duck_jp and duck_en may be playful, but must
+not introduce unsupported facts.
 
 X COPY:
 
@@ -232,12 +310,19 @@ FIVE SOURCE STORIES:
         indent=2,
     )
 
-    response = call_with_retry(lambda: client.models.generate_content(
-        model=TEXT_MODEL,
-        contents=prompt.strip(),
-    ), label="Gemini generate_content")
+    response = call_with_retry(
+        lambda: client.models.generate_content(
+            model=TEXT_MODEL,
+            contents=prompt.strip(),
+        ),
+        label="Gemini generate_content",
+    )
 
-    response_text = getattr(response, "text", None)
+    response_text = getattr(
+        response,
+        "text",
+        None,
+    )
 
     if not response_text:
         raise RuntimeError(
@@ -246,34 +331,59 @@ FIVE SOURCE STORIES:
 
     try:
         generated = json.loads(
-            clean_json_text(response_text)
+            clean_json_text(
+                response_text
+            )
         )
+
     except json.JSONDecodeError as exc:
         raise ValueError(
-            f"Gemini did not return valid JSON: {exc}"
+            "Gemini did not return valid JSON: "
+            f"{exc}"
         ) from exc
 
-    if not isinstance(generated, dict):
-        raise ValueError(
-            "Gemini editorial response must be a JSON object."
-        )
-
-    generated_stories = generated.get("stories")
-
-    if (
-        not isinstance(generated_stories, list)
-        or len(generated_stories) != 5
+    if not isinstance(
+        generated,
+        dict,
     ):
         raise ValueError(
-            "Gemini must return exactly five editorial stories."
+            "Gemini editorial response "
+            "must be a JSON object."
+        )
+
+    generated_stories = (
+        generated.get(
+            "stories"
+        )
+    )
+
+    if (
+        not isinstance(
+            generated_stories,
+            list,
+        )
+        or len(
+            generated_stories
+        ) != 5
+    ):
+        raise ValueError(
+            "Gemini must return exactly "
+            "five editorial stories."
         )
 
     expected_ids = [
-        str(story.get("id", "")).strip()
+        str(
+            story.get(
+                "id",
+                "",
+            )
+        ).strip()
         for story in top_five
     ]
 
-    output: list[dict[str, Any]] = []
+    output: list[
+        dict[str, Any]
+    ] = []
 
     required_fields = [
         "title_ja",
@@ -290,100 +400,210 @@ FIVE SOURCE STORIES:
     for index, editorial in enumerate(
         generated_stories
     ):
-        if not isinstance(editorial, dict):
+
+        if not isinstance(
+            editorial,
+            dict,
+        ):
             raise ValueError(
-                "Every generated story must be an object."
+                "Every generated story "
+                "must be an object."
             )
 
         generated_id = str(
-            editorial.get("id", "")
+            editorial.get(
+                "id",
+                "",
+            )
         ).strip()
 
-        expected_id = expected_ids[index]
+        expected_id = (
+            expected_ids[index]
+        )
 
-        if generated_id != expected_id:
+        if (
+            generated_id
+            != expected_id
+        ):
             raise ValueError(
-                "Gemini changed or reordered story IDs. "
+                "Gemini changed or reordered "
+                "story IDs. "
                 f"Expected {expected_id!r}, "
                 f"got {generated_id!r}."
             )
 
         for field in required_fields:
-            value = editorial.get(field)
+
+            value = editorial.get(
+                field
+            )
 
             if (
-                not isinstance(value, str)
+                not isinstance(
+                    value,
+                    str,
+                )
                 or not value.strip()
             ):
                 raise ValueError(
-                    f"Story {index + 1} is missing "
-                    f"non-empty '{field}'."
+                    f"Story {index + 1} "
+                    f"is missing non-empty "
+                    f"'{field}'."
                 )
 
-        original = dict(top_five[index])
+        original = dict(
+            top_five[index]
+        )
 
         combined = {
             **original,
-            "candidate_number": index + 1,
-            "title_ja": editorial["title_ja"].strip(),
-            "reason_ja": editorial["reason_ja"].strip(),
-            "jp_copy": editorial["jp_copy"].strip(),
-            "en_copy": editorial["en_copy"].strip(),
-            "duck_name": editorial["duck_name"].strip(),
-            "duck_jp": editorial["duck_jp"].strip(),
-            "duck_en": editorial["duck_en"].strip(),
-            "x_jp": editorial["x_jp"].strip(),
-            "x_en": editorial["x_en"].strip(),
+
+            "candidate_number":
+                index + 1,
+
+            "title_ja":
+                editorial[
+                    "title_ja"
+                ].strip(),
+
+            "reason_ja":
+                editorial[
+                    "reason_ja"
+                ].strip(),
+
+            "jp_copy":
+                editorial[
+                    "jp_copy"
+                ].strip(),
+
+            "en_copy":
+                editorial[
+                    "en_copy"
+                ].strip(),
+
+            "duck_name":
+                editorial[
+                    "duck_name"
+                ].strip(),
+
+            "duck_jp":
+                editorial[
+                    "duck_jp"
+                ].strip(),
+
+            "duck_en":
+                editorial[
+                    "duck_en"
+                ].strip(),
+
+            "x_jp":
+                editorial[
+                    "x_jp"
+                ].strip(),
+
+            "x_en":
+                editorial[
+                    "x_en"
+                ].strip(),
         }
 
-        output.append(combined)
+        output.append(
+            combined
+        )
 
     return output
 
 
 def build_package(
     ranked: dict[str, Any],
-    story_options: list[dict[str, Any]],
+    story_options: list[
+        dict[str, Any]
+    ],
     recommended_id: str,
 ) -> dict[str, Any]:
 
-    issue_date = datetime.now().date().isoformat()
+    # Daily Duck issue dates are based on JST,
+    # regardless of the GitHub Actions runner timezone.
+    issue_date = (
+        datetime.now(JST)
+        .date()
+        .isoformat()
+    )
 
     recommended_number = None
 
     for item in story_options:
-        if str(item.get("id", "")) == recommended_id:
-            recommended_number = item["candidate_number"]
+
+        if (
+            str(
+                item.get(
+                    "id",
+                    "",
+                )
+            )
+            == recommended_id
+        ):
+
+            recommended_number = (
+                item[
+                    "candidate_number"
+                ]
+            )
+
             break
 
     return {
-        "date": issue_date,
-        "issue_date": issue_date,
-        "phase": 2,
-        "state": "WAITING_STORY_SELECTION",
-        "recommended_id": recommended_id,
-        "recommended_number": recommended_number,
-        "recommended_reason": ranked.get(
-            "recommended_reason",
-            "",
-        ),
-        "story_options": story_options,
+        "date":
+            issue_date,
+
+        "issue_date":
+            issue_date,
+
+        "phase":
+            2,
+
+        "state":
+            "WAITING_STORY_SELECTION",
+
+        "recommended_id":
+            recommended_id,
+
+        "recommended_number":
+            recommended_number,
+
+        "recommended_reason":
+            ranked.get(
+                "recommended_reason",
+                "",
+            ),
+
+        "story_options":
+            story_options,
 
         # Compatibility aliases
-        "top_five": story_options,
-        "top5": story_options,
+        "top_five":
+            story_options,
 
-        "gate_a_approval_format": "1-5",
-        "gate_a_valid_replies": [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-        ],
+        "top5":
+            story_options,
 
+        "gate_a_approval_format":
+            "1-5",
+
+        "gate_a_valid_replies":
+            [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+            ],
+
+        # Precise machine timestamp remains UTC.
         "gate_a_package_created_at":
-            datetime.now(timezone.utc).isoformat(),
+            datetime.now(
+                timezone.utc
+            ).isoformat(),
     }
 
 
@@ -392,20 +612,35 @@ def format_story_option(
     recommended_number: int | None,
 ) -> str:
 
-    number = story["candidate_number"]
+    number = story[
+        "candidate_number"
+    ]
 
     recommendation_label = ""
 
-    if number == recommended_number:
+    if (
+        number
+        == recommended_number
+    ):
+
         recommendation_label = (
-            "\n★ AI RECOMMENDED / AIおすすめ"
+            "\n"
+            "★ AI RECOMMENDED / "
+            "AIおすすめ"
         )
 
     score_line = ""
 
-    if story.get("total_score") is not None:
+    if (
+        story.get(
+            "total_score"
+        )
+        is not None
+    ):
+
         score_line = (
-            f"\nScore: {story['total_score']}"
+            "\nScore: "
+            f"{story['total_score']}"
         )
 
     return f"""
@@ -482,29 +717,43 @@ def build_email(
 
     subject = (
         "The Daily Duck — "
-        f"Choose Today's Story — "
+        "Choose Today's Story — "
         f"{package['issue_date']}"
     )
 
     sections: list[str] = []
 
-    for story in package["story_options"]:
+    for story in package[
+        "story_options"
+    ]:
+
         sections.append(
             format_story_option(
                 story,
-                package.get("recommended_number"),
+                package.get(
+                    "recommended_number"
+                ),
             )
         )
 
-    candidates_text = "\n\n\n".join(sections)
+    candidates_text = (
+        "\n\n\n".join(
+            sections
+        )
+    )
 
     recommended_text = ""
 
-    if package.get("recommended_number"):
+    if package.get(
+        "recommended_number"
+    ):
+
         recommended_text = (
             "\n"
-            f"AIおすすめ: "
-            f"候補 {package['recommended_number']}\n"
+            "AIおすすめ: "
+            "候補 "
+            f"{package['recommended_number']}"
+            "\n"
         )
 
     body = f"""
@@ -558,12 +807,16 @@ def send_email(
     body: str,
 ) -> int:
 
-    gmail_address = required_env(
-        "GMAIL_ADDRESS"
+    gmail_address = (
+        required_env(
+            "GMAIL_ADDRESS"
+        )
     )
 
-    gmail_password = required_env(
-        "GMAIL_APP_PASSWORD"
+    gmail_password = (
+        required_env(
+            "GMAIL_APP_PASSWORD"
+        )
     )
 
     recipients = [
@@ -576,16 +829,29 @@ def send_email(
 
     if not recipients:
         raise RuntimeError(
-            "EMAIL_TO contains no valid recipients."
+            "EMAIL_TO contains "
+            "no valid recipients."
         )
 
     msg = EmailMessage()
 
-    msg["From"] = gmail_address
-    msg["To"] = ", ".join(recipients)
-    msg["Subject"] = subject
+    msg[
+        "From"
+    ] = gmail_address
 
-    msg.set_content(body)
+    msg[
+        "To"
+    ] = ", ".join(
+        recipients
+    )
+
+    msg[
+        "Subject"
+    ] = subject
+
+    msg.set_content(
+        body
+    )
 
     with smtplib.SMTP_SSL(
         "smtp.gmail.com",
@@ -598,16 +864,25 @@ def send_email(
             gmail_password,
         )
 
-        smtp.send_message(msg)
+        smtp.send_message(
+            msg
+        )
 
-    return len(recipients)
+    return len(
+        recipients
+    )
 
 
 def main() -> int:
 
-    ranked = load_json(RANKED_PATH)
+    ranked = load_json(
+        RANKED_PATH
+    )
 
-    top_five, recommended_id = load_top_five(
+    (
+        top_five,
+        recommended_id,
+    ) = load_top_five(
         ranked
     )
 
@@ -639,21 +914,32 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    subject, body = build_email(package)
+    subject, body = (
+        build_email(
+            package
+        )
+    )
 
     EMAIL_TEXT_PATH.write_text(
         body,
         encoding="utf-8",
     )
 
-    recipient_count = send_email(
-        subject,
-        body,
+    recipient_count = (
+        send_email(
+            subject,
+            body,
+        )
     )
 
     print(
-        f"Gate A package created: "
+        "Gate A package created: "
         f"{PACKAGE_PATH}"
+    )
+
+    print(
+        "Issue date (JST): "
+        f"{package['issue_date']}"
     )
 
     print(
@@ -661,13 +947,14 @@ def main() -> int:
     )
 
     print(
-        f"AI recommended candidate: "
+        "AI recommended candidate: "
         f"{package.get('recommended_number')}"
     )
 
     print(
-        f"Gate A email sent to "
-        f"{recipient_count} recipient(s)."
+        "Gate A email sent to "
+        f"{recipient_count} "
+        "recipient(s)."
     )
 
     print(
@@ -675,23 +962,31 @@ def main() -> int:
     )
 
     print(
-        "Valid replies: 1 / 2 / 3 / 4 / 5"
+        "Valid replies: "
+        "1 / 2 / 3 / 4 / 5"
     )
 
     print(
-        "STATE: WAITING_STORY_SELECTION"
+        "STATE: "
+        "WAITING_STORY_SELECTION"
     )
 
     return 0
 
 
 if __name__ == "__main__":
+
     try:
-        raise SystemExit(main())
+
+        raise SystemExit(
+            main()
+        )
 
     except Exception as exc:
+
         print(
             f"ERROR: {exc}",
             file=sys.stderr,
         )
+
         raise
