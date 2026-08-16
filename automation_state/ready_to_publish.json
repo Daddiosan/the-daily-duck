@@ -1,5 +1,5 @@
 {
-  "state": "PUBLISHED",
+  "state": "X_POSTED",
   "issue_date": "2026-08-16",
   "ready_at": "2026-08-16T03:29:50.488467+00:00",
   "gate_a_approved_story": {
@@ -515,5 +515,14 @@
   "publish_started": true,
   "published_at": "2026-08-16T11:37:19.221528+00:00",
   "published_image_path": "assets/ducks/2026-08-16-sunflower-eclipse.png",
-  "published_page_path": "ducks/2026-08-16/index.html"
+  "published_page_path": "ducks/2026-08-16/index.html",
+  "canonical_x_image_path": "automation_images/x/2026-08-16-x-card.jpg",
+  "x_image_ratio": "5:4",
+  "x_image_size": "1500x1200",
+  "x_image_format": "JPEG",
+  "x_posted": true,
+  "x_posted_at": "2026-08-16T11:37:48.144350+00:00",
+  "x_post_id": "2088953365132718101",
+  "x_post_url": "https://x.com/i/web/status/2088953365132718101",
+  "x_media_id": "2088953362838433792"
 }
