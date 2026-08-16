@@ -1,9 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-16",
-  "created_at": "2026-08-16T03:15:55.850907+00:00",
-  "text_model": "gemini-3.6-flash",
-  "approved_story": {
+  "ready_at": "2026-08-16T03:29:50.488467+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-16",
     "issue_date": "2026-08-16",
     "phase": 2,
@@ -471,10 +470,9 @@
       ],
       "gate_a_package_created_at": "2026-08-15T22:51:27.282827+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_ja": "日食メガネをかけたアヒルの天体観測",
       "title_en": "Duck Astronomer in the Sunflower Field",
@@ -482,77 +480,37 @@
       "concept_en": "A stylish duck wearing protective solar eclipse glasses standing in the middle of a blooming sunflower field, looking up at the total solar eclipse. The deep indigo twilight sky contrasts brilliantly with the golden sunflowers and shimmering solar corona.",
       "visual_direction": "Modern editorial photography style, warm golden yellow and deep twilight navy contrast, clean lighting, focus on a charming duck wearing eclipse glasses."
     },
-    {
-      "number": 2,
-      "title_ja": "神秘的なダイヤモンドリングと光るひまわり畑",
-      "title_en": "The Golden Ring Above the Bloom",
-      "concept_ja": "一面に広がる黄色いひまわり畑と小さな静かな池。上空には黒い太陽と輝くコロナ（ダイヤモンドリング現象）が広がり、神秘的な光景が広がります。水面には日食の光輪と静かに浮かぶシルエットのアヒルが映り込みます。",
-      "concept_en": "A wide dramatic landscape shot of vast blooming sunflowers beneath a glowing solar eclipse corona. A serene pond in the foreground reflects the silver light of the eclipse and the silhouette of a duck.",
-      "visual_direction": "High-end cinematic landscape photography, high contrast between dark sky and illuminated flowers, breathtaking and serene atmosphere."
-    },
-    {
-      "number": 3,
-      "title_ja": "グラフィックで描くポップな太陽とアヒルのグラデーション",
-      "title_en": "Modern Graphic Eclipse & Sunflower Glow",
-      "concept_ja": "鮮やかなイエローとネイビーを基調とした、グラフィカルで洗練された3Dスタイル。巨大なひまわりの輪郭と日食の光輪が重なり合い、その手前に前向きでキュートなアヒルのアートオブジェクトがたたずむ、ポップで洗練されたカバーアート。",
-      "concept_en": "A clean, modern 3D graphic illustration blending huge sunflower forms with the radiant ring of a solar eclipse. A stylized, cheerful duck stands boldly in the foreground.",
-      "visual_direction": "Vibrant and clean modern 3D illustration, stylish editorial graphic style, vibrant yellow, dark violet, and metallic silver color palette."
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "SOLAR QUACKLIPSE!",
-      "meaning_ja": "太陽とアヒルの奇跡の共演！皆既日食クアック（アヒル）リプス！"
-    },
-    {
-      "number": 2,
-      "title": "SUNFLOWERS IN THE DUCK-NESS!",
-      "meaning_ja": "暗闇（ダックネス）の中で輝くひまわり畑！"
-    },
-    {
-      "number": 3,
-      "title": "QUACKING UNDER THE SHADOW!",
-      "meaning_ja": "日食の影の中で大興奮のアヒルたち！"
-    }
-  ],
-  "approval_format": "<image 1-3> <title 1-3>",
-  "design_previews": [
-    {
-      "number": 1,
-      "image_path": "automation_images/design_previews/2026-08-16/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "1d7f851ed753d56ffbf7ad537b4d3600db6ac13680123159888e6acf9a486606"
-    },
-    {
-      "number": 2,
-      "image_path": "automation_images/design_previews/2026-08-16/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "f7c696a120dbc9467a770e31b18296ab97ee95a2f53d487ba0eae330e184c0e8"
-    },
-    {
-      "number": 3,
-      "image_path": "automation_images/design_previews/2026-08-16/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "ce984f864dd12bd4db3df4394518e8cff1be60d027ab4600204396ca798dab2f"
-    }
-  ],
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-16",
-  "selected_image_number": 1,
+    "selected_title_number": 1,
+    "selected_title": "SOLAR QUACKLIPSE!"
+  },
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_ja": "日食メガネをかけたアヒルの天体観測",
+    "title_en": "Duck Astronomer in the Sunflower Field",
+    "concept_ja": "満開のひまわり畑の真ん中で、専用のソーラーメガネをかけたスタイリッシュなアヒルが上空の皆既日食を見上げる、愛らしくモダンなショット。薄暗い黄昏時の空にダイヤモンドリングの光が輝き、黄色いひまわりと美しい対比を描きます。",
+    "concept_en": "A stylish duck wearing protective solar eclipse glasses standing in the middle of a blooming sunflower field, looking up at the total solar eclipse. The deep indigo twilight sky contrasts brilliantly with the golden sunflowers and shimmering solar corona.",
+    "visual_direction": "Modern editorial photography style, warm golden yellow and deep twilight navy contrast, clean lighting, focus on a charming duck wearing eclipse glasses."
+  },
   "selected_title_number": 1,
-  "selected_title": "SOLAR QUACKLIPSE!"
+  "selected_title": "SOLAR QUACKLIPSE!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "SOLAR QUACKLIPSE!",
+    "meaning_ja": "太陽とアヒルの奇跡の共演！皆既日食クアック（アヒル）リプス！"
+  },
+  "selected_preview": {
+    "number": 1,
+    "image_path": "automation_images/design_previews/2026-08-16/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "1d7f851ed753d56ffbf7ad537b4d3600db6ac13680123159888e6acf9a486606"
+  },
+  "canonical_image_path": "automation_images/canonical/2026-08-16.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false
 }
