@@ -177,12 +177,33 @@ def build_item(
         ),
     )
 
-    duck_name = text(
+    # ========================================================
+    # FINAL APPROVED TITLE
+    #
+    # The title selected by the user in the
+    # Image + Title Approval email is authoritative.
+    #
+    # Priority:
+    #   1. ready_to_publish.selected_title
+    #   2. approved_story.selected_title
+    #   3. legacy duck_name
+    #   4. Daily Duck fallback
+    # ========================================================
+
+    selected_title = text(
+        ready.get(
+            "selected_title"
+        ),
+        approved.get(
+            "selected_title"
+        ),
         approved.get(
             "duck_name"
         ),
         "Daily Duck",
     )
+
+    duck_name = selected_title
 
     story_ja = text(
         approved.get(
@@ -308,6 +329,7 @@ def build_item(
                 duck_name
             ),
 
+        # Final approved email title
         "title":
             duck_name.upper(),
 
@@ -1058,7 +1080,25 @@ def main():
         "gate_a_approved_story"
     )
 
+    # ========================================================
+    # Final approved title is also used for the website
+    # asset filename / slug.
+    # ========================================================
+
     duck_name = text(
+        ready.get(
+            "selected_title"
+        ),
+        (
+            approved.get(
+                "selected_title"
+            )
+            if isinstance(
+                approved,
+                dict,
+            )
+            else ""
+        ),
         (
             approved.get(
                 "duck_name"
@@ -1186,6 +1226,11 @@ def main():
         "publish_started"
     ] = True
 
+    # Preserve the final approved title explicitly.
+    ready[
+        "published_title"
+    ] = item["title"]
+
     write_json(
         READY,
         ready,
@@ -1203,6 +1248,10 @@ def main():
 
     print(
         f"Published website package for {issue}"
+    )
+
+    print(
+        f"FINAL WEBSITE TITLE: {item['title']}"
     )
 
     print(
