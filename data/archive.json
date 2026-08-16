@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-08-16",
+    "displayDate": "August 16, 2026",
+    "slug": "sunflower-eclipse",
+    "title": "SUNFLOWER ECLIPSE",
+    "image": "assets/ducks/2026-08-16-sunflower-eclipse.png",
+    "imageAltJa": "Sunflower EclipseをテーマにしたThe Daily Duckの黄色いダック",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Sunflower Eclipse",
+    "storyJa": "一面に咲き誇るひまわり畑の上空で起こった皆既日食の光景が話題を呼んでいます。太陽を思わせる元気なひまわりと、神秘的な天体ショーが織りなす極上の景色は、見る人の心をパッと明るく元気づけてくれます。",
+    "storyEn": "NASA shared a magnificent photo of a total solar eclipse taking place over a vibrant field of sunflowers. Combining the cheerful energy of sunflowers with the breathtaking wonder of a solar eclipse creates an instantly uplifting scene.",
+    "duckJa": "元気なひまわりと日食のコラボレーション、見ているだけでパワーをもらえますね！",
+    "duckEn": "Bright sunflowers paired with a total eclipse—nature putting on an incredible show!",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://www.nasa.gov/image-article/total-solar-eclipse-in-sunflower-field/",
+    "archiveSummaryJa": "満開のひまわり畑の上に広がる皆皆既日食！元気いっぱいのひまわりと神秘的な天体ショーの組み合わせが美しい景色です。",
+    "archiveSummaryEn": "A total solar eclipse over a vibrant sunflower field—a beautifully bright and cheerful spectacle in nature!",
+    "published": true
+  },
+  {
     "date": "2026-08-15",
     "displayDate": "August 15, 2026",
     "slug": "ocean-giants-return",
