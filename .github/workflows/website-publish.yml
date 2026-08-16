@@ -23,7 +23,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
+
+      # ======================================================
+      # Force-sync latest main
+      #
+      # Design Selection commits ready_to_publish.json and
+      # immediately dispatches this workflow.
+      #
+      # A workflow_dispatch run can occasionally start from
+      # the previous main SHA because of GitHub propagation
+      # timing. Always fetch origin/main again here.
+      # ======================================================
+
+      - name: Sync latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Workflow starting SHA:"
+          git rev-parse HEAD
+
+          echo "Fetching latest origin/main..."
+
+          git fetch origin main
+
+          echo "Latest origin/main SHA:"
+          git rev-parse origin/main
+
+          git reset --hard origin/main
+
+          echo "Repository synchronized to:"
+          git rev-parse HEAD
 
       # ======================================================
       # Python
@@ -36,6 +68,9 @@ jobs:
 
       # ======================================================
       # Safety gate
+      #
+      # Retry a few times in case the upstream push is still
+      # propagating when this workflow begins.
       # ======================================================
 
       - name: Check READY_TO_PUBLISH
@@ -44,15 +79,63 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ ! -f automation_state/ready_to_publish.json ]; then
+          FOUND=false
+
+          for ATTEMPT in 1 2 3 4 5; do
+
+            echo "READY_TO_PUBLISH check attempt: $ATTEMPT"
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            if [ -f automation_state/ready_to_publish.json ]; then
+              FOUND=true
+              echo "ready_to_publish.json found."
+              break
+            fi
+
+            echo "ready_to_publish.json not found yet."
+
+            if [ "$ATTEMPT" != "5" ]; then
+              echo "Waiting 3 seconds before retry..."
+              sleep 3
+            fi
+          done
+
+          if [ "$FOUND" != "true" ]; then
             echo "should_publish=false" >> "$GITHUB_OUTPUT"
-            echo "No ready_to_publish.json."
+            echo "No ready_to_publish.json after retries."
             exit 0
           fi
 
-          STATE=$(python -c "import json; print(json.load(open('automation_state/ready_to_publish.json', encoding='utf-8')).get('state',''))")
+          STATE=$(python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/ready_to_publish.json",
+              encoding="utf-8",
+          ) as f:
+              data = json.load(f)
+
+          print(data.get("state", ""))
+          PY
+          )
+
+          ISSUE_DATE=$(python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/ready_to_publish.json",
+              encoding="utf-8",
+          ) as f:
+              data = json.load(f)
+
+          print(data.get("issue_date", ""))
+          PY
+          )
 
           echo "Detected state: $STATE"
+          echo "Detected issue date: $ISSUE_DATE"
 
           if [ "$STATE" = "READY_TO_PUBLISH" ]; then
             echo "should_publish=true" >> "$GITHUB_OUTPUT"
@@ -87,7 +170,18 @@ jobs:
             exit 1
           fi
 
-          ACTION=$(python -c "import json; print(json.load(open('automation_state/website_publish_result.json', encoding='utf-8')).get('action',''))")
+          ACTION=$(python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/website_publish_result.json",
+              encoding="utf-8",
+          ) as f:
+              data = json.load(f)
+
+          print(data.get("action", ""))
+          PY
+          )
 
           echo "action=$ACTION" >> "$GITHUB_OUTPUT"
           echo "Website publish action: $ACTION"
@@ -210,6 +304,9 @@ jobs:
             echo "Existing website content was NOT overwritten."
           fi
 
+      # ======================================================
+      # Failure notification
+      # ======================================================
 
       - name: Notify failure by email
         if: failure()
