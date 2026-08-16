@@ -5,17 +5,25 @@ The Daily Duck - X social card builder
 Creates a fixed 5:4 X image (1500x1200) from the already-approved
 canonical website/hero image and the approved story copy.
 
-Final X card layout:
+Final layout:
+
     DUCK OF THE DAY
+
     TITLE
 
-    [yellow line exactly as wide as the rendered date]
+    [space]
+    YELLOW LINE
+    [space]
     DATE
-    Japanese teaser
+
+    JAPANESE TEASER
 
     Source: ...
 
-The hero image is rendered clearly with NO gradient / fade.
+Hero image:
+    - no gradient
+    - no fade
+    - clear to the bottom
 
 Output:
     automation_images/x/YYYY-MM-DD-x-card.jpg
@@ -34,19 +42,24 @@ from typing import Any
 from PIL import Image, ImageDraw, ImageFont
 
 
-READY_PATH = Path("automation_state/ready_to_publish.json")
-OUT_DIR = Path("automation_images/x")
+READY_PATH = Path(
+    "automation_state/ready_to_publish.json"
+)
 
-# ------------------------------------------------------------
+OUT_DIR = Path(
+    "automation_images/x"
+)
+
+# ============================================================
 # Canvas
-# ------------------------------------------------------------
+# ============================================================
 
 W = 1500
 H = 1200
 
-# ------------------------------------------------------------
+# ============================================================
 # Brand colors
-# ------------------------------------------------------------
+# ============================================================
 
 NAVY = "#0F172A"
 YELLOW = "#FEC400"
@@ -55,20 +68,52 @@ WHITE = "#FFFFFF"
 MUTED = "#334155"
 BORDER = "#CBD5E1"
 
+# ============================================================
+# Layout
+# ============================================================
+
+LEFT = 58
+PANEL_W = 505
+
+HERO_X = 600
+HERO_Y = 140
+
+# Title → yellow line
+TITLE_TO_LINE_GAP = 28
+
+# Yellow line thickness
+YELLOW_LINE_HEIGHT = 10
+
+# Yellow line → date
+LINE_TO_DATE_GAP = 22
+
+# Date → Japanese teaser
+DATE_TO_TEASER_GAP = 34
+
 
 # ============================================================
 # Helpers
 # ============================================================
 
-def first_text(*values: Any) -> str:
+def first_text(
+    *values: Any,
+) -> str:
+
     for value in values:
-        if isinstance(value, str) and value.strip():
+
+        if (
+            isinstance(value, str)
+            and value.strip()
+        ):
             return value.strip()
+
     return ""
 
 
 def load_ready() -> dict[str, Any]:
+
     if not READY_PATH.exists():
+
         raise FileNotFoundError(
             f"Missing {READY_PATH}"
         )
@@ -79,7 +124,10 @@ def load_ready() -> dict[str, Any]:
         )
     )
 
-    if not isinstance(data, dict):
+    if not isinstance(
+        data,
+        dict,
+    ):
         raise ValueError(
             "ready_to_publish.json must be a JSON object"
         )
@@ -90,6 +138,7 @@ def load_ready() -> dict[str, Any]:
 def save_ready(
     data: dict[str, Any],
 ) -> None:
+
     READY_PATH.write_text(
         json.dumps(
             data,
@@ -137,6 +186,7 @@ def find_font(
     ]
 
     for path in candidates:
+
         if Path(path).exists():
             return path
 
@@ -157,20 +207,13 @@ def font(
 
 
 # ============================================================
-# Image helpers
+# Image helper
 # ============================================================
 
 def fit_cover(
     img: Image.Image,
     size: tuple[int, int],
 ) -> Image.Image:
-    """
-    Resize and center-crop image to completely fill target area.
-
-    NO fade.
-    NO gradient.
-    NO transparency.
-    """
 
     tw, th = size
     sw, sh = img.size
@@ -180,8 +223,13 @@ def fit_cover(
         th / sh,
     )
 
-    nw = int(round(sw * scale))
-    nh = int(round(sh * scale))
+    nw = int(
+        round(sw * scale)
+    )
+
+    nh = int(
+        round(sh * scale)
+    )
 
     img = img.resize(
         (nw, nh),
@@ -220,6 +268,7 @@ def wrap_by_pixels(
 ) -> list[str]:
 
     lines: list[str] = []
+
     current = ""
 
     for ch in text:
@@ -232,18 +281,27 @@ def wrap_by_pixels(
             font=fnt,
         )
 
-        width = box[2] - box[0]
+        width = (
+            box[2]
+            - box[0]
+        )
 
-        if width <= max_width or not current:
+        if (
+            width <= max_width
+            or not current
+        ):
             current = test
 
         else:
+
             lines.append(
                 current.rstrip()
             )
+
             current = ch.lstrip()
 
     if current:
+
         lines.append(
             current.rstrip()
         )
@@ -276,13 +334,19 @@ def draw_multiline_limited(
         last = lines[-1]
 
         while last:
+
             bbox = draw.textbbox(
                 (0, 0),
                 last + "…",
                 font=fnt,
             )
 
-            if bbox[2] - bbox[0] <= max_width:
+            width = (
+                bbox[2]
+                - bbox[0]
+            )
+
+            if width <= max_width:
                 break
 
             last = last[:-1]
@@ -315,6 +379,7 @@ def format_issue_date(
 ) -> str:
 
     try:
+
         dt = datetime.strptime(
             issue_date,
             "%Y-%m-%d",
@@ -325,6 +390,7 @@ def format_issue_date(
         ).upper()
 
     except Exception:
+
         return issue_date.replace(
             "-",
             ".",
@@ -352,16 +418,23 @@ def render_card(
         )
 
     # --------------------------------------------------------
-    # Date
+    # Issue date
     # --------------------------------------------------------
 
     issue_date = first_text(
-        ready.get("issue_date"),
-        approved.get("issue_date"),
-        approved.get("date"),
+        ready.get(
+            "issue_date"
+        ),
+        approved.get(
+            "issue_date"
+        ),
+        approved.get(
+            "date"
+        ),
     )
 
     if not issue_date:
+
         raise ValueError(
             "issue_date is missing"
         )
@@ -384,6 +457,7 @@ def render_card(
     )
 
     if not hero_path_text:
+
         raise ValueError(
             "Canonical/website image path is missing"
         )
@@ -393,6 +467,7 @@ def render_card(
     )
 
     if not hero_path.exists():
+
         raise FileNotFoundError(
             "Canonical/website image missing: "
             f"{hero_path}"
@@ -416,13 +491,19 @@ def render_card(
     ).upper()
 
     # --------------------------------------------------------
-    # Japanese text
+    # Japanese teaser
     # --------------------------------------------------------
 
     teaser = first_text(
-        approved.get("x_jp"),
-        approved.get("jp_copy"),
-        approved.get("story_ja"),
+        approved.get(
+            "x_jp"
+        ),
+        approved.get(
+            "jp_copy"
+        ),
+        approved.get(
+            "story_ja"
+        ),
     )
 
     # --------------------------------------------------------
@@ -430,9 +511,15 @@ def render_card(
     # --------------------------------------------------------
 
     source = first_text(
-        approved.get("source"),
-        approved.get("source_name"),
-        approved.get("publisher"),
+        approved.get(
+            "source"
+        ),
+        approved.get(
+            "source_name"
+        ),
+        approved.get(
+            "publisher"
+        ),
         "Official source",
     )
 
@@ -449,8 +536,6 @@ def render_card(
     draw = ImageDraw.Draw(
         card
     )
-
-    # Outer border
 
     draw.rounded_rectangle(
         (
@@ -477,10 +562,17 @@ def render_card(
     if logo_path.exists():
 
         logo = (
-            Image.open(logo_path)
-            .convert("RGBA")
+            Image.open(
+                logo_path
+            )
+            .convert(
+                "RGBA"
+            )
             .resize(
-                (92, 92),
+                (
+                    92,
+                    92,
+                ),
                 Image.Resampling.LANCZOS,
             )
         )
@@ -532,7 +624,8 @@ def render_card(
     )
 
     tagline_width = (
-        tb[2] - tb[0]
+        tb[2]
+        - tb[0]
     )
 
     draw.text(
@@ -562,34 +655,36 @@ def render_card(
     # Footer position
     # ========================================================
 
-    footer_y = H - 72
+    footer_y = (
+        H - 72
+    )
 
     # ========================================================
     # Hero image
     # ========================================================
 
-    hero_x = 600
-    hero_y = 140
-
     hero_w = (
         W
-        - hero_x
+        - HERO_X
         - 16
     )
 
-    # Image continues clearly almost all the way to footer.
     hero_bottom = (
         footer_y - 8
     )
 
     hero_h = (
         hero_bottom
-        - hero_y
+        - HERO_Y
     )
 
     hero = (
-        Image.open(hero_path)
-        .convert("RGB")
+        Image.open(
+            hero_path
+        )
+        .convert(
+            "RGB"
+        )
     )
 
     hero = fit_cover(
@@ -601,14 +696,15 @@ def render_card(
     )
 
     # IMPORTANT:
-    # No gradient or white fade.
-    # Paste the original image directly.
+    # No gradient.
+    # No fade.
+    # No overlay.
 
     card.paste(
         hero,
         (
-            hero_x,
-            hero_y,
+            HERO_X,
+            HERO_Y,
         ),
     )
 
@@ -617,15 +713,8 @@ def render_card(
     )
 
     # ========================================================
-    # Left editorial panel
-    # ========================================================
-
-    left = 58
-    panel_w = 505
-
-    # --------------------------------------------------------
     # DUCK OF THE DAY
-    # --------------------------------------------------------
+    # ========================================================
 
     pill_text = (
         "DUCK OF THE DAY"
@@ -653,9 +742,9 @@ def render_card(
 
     draw.rounded_rectangle(
         (
-            left,
+            LEFT,
             190,
-            left + pill_w,
+            LEFT + pill_w,
             244,
         ),
         radius=18,
@@ -664,7 +753,7 @@ def render_card(
 
     draw.text(
         (
-            left + 18,
+            LEFT + 18,
             201,
         ),
         pill_text,
@@ -677,6 +766,7 @@ def render_card(
     # ========================================================
 
     name_font_size = 110
+
     name_lines: list[str] = []
 
     nf = font(
@@ -684,7 +774,10 @@ def render_card(
         True,
     )
 
-    while name_font_size >= 64:
+    while (
+        name_font_size
+        >= 64
+    ):
 
         nf = font(
             name_font_size,
@@ -695,45 +788,75 @@ def render_card(
             draw,
             duck_name,
             nf,
-            panel_w,
+            PANEL_W,
         )
 
-        if len(name_lines) <= 2:
+        if (
+            len(name_lines)
+            <= 2
+        ):
             break
 
         name_font_size -= 4
 
-    y = 276
+    title_y = 276
+
+    title_bottom = (
+        title_y
+    )
+
+    line_y = (
+        title_y
+    )
 
     for line in name_lines[:2]:
 
         draw.text(
             (
-                left,
-                y,
+                LEFT,
+                line_y,
             ),
             line,
             font=nf,
             fill=NAVY,
         )
 
-        y += int(
+        # IMPORTANT:
+        # Measure the ACTUAL rendered bottom
+        # of this line instead of guessing.
+        bbox = draw.textbbox(
+            (
+                LEFT,
+                line_y,
+            ),
+            line,
+            font=nf,
+        )
+
+        title_bottom = max(
+            title_bottom,
+            bbox[3],
+        )
+
+        line_y += int(
             name_font_size
             * 0.92
         )
 
     # ========================================================
-    # Space after title
-    # ========================================================
-
-    y += 24
-
-    # ========================================================
-    # Yellow line
+    # Yellow line position
     #
-    # Exact width of rendered DATE.
-    # No minimum length.
-    # No arbitrary extra length.
+    # The position starts from the ACTUAL visual bottom
+    # of the headline.
+    # ========================================================
+
+    yellow_y = (
+        title_bottom
+        + TITLE_TO_LINE_GAP
+    )
+
+    # ========================================================
+    # Date font / exact date width
     # ========================================================
 
     date_font = font(
@@ -755,56 +878,78 @@ def render_card(
         - date_bbox[0]
     )
 
-    line_height = 10
+    # ========================================================
+    # Yellow line
+    #
+    # EXACT rendered width of the date.
+    # ========================================================
 
     draw.rounded_rectangle(
         (
-            left,
-            y,
-            left + date_width,
-            y + line_height,
+            LEFT,
+            yellow_y,
+            LEFT + date_width,
+            yellow_y
+            + YELLOW_LINE_HEIGHT,
         ),
-        radius=line_height // 2,
+        radius=(
+            YELLOW_LINE_HEIGHT
+            // 2
+        ),
         fill=YELLOW,
     )
-
-    # ========================================================
-    # Space between line and date
-    # ========================================================
-
-    y += 30
 
     # ========================================================
     # Date
     # ========================================================
 
+    date_y = (
+        yellow_y
+        + YELLOW_LINE_HEIGHT
+        + LINE_TO_DATE_GAP
+    )
+
     draw.text(
         (
-            left,
-            y,
+            LEFT,
+            date_y,
         ),
         date_text,
         font=date_font,
         fill=NAVY,
     )
 
-    # ========================================================
-    # Space after date
-    # ========================================================
+    actual_date_bbox = (
+        draw.textbbox(
+            (
+                LEFT,
+                date_y,
+            ),
+            date_text,
+            font=date_font,
+        )
+    )
 
-    y += 65
+    date_bottom = (
+        actual_date_bbox[3]
+    )
 
     # ========================================================
     # Japanese teaser
     # ========================================================
 
+    teaser_y = (
+        date_bottom
+        + DATE_TO_TEASER_GAP
+    )
+
     if teaser:
 
-        y = draw_multiline_limited(
+        draw_multiline_limited(
             draw,
             (
-                left,
-                y,
+                LEFT,
+                teaser_y,
             ),
             teaser,
             font(
@@ -812,7 +957,7 @@ def render_card(
                 True,
             ),
             NAVY,
-            max_width=panel_w,
+            max_width=PANEL_W,
             max_lines=4,
             spacing=1.42,
         )
@@ -831,7 +976,7 @@ def render_card(
 
     draw.text(
         (
-            left,
+            LEFT,
             source_y,
         ),
         source_text,
@@ -939,7 +1084,7 @@ def main() -> int:
 
     ready[
         "x_card_layout_version"
-    ] = "2026-08-16-v2"
+    ] = "2026-08-16-v3"
 
     save_ready(
         ready
@@ -958,25 +1103,36 @@ def main() -> int:
     )
 
     print(
-        "LAYOUT: title -> yellow line -> date -> teaser"
+        "LAYOUT:"
+        " title -> space -> yellow line"
+        " -> space -> date -> teaser"
     )
 
     print(
-        "YELLOW LINE: exact rendered date width"
+        "YELLOW LINE:"
+        " exact rendered date width"
     )
 
     print(
-        "HERO IMAGE: clear / no gradient"
+        "YELLOW POSITION:"
+        " based on actual title bottom"
     )
 
     print(
-        "SOURCE: enabled"
+        "HERO IMAGE:"
+        " clear / no gradient"
+    )
+
+    print(
+        "SOURCE:"
+        f" {source if 'source' in locals() else 'enabled'}"
     )
 
     return 0
 
 
 if __name__ == "__main__":
+
     raise SystemExit(
         main()
     )
