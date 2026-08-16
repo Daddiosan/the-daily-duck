@@ -2,6 +2,12 @@ name: The Daily Duck - X Publish
 
 on:
   workflow_dispatch:
+    inputs:
+      test_only:
+        description: "Xカードだけ生成して投稿しない"
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: write
@@ -65,13 +71,6 @@ jobs:
                   )
           PY
 
-      # ======================================================
-      # Always preserve the generated X card as an artifact.
-      #
-      # This allows us to inspect the exact image even when
-      # X publishing later fails with HTTP 403.
-      # ======================================================
-
       - name: Upload X card artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -81,7 +80,15 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Report test-only mode
+        if: ${{ inputs.test_only == true }}
+        run: |
+          echo "TEST ONLY MODE"
+          echo "X card was generated and uploaded as an artifact."
+          echo "No X post was attempted."
+
       - name: Publish to X
+        if: ${{ inputs.test_only == false }}
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
@@ -92,7 +99,7 @@ jobs:
 
       - name: Read X publish result
         id: xpublish
-        if: always()
+        if: ${{ always() && inputs.test_only == false }}
         shell: bash
         run: |
           if [ ! -f automation_state/x_publish_result.json ]; then
@@ -116,7 +123,9 @@ jobs:
           echo "X publish action: $ACTION"
 
       - name: Commit X card and X post state
-        if: steps.xpublish.outputs.action == 'X_POSTED'
+        if: |
+          inputs.test_only == false &&
+          steps.xpublish.outputs.action == 'X_POSTED'
         shell: bash
         run: |
           set -euo pipefail
@@ -139,10 +148,13 @@ jobs:
 
       - name: Commit blocked X result
         if: |
-          steps.xpublish.outputs.action == 'WEBSITE_NOT_PUBLISHED_BLOCKED' ||
-          steps.xpublish.outputs.action == 'WEBSITE_STATE_NOT_PUBLISHED_BLOCKED' ||
-          steps.xpublish.outputs.action == 'ALREADY_POSTED_BLOCKED' ||
-          steps.xpublish.outputs.action == 'ALREADY_POSTED_REMOTE_BLOCKED'
+          inputs.test_only == false &&
+          (
+            steps.xpublish.outputs.action == 'WEBSITE_NOT_PUBLISHED_BLOCKED' ||
+            steps.xpublish.outputs.action == 'WEBSITE_STATE_NOT_PUBLISHED_BLOCKED' ||
+            steps.xpublish.outputs.action == 'ALREADY_POSTED_BLOCKED' ||
+            steps.xpublish.outputs.action == 'ALREADY_POSTED_REMOTE_BLOCKED'
+          )
         shell: bash
         run: |
           set -euo pipefail
@@ -169,7 +181,14 @@ jobs:
         if: always()
         run: |
           echo "X workflow finished."
-          echo "Result: ${{ steps.xpublish.outputs.action }}"
+
+          if [ "${{ inputs.test_only }}" = "true" ]; then
+            echo "Mode: TEST ONLY"
+            echo "Result: X card generated; no X post attempted."
+          else
+            echo "Mode: LIVE PUBLISH"
+            echo "Result: ${{ steps.xpublish.outputs.action }}"
+          fi
 
       - name: Notify failure by email
         if: failure()
