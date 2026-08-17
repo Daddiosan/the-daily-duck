@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-08-17",
+    "displayDate": "August 17, 2026",
+    "slug": "ducking-out-of-sight",
+    "title": "DUCKING OUT OF SIGHT!",
+    "image": "assets/ducks/2026-08-17-ducking-out-of-sight.png",
+    "imageAltJa": "DUCKING OUT OF SIGHT!をテーマにしたThe Daily Duckの黄色いダック",
+    "imageAltEn": "The Daily Duck yellow duck mascot for DUCKING OUT OF SIGHT!",
+    "storyJa": "NASAの火星探査車パーサヴィアランスが、1億9500万マイル離れた火星の地表から地球が遠ざかり見えなくなっていく瞬間を撮影しました。遥か遠い宇宙から私たちの小さな故郷を見つめる視点は、広大な宇宙と地球への優しい好奇心を思い出させてくれます。",
+    "storyEn": "NASA’s Perseverance rover captured a poetic snapshot from the surface of Mars, watching Earth vanish from view 195 million miles away. Gazing back at our tiny home from across the cosmos inspires warm curiosity and wonder.",
+    "duckJa": "1億9500万マイル先からの地球、愛おしいクワッ！",
+    "duckEn": "Looking at Earth from 195 million miles away feels magical, quack!",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260812015203.htm",
+    "archiveSummaryJa": "NASAの探査車パーサヴィアランスが1億9500万マイル離れた火星から地球が消えていく光景を撮影！宇宙の壮大さを感じる一枚です。",
+    "archiveSummaryEn": "NASA’s Perseverance rover watched Earth vanish from Mars, 195 million miles away. A beautiful view of our home planet!",
+    "published": true
+  },
+  {
     "date": "2026-08-16",
     "displayDate": "August 16, 2026",
     "slug": "sunflower-eclipse",
