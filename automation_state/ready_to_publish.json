@@ -1,9 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-17",
-  "created_at": "2026-08-17T05:22:40.227119+00:00",
-  "text_model": "gemini-3.6-flash",
-  "approved_story": {
+  "ready_at": "2026-08-17T08:04:11.684863+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-17",
     "issue_date": "2026-08-17",
     "phase": 2,
@@ -471,10 +470,9 @@
       ],
       "gate_a_package_created_at": "2026-08-16T22:46:34.180440+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_ja": "火星の探査ダックと遠い地球",
       "title_en": "Martian Explorer Duck & The Fading Earth",
@@ -482,77 +480,37 @@
       "concept_en": "A cute white duck wearing a sleek modern helmet sitting next to a high-tech Mars rover on the red dusty surface, looking up at a tiny, glowing blue Earth fading in the vast dark cosmos.",
       "visual_direction": "High-end 3D editorial style with striking contrast between warm Martian rust-orange dust and deep cosmic indigo sky, cinematic rim lighting."
     },
-    {
-      "number": 2,
-      "title_ja": "ミニマルな火星砂丘と青いポッチ",
-      "title_en": "Minimalist Mars Dunes & The Blue Dot",
-      "concept_ja": "広大で美しい火星の滑らかな砂丘に立つ一羽のアヒル。頭上に広がる深い星空の中に、まるで青い宝石のように小さく輝く地球を遠望するミニマルで現代的な構図。",
-      "concept_en": "A minimalist, high-fashion editorial visual featuring a solitary stylish duck on smooth, rolling red Mars dunes under a deep navy cosmic sky, gazing at a single tiny sapphire point representing Earth.",
-      "visual_direction": "Clean, modern design aesthetic, soft directional lighting, strong warm-and-cool color palette without complex clutter."
-    },
-    {
-      "number": 3,
-      "title_ja": "火星の天体観測ダック",
-      "title_en": "The Cosmic Observatory Duck",
-      "concept_ja": "火星の地表に設置された白い未来派望遠鏡をのぞき込み、遠ざかる地球を観察しているポップで賢そうなアヒル研究員のチャーミングな一枚。",
-      "concept_en": "A playful yet premium visual of a smart duck scientist peering through a sleek futuristic telescope on Mars, focusing on a distant, tiny blue Earth suspended in deep space.",
-      "visual_direction": "Playful editorial look, shallow depth of field, crisp modern renders with bright accents and premium glossy textures."
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "DUCKING OUT OF SIGHT!",
-      "meaning_ja": "「身を隠す・姿を消す（Ducking out）」とアヒルの「DUCK」を掛け合わせた、火星から地球が見えなくなっていく瞬間を表現した見出し。"
-    },
-    {
-      "number": 2,
-      "title": "FAR FROM THE HOME POND!",
-      "meaning_ja": "「故郷の池（地球）から遥か遠く離れて」という意味で、宇宙の壮大さと地球への愛着を表現したダックらしい見出し。"
-    },
-    {
-      "number": 3,
-      "title": "QUACKSTRONAUT’S COSMIC VIEW!",
-      "meaning_ja": "「アヒル宇宙飛行士（Quackstronaut）」が見つめる、火星からの感動的な宇宙の絶景をイメージしたキャッチーな見出し。"
-    }
-  ],
-  "approval_format": "<image 1-3> <title 1-3>",
-  "design_previews": [
-    {
-      "number": 1,
-      "image_path": "automation_images/design_previews/2026-08-17/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "2a340f273981d43b13d7c4e49dead99248b78ac213b47afd1dc4117cfe979ed4"
-    },
-    {
-      "number": 2,
-      "image_path": "automation_images/design_previews/2026-08-17/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "dc7efb1a8b18b8eeb2e00fbe444a1f99c8199d0e5f19f345ebabd9042adebd8d"
-    },
-    {
-      "number": 3,
-      "image_path": "automation_images/design_previews/2026-08-17/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "388280a33aeea11b40b402b788c17151073ad2039e33674cd2192da9021a1d9d"
-    }
-  ],
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-17",
-  "selected_image_number": 1,
+    "selected_title_number": 1,
+    "selected_title": "DUCKING OUT OF SIGHT!"
+  },
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_ja": "火星の探査ダックと遠い地球",
+    "title_en": "Martian Explorer Duck & The Fading Earth",
+    "concept_ja": "赤い火星の地表で、最新鋭のスタイリッシュな宇宙服を着たかわいいアヒルが、ハイテク探査車の隣で夜空にぽつんと輝く小さな青い地球を見上げているシーン。",
+    "concept_en": "A cute white duck wearing a sleek modern helmet sitting next to a high-tech Mars rover on the red dusty surface, looking up at a tiny, glowing blue Earth fading in the vast dark cosmos.",
+    "visual_direction": "High-end 3D editorial style with striking contrast between warm Martian rust-orange dust and deep cosmic indigo sky, cinematic rim lighting."
+  },
   "selected_title_number": 1,
-  "selected_title": "DUCKING OUT OF SIGHT!"
+  "selected_title": "DUCKING OUT OF SIGHT!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "DUCKING OUT OF SIGHT!",
+    "meaning_ja": "「身を隠す・姿を消す（Ducking out）」とアヒルの「DUCK」を掛け合わせた、火星から地球が見えなくなっていく瞬間を表現した見出し。"
+  },
+  "selected_preview": {
+    "number": 1,
+    "image_path": "automation_images/design_previews/2026-08-17/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "2a340f273981d43b13d7c4e49dead99248b78ac213b47afd1dc4117cfe979ed4"
+  },
+  "canonical_image_path": "automation_images/canonical/2026-08-17.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false
 }
