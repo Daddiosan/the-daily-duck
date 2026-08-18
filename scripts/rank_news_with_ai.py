@@ -1,16 +1,20 @@
 import os
 import json
 import re
+import time
+import socket
 import urllib.request
 import urllib.error
+
 from difflib import SequenceMatcher
 from pathlib import Path
 from urllib.parse import (
-    urlsplit,
-    urlunsplit,
     parse_qsl,
     urlencode,
+    urlsplit,
+    urlunsplit,
 )
+
 
 INPUT_FILE = "news_candidates.json"
 OUTPUT_FILE = "ai_ranked_news.json"
@@ -18,13 +22,35 @@ ARCHIVE_FILE = Path("data/archive.json")
 
 MODEL = "gemini-3.6-flash"
 
-# Geminiへ渡す過去掲載履歴の最大件数。
-# archive.jsonは新しい記事が先頭なので、
-# 最近の記事を優先して比較する。
-MAX_HISTORY_ITEMS = 60
+# ------------------------------------------------------------
+# Gemini retry settings
+# ------------------------------------------------------------
 
-# 同じ候補集合内で、ほぼ同一タイトルを
-# Python側で重複とみなす基準。
+MAX_GEMINI_ATTEMPTS = 4
+
+# Retry after:
+# attempt 1 -> 10 sec
+# attempt 2 -> 30 sec
+# attempt 3 -> 60 sec
+RETRY_DELAYS = [
+    10,
+    30,
+    60,
+]
+
+RETRYABLE_HTTP_CODES = {
+    429,
+    500,
+    502,
+    503,
+    504,
+}
+
+# ------------------------------------------------------------
+# Duplicate/history settings
+# ------------------------------------------------------------
+
+MAX_HISTORY_ITEMS = 60
 CURRENT_TITLE_SIMILARITY = 0.92
 
 
@@ -35,6 +61,7 @@ CURRENT_TITLE_SIMILARITY = 0.92
 def text(value):
     if isinstance(value, str):
         return value.strip()
+
     return ""
 
 
@@ -53,19 +80,16 @@ def normalize_title(value):
         value,
     )
 
-    return re.sub(
+    value = re.sub(
         r"\s+",
         " ",
         value,
-    ).strip()
+    )
+
+    return value.strip()
 
 
 def normalize_url(value):
-    """
-    Normalize URLs so tracking parameters do not make
-    the same article look different.
-    """
-
     value = text(value)
 
     if not value:
@@ -79,9 +103,7 @@ def normalize_url(value):
             or "https"
         )
 
-        netloc = (
-            parts.netloc.lower()
-        )
+        netloc = parts.netloc.lower()
 
         path = (
             parts.path.rstrip("/")
@@ -134,7 +156,7 @@ def normalize_url(value):
 
 
 # ============================================================
-# Load today's candidates
+# Load candidates
 # ============================================================
 
 def load_candidates():
@@ -145,11 +167,9 @@ def load_candidates():
     ) as file:
         data = json.load(file)
 
-    # Current Daily Duck collector format
     if "candidates" in data:
         candidates = data["candidates"]
 
-    # Compatibility with previous collector versions
     elif "all_candidates" in data:
         candidates = data["all_candidates"]
 
@@ -178,18 +198,16 @@ def load_candidates():
 
 
 # ============================================================
-# Load published Daily Duck history
+# Load Daily Duck archive
 # ============================================================
 
 def load_archive():
     if not ARCHIVE_FILE.exists():
+
         print(
             "WARNING: data/archive.json does not exist."
         )
-        print(
-            "Duplicate history checking will use "
-            "today's candidates only."
-        )
+
         return []
 
     try:
@@ -213,29 +231,31 @@ def load_archive():
             "data/archive.json must be a JSON array."
         )
 
-    result = []
+    published = []
 
     for item in archive:
+
         if not isinstance(
             item,
             dict,
         ):
             continue
 
-        # Only real published stories become exclusion history.
         if item.get(
             "published",
             True,
         ) is False:
             continue
 
-        result.append(item)
+        published.append(
+            item
+        )
 
-    return result
+    return published
 
 
 # ============================================================
-# Exact published URL exclusion
+# Already-published URL exclusion
 # ============================================================
 
 def build_published_url_set(
@@ -244,8 +264,11 @@ def build_published_url_set(
     urls = set()
 
     for item in archive:
+
         url = normalize_url(
-            item.get("sourceUrl")
+            item.get(
+                "sourceUrl"
+            )
         )
 
         if url:
@@ -258,13 +281,6 @@ def remove_already_published_urls(
     candidates,
     archive,
 ):
-    """
-    Hard exclusion.
-
-    If the source URL has already been published by
-    The Daily Duck, do not even send it to Gemini.
-    """
-
     published_urls = (
         build_published_url_set(
             archive
@@ -283,7 +299,9 @@ def remove_already_published_urls(
             continue
 
         candidate_url = normalize_url(
-            story.get("url")
+            story.get(
+                "url"
+            )
         )
 
         if (
@@ -294,6 +312,7 @@ def remove_already_published_urls(
             removed.append(
                 story
             )
+
             continue
 
         filtered.append(
@@ -304,23 +323,12 @@ def remove_already_published_urls(
 
 
 # ============================================================
-# Same-day duplicate cleanup
+# Duplicate cleanup inside today's candidates
 # ============================================================
 
 def remove_same_day_duplicates(
     candidates,
 ):
-    """
-    Prevent today's candidate pool itself from containing
-    several versions of essentially the same headline.
-
-    URL identity is checked first.
-    Strong title similarity is checked second.
-
-    Semantic duplicates from different publishers are
-    handled later by Gemini.
-    """
-
     kept = []
     removed = []
 
@@ -336,41 +344,54 @@ def remove_same_day_duplicates(
             continue
 
         url = normalize_url(
-            story.get("url")
+            story.get(
+                "url"
+            )
         )
 
         title = normalize_title(
-            story.get("title")
+            story.get(
+                "title"
+            )
         )
 
-        if url and url in seen_urls:
+        # Exact URL duplicate
+        if (
+            url
+            and url in seen_urls
+        ):
             removed.append(
                 story
             )
+
             continue
 
-        is_duplicate_title = False
+        # Very similar headline
+        duplicate_title = False
 
         if title:
+
             for previous_title in seen_titles:
 
-                ratio = SequenceMatcher(
+                similarity = SequenceMatcher(
                     None,
                     title,
                     previous_title,
                 ).ratio()
 
                 if (
-                    ratio
+                    similarity
                     >= CURRENT_TITLE_SIMILARITY
                 ):
-                    is_duplicate_title = True
+                    duplicate_title = True
                     break
 
-        if is_duplicate_title:
+        if duplicate_title:
+
             removed.append(
                 story
             )
+
             continue
 
         kept.append(
@@ -387,24 +408,12 @@ def remove_same_day_duplicates(
 
 
 # ============================================================
-# Build publication history for Gemini
+# Build archive history for Gemini
 # ============================================================
 
 def build_history_for_prompt(
     archive,
 ):
-    """
-    archive.json contains Daily Duck titles rather than
-    necessarily the original publisher headline.
-
-    Therefore semantic duplicate detection gets:
-      - source URL
-      - publisher/source
-      - English/Japanese story summary
-      - archive summary
-      - Daily Duck title
-    """
-
     history = []
 
     for item in archive[
@@ -422,26 +431,33 @@ def build_history_for_prompt(
                 "date": text(
                     item.get("date")
                 ),
+
                 "daily_duck_title": text(
                     item.get("title")
                 ),
+
                 "source": text(
                     item.get("sourceLabel")
                 ),
+
                 "source_url": text(
                     item.get("sourceUrl")
                 ),
+
                 "story_en": text(
                     item.get("storyEn")
                 )[:500],
+
                 "story_ja": text(
                     item.get("storyJa")
                 )[:500],
+
                 "summary_en": text(
                     item.get(
                         "archiveSummaryEn"
                     )
                 )[:350],
+
                 "summary_ja": text(
                     item.get(
                         "archiveSummaryJa"
@@ -454,7 +470,7 @@ def build_history_for_prompt(
 
 
 # ============================================================
-# Gemini prompt
+# Prompt
 # ============================================================
 
 def build_prompt(
@@ -467,23 +483,35 @@ def build_prompt(
         candidates,
         start=1,
     ):
+
         stories.append(
             {
                 "id": index,
+
                 "source": text(
-                    story.get("source")
+                    story.get(
+                        "source"
+                    )
                 ),
+
                 "title": text(
-                    story.get("title")
+                    story.get(
+                        "title"
+                    )
                 ),
+
                 "description": text(
                     story.get(
                         "description"
                     )
                 )[:700],
+
                 "url": text(
-                    story.get("url")
+                    story.get(
+                        "url"
+                    )
                 ),
+
                 "published": text(
                     story.get(
                         "published"
@@ -513,38 +541,36 @@ You are the senior editorial ranking assistant for
 The Daily Duck.
 
 ============================================================
-THE DAILY DUCK MISSION
+MISSION
 ============================================================
 
-Choose news that leaves an ordinary reader feeling a little:
+Choose news that leaves ordinary readers feeling:
 
 - happier
 - warmer
-- more hopeful
+- hopeful
 - amused
 - delighted
 - inspired
 - pleasantly surprised
 - positively curious
 
-The Daily Duck is NOT a science publication.
+The Daily Duck is a cheerful GENERAL-INTEREST publication.
 
+It is NOT a science publication.
 It is NOT a technology publication.
-
 It is NOT a research-news publication.
-
-It is a cheerful general-interest daily publication.
 
 There is NO preferred subject category.
 
 ============================================================
-MOST IMPORTANT EDITORIAL CHANGE
+CORRECT THE RECENT SCIENCE BIAS
 ============================================================
 
-Recent editions have contained too many:
+Recent Daily Duck editions have contained too many:
 
 - science stories
-- research papers
+- academic research stories
 - neuroscience stories
 - space stories
 - astronomy stories
@@ -552,31 +578,19 @@ Recent editions have contained too many:
 
 Correct that bias.
 
-Scientific importance or academic novelty alone is NOT
-a Daily Duck quality.
+Scientific importance by itself is NOT a reason
+to rank a story highly.
 
-A major scientific breakthrough can rank BELOW:
-
-- a delightful animal story
-- an amusing everyday story
-- an inspiring human story
-- a surprising food story
-- a fun cultural story
-- a heartwarming community story
-- an unusual sports story
-- a travel or place story
-- a creativity story
-- a charming conservation success
-- a quirky world event
-
-if the non-science story is more enjoyable for ordinary readers.
+A simple, funny, delightful, heartwarming or surprising
+general-interest story should beat a major scientific
+breakthrough when ordinary readers would enjoy it more.
 
 ============================================================
 CATEGORY DIVERSITY
 ============================================================
 
-The TOP FIVE should feel like a fun mixed front page,
-not five variations of the same subject.
+The TOP FIVE should feel like a varied and entertaining
+front page.
 
 Possible categories include:
 
@@ -592,9 +606,9 @@ Possible categories include:
 - creativity
 - entertainment
 - unusual events
-- funny / quirky news
-- positive environment
+- quirky news
 - conservation
+- positive environment
 - nature
 - children / family
 - achievements
@@ -603,67 +617,63 @@ Possible categories include:
 - technology
 - other positive general-interest stories
 
-IMPORTANT:
+Normally choose NO MORE THAN ONE story from the combined:
 
-Normally select NO MORE THAN ONE story from the combined
-science / academic research / space / astronomy /
-technology category in the TOP FIVE.
+science / academic research / neuroscience /
+space / astronomy / technology
 
-Only exceed that limit if there are genuinely not enough
-suitable high-quality non-science candidates to create
-five good Daily Duck choices.
+category in today's TOP FIVE.
 
-Do not artificially choose a poor story merely for diversity.
+You may exceed this only if the available non-science
+candidates are clearly too weak to create five good stories.
 
-Quality still matters.
+Do NOT choose poor stories simply to satisfy diversity.
 
-But when two stories are similarly good, strongly prefer
-the category that is NOT already represented in the TOP FIVE.
+However, when two stories are approximately equal in quality,
+strongly prefer the category that is not already represented.
 
 ============================================================
-NO REPEATS
+PAST STORY DUPLICATES
 ============================================================
 
-Below you will receive PUBLISHED HISTORY from
-The Daily Duck archive.
+Below is The Daily Duck's PUBLISHED HISTORY.
 
 A previously published story MUST NOT be selected again.
 
-Reject a candidate if it is:
+Reject a candidate when it is:
 
-1. the same article,
-2. the same source URL,
-3. the same underlying event reported by another publisher,
-4. a rewritten version of an already-used story,
-5. a minor update that does not create a genuinely new story.
-
-A genuine major new development in an old subject MAY be used,
-but only if the new development itself is clearly the story.
+1. the exact same article,
+2. the same URL,
+3. the same event reported by another publisher,
+4. a rewritten version of an already-used event,
+5. a minor update without a genuinely new development.
 
 Example:
 
-Yesterday:
-"A zoo welcomes a baby panda."
+Previously published:
+"A zoo welcomes twin pandas."
 
 Today:
-"Another website reports that the zoo welcomed a baby panda."
+"Another publisher reports that twin pandas were born."
 
-=> DUPLICATE. Reject.
+=> DUPLICATE. DO NOT SELECT.
 
 But:
 
-Three months later:
-"The panda takes its first steps in public."
+Months later:
+"The twin pandas make their first public appearance."
 
-=> Can be a genuinely new story.
+=> This can be a genuinely new event.
 
 ============================================================
-NO DUPLICATES INSIDE TODAY'S TOP FIVE
+DUPLICATES INSIDE TODAY'S TOP FIVE
 ============================================================
 
-Different publishers may report the same event.
+Do not select two publishers covering essentially the
+same event.
 
-Do NOT put multiple versions of the same event in the TOP FIVE.
+Each TOP FIVE story should represent a meaningfully
+different story.
 
 ============================================================
 AVOID NEGATIVE STORIES
@@ -682,39 +692,41 @@ Avoid stories whose main emotional focus is:
 - suffering
 - outrage
 
-A recovery or conservation story may still qualify if its
-dominant emotional effect is clearly hopeful and uplifting.
+A recovery or conservation story may qualify when its
+dominant emotional feeling is hopeful and positive.
 
 ============================================================
 WHAT SHOULD WIN
 ============================================================
 
-Prefer stories that have:
+Prefer:
 
-- immediate emotional appeal
+- instant emotional appeal
 - broad accessibility
-- a strong "I want to tell someone this" quality
 - charm
 - warmth
 - surprise
+- humour
+- "I want to tell somebody this" value
 - playful visual potential
-- a clear story that needs little specialist knowledge
+- easy-to-understand stories
 - freshness
+- genuine novelty
 
 Penalize:
 
-- technical significance without emotional appeal
 - specialist-only interest
-- press releases whose main value is academic importance
-- stories that require lengthy explanation before becoming fun
+- technical importance without emotional appeal
+- academic press releases that mainly matter to specialists
+- stories requiring long technical explanations
 - repetitive science / space / research themes
-- events already published by The Daily Duck
+- anything already published by The Daily Duck
 
 ============================================================
 SCORING
 ============================================================
 
-Score each selected story:
+Score selected stories:
 
 - happiness: 0-10
 - hope: 0-10
@@ -728,14 +740,11 @@ Score each selected story:
 
 total_score must be 0-100.
 
-The exact arithmetic does not have to equal a simple sum.
-Use total_score as the overall Daily Duck editorial score.
-
 ============================================================
-CATEGORY FIELD
+CATEGORY
 ============================================================
 
-Assign ONE concise category to every selected story.
+Assign ONE concise category.
 
 Examples:
 
@@ -756,23 +765,21 @@ creativity
 other
 
 ============================================================
-SELECTION RULES
+FINAL SELECTION
 ============================================================
 
-Return exactly the BEST FIVE suitable stories.
+Return exactly FIVE stories.
 
-The five should be meaningfully varied when the candidate pool
-allows it.
+Choose exactly ONE recommended story.
 
-Choose exactly ONE recommended story from those five.
+The recommended story should usually have the strongest
+combination of:
 
-Today's recommended story should usually be the story that is
-most:
-
-- instantly enjoyable
-- broadly appealing
-- memorable
-- visually fun
+- broad appeal
+- happiness / warmth
+- surprise
+- memorability
+- visual fun
 
 Do NOT automatically recommend the most scientifically
 important story.
@@ -794,92 +801,98 @@ Return only the requested JSON.
 
 
 # ============================================================
-# Gemini API
+# Gemini schema
 # ============================================================
 
-def call_gemini(
-    prompt,
-):
-    api_key = os.environ.get(
-        "GEMINI_API_KEY"
-    )
-
-    if not api_key:
-        raise RuntimeError(
-            "GEMINI_API_KEY is not configured."
-        )
-
-    url = (
-        "https://generativelanguage.googleapis.com/"
-        f"v1beta/models/{MODEL}:generateContent"
-        f"?key={api_key}"
-    )
-
-    schema = {
+def build_schema():
+    return {
         "type": "object",
+
         "properties": {
+
             "recommended_id": {
                 "type": "integer"
             },
+
             "recommended_reason": {
                 "type": "string"
             },
+
             "top_five": {
                 "type": "array",
                 "minItems": 5,
                 "maxItems": 5,
+
                 "items": {
                     "type": "object",
+
                     "properties": {
+
                         "id": {
                             "type": "integer"
                         },
+
                         "title": {
                             "type": "string"
                         },
+
                         "source": {
                             "type": "string"
                         },
+
                         "url": {
                             "type": "string"
                         },
+
                         "category": {
                             "type": "string"
                         },
+
                         "happiness": {
                             "type": "integer"
                         },
+
                         "hope": {
                             "type": "integer"
                         },
+
                         "general_interest": {
                             "type": "integer"
                         },
+
                         "surprise": {
                             "type": "integer"
                         },
+
                         "duck_visual": {
                             "type": "integer"
                         },
+
                         "source_quality": {
                             "type": "integer"
                         },
+
                         "freshness": {
                             "type": "integer"
                         },
+
                         "broad_appeal": {
                             "type": "integer"
                         },
+
                         "novelty_vs_archive": {
                             "type": "integer"
                         },
+
                         "total_score": {
                             "type": "integer"
                         },
+
                         "reason": {
                             "type": "string"
                         },
                     },
+
                     "required": [
                         "id",
                         "title",
@@ -901,6 +914,7 @@ def call_gemini(
                 },
             },
         },
+
         "required": [
             "recommended_id",
             "recommended_reason",
@@ -908,7 +922,31 @@ def call_gemini(
         ],
     }
 
+
+# ============================================================
+# Single Gemini request
+# ============================================================
+
+def call_gemini_once(
+    prompt,
+):
+    api_key = os.environ.get(
+        "GEMINI_API_KEY"
+    )
+
+    if not api_key:
+        raise RuntimeError(
+            "GEMINI_API_KEY is not configured."
+        )
+
+    url = (
+        "https://generativelanguage.googleapis.com/"
+        f"v1beta/models/{MODEL}:generateContent"
+        f"?key={api_key}"
+    )
+
     body = {
+
         "contents": [
             {
                 "parts": [
@@ -918,62 +956,209 @@ def call_gemini(
                 ]
             }
         ],
+
         "generationConfig": {
             "temperature": 0.2,
             "responseMimeType": "application/json",
-            "responseJsonSchema": schema,
+            "responseJsonSchema": build_schema(),
         },
     }
 
     request = urllib.request.Request(
         url,
+
         data=json.dumps(
             body
         ).encode(
             "utf-8"
         ),
+
         headers={
             "Content-Type": "application/json"
         },
+
         method="POST",
     )
 
-    try:
-        with urllib.request.urlopen(
-            request,
-            timeout=120,
-        ) as response:
+    with urllib.request.urlopen(
+        request,
+        timeout=120,
+    ) as response:
 
-            response_data = json.loads(
-                response.read().decode(
-                    "utf-8"
-                )
+        response_data = json.loads(
+            response.read().decode(
+                "utf-8"
             )
-
-    except urllib.error.HTTPError as error:
-
-        details = error.read().decode(
-            "utf-8",
-            errors="replace",
         )
+
+    try:
+        result_text = (
+            response_data[
+                "candidates"
+            ][0][
+                "content"
+            ][
+                "parts"
+            ][0][
+                "text"
+            ]
+        )
+
+    except (
+        KeyError,
+        IndexError,
+        TypeError,
+    ) as exc:
 
         raise RuntimeError(
-            f"Gemini API HTTP "
-            f"{error.code}: {details}"
-        )
-
-    text_result = (
-        response_data["candidates"][0]
-        ["content"]["parts"][0]["text"]
-    )
+            "Unexpected Gemini response structure: "
+            f"{json.dumps(response_data, ensure_ascii=False)[:1500]}"
+        ) from exc
 
     return json.loads(
-        text_result
+        result_text
     )
 
 
 # ============================================================
-# Result validation
+# Gemini automatic retry
+# ============================================================
+
+def call_gemini(
+    prompt,
+):
+    """
+    Retry temporary Gemini/API/network failures.
+
+    Attempt 1
+      fail -> wait 10 sec
+
+    Attempt 2
+      fail -> wait 30 sec
+
+    Attempt 3
+      fail -> wait 60 sec
+
+    Attempt 4
+      fail -> raise error
+
+    Permanent HTTP errors such as 400/401/403 are not retried.
+    """
+
+    last_error = None
+
+    for attempt in range(
+        1,
+        MAX_GEMINI_ATTEMPTS + 1,
+    ):
+
+        print()
+        print(
+            f"Gemini request attempt "
+            f"{attempt}/{MAX_GEMINI_ATTEMPTS}"
+        )
+
+        try:
+
+            result = call_gemini_once(
+                prompt
+            )
+
+            if attempt > 1:
+
+                print(
+                    "Gemini retry succeeded."
+                )
+
+            return result
+
+        # ----------------------------------------------------
+        # HTTP errors
+        # ----------------------------------------------------
+
+        except urllib.error.HTTPError as error:
+
+            details = error.read().decode(
+                "utf-8",
+                errors="replace",
+            )
+
+            last_error = RuntimeError(
+                f"Gemini API HTTP "
+                f"{error.code}: {details}"
+            )
+
+            print(
+                f"Gemini HTTP error: "
+                f"{error.code}"
+            )
+
+            if (
+                error.code
+                not in RETRYABLE_HTTP_CODES
+            ):
+
+                print(
+                    "This HTTP error is not retryable."
+                )
+
+                raise last_error
+
+            print(
+                "Temporary Gemini/API error detected."
+            )
+
+        # ----------------------------------------------------
+        # Network errors
+        # ----------------------------------------------------
+
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+            socket.timeout,
+        ) as error:
+
+            last_error = error
+
+            print(
+                "Temporary network/API error:"
+            )
+
+            print(
+                str(error)
+            )
+
+        # ----------------------------------------------------
+        # Stop after final attempt
+        # ----------------------------------------------------
+
+        if (
+            attempt
+            >= MAX_GEMINI_ATTEMPTS
+        ):
+            break
+
+        delay = RETRY_DELAYS[
+            attempt - 1
+        ]
+
+        print(
+            f"Retrying in {delay} seconds..."
+        )
+
+        time.sleep(
+            delay
+        )
+
+    raise RuntimeError(
+        "Gemini ranking failed after "
+        f"{MAX_GEMINI_ATTEMPTS} attempts. "
+        f"Last error: {last_error}"
+    )
+
+
+# ============================================================
+# Validate Gemini result
 # ============================================================
 
 def validate_result(
@@ -998,8 +1183,7 @@ def validate_result(
         or len(top_five) != 5
     ):
         raise RuntimeError(
-            "Gemini must return exactly "
-            "five stories."
+            "Gemini must return exactly five stories."
         )
 
     valid_ids = set(
@@ -1010,14 +1194,13 @@ def validate_result(
     )
 
     selected_ids = []
+    selected_urls = set()
 
     published_urls = (
         build_published_url_set(
             archive
         )
     )
-
-    selected_urls = set()
 
     for story in top_five:
 
@@ -1026,12 +1209,14 @@ def validate_result(
         )
 
         if story_id not in valid_ids:
+
             raise RuntimeError(
                 "Gemini returned invalid "
                 f"candidate id: {story_id}"
             )
 
         if story_id in selected_ids:
+
             raise RuntimeError(
                 "Gemini selected the same "
                 "candidate more than once."
@@ -1042,23 +1227,27 @@ def validate_result(
         )
 
         url = normalize_url(
-            story.get("url")
+            story.get(
+                "url"
+            )
         )
 
-        # Second safety block:
-        # even if Gemini somehow returned a published URL,
-        # stop the ranking result here.
         if (
             url
             and url in published_urls
         ):
+
             raise RuntimeError(
                 "Gemini selected an already "
-                "published source URL: "
+                "published URL: "
                 f"{story.get('url')}"
             )
 
-        if url and url in selected_urls:
+        if (
+            url
+            and url in selected_urls
+        ):
+
             raise RuntimeError(
                 "Gemini selected duplicate "
                 "URLs inside today's TOP 5."
@@ -1077,9 +1266,10 @@ def validate_result(
         recommended_id
         not in selected_ids
     ):
+
         raise RuntimeError(
             "recommended_id must be one "
-            "of the TOP FIVE story ids."
+            "of the TOP FIVE candidate ids."
         )
 
 
@@ -1088,13 +1278,19 @@ def validate_result(
 # ============================================================
 
 def main():
+
     print()
     print(
         "THE DAILY DUCK AI RANKING"
     )
+
     print(
         "=" * 60
     )
+
+    # --------------------------------------------------------
+    # Load
+    # --------------------------------------------------------
 
     candidates = load_candidates()
 
@@ -1111,14 +1307,15 @@ def main():
     )
 
     # --------------------------------------------------------
-    # Hard block: exact published URLs
+    # Remove already-published URLs
     # --------------------------------------------------------
 
-    candidates, published_removed = (
-        remove_already_published_urls(
-            candidates,
-            archive,
-        )
+    (
+        candidates,
+        published_removed,
+    ) = remove_already_published_urls(
+        candidates,
+        archive,
     )
 
     print(
@@ -1139,21 +1336,22 @@ def main():
         )
 
     # --------------------------------------------------------
-    # Same-day exact/near-exact cleanup
+    # Remove duplicate current candidates
     # --------------------------------------------------------
 
-    candidates, same_day_removed = (
-        remove_same_day_duplicates(
-            candidates
-        )
+    (
+        candidates,
+        duplicate_removed,
+    ) = remove_same_day_duplicates(
+        candidates
     )
 
     print(
         "Same-day duplicate candidates removed: "
-        f"{len(same_day_removed)}"
+        f"{len(duplicate_removed)}"
     )
 
-    for story in same_day_removed:
+    for story in duplicate_removed:
 
         print(
             "  BLOCKED DUPLICATE: "
@@ -1161,12 +1359,13 @@ def main():
         )
 
     # --------------------------------------------------------
-    # We need at least five eligible candidates
+    # Need at least 5
     # --------------------------------------------------------
 
     if len(candidates) < 5:
+
         raise RuntimeError(
-            "Fewer than 5 eligible news candidates remain "
+            "Fewer than 5 eligible candidates remain "
             "after duplicate filtering. "
             f"Remaining: {len(candidates)}. "
             "Collect more news before AI ranking."
@@ -1178,7 +1377,7 @@ def main():
     )
 
     # --------------------------------------------------------
-    # Gemini ranking
+    # Prompt
     # --------------------------------------------------------
 
     prompt = build_prompt(
@@ -1186,9 +1385,17 @@ def main():
         archive,
     )
 
+    # --------------------------------------------------------
+    # Gemini + automatic retry
+    # --------------------------------------------------------
+
     result = call_gemini(
         prompt
     )
+
+    # --------------------------------------------------------
+    # Validate
+    # --------------------------------------------------------
 
     validate_result(
         result,
@@ -1197,7 +1404,7 @@ def main():
     )
 
     # --------------------------------------------------------
-    # Save output
+    # Save
     # --------------------------------------------------------
 
     with open(
@@ -1221,12 +1428,15 @@ def main():
     print(
         "TOP 5 DAILY DUCK AI PICKS"
     )
+
     print(
         "=" * 60
     )
 
     recommended_id = (
-        result["recommended_id"]
+        result[
+            "recommended_id"
+        ]
     )
 
     science_like = {
@@ -1235,12 +1445,15 @@ def main():
         "technology",
         "astronomy",
         "research",
+        "neuroscience",
     }
 
     science_count = 0
 
     for index, story in enumerate(
-        result["top_five"],
+        result[
+            "top_five"
+        ],
         start=1,
     ):
 
@@ -1250,12 +1463,15 @@ def main():
             story["id"]
             == recommended_id
         ):
+
             marker = (
                 "  <-- RECOMMENDED"
             )
 
         category = text(
-            story.get("category")
+            story.get(
+                "category"
+            )
         )
 
         if (
@@ -1316,42 +1532,52 @@ def main():
             f"{story['url']}"
         )
 
+    # --------------------------------------------------------
+    # Diversity report
+    # --------------------------------------------------------
+
     print()
     print(
         "CATEGORY CHECK"
     )
+
     print(
         "=" * 60
     )
 
     print(
-        "Science/space/technology "
+        "Science / space / technology "
         f"TOP5 count: {science_count}"
     )
 
-    if science_count > 1:
-
-        print(
-            "NOTE: More than one technical/science "
-            "story was selected."
-        )
-
-        print(
-            "This is permitted only when Gemini judged "
-            "that there were not enough suitable "
-            "non-science candidates."
-        )
-
-    else:
+    if science_count <= 1:
 
         print(
             "Diversity target satisfied."
         )
 
+    else:
+
+        print(
+            "NOTE: More than one science/technical "
+            "story was selected."
+        )
+
+        print(
+            "This is allowed only when the candidate "
+            "pool did not contain enough strong "
+            "non-science stories."
+        )
+
+    # --------------------------------------------------------
+    # Recommendation
+    # --------------------------------------------------------
+
     print()
     print(
         "TODAY'S RECOMMENDATION"
     )
+
     print(
         "=" * 60
     )
@@ -1363,6 +1589,7 @@ def main():
     )
 
     print()
+
     print(
         f"Saved to {OUTPUT_FILE}"
     )
