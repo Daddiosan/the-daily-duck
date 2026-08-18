@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-08-18",
+    "displayDate": "August 18, 2026",
+    "slug": "thinking-outside-the-bill",
+    "title": "THINKING OUTSIDE THE BILL!",
+    "image": "assets/ducks/2026-08-18-thinking-outside-the-bill.png",
+    "imageAltJa": "THINKING OUTSIDE THE BILL!をテーマにしたThe Daily Duckの黄色いダック",
+    "imageAltEn": "The Daily Duck yellow duck mascot for THINKING OUTSIDE THE BILL!",
+    "storyJa": "MITの神経科学者たちが、脳は言葉を使わなくても推理できることを発見しました。言語の枠組みを超えて思考できる人間の脳の潜在能力としなやかさを実感させてくれる、前向きな希望に満ちたニュースです。",
+    "storyEn": "MIT neuroscientists have discovered that the human brain can reason without words. This finding highlights the incredible adaptability and depth of human thought beyond language.",
+    "duckJa": "言葉がなくても心の中でちゃんと考えて判断できるんだね！",
+    "duckEn": "The brain can think and reason even without needing words!",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260811011140.htm",
+    "archiveSummaryJa": "MITの神経科学者が、脳は言葉がなくても推理できることを発見しました！",
+    "archiveSummaryEn": "MIT neuroscientists discovered that the brain can reason without using words!",
+    "published": true
+  },
+  {
     "date": "2026-08-17",
     "displayDate": "August 17, 2026",
     "slug": "ducking-out-of-sight",
