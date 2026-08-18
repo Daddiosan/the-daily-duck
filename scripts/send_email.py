@@ -24,6 +24,8 @@ TEXT_MODEL = os.getenv("GEMINI_TEXT_MODEL", "gemini-3.6-flash")
 
 JST = ZoneInfo("Asia/Tokyo")
 
+EDITORIAL_MAX_ATTEMPTS = 3
+
 
 def required_env(name: str) -> str:
     value = os.getenv(name, "").strip()
@@ -113,94 +115,44 @@ def generate_five_editorial_packages(
     top_five: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """
-    Generate a complete Daily Duck editorial package
-    for ALL five stories.
+    Generate a complete Daily Duck editorial package for all five stories.
 
-    One Gemini request is used so that:
-    - exactly five candidates are returned
-    - relative tone/quality can stay consistent
-    - API usage stays simpler than five independent requests
+    Gemini occasionally returns valid JSON with one or more empty fields.
+    Retry the whole editorial-generation request automatically instead of
+    stopping the daily workflow immediately.
     """
 
     client = genai.Client(
-        api_key=required_env(
-            "GEMINI_API_KEY"
-        )
+        api_key=required_env("GEMINI_API_KEY")
     )
 
-    source_stories: list[
-        dict[str, Any]
-    ] = []
+    source_stories: list[dict[str, Any]] = []
 
     for story in top_five:
         source_stories.append(
             {
-                "id":
-                    story.get("id"),
-
-                "title":
-                    story.get(
-                        "title",
-                        "",
-                    ),
-
-                "source":
-                    story.get(
-                        "source",
-                        "",
-                    ),
-
-                "url":
-                    story.get(
-                        "url",
-                        "",
-                    ),
-
-                "reason":
-                    story.get(
-                        "reason",
-                        "",
-                    ),
-
-                "total_score":
-                    story.get(
-                        "total_score"
-                    ),
+                "id": story.get("id"),
+                "title": story.get("title", ""),
+                "source": story.get("source", ""),
+                "url": story.get("url", ""),
+                "reason": story.get("reason", ""),
+                "total_score": story.get("total_score"),
             }
         )
 
     output_example = {
         "stories": [
             {
-                "id":
-                    "exact original story id",
-
-                "title_ja":
-                    "自然な日本語タイトル",
-
-                "reason_ja":
-                    "日本語での記事選定理由・要約",
-
-                "jp_copy":
-                    "Daily Duck用の日本語記事本文",
-
-                "en_copy":
-                    "Daily Duck English editorial copy",
-
-                "duck_name":
-                    "short English duck/story nickname",
-
-                "duck_jp":
-                    "短い遊び心のある日本語Duckコメント",
-
-                "duck_en":
-                    "short playful English duck line",
-
-                "x_jp":
-                    "日本語X投稿文",
-
-                "x_en":
-                    "English X post draft",
+                "id": "exact original story id",
+                "title_ja": "自然な日本語タイトル",
+                "reason_ja": "日本語での記事選定理由・要約",
+                "jp_copy": "Daily Duck用の日本語記事本文",
+                "en_copy": "Daily Duck English editorial copy",
+                "duck_name": "short English duck/story nickname",
+                "duck_jp": "短い遊び心のある日本語Duckコメント",
+                "duck_en": "short playful English duck line",
+                "x_jp": "日本語X投稿文",
+                "x_en": "English X post draft",
             }
             for _ in range(5)
         ]
@@ -291,6 +243,8 @@ OUTPUT RULES:
 - Preserve every supplied story ID EXACTLY.
 - Return the stories in the SAME ORDER as supplied.
 - Every field must contain non-empty text.
+- Double-check ALL nine text fields for ALL five stories before responding.
+- In particular, NEVER omit x_jp or x_en.
 - Return ONLY valid JSON.
 - Do not use Markdown fences.
 
@@ -310,80 +264,10 @@ FIVE SOURCE STORIES:
         indent=2,
     )
 
-    response = call_with_retry(
-        lambda: client.models.generate_content(
-            model=TEXT_MODEL,
-            contents=prompt.strip(),
-        ),
-        label="Gemini generate_content",
-    )
-
-    response_text = getattr(
-        response,
-        "text",
-        None,
-    )
-
-    if not response_text:
-        raise RuntimeError(
-            "Gemini returned no editorial text."
-        )
-
-    try:
-        generated = json.loads(
-            clean_json_text(
-                response_text
-            )
-        )
-
-    except json.JSONDecodeError as exc:
-        raise ValueError(
-            "Gemini did not return valid JSON: "
-            f"{exc}"
-        ) from exc
-
-    if not isinstance(
-        generated,
-        dict,
-    ):
-        raise ValueError(
-            "Gemini editorial response "
-            "must be a JSON object."
-        )
-
-    generated_stories = (
-        generated.get(
-            "stories"
-        )
-    )
-
-    if (
-        not isinstance(
-            generated_stories,
-            list,
-        )
-        or len(
-            generated_stories
-        ) != 5
-    ):
-        raise ValueError(
-            "Gemini must return exactly "
-            "five editorial stories."
-        )
-
     expected_ids = [
-        str(
-            story.get(
-                "id",
-                "",
-            )
-        ).strip()
+        str(story.get("id", "")).strip()
         for story in top_five
     ]
-
-    output: list[
-        dict[str, Any]
-    ] = []
 
     required_fields = [
         "title_ja",
@@ -397,121 +281,141 @@ FIVE SOURCE STORIES:
         "x_en",
     ]
 
-    for index, editorial in enumerate(
-        generated_stories
-    ):
+    last_error: Exception | None = None
 
-        if not isinstance(
-            editorial,
-            dict,
-        ):
-            raise ValueError(
-                "Every generated story "
-                "must be an object."
+    for attempt in range(1, EDITORIAL_MAX_ATTEMPTS + 1):
+        try:
+            print(
+                f"Editorial generation attempt "
+                f"{attempt}/{EDITORIAL_MAX_ATTEMPTS}..."
             )
 
-        generated_id = str(
-            editorial.get(
-                "id",
-                "",
-            )
-        ).strip()
-
-        expected_id = (
-            expected_ids[index]
-        )
-
-        if (
-            generated_id
-            != expected_id
-        ):
-            raise ValueError(
-                "Gemini changed or reordered "
-                "story IDs. "
-                f"Expected {expected_id!r}, "
-                f"got {generated_id!r}."
+            response = call_with_retry(
+                lambda: client.models.generate_content(
+                    model=TEXT_MODEL,
+                    contents=prompt.strip(),
+                ),
+                label="Gemini generate_content",
             )
 
-        for field in required_fields:
+            response_text = getattr(response, "text", None)
 
-            value = editorial.get(
-                field
-            )
+            if not response_text:
+                raise RuntimeError(
+                    "Gemini returned no editorial text."
+                )
+
+            try:
+                generated = json.loads(
+                    clean_json_text(response_text)
+                )
+            except json.JSONDecodeError as exc:
+                raise ValueError(
+                    "Gemini did not return valid JSON: "
+                    f"{exc}"
+                ) from exc
+
+            if not isinstance(generated, dict):
+                raise ValueError(
+                    "Gemini editorial response "
+                    "must be a JSON object."
+                )
+
+            generated_stories = generated.get("stories")
 
             if (
-                not isinstance(
-                    value,
-                    str,
-                )
-                or not value.strip()
+                not isinstance(generated_stories, list)
+                or len(generated_stories) != 5
             ):
                 raise ValueError(
-                    f"Story {index + 1} "
-                    f"is missing non-empty "
-                    f"'{field}'."
+                    "Gemini must return exactly "
+                    "five editorial stories."
                 )
 
-        original = dict(
-            top_five[index]
-        )
+            output: list[dict[str, Any]] = []
 
-        combined = {
-            **original,
+            for index, editorial in enumerate(
+                generated_stories
+            ):
+                if not isinstance(editorial, dict):
+                    raise ValueError(
+                        "Every generated story "
+                        "must be an object."
+                    )
 
-            "candidate_number":
-                index + 1,
+                generated_id = str(
+                    editorial.get("id", "")
+                ).strip()
 
-            "title_ja":
-                editorial[
-                    "title_ja"
-                ].strip(),
+                expected_id = expected_ids[index]
 
-            "reason_ja":
-                editorial[
-                    "reason_ja"
-                ].strip(),
+                if generated_id != expected_id:
+                    raise ValueError(
+                        "Gemini changed or reordered "
+                        "story IDs. "
+                        f"Expected {expected_id!r}, "
+                        f"got {generated_id!r}."
+                    )
 
-            "jp_copy":
-                editorial[
-                    "jp_copy"
-                ].strip(),
+                for field in required_fields:
+                    value = editorial.get(field)
 
-            "en_copy":
-                editorial[
-                    "en_copy"
-                ].strip(),
+                    if (
+                        not isinstance(value, str)
+                        or not value.strip()
+                    ):
+                        raise ValueError(
+                            f"Story {index + 1} "
+                            f"is missing non-empty "
+                            f"'{field}'."
+                        )
 
-            "duck_name":
-                editorial[
-                    "duck_name"
-                ].strip(),
+                original = dict(top_five[index])
 
-            "duck_jp":
-                editorial[
-                    "duck_jp"
-                ].strip(),
+                combined = {
+                    **original,
+                    "candidate_number": index + 1,
+                    "title_ja": editorial["title_ja"].strip(),
+                    "reason_ja": editorial["reason_ja"].strip(),
+                    "jp_copy": editorial["jp_copy"].strip(),
+                    "en_copy": editorial["en_copy"].strip(),
+                    "duck_name": editorial["duck_name"].strip(),
+                    "duck_jp": editorial["duck_jp"].strip(),
+                    "duck_en": editorial["duck_en"].strip(),
+                    "x_jp": editorial["x_jp"].strip(),
+                    "x_en": editorial["x_en"].strip(),
+                }
 
-            "duck_en":
-                editorial[
-                    "duck_en"
-                ].strip(),
+                output.append(combined)
 
-            "x_jp":
-                editorial[
-                    "x_jp"
-                ].strip(),
+            if attempt > 1:
+                print(
+                    "Editorial package recovered successfully "
+                    f"on attempt {attempt}."
+                )
 
-            "x_en":
-                editorial[
-                    "x_en"
-                ].strip(),
-        }
+            return output
 
-        output.append(
-            combined
-        )
+        except Exception as exc:
+            last_error = exc
 
-    return output
+            if attempt < EDITORIAL_MAX_ATTEMPTS:
+                print(
+                    "WARNING: Incomplete/invalid editorial "
+                    f"package on attempt {attempt}: {exc}"
+                )
+                print(
+                    "Retrying editorial generation..."
+                )
+                continue
+
+            print(
+                "ERROR: Editorial generation failed after "
+                f"{EDITORIAL_MAX_ATTEMPTS} attempts."
+            )
+
+    assert last_error is not None
+    raise last_error
 
 
 def build_package(
