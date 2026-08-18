@@ -1,9 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-18",
-  "created_at": "2026-08-18T03:12:42.958134+00:00",
-  "text_model": "gemini-3.6-flash",
-  "approved_story": {
+  "ready_at": "2026-08-18T05:03:38.393120+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-18",
     "issue_date": "2026-08-18",
     "phase": 2,
@@ -471,10 +470,9 @@
       ],
       "gate_a_package_created_at": "2026-08-18T00:21:06.785421+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_ja": "サイレント・イルミネーション：光るパズルと知的な脳",
       "title_en": "Silent Illumination: Glowing Logic Puzzle & Mind",
@@ -482,77 +480,37 @@
       "concept_en": "A sleek, intellectual duck with modern glasses looking up as floating, glowing geometric light-puzzles seamlessly click together above its head without a single word or text bubble.",
       "visual_direction": "Clean modern 3D editorial render, soft pastel backdrop with vibrant neon yellow and cyan light accents, glassmorphism design elements, optimistic and high-tech feel."
     },
-    {
-      "number": 2,
-      "title_ja": "言葉を超えた世界：幾何学図形と直感思考",
-      "title_en": "Beyond Words: Geometric Intuition",
-      "concept_ja": "言語の枠組みを取り払った抽象思考をテーマに描く構図。空の透明な吹き出しが背景に消えていき、代わりに彩り豊かな3D図形が完璧な論理の順序で整列する、軽やかで先進的な世界観。",
-      "concept_en": "A cheerful duck standing confidently amidst beautifully arranged floating 3D shapes (cubes, spheres, pyramids) aligning in logical harmony, while transparent empty speech bubbles float gently into the background.",
-      "visual_direction": "Minimalist modern 3D studio shot, soft shadows, warm natural light, matte plastic textures mixed with polished glass, cheerful editorial color palette."
-    },
-    {
-      "number": 3,
-      "title_ja": "直感のナビゲーター：光の迷路を解き明かすダック",
-      "title_en": "Intuitive Navigator: Solving the Maze",
-      "concept_ja": "文字の標識が一切存在しない未来的な光の迷路を、迷うことなく軽やかにクリアしていくスマーティなダック。言語に頼らない脳のダイレクトな推理力を象徴的に表現。",
-      "concept_en": "A clever duck effortlessly guiding a glowing orb along a sleek, wall-less maze platform, demonstrating fast visual problem-solving without relying on written signs or language.",
-      "visual_direction": "Slightly isometric 3D art, bright cyan and coral color scheme, smooth clay-render textures, airy visual depth, clean editorial aesthetic."
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "THINKING OUTSIDE THE BILL!",
-      "meaning_ja": "常識の枠（くちばし）を飛び越えて、言葉なしで思考する脳の発見！"
-    },
-    {
-      "number": 2,
-      "title": "NO WORDS? STILL QUACK-ING BRILLIANT!",
-      "meaning_ja": "言葉がなくても？脳はやっぱり超天才的（クアック・ブリリアント）！"
-    },
-    {
-      "number": 3,
-      "title": "NO TALK, ALL THOUGHT: PURE DUCK LOGIC!",
-      "meaning_ja": "おしゃべり無用、純粋な思考力！言語を超えた脳の推理パワー"
-    }
-  ],
-  "approval_format": "<image 1-3> <title 1-3>",
-  "design_previews": [
-    {
-      "number": 1,
-      "image_path": "automation_images/design_previews/2026-08-18/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "888bfb32928a732063968901e66f4f65d89a48ee769f30a91a46cbb90a0c82e8"
-    },
-    {
-      "number": 2,
-      "image_path": "automation_images/design_previews/2026-08-18/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "94fd9156e321b53cb0718f980b0307ed6b13bceef14700411964fb914edeca72"
-    },
-    {
-      "number": 3,
-      "image_path": "automation_images/design_previews/2026-08-18/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "4f962c479017a2d4037035b77faf4ed1f1101da9451a353dc95f1c28a78142e3"
-    }
-  ],
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-18",
-  "selected_image_number": 1,
+    "selected_title_number": 1,
+    "selected_title": "THINKING OUTSIDE THE BILL!"
+  },
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_ja": "サイレント・イルミネーション：光るパズルと知的な脳",
+    "title_en": "Silent Illumination: Glowing Logic Puzzle & Mind",
+    "concept_ja": "言葉を使わずに論理的思考を展開する脳のメカニズムを表現。眼鏡をかけた知的なダックの頭上に、文字を使わない光の立体パズルが綺麗に組み上がっていく、スマートで洗練されたビジュアル。",
+    "concept_en": "A sleek, intellectual duck with modern glasses looking up as floating, glowing geometric light-puzzles seamlessly click together above its head without a single word or text bubble.",
+    "visual_direction": "Clean modern 3D editorial render, soft pastel backdrop with vibrant neon yellow and cyan light accents, glassmorphism design elements, optimistic and high-tech feel."
+  },
   "selected_title_number": 1,
-  "selected_title": "THINKING OUTSIDE THE BILL!"
+  "selected_title": "THINKING OUTSIDE THE BILL!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "THINKING OUTSIDE THE BILL!",
+    "meaning_ja": "常識の枠（くちばし）を飛び越えて、言葉なしで思考する脳の発見！"
+  },
+  "selected_preview": {
+    "number": 1,
+    "image_path": "automation_images/design_previews/2026-08-18/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "888bfb32928a732063968901e66f4f65d89a48ee769f30a91a46cbb90a0c82e8"
+  },
+  "canonical_image_path": "automation_images/canonical/2026-08-18.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false
 }
