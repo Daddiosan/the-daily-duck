@@ -1,5 +1,5 @@
 {
-  "state": "READY_TO_PUBLISH",
+  "state": "PUBLISHED",
   "issue_date": "2026-08-19",
   "ready_at": "2026-08-19T04:46:46.531544+00:00",
   "gate_a_approved_story": {
@@ -563,5 +563,9 @@
   "canonical_image_path": "automation_images/canonical/2026-08-19.png",
   "design_approval_reply": "2 2",
   "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "publish_started": false
+  "publish_started": true,
+  "published_at": "2026-08-19T04:47:04.408269+00:00",
+  "published_image_path": "assets/ducks/2026-08-19-ancient-pond-of-equality.png",
+  "published_page_path": "ducks/2026-08-19/index.html",
+  "published_title": "ANCIENT POND OF EQUALITY!"
 }

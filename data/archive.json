@@ -1,5 +1,23 @@
 [
   {
+    "date": "2026-08-19",
+    "displayDate": "August 19, 2026",
+    "slug": "ancient-pond-of-equality",
+    "title": "ANCIENT POND OF EQUALITY!",
+    "image": "assets/ducks/2026-08-19-ancient-pond-of-equality.png",
+    "imageAltJa": "ANCIENT POND OF EQUALITY!をテーマにしたThe Daily Duckの黄色いダック",
+    "imageAltEn": "The Daily Duck yellow duck mascot for ANCIENT POND OF EQUALITY!",
+    "storyJa": "約4000年前の古代都市モヘンジョダロは、公平さや平等、そして住民みんなで共有する公共インフラによって繁栄していました。争いではなく互いを尊重し支え合う社会構造が街を支えていたという事実は、現代の私達にも温かい希望を与えてくれます。",
+    "storyEn": "The 4,000-year-old ancient city of Mohenjo-daro thrived through fairness, equality, and well-designed public infrastructure. This inspiring historical story demonstrates how shared community values can build a remarkably long-lasting human society.",
+    "duckJa": "みんなが平等で暮らしやすい街、とっても素敵だック！",
+    "duckEn": "A city built on fairness and shared spaces is truly inspiring!",
+    "sourceLabel": "ScienceDaily Society",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/07/260729010730.htm",
+    "archiveSummaryJa": "4000年前の古代都市モヘンジョダロは、公平さと公共インフラの充実で繁栄していました。歴史が教える温かい希望の物語です。",
+    "archiveSummaryEn": "The 4,000-year-old city of Mohenjo-daro thrived through fairness and shared infrastructure. An inspiring ancient lesson in equality!",
+    "published": true
+  },
+  {
     "date": "2026-08-18",
     "displayDate": "August 18, 2026",
     "slug": "thinking-outside-the-bill",
