@@ -1,9 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-19",
-  "created_at": "2026-08-19T04:26:23.910496+00:00",
-  "text_model": "gemini-3.6-flash",
-  "approved_story": {
+  "ready_at": "2026-08-19T04:46:46.531544+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-19",
     "issue_date": "2026-08-19",
     "phase": 2,
@@ -522,18 +521,9 @@
       ],
       "gate_a_package_created_at": "2026-08-19T04:22:09.326268+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_ja": "理想の古代水都市とダック建築家",
-      "title_en": "Ancient Duck Urban Planning",
-      "concept_ja": "モヘンジョダロの象徴である大浴場や整然としたレンガ造りの街並みをモチーフに、アヒルの建築家たちが互いに協力して美しい公共の池と水路を築いている様子。王の巨大な彫像や武器はなく、完璧に整備された美しい都市のミニチュアジオラマ風デザイン。",
-      "concept_en": "Inspired by Mohenjo-Daro's Great Bath and brick urban planning, cute duck architects wearing tiny blueprint satchels work together around a beautifully designed public bath and clean drainage network. A sunlit, pristine miniature model feel without any king statues or weapons.",
-      "visual_direction": "3D render, modern editorial look, warm terracotta clay bricks and shimmering clear turquoise water under bright sunlight, soft focus background, cute stylish duck characters, vibrant clean aesthetic"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_ja": "王なき円卓のアヒルコミュニティ",
       "title_en": "The Circle of Equal Feathers",
@@ -541,69 +531,37 @@
       "concept_en": "A peaceful public square with ancient carved stone pathways, where a group of diverse ducks sit together in a friendly circle around a shared freshwater fountain, sharing resources in complete harmony and equality without any central throne or ruler.",
       "visual_direction": "High-end 3D digital artwork, cheerful and cozy lighting, earth tones mixed with pastel yellows and sky blue, clean compositions, studio lighting, smooth ceramic-like textures"
     },
-    {
-      "number": 3,
-      "title_ja": "時代を超越する希望の水路",
-      "title_en": "Utopian Ancient Waterway",
-      "concept_ja": "古代都市の高度な下水・水路インフラを現代的で洗練されたグラフィックアート風に表現。綺麗に磨かれた赤いレンガの水路を、アヒルの親子や仲間たちが楽しそうに一列になって水浴びしながら進むグラフィックポスター調の一枚。",
-      "concept_en": "A sleek modern-editorial visualization of an ancient, perfectly engineered terracotta brick aqueduct. A mother duck and ducklings paddle side-by-side along crystal-clear water channels, showcasing functional, shared community infrastructure.",
-      "visual_direction": "Modern graphic editorial illustration style, minimalist geometry, striking warm reddish-orange brick textures contrasting with bright cyan water, sunny morning ambient light, clean photorealistic touch"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "NO TOP DUCK NEEDED!",
-      "meaning_ja": "「トップの支配者アヒルなんて不要！」王者や権力者を持たず、住民全員の協力と平等で栄えた古代都市の驚きを表現したポップなキャッチコピー。"
-    },
-    {
-      "number": 2,
-      "title": "ANCIENT POND OF EQUALITY!",
-      "meaning_ja": "「平等の古代ポンド（池）！」公共インフラと公平な社会構造で発展したモヘンジョダロの平和な姿をストレートに伝えるタイトル。"
-    },
-    {
-      "number": 3,
-      "title": "FLOCKING FAIRLY SINCE 2000 BC!",
-      "meaning_ja": "「紀元前2000年から公平に群れている（協力している）！」紀元前4000年前の歴史の事実に ducks/flock の語彙をかけた、キャッチーで記憶に残る見出し。"
-    }
-  ],
-  "approval_format": "<image 1-3> <title 1-3>",
-  "design_previews": [
-    {
-      "number": 1,
-      "image_path": "automation_images/design_previews/2026-08-19/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "dbca52f1c993c470ab66ee4c5b44cfffb03572a4c190097a535acb59bec49cf6"
-    },
-    {
-      "number": 2,
-      "image_path": "automation_images/design_previews/2026-08-19/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "100466f2e8b5979f27f0b8457aaeac528e4ddb390938aa1a484149d6e04eb46c"
-    },
-    {
-      "number": 3,
-      "image_path": "automation_images/design_previews/2026-08-19/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "25eddbb14cb6ce234a8bcbda7e561e0cf606cc80eedb212837bcd893569a349f"
-    }
-  ],
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-19",
-  "selected_image_number": 2,
+    "selected_title_number": 2,
+    "selected_title": "ANCIENT POND OF EQUALITY!"
+  },
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_ja": "王なき円卓のアヒルコミュニティ",
+    "title_en": "The Circle of Equal Feathers",
+    "concept_ja": "身分の差や支配者の座が存在しない「平等の広場」。古代の彫刻が施された円形の石造り広場で、あらゆる種類のアヒルたちが円になって和やかに語り合い、公共の水路から水を分かち合っている心温まるシーン。",
+    "concept_en": "A peaceful public square with ancient carved stone pathways, where a group of diverse ducks sit together in a friendly circle around a shared freshwater fountain, sharing resources in complete harmony and equality without any central throne or ruler.",
+    "visual_direction": "High-end 3D digital artwork, cheerful and cozy lighting, earth tones mixed with pastel yellows and sky blue, clean compositions, studio lighting, smooth ceramic-like textures"
+  },
   "selected_title_number": 2,
-  "selected_title": "ANCIENT POND OF EQUALITY!"
+  "selected_title": "ANCIENT POND OF EQUALITY!",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "ANCIENT POND OF EQUALITY!",
+    "meaning_ja": "「平等の古代ポンド（池）！」公共インフラと公平な社会構造で発展したモヘンジョダロの平和な姿をストレートに伝えるタイトル。"
+  },
+  "selected_preview": {
+    "number": 2,
+    "image_path": "automation_images/design_previews/2026-08-19/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "100466f2e8b5979f27f0b8457aaeac528e4ddb390938aa1a484149d6e04eb46c"
+  },
+  "canonical_image_path": "automation_images/canonical/2026-08-19.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false
 }
