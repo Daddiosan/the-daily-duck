@@ -439,32 +439,38 @@ def generate_five_editorial_packages(
                 "id":
                     "exact original story id",
 
-                "title_ja":
-                    "自然な日本語タイトル",
+                "title_en":
+                    "polished English publication title",
 
-                "reason_ja":
-                    "日本語での記事選定理由・要約",
-
-                "jp_copy":
-                    "Daily Duck用の日本語記事本文",
+                "reason_en":
+                    "concise English reason / summary",
 
                 "en_copy":
-                    "Daily Duck English editorial copy",
+                    "canonical Daily Duck English editorial copy",
 
                 "duck_name":
                     "short English duck/story nickname",
 
-                "duck_jp":
-                    "短い遊び心のある日本語Duckコメント",
-
                 "duck_en":
                     "short playful English duck line",
 
-                "x_jp":
-                    "日本語X投稿文",
-
                 "x_en":
-                    "English X post draft",
+                    "canonical English X post draft",
+
+                "title_ja":
+                    "自然な日本語タイトル（英語正本の翻訳）",
+
+                "reason_ja":
+                    "日本語での記事選定理由・要約（英語正本の翻訳）",
+
+                "jp_copy":
+                    "英語正本を自然な日本語に翻訳した記事本文",
+
+                "duck_jp":
+                    "duck_enを自然な日本語にした短いDuckコメント",
+
+                "x_jp":
+                    "x_enを自然な日本語にしたX投稿文",
             }
             for _ in range(5)
         ]
@@ -474,6 +480,36 @@ def generate_five_editorial_packages(
 You are the editorial assistant for The Daily Duck.
 
 The Daily Duck publishes one uplifting news story each day.
+
+LANGUAGE POLICY — MANDATORY:
+
+The Daily Duck is ENGLISH-FIRST.
+
+English is the canonical/master language.
+Japanese is a translation derived from the English master.
+
+For EACH story, create the English publication content FIRST:
+
+1. title_en
+2. reason_en
+3. en_copy
+4. duck_name
+5. duck_en
+6. x_en
+
+Only after the English master is complete, create the Japanese
+translation fields:
+
+7. title_ja
+8. reason_ja
+9. jp_copy
+10. duck_jp
+11. x_jp
+
+The Japanese fields must faithfully preserve the meaning, tone,
+and factual limits of the English master. They should still sound
+natural to a Japanese reader and must not read like awkward literal
+machine translation.
 
 Editorial philosophy:
 
@@ -520,35 +556,39 @@ Do not invent:
 If the source information is limited, keep the
 article general rather than adding facts.
 
-JAPANESE:
+ENGLISH MASTER:
 
-Japanese must sound natural and readable.
-Do not make it sound like a literal machine
-translation.
+title_en must be a concise, publication-ready English title.
+It may improve readability compared with the source headline,
+but it must not change the facts or add unsupported information.
 
-ENGLISH:
+reason_en must clearly explain why the story is interesting
+for The Daily Duck.
 
-English must be natural, concise and friendly.
-
-EDITORIAL COPY:
-
-jp_copy and en_copy should each be a short
-Daily Duck article suitable for publication.
-
-They should explain why the story is interesting
+en_copy is the canonical Daily Duck article.
+It should be natural, concise, friendly, publication-ready,
 and leave the reader feeling positive.
 
-DUCK COPY:
+duck_name is a short English duck/story nickname.
 
-duck_jp and duck_en may be playful, but must
-not introduce unsupported facts.
+duck_en may be playful, but must not introduce unsupported facts.
 
-X COPY:
+x_en is the canonical English X post draft.
+Keep it concise and natural for social media.
 
-x_jp and x_en should be concise social-media copy.
-
-Do NOT include URLs in the generated X fields.
+Do NOT include URLs in x_en.
 The publication system adds the Daily Duck URL later.
+
+JAPANESE TRANSLATION:
+
+title_ja, reason_ja, jp_copy, duck_jp, and x_jp
+must be derived from the completed English master fields.
+
+Japanese should be natural and readable.
+Do not add facts, details, nuance, claims, or interpretations
+that are not present in the English master.
+
+Do NOT include URLs in x_jp.
 
 OUTPUT RULES:
 
@@ -556,8 +596,8 @@ OUTPUT RULES:
 - Preserve every supplied story ID EXACTLY.
 - Return the stories in the SAME ORDER as supplied.
 - Every field must contain non-empty text.
-- Double-check ALL nine text fields for ALL five stories before responding.
-- In particular, NEVER omit x_jp or x_en.
+- Double-check ALL eleven text fields for ALL five stories before responding.
+- In particular, NEVER omit title_en, reason_en, x_en, title_ja, reason_ja, or x_jp.
 - Return ONLY valid JSON.
 - Do not use Markdown fences.
 
@@ -588,15 +628,17 @@ FIVE SOURCE STORIES:
     ]
 
     required_fields = [
+        "title_en",
+        "reason_en",
+        "en_copy",
+        "duck_name",
+        "duck_en",
+        "x_en",
         "title_ja",
         "reason_ja",
         "jp_copy",
-        "en_copy",
-        "duck_name",
         "duck_jp",
-        "duck_en",
         "x_jp",
-        "x_en",
     ]
 
     last_error: (
@@ -770,6 +812,38 @@ FIVE SOURCE STORIES:
                     "candidate_number":
                         index + 1,
 
+                    # English-first canonical fields
+                    "title_en":
+                        editorial[
+                            "title_en"
+                        ].strip(),
+
+                    "reason_en":
+                        editorial[
+                            "reason_en"
+                        ].strip(),
+
+                    "en_copy":
+                        editorial[
+                            "en_copy"
+                        ].strip(),
+
+                    "duck_name":
+                        editorial[
+                            "duck_name"
+                        ].strip(),
+
+                    "duck_en":
+                        editorial[
+                            "duck_en"
+                        ].strip(),
+
+                    "x_en":
+                        editorial[
+                            "x_en"
+                        ].strip(),
+
+                    # Japanese translation fields
                     "title_ja":
                         editorial[
                             "title_ja"
@@ -785,34 +859,14 @@ FIVE SOURCE STORIES:
                             "jp_copy"
                         ].strip(),
 
-                    "en_copy":
-                        editorial[
-                            "en_copy"
-                        ].strip(),
-
-                    "duck_name":
-                        editorial[
-                            "duck_name"
-                        ].strip(),
-
                     "duck_jp":
                         editorial[
                             "duck_jp"
                         ].strip(),
 
-                    "duck_en":
-                        editorial[
-                            "duck_en"
-                        ].strip(),
-
                     "x_jp":
                         editorial[
                             "x_jp"
-                        ].strip(),
-
-                    "x_en":
-                        editorial[
-                            "x_en"
                         ].strip(),
                 }
 
@@ -960,6 +1014,17 @@ def build_package(
                 "5",
             ],
 
+        "language_policy": {
+            "primary_language":
+                "en",
+            "canonical_language":
+                "en",
+            "translation_language":
+                "ja",
+            "translation_source":
+                "english_master",
+        },
+
         # Precise machine timestamp remains UTC.
         "gate_a_package_created_at":
             datetime.now(
@@ -1010,71 +1075,92 @@ def format_story_option(
             f"{story['total_score']}"
         )
 
+    source_title = (
+        story.get(
+            "title",
+            "",
+        )
+    )
+
     return f"""
 ==================================================
-候補 {number}{recommendation_label}
+CANDIDATE {number} / 候補 {number}{recommendation_label}
 ==================================================
 
-TITLE / タイトル
-
-{story.get('title_ja', '')}
-
-EN:
-{story.get('title', '')}
-
-
-WHY THIS STORY / 記事のポイント
-
-{story.get('reason_ja', '')}
-
-
-SOURCE
-
-{story.get('source', '')}
-{story.get('url', '')}
-{score_line}
-
-
---------------------------------------------------
-EDITORIAL COPY / 記事案
+ENGLISH MASTER / 英語正本
 --------------------------------------------------
 
-JP:
+TITLE
 
-{story.get('jp_copy', '')}
+{story.get('title_en', '')}
 
 
-EN:
+WHY THIS STORY
+
+{story.get('reason_en', '')}
+
+
+EDITORIAL COPY
 
 {story.get('en_copy', '')}
 
 
---------------------------------------------------
 DUCK
---------------------------------------------------
 
 Duck name:
 {story.get('duck_name', '')}
 
-Duck JP:
-{story.get('duck_jp', '')}
-
-Duck EN:
+Duck line:
 {story.get('duck_en', '')}
 
 
---------------------------------------------------
 X DRAFT
---------------------------------------------------
 
-X JP:
+{story.get('x_en', '')}
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+{story.get('title_ja', '')}
+
+
+記事のポイント
+
+{story.get('reason_ja', '')}
+
+
+記事案
+
+{story.get('jp_copy', '')}
+
+
+Duckコメント
+
+{story.get('duck_jp', '')}
+
+
+X投稿文
 
 {story.get('x_jp', '')}
 
 
-X EN:
+==================================================
+SOURCE / 出典
+==================================================
 
-{story.get('x_en', '')}
+Original headline:
+{source_title}
+
+Source:
+{story.get('source', '')}
+
+URL:
+{story.get('url', '')}
+{score_line}
 """.strip()
 
 
@@ -1131,8 +1217,13 @@ def build_email(
     body = f"""
 The Daily Duck — Gate A
 
+The Daily Duck is now ENGLISH-FIRST.
+English is the canonical/master copy.
+Japanese is provided as a translation for review.
+
 本日の候補ニュース5件について、
-それぞれ完成した記事案を作成しました。
+英語を正式原稿（Master）として記事案を作成しました。
+日本語は英語正本を基にした確認用の翻訳です。
 
 5件を比較して、
 本日採用する記事を1つ選んでください。
@@ -1165,6 +1256,8 @@ IMPORTANT:
 - 「1」「2」「3」「4」「5」のいずれか1文字だけを返信してください。
 - それ以外の返信では承認されません。
 - 選択した1件だけが本日の正式記事になります。
+- 英語版がcanonical/master copyです。
+- 日本語版は英語正本から生成された翻訳です。
 - 記事選択後、その記事専用の画像コンセプトを5案作成します。
 - 画像コンセプトは別メールで送信します。
 - 画像コンセプト選択後、その1つのコンセプトから実画像を5枚生成します。
