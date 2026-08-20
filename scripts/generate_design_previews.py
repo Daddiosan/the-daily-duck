@@ -24,23 +24,73 @@ PREVIEW_ROOT = Path(
     "automation_images/design_previews"
 )
 
+MAX_DUPLICATE_RETRIES = 2
+
+
+VARIATION_RECIPES: dict[int, str] = {
+    1: """
+VARIATION 1 — ESTABLISHING VIEW
+- Use a wider establishing composition.
+- Show more of the environment while keeping the duck the clear focal point.
+- Camera at approximately eye level.
+- Duck positioned slightly off-center using editorial negative space.
+- Calm, balanced pose.
+""".strip(),
+
+    2: """
+VARIATION 2 — CLOSE HERO VIEW
+- Use a substantially closer hero framing than Variation 1.
+- Duck occupies much more of the frame.
+- Camera slightly lower than eye level for a confident, charming hero feel.
+- Strong facial expression and readable body language.
+- Background simplified and more softly separated.
+""".strip(),
+
+    3: """
+VARIATION 3 — ACTION MOMENT
+- Show the duck actively interacting with the key visual element of the SAME concept.
+- Use a clear sense of motion or mid-action storytelling.
+- Three-quarter camera angle.
+- More dynamic diagonal composition than Variations 1 and 2.
+- Keep the same setting, props, and visual concept.
+""".strip(),
+
+    4: """
+VARIATION 4 — SIDE STORYTELLING VIEW
+- Use a noticeably different side or three-quarter-side camera position.
+- Place the duck on the opposite side of the frame from Variation 1.
+- Emphasize the relationship between the duck and the concept's key environment/prop.
+- Use layered foreground/background depth.
+- Keep the exact same visual concept.
+""".strip(),
+
+    5: """
+VARIATION 5 — CINEMATIC EDITORIAL VIEW
+- Use the most cinematic composition of the set.
+- Distinct crop and perspective from Variations 1-4.
+- Slightly elevated or otherwise clearly different camera viewpoint.
+- Strong editorial lighting and depth while remaining warm and cheerful.
+- Preserve the same story, setting, mascot, and locked concept.
+""".strip(),
+}
+
 
 def first_text(
     *values: Any,
 ) -> str:
 
     for value in values:
-
         if (
-            isinstance(
-                value,
-                str,
-            )
+            isinstance(value, str)
             and value.strip()
         ):
             return value.strip()
 
     return ""
+
+
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
 
 
 def sha256_file(
@@ -49,19 +99,12 @@ def sha256_file(
 
     h = hashlib.sha256()
 
-    with path.open(
-        "rb"
-    ) as f:
-
+    with path.open("rb") as f:
         for chunk in iter(
-            lambda: f.read(
-                1024 * 1024
-            ),
+            lambda: f.read(1024 * 1024),
             b"",
         ):
-            h.update(
-                chunk
-            )
+            h.update(chunk)
 
     return h.hexdigest()
 
@@ -74,20 +117,14 @@ def get_compact_story(
         "approved_story_compact"
     )
 
-    if isinstance(
-        compact,
-        dict,
-    ):
+    if isinstance(compact, dict):
         return compact
 
     approved = package.get(
         "approved_story"
     )
 
-    if not isinstance(
-        approved,
-        dict,
-    ):
+    if not isinstance(approved, dict):
         raise ValueError(
             "approved_story is missing."
         )
@@ -99,15 +136,9 @@ def get_compact_story(
         "story",
         "recommended_story",
     ):
+        value = approved.get(key)
 
-        value = approved.get(
-            key
-        )
-
-        if isinstance(
-            value,
-            dict,
-        ):
+        if isinstance(value, dict):
             return value
 
     return approved
@@ -118,67 +149,42 @@ def build_prompt(
     concept: dict[str, Any],
     variation_number: int,
     batch_number: int,
+    duplicate_retry: int = 0,
 ) -> str:
 
-    story = get_compact_story(
-        package
-    )
+    story = get_compact_story(package)
 
     headline = first_text(
-        story.get(
-            "title_en"
-        ),
-        story.get(
-            "title"
-        ),
-        story.get(
-            "title_ja"
-        ),
+        story.get("title_en"),
+        story.get("title"),
+        story.get("title_ja"),
     )
 
     summary = first_text(
-        story.get(
-            "reason_en"
-        ),
-        story.get(
-            "en_copy"
-        ),
-        story.get(
-            "reason"
-        ),
-        story.get(
-            "jp_copy"
-        ),
+        story.get("reason_en"),
+        story.get("en_copy"),
+        story.get("reason"),
+        story.get("jp_copy"),
     )
 
     source = first_text(
-        story.get(
-            "source"
-        )
+        story.get("source")
     )
 
     concept_title = first_text(
-        concept.get(
-            "title_en"
-        )
+        concept.get("title_en")
     )
 
     concept_text = first_text(
-        concept.get(
-            "concept_en"
-        )
+        concept.get("concept_en")
     )
 
     composition = first_text(
-        concept.get(
-            "composition_en"
-        )
+        concept.get("composition_en")
     )
 
     generation_prompt = first_text(
-        concept.get(
-            "generation_prompt_en"
-        )
+        concept.get("generation_prompt_en")
     )
 
     if not concept_text:
@@ -190,6 +196,21 @@ def build_prompt(
         raise ValueError(
             "Selected concept is missing generation_prompt_en."
         )
+
+    variation_recipe = VARIATION_RECIPES[
+        variation_number
+    ]
+
+    retry_note = ""
+
+    if duplicate_retry > 0:
+        retry_note = f"""
+DUPLICATE AVOIDANCE — RETRY {duplicate_retry}
+The previous output was too similar or identical.
+Make this rendition CLEARLY DIFFERENT in camera framing,
+duck pose, crop, spatial arrangement, and perspective,
+while preserving the locked concept.
+""".strip()
 
     return f"""
 Create ONE polished, publishable hero-image candidate for The Daily Duck.
@@ -213,31 +234,44 @@ THIS IS:
 - real-image batch {batch_number}
 - variation {variation_number} of 5
 
-CRITICAL CONCEPT-LOCK RULE
+IMPORTANT:
+The five images must represent the SAME selected concept,
+but they must NOT look like duplicate renders.
 
-All five images in this batch MUST be executions of the SAME
-human-selected concept above.
+The concept, story, setting, mascot identity and central visual idea
+are locked.
+
+The following execution recipe is MANDATORY for this image:
+
+{variation_recipe}
+
+{retry_note}
+
+VARIATION REQUIREMENT
+
+Compared with the other candidates, this image must be visibly different in
+at least THREE of these execution dimensions:
+
+- camera distance
+- camera angle
+- duck pose
+- duck placement in frame
+- crop
+- foreground/background depth
+- lighting direction
+- prop placement
+- body orientation
+
+Do NOT merely make tiny facial or lighting changes.
+
+CRITICAL CONCEPT-LOCK RULE
 
 Do NOT:
 - switch to another concept
-- reinterpret the visual concept
-- replace the central setting
-- change the visual metaphor
+- reinterpret the central visual idea
+- replace the setting with a different setting
 - change the story
-- add unsupported facts
-
-You MAY vary only execution-level details such as:
-- precise camera distance
-- subtle camera angle
-- duck pose
-- facial expression within the same mood
-- small prop placement
-- crop
-- spacing
-- depth of field
-- lighting nuance
-
-Every output must still be immediately recognizable as the SAME concept.
+- add unsupported factual details
 
 THE DAILY DUCK MASCOT
 - cheerful recognizable yellow duck
@@ -272,16 +306,15 @@ FACTUAL RULE
 Do not invent factual, scientific, geographic, organizational,
 or biographical details beyond what is supported by the approved story.
 
-This output is one of five final-image candidates.
+This output must be a distinct visual execution of the same selected concept.
 """.strip()
 
 
-def generate_one(
+def generate_image_bytes(
     client: OpenAI,
     prompt: str,
-    path: Path,
     number: int,
-) -> None:
+) -> bytes:
 
     print(
         f"Generating real image {number}/5: "
@@ -308,10 +341,8 @@ def generate_one(
             f"for candidate {number}."
         )
 
-    path.write_bytes(
-        base64.b64decode(
-            result.data[0].b64_json
-        )
+    return base64.b64decode(
+        result.data[0].b64_json
     )
 
 
@@ -328,19 +359,14 @@ def main() -> int:
         )
     )
 
-    if not isinstance(
-        package,
-        dict,
-    ):
+    if not isinstance(package, dict):
         raise ValueError(
             "design_options.json "
             "must contain an object."
         )
 
     state = first_text(
-        package.get(
-            "state"
-        )
+        package.get("state")
     ).upper()
 
     if state != "APPROVED_IMAGE_CONCEPT":
@@ -369,11 +395,7 @@ def main() -> int:
     )
 
     if selected_number not in (
-        1,
-        2,
-        3,
-        4,
-        5,
+        1, 2, 3, 4, 5
     ):
         raise ValueError(
             "selected_image_concept_number "
@@ -381,9 +403,7 @@ def main() -> int:
         )
 
     issue_date = first_text(
-        package.get(
-            "issue_date"
-        )
+        package.get("issue_date")
     )
 
     if not issue_date:
@@ -400,8 +420,7 @@ def main() -> int:
     )
 
     batch_number = (
-        previous_batch
-        + 1
+        previous_batch + 1
     )
 
     out_dir = (
@@ -425,16 +444,59 @@ def main() -> int:
         dict[str, Any]
     ] = []
 
+    seen_hashes: set[str] = set()
+
     for variation_number in range(
         1,
         6,
     ):
+        chosen_bytes: bytes | None = None
+        chosen_prompt = ""
+        chosen_hash = ""
 
-        prompt = build_prompt(
-            package=package,
-            concept=selected_concept,
-            variation_number=variation_number,
-            batch_number=batch_number,
+        for retry in range(
+            0,
+            MAX_DUPLICATE_RETRIES + 1,
+        ):
+            prompt = build_prompt(
+                package=package,
+                concept=selected_concept,
+                variation_number=variation_number,
+                batch_number=batch_number,
+                duplicate_retry=retry,
+            )
+
+            image_bytes = generate_image_bytes(
+                client=client,
+                prompt=prompt,
+                number=variation_number,
+            )
+
+            digest = sha256_bytes(
+                image_bytes
+            )
+
+            if digest not in seen_hashes:
+                chosen_bytes = image_bytes
+                chosen_prompt = prompt
+                chosen_hash = digest
+                break
+
+            print(
+                f"WARNING: candidate {variation_number} "
+                "was byte-identical to an earlier image. "
+                "Regenerating..."
+            )
+
+        if chosen_bytes is None:
+            raise RuntimeError(
+                f"Could not create a unique image "
+                f"for candidate {variation_number} "
+                f"after {MAX_DUPLICATE_RETRIES + 1} attempts."
+            )
+
+        seen_hashes.add(
+            chosen_hash
         )
 
         path = (
@@ -442,11 +504,8 @@ def main() -> int:
             / f"preview_{variation_number}.png"
         )
 
-        generate_one(
-            client=client,
-            prompt=prompt,
-            path=path,
-            number=variation_number,
+        path.write_bytes(
+            chosen_bytes
         )
 
         previews.append(
@@ -456,6 +515,11 @@ def main() -> int:
 
                 "variation_number":
                     variation_number,
+
+                "variation_recipe":
+                    VARIATION_RECIPES[
+                        variation_number
+                    ],
 
                 "batch_number":
                     batch_number,
@@ -501,7 +565,7 @@ def main() -> int:
                     ),
 
                 "generation_prompt":
-                    prompt,
+                    chosen_prompt,
             }
         )
 
@@ -536,8 +600,8 @@ def main() -> int:
     package[
         "preview_generation_rule"
     ] = (
-        "Exactly five real image variations "
-        "generated from the one locked "
+        "Exactly five visibly distinct execution-level "
+        "variations generated from the one locked "
         "human-selected concept."
     )
 
@@ -558,6 +622,11 @@ def main() -> int:
     print(
         "Exactly 5 real preview images created "
         "from ONE selected concept."
+    )
+
+    print(
+        "All five use explicit distinct "
+        "variation recipes."
     )
 
     print(
