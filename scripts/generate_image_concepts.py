@@ -14,237 +14,130 @@ from typing import Any
 from google import genai
 
 
-APPROVED_STORY_PATH = Path(
-    "automation_state/approved_story.json"
-)
+APPROVED_STORY_PATH = Path("automation_state/approved_story.json")
+OPTIONS_PATH = Path("automation_state/design_options.json")
 
-OUTPUT_PATH = Path(
-    "automation_state/image_concepts.json"
-)
+TEXT_MODEL = (os.getenv("GEMINI_TEXT_MODEL") or "").strip() or "gemini-3.6-flash"
 
-TEXT_MODEL = (
-    os.getenv(
-        "GEMINI_TEXT_MODEL"
-    )
-    or ""
-).strip() or "gemini-3.6-flash"
-
-
-# ============================================================
-# Retry settings
-# ============================================================
-
-CONCEPT_MAX_ATTEMPTS = int(
-    os.getenv(
-        "CONCEPT_MAX_ATTEMPTS",
-        "3",
-    )
-)
-
-GEMINI_API_MAX_ATTEMPTS = int(
-    os.getenv(
-        "GEMINI_API_MAX_ATTEMPTS",
-        "5",
-    )
-)
-
+EDITORIAL_MAX_ATTEMPTS = int(os.getenv("CONCEPT_MAX_ATTEMPTS", "3"))
+GEMINI_API_MAX_ATTEMPTS = int(os.getenv("GEMINI_API_MAX_ATTEMPTS", "5"))
 GEMINI_RETRY_BASE_SECONDS = float(
-    os.getenv(
-        "GEMINI_RETRY_BASE_SECONDS",
-        "10",
-    )
+    os.getenv("GEMINI_RETRY_BASE_SECONDS", "10")
 )
 
 
-def required_env(
-    name: str,
-) -> str:
-
-    value = os.getenv(
-        name,
-        "",
-    ).strip()
-
+def required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
     if not value:
-        raise RuntimeError(
-            "Missing required environment "
-            f"variable: {name}"
-        )
-
+        raise RuntimeError(f"Missing required environment variable: {name}")
     return value
 
 
-def load_json(
-    path: Path,
-) -> dict[str, Any]:
-
+def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
-        raise FileNotFoundError(
-            f"Required file not found: {path}"
-        )
+        raise FileNotFoundError(f"Required file not found: {path}")
 
-    with path.open(
-        "r",
-        encoding="utf-8",
-    ) as f:
-        data = json.load(f)
+    data = json.loads(path.read_text(encoding="utf-8"))
 
-    if not isinstance(
-        data,
-        dict,
-    ):
-        raise ValueError(
-            f"{path} must contain a JSON object."
-        )
+    if not isinstance(data, dict):
+        raise ValueError(f"{path} must contain a JSON object.")
 
     return data
 
 
-def clean_json_text(
-    value: str,
-) -> str:
+def first_text(*values: Any) -> str:
+    for value in values:
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
 
+
+def clean_json_text(value: str) -> str:
     cleaned = value.strip()
-
     cleaned = re.sub(
         r"^```(?:json)?\s*",
         "",
         cleaned,
         flags=re.IGNORECASE,
     )
-
-    cleaned = re.sub(
-        r"\s*```$",
-        "",
-        cleaned,
-    )
-
+    cleaned = re.sub(r"\s*```$", "", cleaned)
     return cleaned.strip()
 
 
-def text(
-    *values: Any,
-) -> str:
+def validate_approved_state(data: dict[str, Any]) -> None:
+    state = first_text(data.get("state")).upper()
 
-    for value in values:
-
-        if (
-            isinstance(
-                value,
-                str,
-            )
-            and value.strip()
-        ):
-            return value.strip()
-
-    return ""
-
-
-# ============================================================
-# Approved story handling
-# ============================================================
-
-def find_story_container(
-    data: dict[str, Any],
-) -> dict[str, Any]:
-    """
-    Locate the approved editorial story while tolerating
-    the state shapes used by The Daily Duck so far.
-    """
-
-    candidate_keys = (
-        "approved_story",
-        "story",
-        "recommended_story",
-        "recommended",
-        "selected_story",
-        "gate_a_approved_story",
-    )
-
-    for key in candidate_keys:
-
-        value = data.get(
-            key
+    if state != "APPROVED_STORY":
+        raise ValueError(
+            "Design options may only be generated from APPROVED_STORY; "
+            f"got {state!r}."
         )
 
-        if isinstance(
-            value,
-            dict,
-        ):
+
+def find_approved_story(data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Return the selected Gate A story while tolerating the state shapes
+    used by The Daily Duck during Phase 2.
+    """
+    for key in (
+        "approved_story",
+        "selected_story",
+        "gate_a_approved_story",
+        "story",
+        "recommended_story",
+    ):
+        value = data.get(key)
+        if isinstance(value, dict):
             return value
 
-    package = data.get(
-        "package"
-    )
-
-    if isinstance(
-        package,
-        dict,
-    ):
-
-        for key in candidate_keys:
-
-            value = package.get(
-                key
-            )
-
-            if isinstance(
-                value,
-                dict,
-            ):
+    package = data.get("package")
+    if isinstance(package, dict):
+        for key in (
+            "approved_story",
+            "selected_story",
+            "gate_a_approved_story",
+            "story",
+            "recommended_story",
+        ):
+            value = package.get(key)
+            if isinstance(value, dict):
                 return value
 
-    # Compatibility with states that store the approved
-    # editorial package at the root.
+    # Some versions persist the approved editorial package at root level.
     if any(
         key in data
         for key in (
-            "title",
             "title_en",
-            "source",
-            "url",
-            "jp_copy",
+            "title",
             "en_copy",
+            "jp_copy",
+            "duck_name",
+            "x_en",
         )
     ):
         return data
 
     raise ValueError(
-        "Could not locate the approved story inside "
-        "automation_state/approved_story.json."
+        "Could not locate the approved story in approved_story.json."
     )
 
 
-def validate_approved_state(
-    data: dict[str, Any],
-) -> None:
+def issue_date_from(data: dict[str, Any], story: dict[str, Any]) -> str:
+    issue_date = first_text(
+        data.get("issue_date"),
+        data.get("date"),
+        story.get("issue_date"),
+        story.get("date"),
+    )
 
-    state = str(
-        data.get(
-            "state",
-            "",
-        )
-    ).strip().upper()
+    if not issue_date:
+        raise ValueError("Approved story is missing issue_date/date.")
 
-    if state != "APPROVED_STORY":
-        raise ValueError(
-            "Image concepts may only be generated "
-            "from APPROVED_STORY; "
-            f"got {state!r}."
-        )
+    return issue_date
 
 
-# ============================================================
-# Gemini retry
-# ============================================================
-
-def is_retryable_gemini_error(
-    exc: Exception,
-) -> bool:
-
-    error_text = str(
-        exc
-    ).lower()
+def is_retryable_gemini_error(exc: Exception) -> bool:
+    error_text = str(exc).lower()
 
     retryable_markers = (
         "429",
@@ -264,174 +157,127 @@ def is_retryable_gemini_error(
         "timed out",
     )
 
-    return any(
-        marker in error_text
-        for marker in retryable_markers
-    )
+    return any(marker in error_text for marker in retryable_markers)
 
 
 def call_gemini_with_retry(
     client: genai.Client,
     prompt: str,
 ):
-
     if GEMINI_API_MAX_ATTEMPTS < 1:
-        raise ValueError(
-            "GEMINI_API_MAX_ATTEMPTS "
-            "must be at least 1."
-        )
+        raise ValueError("GEMINI_API_MAX_ATTEMPTS must be at least 1.")
 
     last_error: Exception | None = None
 
-    for attempt in range(
-        1,
-        GEMINI_API_MAX_ATTEMPTS + 1,
-    ):
-
+    for attempt in range(1, GEMINI_API_MAX_ATTEMPTS + 1):
         print(
-            "Gemini API request attempt "
-            f"{attempt}/"
-            f"{GEMINI_API_MAX_ATTEMPTS}..."
+            f"Gemini API request attempt "
+            f"{attempt}/{GEMINI_API_MAX_ATTEMPTS}..."
         )
 
         try:
-
-            response = (
-                client.models.generate_content(
-                    model=TEXT_MODEL,
-                    contents=prompt,
-                )
+            response = client.models.generate_content(
+                model=TEXT_MODEL,
+                contents=prompt,
             )
 
-            print(
-                "Gemini API request succeeded."
-            )
-
+            print("Gemini API request succeeded.")
             return response
 
         except Exception as exc:
-
             last_error = exc
 
-            if not (
-                is_retryable_gemini_error(
-                    exc
-                )
-            ):
+            if not is_retryable_gemini_error(exc):
                 raise
 
-            if (
-                attempt
-                >= GEMINI_API_MAX_ATTEMPTS
-            ):
+            if attempt >= GEMINI_API_MAX_ATTEMPTS:
                 raise
 
             wait_seconds = (
                 GEMINI_RETRY_BASE_SECONDS
                 * (2 ** (attempt - 1))
-                + random.uniform(
-                    0,
-                    3,
-                )
+                + random.uniform(0, 3)
             )
 
             print(
-                "WARNING: Temporary Gemini "
-                "API error detected. "
-                f"Retrying in approximately "
-                f"{wait_seconds:.1f} seconds...",
+                "WARNING: Temporary Gemini API error. "
+                f"Retrying in approximately {wait_seconds:.1f} seconds...",
                 file=sys.stderr,
             )
 
-            time.sleep(
-                wait_seconds
-            )
+            time.sleep(wait_seconds)
 
     if last_error is not None:
         raise last_error
 
-    raise RuntimeError(
-        "Gemini retry loop ended unexpectedly."
-    )
+    raise RuntimeError("Gemini retry loop ended unexpectedly.")
 
 
-# ============================================================
-# English-first concept generation
-# ============================================================
-
-def generate_concepts(
+def generate_options(
     approved_state: dict[str, Any],
-    story: dict[str, Any],
-) -> list[dict[str, Any]]:
+    approved_story: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """
+    Generate:
+      - exactly five image concepts
+      - exactly three English title options
+
+    English is canonical.
+    Japanese fields are review translations only.
+    """
 
     client = genai.Client(
-        api_key=required_env(
-            "GEMINI_API_KEY"
-        )
+        api_key=required_env("GEMINI_API_KEY")
     )
 
-    # English fields deliberately come first.
     output_example = {
-        "concepts": [
+        "image_concepts": [
             {
-                "number":
-                    1,
-
-                "title_en":
-                    "Short English concept title",
-
-                "concept_en":
-                    (
-                        "Canonical English description "
-                        "of the visual concept"
-                    ),
-
-                "composition_en":
-                    (
-                        "Canonical English composition, "
-                        "subject, background, props, "
-                        "camera and mood direction"
-                    ),
-
-                "generation_prompt_en":
-                    (
-                        "Detailed production-ready English "
-                        "prompt used later to generate five "
-                        "real image variations"
-                    ),
-
-                "alt_en":
-                    "Canonical English alt-text draft",
-
-                "title_ja":
-                    "英語正本を基にした自然な日本語タイトル",
-
-                "concept_ja":
-                    "英語正本を基にした自然な日本語コンセプト説明",
-
-                "composition_ja":
-                    "英語正本を基にした自然な日本語構図説明",
-
-                "alt_ja":
-                    "英語正本を基にした自然な日本語alt案",
+                "number": 1,
+                "title_en": "Short English concept title",
+                "concept_en": "Canonical English visual concept",
+                "composition_en": (
+                    "Canonical English composition, setting, framing, "
+                    "subject, props and mood direction"
+                ),
+                "generation_prompt_en": (
+                    "Production-ready English prompt for generating five "
+                    "real variations of this same concept later"
+                ),
+                "alt_en": "Canonical English alt-text draft",
+                "title_ja": "自然な日本語コンセプト名",
+                "concept_ja": "英語正本を基にした自然な日本語説明",
+                "composition_ja": "英語正本を基にした自然な日本語構図説明",
+                "alt_ja": "英語正本を基にした日本語alt案",
             }
-            for _ in range(
-                5
-            )
-        ]
+            for _ in range(5)
+        ],
+        "title_ideas": [
+            {
+                "number": 1,
+                "title": "PUNCHY ENGLISH TITLE",
+                "meaning_ja": "日本語で意味・ニュアンスを簡潔に説明",
+            }
+            for _ in range(3)
+        ],
     }
 
     prompt = f"""
 You are the visual editorial director for The Daily Duck.
 
-LANGUAGE POLICY — MANDATORY:
-
 The Daily Duck is ENGLISH-FIRST.
 
 English is the canonical/master language.
-Japanese is a translation derived from the completed English master.
+Japanese is review translation only.
 
-For EACH image concept, create these English master fields FIRST:
+You are working on ONE story that has already passed Gate A.
+Do not change the story.
+
+TASK A — IMAGE CONCEPTS
+
+Create EXACTLY FIVE distinct visual concepts for the approved story.
+
+For every concept, create the English master fields FIRST:
 
 1. title_en
 2. concept_en
@@ -439,39 +285,62 @@ For EACH image concept, create these English master fields FIRST:
 4. generation_prompt_en
 5. alt_en
 
-Only AFTER those English fields are complete, create:
+Only after the English master is complete, create the Japanese
+review translations:
 
 6. title_ja
 7. concept_ja
 8. composition_ja
 9. alt_ja
 
-Japanese must faithfully preserve the English master's meaning,
-visual intent, factual limits and tone. Japanese should sound
-natural, not like awkward literal machine translation.
+The five concepts must be meaningfully different visual approaches,
+but all five must represent the SAME approved story.
 
-TASK:
+The human will select exactly ONE concept.
+After that selection, the system will generate EXACTLY FIVE real
+image variations from that ONE selected concept.
 
-Create EXACTLY FIVE distinct image concepts for ONE already-approved
-Daily Duck story.
+Therefore generation_prompt_en must be precise enough to LOCK the
+concept while still allowing execution-level variation such as:
+- duck pose
+- subtle camera angle
+- crop
+- lighting nuance
+- small prop placement
+- spacing
+- depth of field
 
-These are concepts only.
-Do NOT generate actual images in this step.
+It must NOT allow the later generator to switch to another concept.
 
-APPROVAL RULE:
+THE DAILY DUCK MASCOT
 
-The article has already been approved by the human editor.
+Every concept must preserve:
+- recognizable friendly yellow duck
+- orange beak
+- large dark glossy eyes
+- small feather tuft
+- warm approachable expression
+- consistent mascot identity
 
-Do NOT:
-- change the selected article
-- replace the selected article
-- re-rank the article
-- add new factual claims
-- reinterpret the story into a different story
+VISUAL DIRECTION
 
-FACTUAL RULE:
+- clean
+- modern
+- charming
+- warm
+- premium editorial
+- simple rather than overly vintage
+- strong single focal point
+- landscape hero-image composition
+- no logos
+- no watermarks
+- no UI
+- no readable embedded text
+- no headline inside the generated image
 
-Use ONLY facts supported by the approved story/editorial package below.
+FACTUAL RULE
+
+Use ONLY facts supported by the approved story package.
 
 Do not invent:
 - names
@@ -482,128 +351,54 @@ Do not invent:
 - quotations
 - organizations
 - scientific details
-- events
-- factual objects or props that would falsely imply unsupported facts
+- factual props that imply unsupported facts
 
-A visual metaphor is allowed only when it is clearly illustrative and
-does not falsely present invented details as factual.
+Illustrative visual metaphor is allowed only when it does not falsely
+present invented details as factual.
 
-BRAND / MASCOT RULES:
+TASK B — TITLE IDEAS
 
-Every concept must preserve The Daily Duck mascot identity:
+Create EXACTLY THREE short, punchy ENGLISH publication-title options
+for the SAME approved story.
 
-- recognizable friendly yellow duck
-- orange beak
-- large dark glossy eyes
-- small feather tuft
-- warm, approachable expression
-- story-specific clothing and props are allowed when appropriate
+The title options must:
+- be English only
+- be concise
+- be memorable
+- fit The Daily Duck tone
+- not invent facts
+- not use clickbait that changes the meaning
+- be suitable for the website and X card
 
-VISUAL DIRECTION:
+For each title, meaning_ja should explain the English meaning/nickname
+naturally in Japanese for the human editor.
 
-- simple
-- clean
-- modern
-- charming
-- warm
-- editorial
-- not overly vintage
-- no gradients unless the concept naturally requires atmospheric lighting
-- no logos
-- no watermarks
-- no UI screenshots
-- avoid embedded text
-- avoid dense typography
-- make the duck clearly recognizable
-- make the story visually understandable at a glance
+OUTPUT RULES
 
-CONCEPT DIVERSITY:
-
-Return EXACTLY FIVE meaningfully different visual approaches.
-
-They may differ in:
-- setting
-- framing
-- camera angle
-- action
-- props
-- scale
-- visual metaphor
-- mood
-- storytelling approach
-
-Do not return five near-duplicates.
-
-All five must still represent the SAME approved story.
-
-CURRENT DAILY DUCK IMAGE FLOW — IMPORTANT:
-
-This step creates five CONCEPTS.
-
-Then:
-1. the human selects ONE concept
-2. that selected concept becomes the fixed visual direction
-3. the system generates FIVE real image variations from that ONE selected concept
-4. the human selects ONE of those five real images
-5. only that final selected real image becomes the canonical website image
-6. a branded X card is built from the selected image
-7. publication remains blocked until the final image selection is complete
-
-Therefore generation_prompt_en must describe the selected concept
-precisely enough that it can later produce FIVE visually varied
-executions of the SAME concept without changing the concept itself.
-
-GENERATION PROMPT REQUIREMENTS:
-
-generation_prompt_en must:
-- be entirely in English
-- be production-ready for image generation
-- preserve the same concept
-- specify mascot identity
-- specify subject and setting
-- specify composition
-- specify mood and visual style
-- avoid unsupported facts
-- avoid text/logo/watermark generation
-- leave room for five execution-level variations while keeping
-  the chosen concept unchanged
-
-OUTPUT RULES:
-
-- Return exactly five concepts.
-- Return them in numbered order 1 through 5.
-- Every required field must contain non-empty text.
-- English fields are canonical.
-- Japanese fields are translations.
+- Exactly five image concepts.
+- Exactly three title ideas.
+- Number image concepts 1-5.
+- Number title ideas 1-3.
+- Every required field must be non-empty.
+- English is canonical.
+- Japanese is translation/review support.
 - Return ONLY valid JSON.
-- Do not use Markdown fences.
+- No Markdown fences.
 
-Return exactly this JSON structure:
+Return exactly this structure:
 
-{json.dumps(
-    output_example,
-    ensure_ascii=False,
-    indent=2,
-)}
+{json.dumps(output_example, ensure_ascii=False, indent=2)}
 
-APPROVED STORY — COMPACT:
+APPROVED STORY:
 
-{json.dumps(
-    story,
-    ensure_ascii=False,
-    indent=2,
-)}
+{json.dumps(approved_story, ensure_ascii=False, indent=2)}
 
-FULL APPROVED STATE / EDITORIAL PACKAGE:
+FULL APPROVED STATE:
 
-{json.dumps(
-    approved_state,
-    ensure_ascii=False,
-    indent=2,
-)}
+{json.dumps(approved_state, ensure_ascii=False, indent=2)}
 """.strip()
 
-    required_fields = (
+    required_concept_fields = (
         "title_en",
         "concept_en",
         "composition_en",
@@ -615,186 +410,115 @@ FULL APPROVED STATE / EDITORIAL PACKAGE:
         "alt_ja",
     )
 
+    required_title_fields = (
+        "title",
+        "meaning_ja",
+    )
+
     last_error: Exception | None = None
 
-    for attempt in range(
-        1,
-        CONCEPT_MAX_ATTEMPTS + 1,
-    ):
-
+    for attempt in range(1, EDITORIAL_MAX_ATTEMPTS + 1):
         try:
-
             print(
-                "Image concept generation attempt "
-                f"{attempt}/"
-                f"{CONCEPT_MAX_ATTEMPTS}..."
+                f"Design option generation attempt "
+                f"{attempt}/{EDITORIAL_MAX_ATTEMPTS}..."
             )
 
-            response = (
-                call_gemini_with_retry(
-                    client,
-                    prompt,
-                )
+            response = call_gemini_with_retry(
+                client,
+                prompt,
             )
 
-            raw = getattr(
-                response,
-                "text",
-                None,
-            )
-
+            raw = getattr(response, "text", None)
             if not raw:
                 raise RuntimeError(
-                    "Gemini returned no image "
-                    "concept text."
+                    "Gemini returned no design option text."
                 )
 
-            try:
-
-                parsed = json.loads(
-                    clean_json_text(
-                        raw
-                    )
-                )
-
-            except json.JSONDecodeError as exc:
-
-                raise RuntimeError(
-                    "Gemini returned invalid JSON: "
-                    f"{exc}"
-                ) from exc
-
-            if not isinstance(
-                parsed,
-                dict,
-            ):
-                raise ValueError(
-                    "Gemini image concept response "
-                    "must be a JSON object."
-                )
-
-            concepts = parsed.get(
-                "concepts"
+            parsed = json.loads(
+                clean_json_text(raw)
             )
 
-            if (
-                not isinstance(
-                    concepts,
-                    list,
-                )
-                or len(
-                    concepts
-                ) != 5
-            ):
+            if not isinstance(parsed, dict):
                 raise ValueError(
-                    "Gemini must return exactly "
-                    "five image concepts."
+                    "Gemini response must be a JSON object."
                 )
 
-            normalized: list[
-                dict[str, Any]
-            ] = []
+            concepts = parsed.get("image_concepts")
+            titles = parsed.get("title_ideas")
 
-            for index, item in enumerate(
-                concepts,
-                start=1,
-            ):
+            if not isinstance(concepts, list) or len(concepts) != 5:
+                raise ValueError(
+                    "Gemini must return exactly five image concepts."
+                )
 
-                if not isinstance(
-                    item,
-                    dict,
-                ):
+            if not isinstance(titles, list) or len(titles) != 3:
+                raise ValueError(
+                    "Gemini must return exactly three title ideas."
+                )
+
+            normalized_concepts: list[dict[str, Any]] = []
+
+            for index, item in enumerate(concepts, start=1):
+                if not isinstance(item, dict):
                     raise ValueError(
-                        f"Concept {index} must "
-                        "be a JSON object."
+                        f"Image concept {index} must be an object."
                     )
 
-                normalized_item = dict(
-                    item
-                )
+                normalized = dict(item)
+                normalized["number"] = index
 
-                # Always normalize numbering ourselves.
-                normalized_item[
-                    "number"
-                ] = index
-
-                for field in required_fields:
-
-                    value = text(
-                        normalized_item.get(
-                            field
-                        )
-                    )
-
+                for field in required_concept_fields:
+                    value = first_text(normalized.get(field))
                     if not value:
                         raise ValueError(
-                            f"Concept {index} is "
-                            "missing required field: "
-                            f"{field}"
+                            f"Image concept {index} is missing {field}."
                         )
+                    normalized[field] = value
 
-                    normalized_item[
-                        field
-                    ] = value
+                normalized_concepts.append(normalized)
 
-                normalized.append(
-                    normalized_item
-                )
+            normalized_titles: list[dict[str, Any]] = []
 
-            if attempt > 1:
+            for index, item in enumerate(titles, start=1):
+                if not isinstance(item, dict):
+                    raise ValueError(
+                        f"Title idea {index} must be an object."
+                    )
 
-                print(
-                    "Image concepts recovered "
-                    "successfully on attempt "
-                    f"{attempt}."
-                )
+                normalized = dict(item)
+                normalized["number"] = index
 
-            return normalized
+                for field in required_title_fields:
+                    value = first_text(normalized.get(field))
+                    if not value:
+                        raise ValueError(
+                            f"Title idea {index} is missing {field}."
+                        )
+                    normalized[field] = value
+
+                normalized_titles.append(normalized)
+
+            return normalized_concepts, normalized_titles
 
         except Exception as exc:
-
             last_error = exc
 
-            if (
-                attempt
-                < CONCEPT_MAX_ATTEMPTS
-            ):
-
+            if attempt < EDITORIAL_MAX_ATTEMPTS:
                 print(
-                    "WARNING: Incomplete/invalid "
-                    "image concepts on attempt "
-                    f"{attempt}: {exc}"
+                    "WARNING: Invalid/incomplete design option package: "
+                    f"{exc}"
                 )
-
-                print(
-                    "Retrying image concept "
-                    "generation..."
-                )
-
+                print("Retrying design option generation...")
                 continue
-
-            print(
-                "ERROR: Image concept generation "
-                "failed after "
-                f"{CONCEPT_MAX_ATTEMPTS} attempts.",
-                file=sys.stderr,
-            )
 
     if last_error is not None:
         raise last_error
 
-    raise RuntimeError(
-        "Image concept generation "
-        "ended unexpectedly."
-    )
+    raise RuntimeError("Design option generation ended unexpectedly.")
 
-
-# ============================================================
-# Main
-# ============================================================
 
 def main() -> int:
-
     approved_state = load_json(
         APPROVED_STORY_PATH
     )
@@ -803,138 +527,96 @@ def main() -> int:
         approved_state
     )
 
-    story = find_story_container(
+    approved_story = find_approved_story(
         approved_state
     )
 
-    concepts = generate_concepts(
+    issue_date = issue_date_from(
         approved_state,
-        story,
+        approved_story,
     )
 
-    generated_at = datetime.now(
-        timezone.utc
-    ).isoformat()
+    image_concepts, title_ideas = generate_options(
+        approved_state,
+        approved_story,
+    )
 
-    result_data = {
-        "state":
-            "IMAGE_CONCEPT_REVIEW",
+    package = {
+        "state": "CONCEPTS_READY",
+        "issue_date": issue_date,
+        "generated_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
 
-        "generated_at":
-            generated_at,
+        # Preserve the complete Gate A approved state so later stages
+        # retain every field needed by website/X publication.
+        "approved_story": approved_state,
 
-        "source_state":
-            "APPROVED_STORY",
+        "approved_story_compact": approved_story,
 
-        "approved_story_path":
-            str(
-                APPROVED_STORY_PATH
-            ),
+        "image_concepts": image_concepts,
+        "title_ideas": title_ideas,
 
-        "story":
-            story,
+        "selected_image_concept_number": None,
+        "selected_image_concept": None,
 
-        "concepts":
-            concepts,
+        "design_previews": [],
 
         "language_policy": {
-            "primary_language":
-                "en",
-
-            "canonical_language":
-                "en",
-
-            "translation_language":
-                "ja",
-
-            "translation_source":
-                "english_master",
+            "primary_language": "en",
+            "canonical_language": "en",
+            "translation_language": "ja",
+            "translation_source": "english_master",
         },
 
-        "selection_rule":
-            (
-                "Reply with exactly one digit: "
-                "1, 2, 3, 4, or 5."
-            ),
+        "concept_selection_rule": {
+            "valid_replies": ["1", "2", "3", "4", "5"],
+            "next_state": "APPROVED_IMAGE_CONCEPT",
+        },
 
-        "next_state_after_valid_selection":
-            "APPROVED_IMAGE_CONCEPT",
+        "real_image_flow": {
+            "source": "one_human_selected_concept",
+            "candidate_count": 5,
+            "next_5_supported": True,
+        },
 
-        "post_selection_flow": (
-            "Selected concept -> generate exactly five "
-            "real image variations -> human selects one "
-            "final image -> READY_TO_PUBLISH"
-        ),
+        "final_selection_rule": {
+            "image_numbers": [1, 2, 3, 4, 5],
+            "title_numbers": [1, 2, 3],
+            "format": "IMAGE_NUMBER TITLE_NUMBER",
+            "example": "4 1",
+            "next_5_command": "NEXT 5",
+            "next_state": "READY_TO_PUBLISH",
+        },
     }
 
-    OUTPUT_PATH.parent.mkdir(
+    OPTIONS_PATH.parent.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    with OUTPUT_PATH.open(
-        "w",
-        encoding="utf-8",
-    ) as f:
-
-        json.dump(
-            result_data,
-            f,
+    OPTIONS_PATH.write_text(
+        json.dumps(
+            package,
             ensure_ascii=False,
             indent=2,
         )
-
-        f.write(
-            "\n"
-        )
-
-    print(
-        f"STATE: {result_data['state']}"
+        + "\n",
+        encoding="utf-8",
     )
 
-    print(
-        "LANGUAGE: ENGLISH-FIRST"
-    )
-
-    print(
-        "Generated exactly "
-        f"{len(concepts)} image concepts."
-    )
-
-    print(
-        f"Saved: {OUTPUT_PATH}"
-    )
-
-    print(
-        "NEXT: Human selects one concept, "
-        "then five real images are generated "
-        "from that selected concept."
-    )
-
-    for concept in concepts:
-
-        print(
-            f"{concept['number']}: "
-            f"{concept['title_en']} "
-            f"/ {concept['title_ja']}"
-        )
+    print("Generated exactly 5 image concepts.")
+    print("Generated exactly 3 English title ideas.")
+    print("LANGUAGE: ENGLISH-FIRST")
+    print(f"Saved: {OPTIONS_PATH}")
+    print("STATE: CONCEPTS_READY")
 
     return 0
 
 
 if __name__ == "__main__":
-
     try:
-
-        raise SystemExit(
-            main()
-        )
-
+        raise SystemExit(main())
     except Exception as exc:
-
-        print(
-            f"ERROR: {exc}",
-            file=sys.stderr,
-        )
-
+        print(f"ERROR: {exc}", file=sys.stderr)
         raise
