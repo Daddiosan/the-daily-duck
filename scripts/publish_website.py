@@ -6,49 +6,21 @@ import json
 import re
 import shutil
 import sys
-
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
+
+READY = Path("automation_state/ready_to_publish.json")
+RESULT = Path("automation_state/website_publish_result.json")
+TODAY = Path("data/today.json")
+ARCHIVE = Path("data/archive.json")
+CONTENT = Path("data/content.js")
+HOME = Path("index.html")
+ASSET_DIR = Path("assets/ducks")
+DUCKS_DIR = Path("ducks")
 
 
-READY = Path(
-    "automation_state/ready_to_publish.json"
-)
-
-RESULT = Path(
-    "automation_state/website_publish_result.json"
-)
-
-TODAY = Path(
-    "data/today.json"
-)
-
-ARCHIVE = Path(
-    "data/archive.json"
-)
-
-CONTENT = Path(
-    "data/content.js"
-)
-
-HOME = Path(
-    "index.html"
-)
-
-ASSET_DIR = Path(
-    "assets/ducks"
-)
-
-DUCKS_DIR = Path(
-    "ducks"
-)
-
-
-# ============================================================
-# Helpers
-# ============================================================
-
-def load_json(path: Path):
+def load_json(path: Path) -> Any:
     if not path.exists():
         raise FileNotFoundError(
             f"Missing required file: {path}"
@@ -63,8 +35,9 @@ def load_json(path: Path):
 
 def write_json(
     path: Path,
-    value,
-):
+    value: Any,
+) -> None:
+
     path.parent.mkdir(
         parents=True,
         exist_ok=True,
@@ -81,30 +54,42 @@ def write_json(
     )
 
 
-def now():
+def now() -> str:
     return datetime.now(
         timezone.utc
     ).isoformat()
 
 
 def result(
-    action,
-    **extra,
-):
+    action: str,
+    **extra: Any,
+) -> None:
+
     write_json(
         RESULT,
         {
-            "action": action,
-            "at": now(),
+            "action":
+                action,
+
+            "at":
+                now(),
+
             **extra,
         },
     )
 
 
-def text(*values):
+def text(
+    *values: Any,
+) -> str:
+
     for value in values:
+
         if (
-            isinstance(value, str)
+            isinstance(
+                value,
+                str,
+            )
             and value.strip()
         ):
             return value.strip()
@@ -112,7 +97,10 @@ def text(*values):
     return ""
 
 
-def slugify(value):
+def slugify(
+    value: str,
+) -> str:
+
     value = re.sub(
         r"[^a-z0-9]+",
         "-",
@@ -125,21 +113,21 @@ def slugify(value):
     )
 
 
-def e(value):
+def e(
+    value: Any,
+) -> str:
+
     return html.escape(
         str(value),
         quote=True,
     )
 
 
-# ============================================================
-# Build website item
-# ============================================================
-
 def build_item(
-    ready,
-    image_rel,
-):
+    ready: dict[str, Any],
+    image_rel: str,
+) -> dict[str, Any]:
+
     approved = ready.get(
         "gate_a_approved_story"
     )
@@ -152,7 +140,7 @@ def build_item(
             "gate_a_approved_story is missing."
         )
 
-    story = (
+    recommended = (
         approved.get(
             "recommended_story"
         )
@@ -177,45 +165,38 @@ def build_item(
         ),
     )
 
-    # ========================================================
-    # FINAL APPROVED TITLE
-    #
-    # The title selected by the user in the
-    # Image + Title Approval email is authoritative.
-    #
-    # Priority:
-    #   1. ready_to_publish.selected_title
-    #   2. approved_story.selected_title
-    #   3. legacy duck_name
-    #   4. Daily Duck fallback
-    # ========================================================
-
-    selected_title = text(
-        ready.get(
-            "selected_title"
-        ),
-        approved.get(
-            "selected_title"
-        ),
+    duck_name = text(
         approved.get(
             "duck_name"
         ),
         "Daily Duck",
     )
 
-    duck_name = selected_title
+    # ========================================================
+    # English-first canonical content
+    # ========================================================
 
-    story_ja = text(
+    title_en = text(
         approved.get(
-            "jp_copy"
-        )
+            "title_en"
+        ),
+        approved.get(
+            "title"
+        ),
+        recommended.get(
+            "title"
+        ),
+        duck_name,
     )
 
-    story_en = text(
+    reason_en = text(
         approved.get(
-            "en_copy"
+            "reason_en"
         ),
-        story.get(
+        approved.get(
+            "x_en"
+        ),
+        recommended.get(
             "reason"
         ),
         approved.get(
@@ -223,10 +204,16 @@ def build_item(
         ),
     )
 
-    duck_ja = text(
+    story_en = text(
         approved.get(
-            "duck_jp"
-        )
+            "en_copy"
+        ),
+        recommended.get(
+            "reason"
+        ),
+        approved.get(
+            "recommended_reason"
+        ),
     )
 
     duck_en = text(
@@ -235,11 +222,62 @@ def build_item(
         )
     )
 
+    x_en = text(
+        approved.get(
+            "x_en"
+        ),
+        reason_en,
+        story_en,
+    )
+
+    # ========================================================
+    # Japanese translation content
+    # ========================================================
+
+    title_ja = text(
+        approved.get(
+            "title_ja"
+        ),
+        title_en,
+    )
+
+    reason_ja = text(
+        approved.get(
+            "reason_ja"
+        ),
+        approved.get(
+            "x_jp"
+        ),
+        approved.get(
+            "jp_copy"
+        ),
+    )
+
+    story_ja = text(
+        approved.get(
+            "jp_copy"
+        )
+    )
+
+    duck_ja = text(
+        approved.get(
+            "duck_jp"
+        )
+    )
+
+    x_ja = text(
+        approved.get(
+            "x_jp"
+        ),
+        reason_ja,
+        story_ja,
+    )
+
     source = text(
         approved.get(
             "source"
         ),
-        story.get(
+        recommended.get(
             "source"
         ),
     )
@@ -248,24 +286,57 @@ def build_item(
         approved.get(
             "source_url"
         ),
-        story.get(
+        approved.get(
+            "url"
+        ),
+        recommended.get(
             "url"
         ),
     )
 
-    if not all(
-        [
+    required = {
+        "date":
             date,
-            story_ja,
+
+        "title_en":
+            title_en,
+
+        "story_en":
             story_en,
-            duck_ja,
+
+        "duck_en":
             duck_en,
+
+        "title_ja":
+            title_ja,
+
+        "story_ja":
+            story_ja,
+
+        "duck_ja":
+            duck_ja,
+
+        "source":
             source,
+
+        "source_url":
             source_url,
-        ]
-    ):
+    }
+
+    missing = [
+        key
+        for key, value
+        in required.items()
+        if not value
+    ]
+
+    if missing:
         raise ValueError(
-            "Approved story is missing website text fields."
+            "Approved story is missing "
+            "website text fields: "
+            + ", ".join(
+                missing
+            )
         )
 
     selected = (
@@ -281,19 +352,6 @@ def build_item(
         else {}
     )
 
-    alt_ja = text(
-        selected.get(
-            "alt_ja"
-        ),
-        selected.get(
-            "concept_ja"
-        ),
-        (
-            f"{duck_name}をテーマにした"
-            "The Daily Duckの黄色いダック"
-        ),
-    )
-
     alt_en = text(
         selected.get(
             "alt_en"
@@ -304,6 +362,19 @@ def build_item(
         (
             "The Daily Duck yellow duck mascot "
             f"for {duck_name}"
+        ),
+    )
+
+    alt_ja = text(
+        selected.get(
+            "alt_ja"
+        ),
+        selected.get(
+            "concept_ja"
+        ),
+        (
+            f"{duck_name}をテーマにした"
+            "The Daily Duckの黄色いダック"
         ),
     )
 
@@ -329,30 +400,41 @@ def build_item(
                 duck_name
             ),
 
-        # Final approved email title
+        # Compatibility:
+        # existing front-end uses "title" for Duck name.
         "title":
             duck_name.upper(),
+
+        "duckName":
+            duck_name,
+
+        # New canonical article title fields.
+        "storyTitleEn":
+            title_en,
+
+        "storyTitleJa":
+            title_ja,
 
         "image":
             image_rel,
 
-        "imageAltJa":
-            alt_ja,
-
         "imageAltEn":
             alt_en,
 
-        "storyJa":
-            story_ja,
+        "imageAltJa":
+            alt_ja,
 
         "storyEn":
             story_en,
 
-        "duckJa":
-            duck_ja,
+        "storyJa":
+            story_ja,
 
         "duckEn":
             duck_en,
+
+        "duckJa":
+            duck_ja,
 
         "sourceLabel":
             source,
@@ -360,32 +442,43 @@ def build_item(
         "sourceUrl":
             source_url,
 
-        "archiveSummaryJa":
-            text(
-                approved.get(
-                    "x_jp"
-                ),
-                story_ja,
-            ),
-
+        # Existing compatibility keys remain.
         "archiveSummaryEn":
-            text(
-                approved.get(
-                    "x_en"
-                ),
-                story_en,
-            ),
+            x_en,
+
+        "archiveSummaryJa":
+            x_ja,
+
+        # Explicit English-first semantics.
+        "reasonEn":
+            reason_en,
+
+        "reasonJa":
+            reason_ja,
+
+        "languagePolicy": {
+            "primaryLanguage":
+                "en",
+
+            "canonicalLanguage":
+                "en",
+
+            "translationLanguage":
+                "ja",
+
+            "translationSource":
+                "english_master",
+        },
 
         "published":
             True,
     }
 
 
-# ============================================================
-# Render archive article page
-# ============================================================
+def render_page(
+    item: dict[str, Any],
+) -> str:
 
-def render_page(item):
     page_url = (
         "https://www.thedailyduck.ai/"
         f"ducks/{item['date']}/"
@@ -405,10 +498,22 @@ def render_page(item):
                 "Article",
 
             "headline":
-                item["title"],
+                item[
+                    "storyTitleEn"
+                ],
+
+            "description":
+                item[
+                    "archiveSummaryEn"
+                ],
+
+            "inLanguage":
+                "en",
 
             "datePublished":
-                item["date"],
+                item[
+                    "date"
+                ],
 
             "image":
                 [
@@ -418,17 +523,16 @@ def render_page(item):
             "mainEntityOfPage":
                 page_url,
 
-            "publisher":
-                {
-                    "@type":
-                        "Organization",
+            "publisher": {
+                "@type":
+                    "Organization",
 
-                    "name":
-                        "The Daily Duck",
+                "name":
+                    "The Daily Duck",
 
-                    "url":
-                        "https://www.thedailyduck.ai/",
-                },
+                "url":
+                    "https://www.thedailyduck.ai/",
+            },
         },
         ensure_ascii=False,
         separators=(
@@ -440,507 +544,223 @@ def render_page(item):
     return """<!doctype html>
 <html lang="en">
 <head>
-
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY7DDS7PRO"></script>
-
 <script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){{dataLayer.push(arguments);}}
-gtag('js', new Date());
-gtag('config', 'G-ZY7DDS7PRO');
+window.dataLayer=window.dataLayer||[];
+function gtag(){{dataLayer.push(arguments)}}
+gtag('js',new Date());
+gtag('config','G-ZY7DDS7PRO');
 </script>
 
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1"
->
+<title>{story_title_en} — The Daily Duck</title>
+<meta name="description" content="{summary_en}">
+<meta name="robots" content="index,follow,max-image-preview:large">
 
-<title>{title} — The Daily Duck</title>
+<link rel="canonical" href="{page_url}">
 
-<meta
-  name="description"
-  content="{summary_en}"
->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="The Daily Duck">
+<meta property="og:title" content="{story_title_en} — The Daily Duck">
+<meta property="og:description" content="{summary_en}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{image_url}">
+<meta property="og:image:alt" content="{alt_en}">
 
-<meta
-  name="robots"
-  content="index,follow,max-image-preview:large"
->
-
-<link
-  rel="canonical"
-  href="{page_url}"
->
-
-<meta
-  property="og:type"
-  content="article"
->
-
-<meta
-  property="og:site_name"
-  content="The Daily Duck"
->
-
-<meta
-  property="og:title"
-  content="{title} — The Daily Duck"
->
-
-<meta
-  property="og:description"
-  content="{summary_en}"
->
-
-<meta
-  property="og:url"
-  content="{page_url}"
->
-
-<meta
-  property="og:image"
-  content="{image_url}"
->
-
-<meta
-  property="og:image:alt"
-  content="{alt_en}"
->
-
-<meta
-  name="twitter:card"
-  content="summary_large_image"
->
-
-<meta
-  name="twitter:title"
-  content="{title} — The Daily Duck"
->
-
-<meta
-  name="twitter:description"
-  content="{summary_en}"
->
-
-<meta
-  name="twitter:image"
-  content="{image_url}"
->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{story_title_en} — The Daily Duck">
+<meta name="twitter:description" content="{summary_en}">
+<meta name="twitter:image" content="{image_url}">
 
 <style>
-*{{
-  box-sizing:border-box
-}}
-
-body{{
-  margin:0;
-  background:#fffdf8;
-  color:#111;
-  font-family:Arial,Helvetica,sans-serif
-}}
-
-header{{
-  max-width:1100px;
-  margin:auto;
-  padding:22px 24px;
-  border-bottom:1px solid #e8e0d2;
-  display:flex;
-  justify-content:space-between;
-  align-items:center
-}}
-
-a{{
-  color:inherit
-}}
-
-.brand{{
-  font-weight:900;
-  text-decoration:none;
-  font-size:20px
-}}
-
-.brand-official{{
-  display:inline-flex;
-  align-items:center;
-  gap:10px
-}}
-
-.brand-official img{{
-  display:block;
-  width:40px;
-  height:40px;
-  object-fit:contain
-}}
-
-main{{
-  max-width:1100px;
-  margin:54px auto;
-  padding:0 24px
-}}
-
-.hero{{
-  display:grid;
-  grid-template-columns:minmax(280px,440px) 1fr;
-  gap:58px;
-  align-items:center
-}}
-
-.imagebox{{
-  border:1px solid #e8dfd1;
-  border-radius:20px;
-  padding:22px;
-  background:#fff
-}}
-
-.imagebox img{{
-  width:100%;
-  height:auto;
-  display:block;
-  border-radius:14px
-}}
-
-.badge{{
-  display:inline-block;
-  background:#ffc400;
-  border-radius:999px;
-  padding:8px 13px;
-  font-size:12px;
-  font-weight:900
-}}
-
-.date{{
-  margin:18px 0 8px;
-  color:#666;
-  font-size:13px
-}}
-
-h1{{
-  font-size:clamp(48px,7vw,84px);
-  line-height:.9;
-  margin:0 0 20px;
-  letter-spacing:-.05em
-}}
-
-.tagline{{
-  font-weight:900;
-  font-size:20px
-}}
-
-.summary{{
-  color:#555;
-  line-height:1.7
-}}
-
-.cols{{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  margin-top:30px;
-  border-top:1px solid #ddd;
-  border-bottom:1px solid #ddd
-}}
-
-.col{{
-  padding:22px 24px 22px 0;
-  line-height:1.8
-}}
-
-.col+.col{{
-  border-left:1px solid #ddd;
-  padding-left:24px
-}}
-
-.col h2{{
-  font-size:15px;
-  margin-top:0
-}}
-
-.source{{
-  margin-top:24px;
-  font-weight:700;
-  font-size:13px
-}}
-
-.back{{
-  display:inline-block;
-  margin-top:34px;
-  padding:13px 20px;
-  border-radius:999px;
-  background:#ffc400;
-  text-decoration:none;
-  font-weight:900
-}}
-
-.jp{{
-  margin-top:38px;
-  padding-top:28px;
-  border-top:1px solid #eee
-}}
-
-.jp p{{
-  line-height:1.9
-}}
-
+*{{box-sizing:border-box}}
+body{{margin:0;background:#fffdf8;color:#111;font-family:Arial,Helvetica,sans-serif}}
+header{{max-width:1100px;margin:auto;padding:22px 24px;border-bottom:1px solid #e8e0d2;display:flex;justify-content:space-between;align-items:center}}
+a{{color:inherit}}
+.brand{{font-weight:900;text-decoration:none;font-size:20px}}
+.brand-official{{display:inline-flex;align-items:center;gap:10px}}
+.brand-official img{{display:block;width:40px;height:40px;object-fit:contain}}
+main{{max-width:1100px;margin:54px auto;padding:0 24px}}
+.hero{{display:grid;grid-template-columns:minmax(280px,440px) 1fr;gap:58px;align-items:center}}
+.imagebox{{border:1px solid #e8dfd1;border-radius:20px;padding:22px;background:#fff}}
+.imagebox img{{width:100%;height:auto;display:block;border-radius:14px}}
+.badge{{display:inline-block;background:#ffc400;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900}}
+.date{{margin:18px 0 8px;color:#666;font-size:13px}}
+h1{{font-size:clamp(48px,7vw,84px);line-height:.9;margin:0 0 14px;letter-spacing:-.05em}}
+.story-title{{font-size:22px;line-height:1.25;margin:0 0 18px;font-weight:800}}
+.tagline{{font-weight:900;font-size:20px}}
+.summary{{color:#555;line-height:1.7}}
+.cols{{display:grid;grid-template-columns:1fr 1fr;margin-top:30px;border-top:1px solid #ddd;border-bottom:1px solid #ddd}}
+.col{{padding:22px 24px 22px 0;line-height:1.8}}
+.col+.col{{border-left:1px solid #ddd;padding-left:24px}}
+.col h2{{font-size:15px;margin-top:0}}
+.source{{margin-top:24px;font-weight:700;font-size:13px}}
+.back{{display:inline-block;margin-top:34px;padding:13px 20px;border-radius:999px;background:#ffc400;text-decoration:none;font-weight:900}}
+.jp{{margin-top:46px;padding-top:30px;border-top:1px solid #ddd}}
+.jp-label{{font-size:13px;font-weight:900;letter-spacing:.04em;color:#666}}
+.jp h2{{font-size:24px;margin:10px 0 16px}}
+.jp p{{line-height:1.9}}
 @media(max-width:760px){{
-  .hero{{
-    grid-template-columns:1fr;
-    gap:28px
-  }}
-
-  h1{{
-    font-size:48px
-  }}
-
-  .cols{{
-    grid-template-columns:1fr
-  }}
-
-  .col+.col{{
-    border-left:0;
-    border-top:1px solid #ddd;
-    padding-left:0
-  }}
+.hero{{grid-template-columns:1fr;gap:28px}}
+h1{{font-size:48px}}
+.cols{{grid-template-columns:1fr}}
+.col+.col{{border-left:0;border-top:1px solid #ddd;padding-left:0}}
 }}
 </style>
 
-<script type="application/ld+json">
-{schema}
-</script>
+<script type="application/ld+json">{schema}</script>
 
-<link
-  rel="icon"
-  type="image/png"
-  sizes="32x32"
-  href="/assets/brand/favicon-32.png"
->
-
-<link
-  rel="icon"
-  type="image/png"
-  sizes="16x16"
-  href="/assets/brand/favicon-16.png"
->
-
-<link
-  rel="apple-touch-icon"
-  sizes="180x180"
-  href="/assets/brand/apple-touch-icon.png"
->
-
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png">
 </head>
 
 <body>
-
 <header>
-
-<a
-  class="brand brand-official"
-  href="/"
->
-
-<img
-  src="/assets/brand/the-daily-duck-emblem-128.png"
-  alt=""
-  width="40"
-  height="40"
->
-
-<span>
-The Daily Duck
-</span>
-
+<a class="brand brand-official" href="/">
+<img src="/assets/brand/the-daily-duck-emblem-128.png" alt="" width="40" height="40">
+<span>The Daily Duck</span>
 </a>
-
-<a href="/#archive">
-Archive
-</a>
-
+<a href="/#archive">Archive</a>
 </header>
 
 <main>
-
 <section class="hero">
 
 <div class="imagebox">
-
-<img
-  src="/{image}"
-  alt="{alt_en}"
->
-
+<img src="/{image}" alt="{alt_en}">
 </div>
 
 <div>
+<span class="badge">TODAY'S DUCK ARCHIVE</span>
+<div class="date">{date}</div>
 
-<span class="badge">
-TODAY'S DUCK ARCHIVE
-</span>
+<h1>{duck_title}</h1>
+<div class="story-title">{story_title_en}</div>
 
-<div class="date">
-{date}
-</div>
+<div class="tagline">One day. One story. One duck.</div>
 
-<h1>
-{title}
-</h1>
-
-<div class="tagline">
-One day. One story. One duck.
-</div>
-
-<p class="summary">
-{summary_en}
-</p>
+<p class="summary">{summary_en}</p>
 
 <div class="cols">
-
 <div class="col">
-
-<h2>
-Today's Story
-</h2>
-
-<p>
-{story_en}
-</p>
-
+<h2>Today's Story</h2>
+<p>{story_en}</p>
 </div>
 
 <div class="col">
-
-<h2>
-The Duck
-</h2>
-
-<p>
-{duck_en}
-</p>
-
+<h2>The Duck</h2>
+<p>{duck_en}</p>
 </div>
-
 </div>
 
 <div class="source">
-
 Source:
-<a
-  href="{source_url}"
-  rel="noopener noreferrer"
->
-{source}
-</a>
-
+<a href="{source_url}" rel="noopener noreferrer">{source}</a>
 </div>
 
-<a
-  class="back"
-  href="/#archive"
->
-← Duck Archive
-</a>
-
+<a class="back" href="/#archive">← Duck Archive</a>
 </div>
-
 </section>
 
-<div class="jp">
-
-<strong>
-日本語
-</strong>
-
-<p>
-{summary_ja}
-</p>
-
-<p>
-{story_ja}
-</p>
-
-<p>
-{duck_ja}
-</p>
-
-</div>
+<section class="jp" lang="ja">
+<div class="jp-label">JAPANESE TRANSLATION / 日本語訳</div>
+<h2>{story_title_ja}</h2>
+<p>{summary_ja}</p>
+<p>{story_ja}</p>
+<p>{duck_ja}</p>
+</section>
 
 </main>
-
 </body>
-
 </html>
 """.format(
-        title=e(
-            item["title"]
+        story_title_en=e(
+            item[
+                "storyTitleEn"
+            ]
         ),
-
+        story_title_ja=e(
+            item[
+                "storyTitleJa"
+            ]
+        ),
+        duck_title=e(
+            item[
+                "title"
+            ]
+        ),
         summary_en=e(
             item[
                 "archiveSummaryEn"
             ]
         ),
-
-        page_url=e(
-            page_url
-        ),
-
-        image_url=e(
-            image_url
-        ),
-
-        alt_en=e(
-            item[
-                "imageAltEn"
-            ]
-        ),
-
-        schema=schema,
-
-        image=e(
-            item["image"]
-        ),
-
-        date=e(
-            item["date"]
-        ),
-
-        story_en=e(
-            item["storyEn"]
-        ),
-
-        duck_en=e(
-            item["duckEn"]
-        ),
-
-        source_url=e(
-            item["sourceUrl"]
-        ),
-
-        source=e(
-            item["sourceLabel"]
-        ),
-
         summary_ja=e(
             item[
                 "archiveSummaryJa"
             ]
         ),
-
-        story_ja=e(
-            item["storyJa"]
+        page_url=e(
+            page_url
         ),
-
+        image_url=e(
+            image_url
+        ),
+        alt_en=e(
+            item[
+                "imageAltEn"
+            ]
+        ),
+        schema=schema,
+        image=e(
+            item[
+                "image"
+            ]
+        ),
+        date=e(
+            item[
+                "date"
+            ]
+        ),
+        story_en=e(
+            item[
+                "storyEn"
+            ]
+        ),
+        duck_en=e(
+            item[
+                "duckEn"
+            ]
+        ),
+        source_url=e(
+            item[
+                "sourceUrl"
+            ]
+        ),
+        source=e(
+            item[
+                "sourceLabel"
+            ]
+        ),
+        story_ja=e(
+            item[
+                "storyJa"
+            ]
+        ),
         duck_ja=e(
-            item["duckJa"]
+            item[
+                "duckJa"
+            ]
         ),
     )
 
 
-# ============================================================
-# Update homepage OG image
-# ============================================================
+def update_home(
+    item: dict[str, Any],
+) -> None:
 
-def update_home(item):
     source = HOME.read_text(
         encoding="utf-8"
     )
@@ -950,6 +770,7 @@ def update_home(item):
         f"{item['image']}"
     )
 
+    # Existing image metadata behavior.
     source = re.sub(
         r'<meta property="og:image" content="[^"]*">',
         (
@@ -977,23 +798,68 @@ def update_home(item):
         source,
     )
 
+    # English-first metadata for the home page.
+    source = re.sub(
+        r'<meta property="og:title" content="[^"]*">',
+        (
+            '<meta property="og:title" '
+            f'content="{e(item["storyTitleEn"])} — The Daily Duck">'
+        ),
+        source,
+    )
+
+    source = re.sub(
+        r'<meta property="og:description" content="[^"]*">',
+        (
+            '<meta property="og:description" '
+            f'content="{e(item["archiveSummaryEn"])}">'
+        ),
+        source,
+    )
+
+    source = re.sub(
+        r'<meta name="twitter:title" content="[^"]*">',
+        (
+            '<meta name="twitter:title" '
+            f'content="{e(item["storyTitleEn"])} — The Daily Duck">'
+        ),
+        source,
+    )
+
+    source = re.sub(
+        r'<meta name="twitter:description" content="[^"]*">',
+        (
+            '<meta name="twitter:description" '
+            f'content="{e(item["archiveSummaryEn"])}">'
+        ),
+        source,
+    )
+
     HOME.write_text(
         source,
         encoding="utf-8",
     )
 
 
-# ============================================================
-# Main
-# ============================================================
+def main() -> int:
 
-def main():
     ready = load_json(
         READY
     )
 
+    if not isinstance(
+        ready,
+        dict,
+    ):
+        raise ValueError(
+            "ready_to_publish.json "
+            "must contain an object."
+        )
+
     if (
-        ready.get("state")
+        ready.get(
+            "state"
+        )
         != "READY_TO_PUBLISH"
     ):
         raise RuntimeError(
@@ -1010,7 +876,8 @@ def main():
         list,
     ):
         raise ValueError(
-            "data/archive.json must be an array."
+            "data/archive.json "
+            "must be an array."
         )
 
     issue = text(
@@ -1024,12 +891,11 @@ def main():
             "issue_date is missing."
         )
 
-    # --------------------------------------------------------
-    # Duplicate-date protection
-    # --------------------------------------------------------
-
     if any(
-        isinstance(item, dict)
+        isinstance(
+            item,
+            dict,
+        )
         and str(
             item.get(
                 "date",
@@ -1039,6 +905,7 @@ def main():
         == issue
         for item in archive
     ):
+
         result(
             "DUPLICATE_DATE_BLOCKED",
             issue_date=issue,
@@ -1049,25 +916,30 @@ def main():
         )
 
         print(
-            f"DUPLICATE DATE BLOCKED: {issue}"
+            "DUPLICATE DATE BLOCKED: "
+            f"{issue}"
         )
 
         print(
-            "STATE: DUPLICATE_DATE_BLOCKED"
+            "STATE: "
+            "DUPLICATE_DATE_BLOCKED"
         )
 
         return 0
 
-    # --------------------------------------------------------
-    # Canonical image
-    # --------------------------------------------------------
+    canonical_text = text(
+        ready.get(
+            "canonical_image_path"
+        )
+    )
+
+    if not canonical_text:
+        raise ValueError(
+            "canonical_image_path is missing."
+        )
 
     canonical = Path(
-        text(
-            ready.get(
-                "canonical_image_path"
-            )
-        )
+        canonical_text
     )
 
     if not canonical.exists():
@@ -1080,25 +952,7 @@ def main():
         "gate_a_approved_story"
     )
 
-    # ========================================================
-    # Final approved title is also used for the website
-    # asset filename / slug.
-    # ========================================================
-
-    duck_name = text(
-        ready.get(
-            "selected_title"
-        ),
-        (
-            approved.get(
-                "selected_title"
-            )
-            if isinstance(
-                approved,
-                dict,
-            )
-            else ""
-        ),
+    duck = text(
         (
             approved.get(
                 "duck_name"
@@ -1112,7 +966,7 @@ def main():
         "Daily Duck",
     )
 
-    extension = (
+    ext = (
         canonical.suffix.lower()
         or ".png"
     )
@@ -1121,14 +975,10 @@ def main():
         ASSET_DIR
         / (
             f"{issue}-"
-            f"{slugify(duck_name)}"
-            f"{extension}"
+            f"{slugify(duck)}"
+            f"{ext}"
         )
     )
-
-    # --------------------------------------------------------
-    # Build site content
-    # --------------------------------------------------------
 
     item = build_item(
         ready,
@@ -1151,8 +1001,9 @@ def main():
     )
 
     new_archive = [
-        item
-    ] + archive
+        item,
+        *archive,
+    ]
 
     write_json(
         ARCHIVE,
@@ -1160,34 +1011,36 @@ def main():
     )
 
     CONTENT.write_text(
-        "window.DAILY_DUCK_DATA = "
-        + json.dumps(
-            {
-                "today":
-                    item,
+        (
+            "window.DAILY_DUCK_DATA = "
+            + json.dumps(
+                {
+                    "today":
+                        item,
 
-                "archive":
-                    new_archive,
-            },
-            ensure_ascii=False,
-            indent=2,
-        )
-        + ";\n",
+                    "archive":
+                        new_archive,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + ";\n"
+        ),
         encoding="utf-8",
     )
 
-    duck_directory = (
+    day_dir = (
         DUCKS_DIR
         / issue
     )
 
-    duck_directory.mkdir(
+    day_dir.mkdir(
         parents=True,
         exist_ok=True,
     )
 
     (
-        duck_directory
+        day_dir
         / "index.html"
     ).write_text(
         render_page(
@@ -1199,10 +1052,6 @@ def main():
     update_home(
         item
     )
-
-    # --------------------------------------------------------
-    # Advance state
-    # --------------------------------------------------------
 
     ready[
         "state"
@@ -1226,10 +1075,21 @@ def main():
         "publish_started"
     ] = True
 
-    # Preserve the final approved title explicitly.
     ready[
-        "published_title"
-    ] = item["title"]
+        "website_language_policy"
+    ] = {
+        "primary_language":
+            "en",
+
+        "canonical_language":
+            "en",
+
+        "translation_language":
+            "ja",
+
+        "translation_source":
+            "english_master",
+    }
 
     write_json(
         READY,
@@ -1243,19 +1103,37 @@ def main():
         page=(
             f"ducks/{issue}/index.html"
         ),
-        title=item["title"],
+        title=item[
+            "storyTitleEn"
+        ],
+        duck_name=item[
+            "duckName"
+        ],
+        language_policy={
+            "primary_language":
+                "en",
+
+            "canonical_language":
+                "en",
+
+            "translation_language":
+                "ja",
+        },
     )
 
     print(
-        f"Published website package for {issue}"
+        "Published website package "
+        f"for {issue}"
     )
 
     print(
-        f"FINAL WEBSITE TITLE: {item['title']}"
+        "LANGUAGE: "
+        "ENGLISH-FIRST"
     )
 
     print(
-        "STATE: PUBLISHED"
+        "STATE: "
+        "PUBLISHED"
     )
 
     return 0
@@ -1264,11 +1142,13 @@ def main():
 if __name__ == "__main__":
 
     try:
+
         raise SystemExit(
             main()
         )
 
     except Exception as exc:
+
         print(
             f"ERROR: {exc}",
             file=sys.stderr,
