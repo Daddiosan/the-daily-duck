@@ -1,8 +1,7 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "WAITING_CONCEPT_SELECTION",
   "issue_date": "2026-08-20",
-  "created_at": "2026-08-20T03:15:18.692636+00:00",
-  "text_model": "gemini-3.6-flash",
+  "generated_at": "2026-08-20T21:24:13.757171+00:00",
   "approved_story": {
     "date": "2026-08-20",
     "issue_date": "2026-08-20",
@@ -524,86 +523,156 @@
     },
     "image_concept_status": "NOT_GENERATED"
   },
+  "approved_story_compact": {
+    "id": 9,
+    "title": "Pollen has a surprising problem — and honeybees have found a way around it",
+    "source": "ScienceDaily Environment",
+    "url": "https://www.sciencedaily.com/releases/2026/08/260819041237.htm",
+    "category": "animals",
+    "happiness": 9,
+    "hope": 8,
+    "general_interest": 9,
+    "surprise": 8,
+    "duck_visual": 9,
+    "source_quality": 8,
+    "freshness": 9,
+    "broad_appeal": 8,
+    "novelty_vs_archive": 8,
+    "total_score": 86,
+    "reason": "Charming animal news revealing how honeybees carefully adjust their diet and craft perfectly balanced baby food for their larvae.",
+    "candidate_number": 2,
+    "title_ja": "花粉の悩みを解決！ミツバチが見つけた賢い工夫",
+    "reason_ja": "花粉が持つ思いがけない問題に対し、ミツバチが食事を細かく調整して幼虫のために完璧なバランスのフードを作り出す工夫を紹介する心温まるニュースです。",
+    "jp_copy": "ミツバチたちは、花粉に潜む思いがけない課題を見事に解決しています。自分たちの食事をきめ細かく調整し、育ち盛りの幼虫たちのために完璧にバランスの取れたフードを作り出しているのです。自然界の小さな職人たちが魅せる賢さと優しさに、心が温まります。",
+    "en_copy": "Honeybees have found a clever way to handle a surprising challenge with pollen. By carefully adjusting their diet, these industrious insects prepare perfectly balanced food for their larvae. It is a wonderful look at how nature's tiny caretakers look after their young.",
+    "duck_name": "Clever Honeybees",
+    "duck_jp": "幼虫のためにご飯のバランスを整えるミツバチさん、素敵なシェフだね！",
+    "duck_en": "Honeybees adjusting their recipes for the little ones? Master chefs of the hive!",
+    "x_jp": "花粉の課題を解決するため、ミツバチが食事を工夫して幼虫に最適な栄養フードを作成！自然界の知恵にほっこりします。",
+    "x_en": "Honeybees overcome pollen challenges by carefully crafting balanced food for their larvae. Nature's little chefs at work!"
+  },
   "image_concepts": [
     {
       "number": 1,
-      "title_ja": "ハニカム厨房とシェフアヒルの花粉調合",
-      "title_en": "The Honeycomb Kitchen & Chef Duck",
-      "concept_ja": "黄金色に輝く巨大な蜂の巣をモチーフにしたモダンなキッチン。小さなシェフハットをかぶった可愛い子アヒルが、木のスプーンを使って色鮮やかな花粉パウダーの組み合わせを丁寧に調整している、温もりとユーモアあふれるイラストレーション。",
-      "concept_en": "In a warm, glowing giant honeycomb-themed kitchen, a tiny cheerful duckling wearing a cute miniature chef hat carefully balances colorful, sparkling pollen powders using little wooden spoons.",
-      "visual_direction": "Modern soft-render 3D aesthetic, bright golden-hour studio lighting, clean pastel-yellow and honey-orange palette, shallow depth of field, whimsical editorial look."
+      "title_en": "Nature's Little Kitchen",
+      "concept_en": "The Daily Duck mascot watches in delight as a friendly honeybee acts like a master chef inside a golden honeycomb kitchen, carefully balancing golden pollen granules.",
+      "composition_en": "Landscape framing. On the left side, The Daily Duck mascot—a friendly yellow duck with an orange beak, dark glossy eyes, and a small feather tuft—looks on with a warm, joyful expression. On the right, a charming stylized honeybee works at a clean honeycomb counter, gently sorting sparkling golden pollen grains. Soft warm lighting, clean depth of field, modern editorial aesthetic.",
+      "generation_prompt_en": "Modern editorial 3D digital illustration, landscape hero banner. A friendly yellow duck mascot with an orange beak, dark glossy eyes, small feather tuft, and a warm curious expression standing on a clean wooden surface. Beside the duck, a charming honeybee surrounded by glowing golden pollen granules arranged on a warm hexagonal honeycomb pattern. Clean studio lighting, warm yellow and golden amber color palette, soft bokeh background, high-end editorial render, no text, no logos, no watermarks.",
+      "alt_en": "The Daily Duck mascot observing a honeybee arranging golden pollen grains on a warm honeycomb backdrop.",
+      "title_ja": "自然界のちいさな厨房",
+      "concept_ja": "ミツバチがハチノスのキッチンで金色の花粉を丁寧に調整する様子を、アヒル隊長が嬉しそうに見つめているコンセプト。",
+      "concept_ja_composition": "横長の構図。左側に黄色く愛らしいアヒル隊長、右側にハチノスの棚で花粉を整えるミツバチ。温かい光と柔らかいボケ感のあるモダンな編集デザイン。",
+      "composition_ja": "横長の構図。左側に黄色く愛らしいアヒル隊長、右側にハチノスの棚で花粉を整えるミツバチ。温かい光と柔らかいボケ感のあるモダンな編集デザイン。",
+      "alt_ja": "ハチノスの前で金色の花粉を整えるミツバチを温かく見つめるアヒル隊長。"
     },
     {
       "number": 2,
-      "title_ja": "花畑のマクロ研究：花粉とミツバチとアヒル",
-      "title_en": "The Golden Meadow Pollen Discovery",
-      "concept_ja": "太陽光が差し込む鮮やかな花畑でのマクロショット。健気に花粉を集めるミツバチと、その横でキラキラと輝く空中浮游する花粉を嬉しそうにのぞき込む好奇心旺盛な子アヒルの心温まる1シーン。",
-      "concept_en": "A vibrant macro field shot bathed in sunlight, featuring a friendly honeybee hovering near blooming flowers, alongside a delighted duckling marveling at sparkling golden pollen specks floating in the breeze.",
-      "visual_direction": "High-end modern nature photography style, rich warm colors, bokeh lens effect, sunbeams, vibrant pollen sparkles, crisp detail with cozy narrative focus."
+      "title_en": "Sunlit Meadow Discovery",
+      "concept_en": "The Daily Duck mascot in a vibrant, sunlit wildflower meadow, observing a honeybee gather and select bright golden pollen from blooming flowers.",
+      "composition_en": "Landscape orientation. In the foreground, The Daily Duck mascot gently peeks from behind a lush green stem with an admiring smile. In the center focal point, a detailed, gentle honeybee rests on a brightly lit wildflower, hovering near sparkling golden pollen dust. Soft morning sunshine filtering through green foliage, clear contrast, premium photography-inspired lighting.",
+      "generation_prompt_en": "Clean editorial 3D digital artwork, wide landscape aspect ratio. A friendly yellow duck mascot with dark glossy eyes, an orange beak, and a small feather tuft, peeking cheerfully in a sunlit wildflower field. In the center focus, a detailed cute honeybee hovering near vibrant yellow flower petals covered in glowing pollen particles. Natural warm sunbeams, shallow depth of field, vivid soft colors, highly detailed macro visual style, no text, no watermarks.",
+      "alt_en": "The Daily Duck mascot smiling in a sunlit meadow while watching a honeybee collect pollen from a blooming flower.",
+      "title_ja": "光あふれる花畑での発見",
+      "concept_ja": "太陽の光が差し込む野花畑で、ミツバチが輝く花粉を集める姿をアヒル隊長が微笑ましく観察しているコンセプト。",
+      "composition_ja": "横長構図。手前で草陰から覗くアヒル隊長。中央の花びらの上で光る花粉とミツバチを主役に、朝日の差し込む温かい背景で表現。",
+      "alt_ja": "陽光がふりそそぐ花畑で、花粉を集めるミツバチを優しく見守るアヒル隊長。"
     },
     {
       "number": 3,
-      "title_ja": "ミニマル・パステルカラーの花粉ラボ",
-      "title_en": "The Pastel Pollen Chemistry Studio",
-      "concept_ja": "スタイリッシュで清潔感のある研究スタジオ。蜂の巣型の透明なアクリルケースの中に、カラフルなパステルカラーの花粉ボールが並び、小さな白アヒルが知的な表情で完璧な栄養バランスの組み合わせをデザインしている抽象的ポップアート。",
-      "concept_en": "Inside a sleek, minimalist pastel studio, a stylish white duck arranges vibrant multicolored pollen spheres inside geometric clear acrylic honeycomb structures with artful precision.",
-      "visual_direction": "Minimalist modern graphic design, smooth editorial light, soft pastel studio aesthetics (lavender, lemon yellow, cream, turquoise), clean geometric composition."
+      "title_en": "The Honeycomb Nursery",
+      "concept_en": "The Daily Duck mascot leaning in warmly inside a bright honeycomb structure where a honeybee prepares nutritious baby food for the hive larvae.",
+      "composition_en": "Landscape hero framing. Centered view of smooth, clean hexagonal cells. On the left, The Daily Duck mascot leans forward with a compassionate tilt of its head. On the right, a honeybee delicately places vibrant yellow pollen mixture into a nursery cell. Rich warm honey tones, clean architectural lines of the hive, soft studio key light.",
+      "generation_prompt_en": "Premium editorial digital illustration, cinematic landscape layout. A stylized yellow duck mascot with an orange beak, glossy dark eyes, and a cute feather tuft leaning in with a heartwarming smile toward a clean, glowing amber honeycomb structure. A friendly honeybee gently delivering soft golden pollen paste inside a nursery cell. Warm golden color grading, soft glow, clean visual clarity, minimalist editorial feel, no text, no logos.",
+      "alt_en": "The Daily Duck mascot peeking into a warm honeycomb hive as a honeybee feeds fresh pollen food to the nursery.",
+      "title_ja": "ハチノスのぬくもり保育園",
+      "concept_ja": "明るく温かいハチノスの中で、ミツバチが幼虫のために栄養たっぷりの花粉フードを届ける様子をアヒル隊長が覗き込んでいるコンセプト。",
+      "composition_ja": "横長構図。中央に滑らかな六角形のハチノス構造。左側から首をかしげて見守るアヒル隊長と、右側で丁寧にフードを与えるミツバチ。",
+      "alt_ja": "ハチノスの巣房で幼虫のために花粉フードを用意するミツバチと、それをのぞくアヒル隊長。"
+    },
+    {
+      "number": 4,
+      "title_en": "The Perfect Recipe Balance",
+      "concept_en": "A charming symbolic metaphor featuring a small wooden balance scale, where a honeybee carefully weighs pollen particles under the friendly gaze of The Daily Duck.",
+      "composition_en": "Landscape layout. In the center, a simple aesthetic miniature balance scale crafted from smooth light wood. On one side, bright pollen grains rest in perfect harmony. The Daily Duck mascot stands beside the scale on the left, clapping wings gently in approval. A honeybee rests on the right side adjusting a single golden grain. Bright neutral studio backdrop, high editorial quality.",
+      "generation_prompt_en": "Clean modern editorial visual, landscape hero framing. The Daily Duck mascot—a soft yellow duck with an orange bill, large glossy eyes, and a cute feather tuft—standing proudly beside a minimalist wooden balance scale on a clean daylight desk. A friendly honeybee placing a glowing golden pollen grain onto the scale to balance it. Bright daylight lighting, subtle depth blur, crisp details, delightful atmosphere, no text, no watermarks.",
+      "alt_en": "The Daily Duck mascot cheering next to a miniature wooden scale balancing golden pollen grains placed by a honeybee.",
+      "title_ja": "完璧なレシピの天秤",
+      "concept_ja": "木製の小さな天秤を使って、ミツバチが花粉のバランスを調整する様子をアヒル隊長が楽しそうに応援している象徴的なコンセプト。",
+      "composition_ja": "横長構図。中央にシンプルな木製天秤。左側で羽をたたいて喜ぶアヒル隊長と、右側で花粉の粒を乗せるミツバチ。明るいスタジオ背景。",
+      "alt_ja": "木製の天秤で花粉のバランスを整えるミツバチと、それを隣で応援するアヒル隊長。"
+    },
+    {
+      "number": 5,
+      "title_en": "Nature's Nutrition Lab",
+      "concept_en": "A subtle storybook workshop visual showing a honeybee and The Daily Duck mascot examining glowing pollen samples on a clean wooden worktable.",
+      "composition_en": "Landscape orientation. A warm, clean wooden surface lit by a gentle side window glow. In the center, clear magnifying domes showcase radiant golden pollen dust. The Daily Duck mascot wearing cute oversized round frame glasses sits on the left, looking curously at the pollen, while a honeybee hovers above pointing toward the sample. Charming, modern, soft warmth.",
+      "generation_prompt_en": "Warm editorial 3D artwork, dynamic wide landscape angle. A cute yellow duck mascot with glossy black eyes, orange beak, feather tuft, wearing stylized round framing glasses, looking closely at sparkling golden pollen particles under a clean magnifying glass on a light oak wooden table. A friendly honeybee hovering gently overhead. Soft window light rays, dreamy bokeh, clean design aesthetics, warm color palette, no text, no watermarks.",
+      "alt_en": "The Daily Duck mascot wearing cute glasses to look closely at glowing pollen samples alongside a honeybee.",
+      "title_ja": "自然界の栄養ラボ",
+      "concept_ja": "明るい木目のデスクで、アヒル隊長とミツバチが輝く花粉のサンプルを観察しながらメニューを研究しているような知的なコンセプト。",
+      "composition_ja": "横長構図。木製テーブルの上に置かれた花粉サンプル。眼鏡をかけたアヒル隊長が左から興味津々に覗き込み、上空でミツバチが手元を指し示す。",
+      "alt_ja": "丸眼鏡をかけて輝く花粉サンプルをミツバチと一緒にじっくり観察するアヒル隊長。"
     }
   ],
   "title_ideas": [
     {
       "number": 1,
-      "title": "QUACKING THE HONEY CODE!",
-      "meaning_ja": "ミツバチの究極レシピの謎を解明（クワック）！"
+      "title": "Master Chefs of the Hive",
+      "meaning_ja": "ハチノスの名シェフたち（幼虫のために最適なレシピを作るミツバチの職人技を表現）"
     },
     {
       "number": 2,
-      "title": "HONEY, WE QUACKED THE POLLEN!",
-      "meaning_ja": "あなた、花粉の課題も見事にクリア（クワック）したよ！"
+      "title": "The Honeybee Recipe Secret",
+      "meaning_ja": "ミツバチの知られざる料理の秘密（花粉の悩みを克服する賢い工夫に焦点を当てたタイトル）"
     },
     {
       "number": 3,
-      "title": "POLLEN PERFECTION? DUCK-APPROVED!",
-      "meaning_ja": "幼虫のための完璧な花粉調整！アヒルもお墨付き！"
+      "title": "Balancing Baby Food for Bees",
+      "meaning_ja": "ミツバチの完璧なベビーフード（幼虫への愛情と栄養バランスを整える優しさを表現）"
     }
   ],
-  "approval_format": "<image 1-3> <title 1-3>",
-  "design_previews": [
-    {
-      "number": 1,
-      "image_path": "automation_images/design_previews/2026-08-20/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "74832a867c9ba07ac885a6a75ae24fbc55f3b554d32b812dc895dac0edb81549"
-    },
-    {
-      "number": 2,
-      "image_path": "automation_images/design_previews/2026-08-20/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "661e0170f71fa210df1e53c39080b7496acec33641788c95525acafdc4e0059e"
-    },
-    {
-      "number": 3,
-      "image_path": "automation_images/design_previews/2026-08-20/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "8409c6237c94ec6d82821ded6bf4c489bbb253c425b57bc9fc728d58c9fd4dc3"
-    }
-  ],
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-20",
-  "selected_image_number": 2,
-  "selected_title_number": 2,
-  "selected_title": "HONEY, WE QUACKED THE POLLEN!"
+  "selected_image_concept_number": null,
+  "selected_image_concept": null,
+  "design_previews": [],
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja",
+    "translation_source": "english_master"
+  },
+  "concept_selection_rule": {
+    "valid_replies": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "next_state": "APPROVED_IMAGE_CONCEPT"
+  },
+  "real_image_flow": {
+    "source": "one_human_selected_concept",
+    "candidate_count": 5,
+    "next_5_supported": true
+  },
+  "final_selection_rule": {
+    "image_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "title_numbers": [
+      1,
+      2,
+      3
+    ],
+    "format": "IMAGE_NUMBER TITLE_NUMBER",
+    "example": "4 1",
+    "next_5_command": "NEXT 5",
+    "next_state": "READY_TO_PUBLISH"
+  },
+  "concept_email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20",
+  "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20"
 }
