@@ -1,9 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-20",
-  "created_at": "2026-08-20T03:15:18.692636+00:00",
-  "text_model": "gemini-3.6-flash",
-  "approved_story": {
+  "ready_at": "2026-08-20T05:06:48.191438+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-20",
     "issue_date": "2026-08-20",
     "phase": 2,
@@ -522,18 +521,9 @@
       ],
       "gate_a_package_created_at": "2026-08-19T22:55:43.117939+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_ja": "ハニカム厨房とシェフアヒルの花粉調合",
-      "title_en": "The Honeycomb Kitchen & Chef Duck",
-      "concept_ja": "黄金色に輝く巨大な蜂の巣をモチーフにしたモダンなキッチン。小さなシェフハットをかぶった可愛い子アヒルが、木のスプーンを使って色鮮やかな花粉パウダーの組み合わせを丁寧に調整している、温もりとユーモアあふれるイラストレーション。",
-      "concept_en": "In a warm, glowing giant honeycomb-themed kitchen, a tiny cheerful duckling wearing a cute miniature chef hat carefully balances colorful, sparkling pollen powders using little wooden spoons.",
-      "visual_direction": "Modern soft-render 3D aesthetic, bright golden-hour studio lighting, clean pastel-yellow and honey-orange palette, shallow depth of field, whimsical editorial look."
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_ja": "花畑のマクロ研究：花粉とミツバチとアヒル",
       "title_en": "The Golden Meadow Pollen Discovery",
@@ -541,69 +531,37 @@
       "concept_en": "A vibrant macro field shot bathed in sunlight, featuring a friendly honeybee hovering near blooming flowers, alongside a delighted duckling marveling at sparkling golden pollen specks floating in the breeze.",
       "visual_direction": "High-end modern nature photography style, rich warm colors, bokeh lens effect, sunbeams, vibrant pollen sparkles, crisp detail with cozy narrative focus."
     },
-    {
-      "number": 3,
-      "title_ja": "ミニマル・パステルカラーの花粉ラボ",
-      "title_en": "The Pastel Pollen Chemistry Studio",
-      "concept_ja": "スタイリッシュで清潔感のある研究スタジオ。蜂の巣型の透明なアクリルケースの中に、カラフルなパステルカラーの花粉ボールが並び、小さな白アヒルが知的な表情で完璧な栄養バランスの組み合わせをデザインしている抽象的ポップアート。",
-      "concept_en": "Inside a sleek, minimalist pastel studio, a stylish white duck arranges vibrant multicolored pollen spheres inside geometric clear acrylic honeycomb structures with artful precision.",
-      "visual_direction": "Minimalist modern graphic design, smooth editorial light, soft pastel studio aesthetics (lavender, lemon yellow, cream, turquoise), clean geometric composition."
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACKING THE HONEY CODE!",
-      "meaning_ja": "ミツバチの究極レシピの謎を解明（クワック）！"
-    },
-    {
-      "number": 2,
-      "title": "HONEY, WE QUACKED THE POLLEN!",
-      "meaning_ja": "あなた、花粉の課題も見事にクリア（クワック）したよ！"
-    },
-    {
-      "number": 3,
-      "title": "POLLEN PERFECTION? DUCK-APPROVED!",
-      "meaning_ja": "幼虫のための完璧な花粉調整！アヒルもお墨付き！"
-    }
-  ],
-  "approval_format": "<image 1-3> <title 1-3>",
-  "design_previews": [
-    {
-      "number": 1,
-      "image_path": "automation_images/design_previews/2026-08-20/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "74832a867c9ba07ac885a6a75ae24fbc55f3b554d32b812dc895dac0edb81549"
-    },
-    {
-      "number": 2,
-      "image_path": "automation_images/design_previews/2026-08-20/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "661e0170f71fa210df1e53c39080b7496acec33641788c95525acafdc4e0059e"
-    },
-    {
-      "number": 3,
-      "image_path": "automation_images/design_previews/2026-08-20/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "8409c6237c94ec6d82821ded6bf4c489bbb253c425b57bc9fc728d58c9fd4dc3"
-    }
-  ],
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "email_subject": "The Daily Duck — Image + Title Approval — 2026-08-20",
-  "selected_image_number": 2,
+    "selected_title_number": 2,
+    "selected_title": "HONEY, WE QUACKED THE POLLEN!"
+  },
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_ja": "花畑のマクロ研究：花粉とミツバチとアヒル",
+    "title_en": "The Golden Meadow Pollen Discovery",
+    "concept_ja": "太陽光が差し込む鮮やかな花畑でのマクロショット。健気に花粉を集めるミツバチと、その横でキラキラと輝く空中浮游する花粉を嬉しそうにのぞき込む好奇心旺盛な子アヒルの心温まる1シーン。",
+    "concept_en": "A vibrant macro field shot bathed in sunlight, featuring a friendly honeybee hovering near blooming flowers, alongside a delighted duckling marveling at sparkling golden pollen specks floating in the breeze.",
+    "visual_direction": "High-end modern nature photography style, rich warm colors, bokeh lens effect, sunbeams, vibrant pollen sparkles, crisp detail with cozy narrative focus."
+  },
   "selected_title_number": 2,
-  "selected_title": "HONEY, WE QUACKED THE POLLEN!"
+  "selected_title": "HONEY, WE QUACKED THE POLLEN!",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "HONEY, WE QUACKED THE POLLEN!",
+    "meaning_ja": "あなた、花粉の課題も見事にクリア（クワック）したよ！"
+  },
+  "selected_preview": {
+    "number": 2,
+    "image_path": "automation_images/design_previews/2026-08-20/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "661e0170f71fa210df1e53c39080b7496acec33641788c95525acafdc4e0059e"
+  },
+  "canonical_image_path": "automation_images/canonical/2026-08-20.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false
 }
