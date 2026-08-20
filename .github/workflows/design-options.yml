@@ -146,10 +146,15 @@ jobs:
       - name: Commit concept-stage output
         if: steps.concept_gate.outputs.should_run == 'true'
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -A automation_state
+
+          echo "=== Git status before commit ==="
+          git status --short
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
@@ -158,7 +163,10 @@ jobs:
 
           git commit -m "Phase 2: create 5 image concepts and 3 titles"
 
-          git pull --rebase origin main
+          echo "=== Git status after commit ==="
+          git status --short
+
+          git pull --rebase --autostash origin main
           git push origin HEAD:main
 
       - name: Phase boundary
