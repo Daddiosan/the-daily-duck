@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_CONCEPT_SELECTION",
+  "state": "APPROVED_IMAGE_CONCEPT",
   "issue_date": "2026-08-20",
   "generated_at": "2026-08-20T21:24:13.757171+00:00",
   "approved_story": {
@@ -631,8 +631,20 @@
       "meaning_ja": "ミツバチの完璧なベビーフード（幼虫への愛情と栄養バランスを整える優しさを表現）"
     }
   ],
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "Nature's Little Kitchen",
+    "concept_en": "The Daily Duck mascot watches in delight as a friendly honeybee acts like a master chef inside a golden honeycomb kitchen, carefully balancing golden pollen granules.",
+    "composition_en": "Landscape framing. On the left side, The Daily Duck mascot—a friendly yellow duck with an orange beak, dark glossy eyes, and a small feather tuft—looks on with a warm, joyful expression. On the right, a charming stylized honeybee works at a clean honeycomb counter, gently sorting sparkling golden pollen grains. Soft warm lighting, clean depth of field, modern editorial aesthetic.",
+    "generation_prompt_en": "Modern editorial 3D digital illustration, landscape hero banner. A friendly yellow duck mascot with an orange beak, dark glossy eyes, small feather tuft, and a warm curious expression standing on a clean wooden surface. Beside the duck, a charming honeybee surrounded by glowing golden pollen granules arranged on a warm hexagonal honeycomb pattern. Clean studio lighting, warm yellow and golden amber color palette, soft bokeh background, high-end editorial render, no text, no logos, no watermarks.",
+    "alt_en": "The Daily Duck mascot observing a honeybee arranging golden pollen grains on a warm honeycomb backdrop.",
+    "title_ja": "自然界のちいさな厨房",
+    "concept_ja": "ミツバチがハチノスのキッチンで金色の花粉を丁寧に調整する様子を、アヒル隊長が嬉しそうに見つめているコンセプト。",
+    "concept_ja_composition": "横長の構図。左側に黄色く愛らしいアヒル隊長、右側にハチノスの棚で花粉を整えるミツバチ。温かい光と柔らかいボケ感のあるモダンな編集デザイン。",
+    "composition_ja": "横長の構図。左側に黄色く愛らしいアヒル隊長、右側にハチノスの棚で花粉を整えるミツバチ。温かい光と柔らかいボケ感のあるモダンな編集デザイン。",
+    "alt_ja": "ハチノスの前で金色の花粉を整えるミツバチを温かく見つめるアヒル隊長。"
+  },
   "design_previews": [],
   "language_policy": {
     "primary_language": "en",
@@ -674,5 +686,9 @@
     "next_state": "READY_TO_PUBLISH"
   },
   "concept_email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20",
-  "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20"
+  "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20",
+  "concept_approval_reply": "1",
+  "concept_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "concept_selected_at": "2026-08-20T21:31:13.094466+00:00",
+  "preview_batch_number": 0
 }
