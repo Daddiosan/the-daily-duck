@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_CONCEPT_SELECTION",
+  "state": "APPROVED_IMAGE_CONCEPT",
   "issue_date": "2026-08-20",
   "generated_at": "2026-08-20T21:51:01.042146+00:00",
   "approved_story": {
@@ -607,8 +607,19 @@
       "meaning_ja": "自然界の小さなケアテイカー。幼虫の栄養を支えるミツバチの知恵と優しさを表現した親しみやすいタイトル。"
     }
   ],
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "The Bee's Gourmet Workshop",
+    "concept_en": "A charming macro scene illustrating honeybees as nature's master chefs, carefully blending pollen grains on a sunlit green leaf in a blooming garden while the cute yellow duck mascot looks on with admiration.",
+    "composition_en": "Landscape framing. On a softly lit wooden table outdoors, a wide green leaf acts as a miniature chef's counter holding small mounds of golden pollen grains and amber nectar droplets. The iconic yellow duck mascot stands warmly in the mid-ground, featuring large glossy black eyes, an orange beak, and a small feather tuft. A tiny honeybee hovers gently beside the pollen mixture. Warm sunlight filters through lush floral bokeh in the background.",
+    "generation_prompt_en": "Clean modern editorial macro photography, warm sunlight, soft bokeh background. A friendly cute yellow duck mascot with smooth yellow body, orange beak, large glossy dark eyes, and a small feather tuft on top of its head standing beside a flat green leaf laid on a sunlit wooden outdoor surface. On the leaf are neat tiny piles of glowing golden pollen granules and clear amber nectar drops arranged like gourmet ingredients. A close-up focus on a gentle honeybee hovering nearby. Bright warm lighting, shallow depth of field, high-end lifestyle editorial feel, horizontal 16:9 hero layout, no text, no watermarks, no logos.",
+    "alt_en": "The yellow duck mascot standing near a sunlit leaf covered in tiny golden pollen granules and honeybee diet ingredients in a flower garden.",
+    "title_ja": "ミツバチの小さなグルメ工房",
+    "concept_ja": "自然界のマスターシェフであるミツバチが、日差しが差し込む庭で木ノ葉の上に花粉を丁寧にブレンドする様子を、アヒルダックが見守る愛らしいマクロ風景。",
+    "composition_ja": "横長構図。屋外の木製テーブルの上に広げられた緑の葉が小さな調理台の役割を果たし、輝く金色の花粉と琥珀色の蜜が並んでいます。大きな黒目、オレンジのくちばし、頭の上の小さな羽毛が特徴的な黄色のダックマスコットが温かい表情でたたずみ、その傍らでミツバチが優しく舞っています。背景は花々のボケ味が温かく広がる光で満たされています。",
+    "alt_ja": "木漏れ日の庭で、金色の花粉が載った葉っぱの脇にたたずむ黄色のアヒルマスコットのイラスト。"
+  },
   "design_previews": [],
   "language_policy": {
     "primary_language": "en",
@@ -649,5 +660,9 @@
     "next_state": "READY_TO_PUBLISH"
   },
   "concept_email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20",
-  "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20"
+  "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-20",
+  "concept_approval_reply": "1",
+  "concept_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "concept_selected_at": "2026-08-20T21:54:45.633234+00:00",
+  "preview_batch_number": 0
 }
