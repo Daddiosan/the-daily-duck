@@ -1,5 +1,5 @@
 {
-  "state": "PUBLISHED",
+  "state": "X_POSTED",
   "issue_date": "2026-08-20",
   "ready_at": "2026-08-20T05:06:48.191438+00:00",
   "gate_a_approved_story": {
@@ -567,5 +567,16 @@
   "published_at": "2026-08-20T05:07:06.188954+00:00",
   "published_image_path": "assets/ducks/2026-08-20-honey-we-quacked-the-pollen.png",
   "published_page_path": "ducks/2026-08-20/index.html",
-  "published_title": "HONEY, WE QUACKED THE POLLEN!"
+  "published_title": "HONEY, WE QUACKED THE POLLEN!",
+  "canonical_x_image_path": "automation_images/x/2026-08-20-x-card.jpg",
+  "x_image_ratio": "5:4",
+  "x_image_size": "1500x1200",
+  "x_image_format": "JPEG",
+  "x_card_layout_version": "2026-08-16-v4",
+  "x_yellow_line_width_ratio": 0.92,
+  "x_posted": true,
+  "x_posted_at": "2026-08-20T05:07:52.191524+00:00",
+  "x_post_id": "2090304787078377874",
+  "x_post_url": "https://x.com/i/web/status/2090304787078377874",
+  "x_media_id": "2090304785123770368"
 }
