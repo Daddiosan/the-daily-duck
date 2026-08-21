@@ -48,7 +48,7 @@ jobs:
 
       # ======================================================
       # Stage A:
-      # Human selected one of the five concepts.
+      # Human selected one of the three concepts.
       # Persist selection before generating paid real images.
       # ======================================================
 
@@ -73,7 +73,7 @@ jobs:
 
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Generate exactly 5 real images from selected concept
+      - name: Generate exactly 3 real images from selected concept
         if: steps.result.outputs.action == 'APPROVED_IMAGE_CONCEPT'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -104,20 +104,20 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Phase 2: generate 5 real image candidates"
+          git commit -m "Phase 2: generate 3 real image candidates"
 
           git pull --rebase origin main
           git push origin HEAD:main
 
       # ======================================================
       # Stage B:
-      # NEXT 5 keeps the selected concept locked and creates a
+      # NEXT 3 keeps the selected concept locked and creates a
       # fresh real-image batch.
       # ======================================================
 
-      - name: Commit NEXT 5 request
-        if: steps.result.outputs.action == 'NEXT_5_REQUESTED'
-        id: next5_commit
+      - name: Commit NEXT 3 request
+        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
+        id: next3_commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -129,15 +129,15 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Phase 2: request NEXT 5 image batch"
+          git commit -m "Phase 2: request NEXT 3 image batch"
 
           git pull --rebase origin main
           git push origin HEAD:main
 
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Generate NEXT 5 real images from same selected concept
-        if: steps.result.outputs.action == 'NEXT_5_REQUESTED'
+      - name: Generate NEXT 3 real images from same selected concept
+        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_IMAGE_MODEL: gpt-image-2
@@ -145,16 +145,16 @@ jobs:
           OPENAI_IMAGE_QUALITY: medium
         run: python scripts/generate_design_previews.py
 
-      - name: Send NEXT 5 final approval email
-        if: steps.result.outputs.action == 'NEXT_5_REQUESTED'
+      - name: Send NEXT 3 final approval email
+        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: python scripts/send_design_approval_email.py
 
-      - name: Commit NEXT 5 image batch
-        if: steps.result.outputs.action == 'NEXT_5_REQUESTED'
+      - name: Commit NEXT 3 image batch
+        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -163,11 +163,11 @@ jobs:
           git add automation_images/design_previews/
 
           if git diff --cached --quiet; then
-            echo "No NEXT 5 image changes to commit."
+            echo "No NEXT 3 image changes to commit."
             exit 0
           fi
 
-          git commit -m "Phase 2: generate NEXT 5 image candidates"
+          git commit -m "Phase 2: generate NEXT 3 image candidates"
 
           git pull --rebase origin main
           git push origin HEAD:main
@@ -223,14 +223,14 @@ jobs:
 
           if [ "${{ steps.result.outputs.action }}" = "APPROVED_IMAGE_CONCEPT" ]; then
             echo "One image concept was selected."
-            echo "Exactly five real images were generated from that one locked concept."
+            echo "Exactly three real images were generated from that one locked concept."
             echo "Waiting for final image + title selection."
           fi
 
-          if [ "${{ steps.result.outputs.action }}" = "NEXT_5_REQUESTED" ]; then
-            echo "NEXT 5 was requested."
+          if [ "${{ steps.result.outputs.action }}" = "NEXT_3_REQUESTED" ]; then
+            echo "NEXT 3 was requested."
             echo "The selected concept remained locked."
-            echo "Exactly five new real images were generated."
+            echo "Exactly three new real images were generated."
           fi
 
           if [ "${{ steps.result.outputs.action }}" = "READY_TO_PUBLISH" ]; then
@@ -245,7 +245,7 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          FAILURE_STAGE: Design Selection / NEXT 5 / Final Approval
+          FAILURE_STAGE: Design Selection / NEXT 3 / Final Approval
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python scripts/send_workflow_failure_email.py
