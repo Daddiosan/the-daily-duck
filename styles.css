@@ -839,3 +839,182 @@ noscript {
     line-clamp: 1;
   }
 }
+
+
+/* ==========================================================
+   Version 3.12 — Archive Card Structure Fix
+   The archive DOM uses .duck-card itself as the grid container.
+   This override restores the text column and keeps description
+   visible for max 2 lines.
+   ========================================================== */
+
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.duck-card {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  min-width: 0;
+  min-height: 205px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.duck-card-image {
+  width: 150px;
+  height: 168px;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.duck-card-image img {
+  display: block;
+  width: auto;
+  height: 92%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.duck-card > div:last-child {
+  min-width: 0;
+  width: 100%;
+}
+
+.duck-card time {
+  display: block;
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.duck-card h3 {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 2vw, 28px);
+  line-height: 1.05;
+  letter-spacing: -.035em;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.duck-card p {
+  display: -webkit-box !important;
+  max-height: calc(1.4em * 2);
+  margin: 0 !important;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+}
+
+.duck-card .view-story {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: #0067d9;
+  white-space: nowrap;
+}
+
+@media (max-width: 1050px) {
+  .archive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .duck-card {
+    grid-template-columns: 145px minmax(0, 1fr);
+    min-height: 190px;
+    padding: 17px;
+  }
+
+  .duck-card-image {
+    width: 145px;
+    height: 158px;
+  }
+}
+
+@media (max-width: 600px) {
+  .archive-grid {
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .duck-card {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 14px;
+    min-height: 150px;
+    padding: 14px;
+  }
+
+  .duck-card-image {
+    width: 112px;
+    height: 126px;
+    border-radius: 13px;
+  }
+
+  .duck-card-image img {
+    height: 90%;
+  }
+
+  .duck-card time {
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+
+  .duck-card h3 {
+    margin-bottom: 6px;
+    font-size: clamp(19px, 6vw, 24px);
+  }
+
+  .duck-card p {
+    font-size: 13px;
+    line-height: 1.35;
+    max-height: calc(1.35em * 2);
+  }
+
+  .duck-card .view-story {
+    margin-top: 7px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .duck-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
+    min-height: 138px;
+    padding: 12px;
+  }
+
+  .duck-card-image {
+    width: 96px;
+    height: 110px;
+  }
+
+  .duck-card h3 {
+    font-size: 18px;
+  }
+
+  .duck-card p {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
