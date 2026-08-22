@@ -1,5 +1,5 @@
 {
-  "state": "READY_TO_PUBLISH",
+  "state": "PUBLISHED",
   "issue_date": "2026-08-21",
   "ready_at": "2026-08-22T09:49:22.912831+00:00",
   "gate_a_approved_story": {
@@ -620,10 +620,19 @@
   "canonical_image_path": "automation_images/canonical/2026-08-21.png",
   "design_approval_reply": "2 1",
   "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "publish_started": false,
+  "publish_started": true,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
     "translation_language": "ja"
+  },
+  "published_at": "2026-08-22T09:49:39.115959+00:00",
+  "published_image_path": "assets/ducks/2026-08-21-high-school-buddy.png",
+  "published_page_path": "ducks/2026-08-21/index.html",
+  "website_language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja",
+    "translation_source": "english_master"
   }
 }

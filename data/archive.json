@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-21",
+    "displayDate": "August 21, 2026",
+    "slug": "high-school-buddy",
+    "title": "HIGH SCHOOL BUDDY",
+    "duckName": "High School Buddy",
+    "storyTitleEn": "Your high school friends may shape whether you become an entrepreneur decades later",
+    "storyTitleJa": "Your high school friends may shape whether you become an entrepreneur decades later",
+    "image": "assets/ducks/2026-08-21-high-school-buddy.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for High School Buddy",
+    "imageAltJa": "High School BuddyをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "The bond you shared with your high school classmates might be doing more work than you think! Researchers found that teenage friendships can shape whether someone becomes an entrepreneur decades later. Connecting with supportive friends early in life can spark ambitions that last a lifetime.",
+    "storyJa": "高校時代に築いた友人との絆は、私たちが思う以上の影響力を持っているのかもしれません。研究によると、10代の頃の友情が数十年後に起業家になるかどうかに影響を与えることが分かりました。若い頃の温かい友達とのつながりが、生涯続く抱負や挑戦する心を育みます。",
+    "duckEn": "Quack! Friendship is the ultimate business partner!",
+    "duckJa": "クワック！友情こそが最高のビジネスパートナーだね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-08-high-school-friends-entrepreneur-decades.html",
+    "archiveSummaryEn": "Did you know high school friendships can influence whether you start a business decades later? Teenage bonds help inspire lifelong ambition!",
+    "archiveSummaryJa": "高校時代の友情が、数十年後に起業するかどうかに影響を与えるかも？若い頃の絆が生涯の夢や挑戦を後押ししてくれます！",
+    "reasonEn": "Did you know high school friendships can influence whether you start a business decades later? Teenage bonds help inspire lifelong ambition!",
+    "reasonJa": "高校時代の友情が、数十年後に起業するかどうかに影響を与えるかも？若い頃の絆が生涯の夢や挑戦を後押ししてくれます！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-20",
     "displayDate": "August 20, 2026",
     "slug": "honey-we-quacked-the-pollen",
