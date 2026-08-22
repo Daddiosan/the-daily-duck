@@ -1,0 +1,296 @@
+name: The Daily Duck - Re-render Existing Issue Page
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_date:
+        description: "Existing issue date to re-render (YYYY-MM-DD)"
+        required: true
+        default: "2026-08-22"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-duck-rerender-existing-issue
+  cancel-in-progress: false
+
+jobs:
+  rerender:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ======================================================
+      # 1. Checkout latest main
+      # ======================================================
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch origin main
+          git reset --hard origin/main
+
+          echo "Repository synchronized to:"
+          git rev-parse HEAD
+
+      # ======================================================
+      # 2. Python
+      # ======================================================
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ======================================================
+      # 3. Safety check
+      #
+      # This workflow does NOT republish the story.
+      # It only rebuilds the existing per-day HTML page from
+      # data/archive.json using the CURRENT render_page()
+      # function in scripts/publish_website.py.
+      #
+      # It does NOT modify:
+      # - data/archive.json
+      # - data/today.json
+      # - ready_to_publish.json
+      # - X state
+      # - canonical images
+      # ======================================================
+
+      - name: Validate existing issue
+        id: validate
+        shell: bash
+        env:
+          ISSUE_DATE: ${{ inputs.issue_date }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          issue = os.environ["ISSUE_DATE"].strip()
+
+          archive_path = Path("data/archive.json")
+
+          if not archive_path.exists():
+              raise SystemExit(
+                  "ERROR: data/archive.json not found."
+              )
+
+          archive = json.loads(
+              archive_path.read_text(encoding="utf-8")
+          )
+
+          if not isinstance(archive, list):
+              raise SystemExit(
+                  "ERROR: data/archive.json must be an array."
+              )
+
+          matches = [
+              item
+              for item in archive
+              if isinstance(item, dict)
+              and str(item.get("date", "")) == issue
+          ]
+
+          if len(matches) != 1:
+              raise SystemExit(
+                  f"ERROR: expected exactly one archive item for "
+                  f"{issue}, found {len(matches)}."
+              )
+
+          target = (
+              Path("ducks")
+              / issue
+              / "index.html"
+          )
+
+          if not target.exists():
+              raise SystemExit(
+                  f"ERROR: existing issue page not found: {target}"
+              )
+
+          print("Existing issue confirmed:", issue)
+          print("Existing page:", target)
+          print("Safe mode: page HTML only")
+          PY
+
+      # ======================================================
+      # 4. Re-render ONLY the existing issue page
+      #
+      # This imports the current render_page() from
+      # scripts/publish_website.py, so the new 80% image CSS
+      # is applied to the already-published 8/22 page.
+      # ======================================================
+
+      - name: Re-render existing issue page
+        shell: bash
+        env:
+          ISSUE_DATE: ${{ inputs.issue_date }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          from scripts.publish_website import render_page
+
+          issue = os.environ["ISSUE_DATE"].strip()
+
+          archive = json.loads(
+              Path("data/archive.json")
+              .read_text(encoding="utf-8")
+          )
+
+          item = next(
+              item
+              for item in archive
+              if isinstance(item, dict)
+              and str(item.get("date", "")) == issue
+          )
+
+          output = (
+              Path("ducks")
+              / issue
+              / "index.html"
+          )
+
+          before = output.read_text(
+              encoding="utf-8"
+          )
+
+          after = render_page(item)
+
+          output.write_text(
+              after,
+              encoding="utf-8",
+          )
+
+          print("Re-rendered:", output)
+          print(
+              "HTML changed:",
+              "yes" if before != after else "no"
+          )
+
+          print("Archive data: unchanged")
+          print("Today data: unchanged")
+          print("Publication state: unchanged")
+          print("X state: unchanged")
+          PY
+
+      # ======================================================
+      # 5. Verify true 80% rule exists in regenerated page
+      # ======================================================
+
+      - name: Verify 80 percent image rule
+        shell: bash
+        env:
+          ISSUE_DATE: ${{ inputs.issue_date }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          issue = os.environ["ISSUE_DATE"].strip()
+
+          page = (
+              Path("ducks")
+              / issue
+              / "index.html"
+          ).read_text(
+              encoding="utf-8"
+          )
+
+          required = [
+              "aspect-ratio:3/2",
+              "width:80%",
+              "height:80%",
+              "object-fit:contain",
+          ]
+
+          missing = [
+              value
+              for value in required
+              if value not in page
+          ]
+
+          if missing:
+              raise SystemExit(
+                  "ERROR: regenerated page is missing "
+                  f"new image CSS: {missing}"
+              )
+
+          print(
+              "Verified: 3:2 frame + true 80% image display."
+          )
+          PY
+
+      # ======================================================
+      # 6. Commit ONLY the regenerated issue page
+      # ======================================================
+
+      - name: Commit regenerated issue page
+        id: commit
+        shell: bash
+        env:
+          ISSUE_DATE: ${{ inputs.issue_date }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          TARGET="ducks/${ISSUE_DATE}/index.html"
+
+          git add "$TARGET"
+
+          echo "=== Git status ==="
+          git status --short
+
+          if git diff --cached --quiet; then
+            echo "No issue-page changes to commit."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit \
+            -m "fix: re-render ${ISSUE_DATE} Daily Duck page"
+
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+      # ======================================================
+      # 7. Report
+      # ======================================================
+
+      - name: Report result
+        shell: bash
+        env:
+          ISSUE_DATE: ${{ inputs.issue_date }}
+        run: |
+          echo "Existing issue re-render finished."
+          echo "Issue: ${ISSUE_DATE}"
+          echo "Only ducks/${ISSUE_DATE}/index.html was eligible for commit."
+          echo "No Website Publish workflow was triggered."
+          echo "No X Publish workflow was triggered."
+          echo "No archive data was duplicated."
+          echo "No publication state was reset."
+          echo "Committed: ${{ steps.commit.outputs.committed }}"
