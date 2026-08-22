@@ -1,9 +1,6 @@
 {
-  "action": "APPROVED_IMAGE_CONCEPT",
-  "checked_at": "2026-08-22T07:54:16.339762+00:00",
-  "issue_date": "2026-08-21",
-  "concept_number": 2,
-  "concept_title": "Early Sparks of Ambition",
-  "sender": "kobakoba_jp2002@yahoo.co.jp",
-  "normalized_reply": "2"
+  "action": "WAIT",
+  "checked_at": "2026-08-22T09:44:40.929613+00:00",
+  "stage": "APPROVED_IMAGE_CONCEPT",
+  "issue_date": "2026-08-21"
 }
