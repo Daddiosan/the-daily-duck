@@ -1,5 +1,5 @@
 {
-  "state": "PUBLISHED",
+  "state": "X_POSTED",
   "issue_date": "2026-08-21",
   "ready_at": "2026-08-22T09:49:22.912831+00:00",
   "gate_a_approved_story": {
@@ -634,5 +634,26 @@
     "canonical_language": "en",
     "translation_language": "ja",
     "translation_source": "english_master"
+  },
+  "canonical_x_image_path": "automation_images/x/2026-08-21-x-card.jpg",
+  "x_image_ratio": "5:4",
+  "x_image_size": "1500x1200",
+  "x_image_format": "JPEG",
+  "x_card_layout_version": "2026-08-16-v4",
+  "x_yellow_line_width_ratio": 0.92,
+  "x_posted": true,
+  "x_posted_at": "2026-08-22T09:50:11.819289+00:00",
+  "x_post_id": "2091100612759056869",
+  "x_post_url": "https://x.com/i/web/status/2091100612759056869",
+  "x_media_id": "2091100610670338048",
+  "x_language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": "ja",
+    "post_order": [
+      "en",
+      "ja",
+      "url"
+    ]
   }
 }
