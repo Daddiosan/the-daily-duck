@@ -1,7 +1,7 @@
 {
   "state": "WAITING_CONCEPT_SELECTION",
   "issue_date": "2026-08-21",
-  "generated_at": "2026-08-22T07:31:27.476115+00:00",
+  "generated_at": "2026-08-22T07:43:25.018678+00:00",
   "approved_story": {
     "date": "2026-08-21",
     "issue_date": "2026-08-21",
@@ -596,56 +596,56 @@
   "image_concepts": [
     {
       "number": 1,
-      "title_en": "Classmates at the Blueprint Desk",
-      "concept_en": "Two high school duck friends standing together at a warm wooden desk, eagerly planning their future dreams over a pencil sketch on paper.",
-      "composition_en": "A warm modern landscape hero photo. In the center foreground, two yellow duck mascots with orange beaks, glossy dark eyes, and small feather tufts stand side-by-side at a desk, looking down at a paper sketch. Soft golden daylight streams in through a window, highlighting their inspired expressions. The background is softly blurred for a modern editorial feel.",
-      "generation_prompt_en": "Editorial 3D digital art, wide landscape aspect ratio hero banner. Two friendly yellow duck mascots with orange beaks, large glossy dark eyes, and cute feather tufts acting as high school classmates. They stand together at a clean wooden desk, looking warmly at a simple paper sketch. Warm natural daylight streaming from a side window, inspiring and cozy mood, clean modern editorial visual style, shallow depth of field, vibrant yellow hues, no text, no letters, no logo, no watermark.",
-      "alt_en": "Two yellow duck friends standing side-by-side at a wooden desk in warm sunlight, looking together at a paper sketch.",
-      "title_ja": "図面を囲む同級生",
-      "concept_ja": "木製デスクで紙のスケッチを一緒に覗き込み、将来の夢を語り合う高校生ダック2羽の心温まる場面。",
-      "composition_ja": "柔らかな光が差し込むデスクで、黄色いダックの仲間2羽が並んで紙のスケッチを眺める横長構図。背景は優しくぼかされています。",
-      "alt_ja": "日の光が差し込むデスクで、紙のスケッチを一緒に覗き込む2羽の黄色いダック。"
+      "title_en": "From Classroom to CEO Desk",
+      "concept_en": "Visualizing the trajectory from high school memories to modern entrepreneurial success through a blended desk scene featuring nostalgic yearbook elements alongside sleek startup tools.",
+      "composition_en": "A wide landscape editorial view of a sleek wooden office desk in soft morning daylight. The friendly yellow duck mascot stands beside an open high school yearbook resting next to a modern laptop and a warm cup of coffee, looking with inspiration at the memory.",
+      "generation_prompt_en": "A clean modern editorial hero image featuring a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, and a small feather tuft. The duck stands on a sleek wooden office desk bathed in soft warm morning sunlight. On the desk sits an open high school yearbook alongside a minimalist modern laptop and a ceramic coffee mug. Warm, cozy, inspiring atmosphere, high-end editorial photography style, soft depth of field, neutral warm background, no text, no logos.",
+      "alt_en": "A yellow duck mascot looking warmly at an open high school yearbook resting on a modern startup office desk.",
+      "title_ja": "教室の思い出から起業家のデスクへ",
+      "concept_ja": "高校時代の思い出の卒業アルバムと現代の起業デスクを組み合わせることで、過去の友情が現在の起業活動に繋がっている軌跡を視覚化するコンセプト。",
+      "composition_ja": "朝の柔らかい光が差し込むモダンな木製デスクの横長構図。広げられた卒業アルバムとノートPCの横に、アヒルのマスコットが立ち、思い出を温かく見つめています。",
+      "alt_ja": "モダンなオフィスのデスクで、開かれた卒業アルバムを温かく見つめる黄色の文脈アヒルのマスコット。"
     },
     {
       "number": 2,
-      "title_en": "Side-by-Side Courtyard Walk",
-      "concept_en": "The yellow duck mascot and a classmate friend walking side-by-side through a bright school courtyard, looking forward with optimism toward the future.",
-      "composition_en": "Wide landscape framing. Two cheerful yellow ducks with orange beaks, glossy eyes, and feather tufts walk side-by-side along a clean paved path in a sunlit school yard. Warm morning sunlight casts soft shadows. Strong central focus on the two duck friends as they look forward together with happy, confident expressions.",
-      "generation_prompt_en": "Modern 3D editorial graphic, wide landscape format. Two cheerful yellow duck mascots with orange beaks, dark glossy eyes, and small feather tufts walking side-by-side along a paved walkway in a bright sunny school courtyard. Golden morning lighting, warm hopeful atmosphere, clean premium aesthetic, sharp focus on the duck duo, softly blurred greenery background, no readable text, no logos, no watermarks.",
-      "alt_en": "Two happy yellow duck friends walking together on a sunny outdoor school path.",
-      "title_ja": "並んで歩む未来への道",
-      "concept_ja": "明るい校庭を2羽のダックが寄り添って歩き、未来の目標に向かって前向きに進む様子を描いた場面。",
-      "composition_ja": "陽射しが差し込む綺麗な校庭の小道を、黄色いダックの友達2羽が仲良く並んで歩く横長ヒーロー構図。",
-      "alt_ja": "陽射しが差し込む校庭の小道を、楽しそうに並んで歩く2羽の黄色いダック。"
+      "title_en": "Early Sparks of Ambition",
+      "concept_en": "Capturing the spirit of teenage brainstorming where shared ideas and mutual encouragement in school plant the initial seeds of future business ventures.",
+      "composition_en": "A vibrant high school study room setup where the friendly yellow duck mascot sits proudly at a wooden table surrounded by colorful brainstorming pads, creative sketches, and a drawn idea map under bright, encouraging sunlight.",
+      "generation_prompt_en": "A warm and charming editorial visual in a sunlit study space. The friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft sits happily at a wooden table surrounded by colorful creative notebooks and sketchpads. Bright natural light pouring through large windows creates an optimistic, ambitious atmosphere. Clean aesthetic, single visual focus on the duck mascot, gentle blurred background, premium editorial magazine style, no text, no logos.",
+      "alt_en": "The yellow duck mascot sitting at a bright study table surrounded by colorful ideas and sketchbooks.",
+      "title_ja": "若き日に芽生えた野心とアイディア",
+      "concept_ja": "高校時代に友人たちとアイディアを語り合った情熱が、将来の起業への原動力となる様子を描いたコンセプト。",
+      "composition_ja": "太陽光が爽やかに差し込む学習スペース。アヒルのマスコットが、色とりどりのアイディアノートやスケッチに囲まれた木製テーブルに座り、未来への野心を膨らませています。",
+      "alt_ja": "光が差し込むテーブルで、ノートやスケッチに囲まれ嬉しそうに座る黄色の文脈アヒルのマスコット。"
     },
     {
       "number": 3,
-      "title_en": "Nurturing the Dream Seed",
-      "concept_en": "Two duck friends sitting together on green grass, caring for a tiny glowing plant sprout that symbolizes early ambition planted in youth.",
-      "composition_en": "A charming visual metaphor in landscape framing. Two iconic yellow ducks with orange beaks and glossy eyes sit closely on lush lawn grass, gazing warmly at a small glowing golden plant sprout between them. Soft sunbeams illuminate the peaceful, heart-warming setting.",
-      "generation_prompt_en": "Premium editorial 3D rendering, wide landscape banner format. Two iconic yellow duck mascots with orange beaks and glossy dark eyes sitting together on vibrant green grass, looking affectionately at a small glowing golden sprout growing from the soil. Warm sunbeams, peaceful outdoor background, clean single focal point, heartwarming tone, ultra-clean detail, no text, no visual clutter, no watermark.",
-      "alt_en": "Two yellow duck friends sitting on green grass, smiling warmly at a tiny glowing sprout between them.",
-      "title_ja": "夢の芽を育む友情",
-      "concept_ja": "10代の友情が育む大きな志を、光る小さな植物の芽を愛おしく見つめる2羽のダックで表現したビジュアル。",
-      "composition_ja": "青々とした芝生の上で、2羽のダックが中央の小さく光る芽を優しく見守る、シンプルで美しい横長構図。",
-      "alt_ja": "芝生の上で、2羽のダックが中央で小さく光る植物の芽を温かく見つめている様子。"
+      "title_en": "Nurturing the Seeds of Success",
+      "concept_en": "An elegant visual metaphor of a fresh green seedling nurtured on a desk, representing how early high school bonds act as nutrient-rich roots for lifelong success.",
+      "composition_en": "A clean studio visual metaphor featuring a small potted green plant sprouting out of a desk setting. The friendly yellow duck mascot holds a tiny watering can with a cheerful expression, symbolic of nourishing early friendships into thriving dreams.",
+      "generation_prompt_en": "A clean, modern visual metaphor visual in landscape orientation. The friendly yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft joyfully holds a miniature watering can beside a small, vibrant green plant seedling growing in a simple wooden pot on a bright desk. Soft natural lighting, elegant pastel backplate, high-end commercial aesthetic, clean focal point, no text, no logos.",
+      "alt_en": "The yellow duck mascot holding a miniature watering can next to a growing green plant seedling on a desk.",
+      "title_ja": "成功の種を育む友情の絆",
+      "concept_ja": "10代の友情という土壌で育った小さな芽が、時間をかけて大きな挑戦へと実を結ぶ様子を「植物の若芽」で表現した視覚的メタファーのコンセプト。",
+      "composition_ja": "明るくシンプルなデスク環境。アヒルのマスコットが小さなジョウロを持ち、鉢植えの青々とした新芽に水をやるような心温まる構図。",
+      "alt_ja": "デスクの上で小さな緑の若芽の隣に立ち、ミニチュアのジョウロを持つ黄色の文脈アヒルのマスコット。"
     }
   ],
   "title_ideas": [
     {
       "number": 1,
-      "title": "High School Buddies, Future Founders",
-      "meaning_ja": "「高校時代の仲間が、未来の起業家に」という物語のテーマをストレートに表現したタイトル。"
+      "title": "The High School Spark",
+      "meaning_ja": "高校時代に芽生えた友情や刺激が、数十年後の起業の火種になることを表現した短く魅力的なタイトル。"
     },
     {
       "number": 2,
-      "title": "The Teenage Spark of Lifelong Ambition",
-      "meaning_ja": "「10代の絆が生涯続く挑戦の心に火をつける」というストーリーの温かいメッセージを伝えるタイトル。"
+      "title": "Classmates to Founders",
+      "meaning_ja": "高校の同級生という関係が、将来の起業家としての道を開く後押しになるストーリーをストレートに伝えるタイトル。"
     },
     {
       "number": 3,
-      "title": "How School Friends Build Tomorrow's Dreams",
-      "meaning_ja": "「学生時代の友人がいかにして未来の夢を形づくるか」を読者に親しみやすく問いかけるタイトル。"
+      "title": "The Decades-Long Bond",
+      "meaning_ja": "10代の頃に築いた絆が、数十年という長い年月を超えて挑戦する心を支え続ける温かさを描くタイトル。"
     }
   ],
   "selected_image_concept_number": null,
@@ -663,11 +663,11 @@
       "2",
       "3"
     ],
+    "full_width_supported": true,
     "next_state": "APPROVED_IMAGE_CONCEPT"
   },
   "real_image_flow": {
     "source": "one_human_selected_concept",
-    "concept_count": 3,
     "candidate_count": 5,
     "next_5_supported": true
   },
@@ -690,5 +690,6 @@
     "next_state": "READY_TO_PUBLISH"
   },
   "concept_email_subject": "The Daily Duck — Choose Image Concept — 2026-08-21",
-  "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-21"
+  "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-21",
+  "concept_email_sent_at": "2026-08-22T07:43:26.479015+00:00"
 }
