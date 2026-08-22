@@ -627,14 +627,33 @@ def render_legacy_card(
     hero_w = W - hero_x - 16
     hero_h = H - hero_y - 92
 
-    hero = fit_cover(
-        Image.open(
-            hero_path
-        ).convert("RGB"),
-        (
-            hero_w,
-            hero_h,
-        ),
+    source_hero = Image.open(
+        hero_path
+    ).convert("RGB")
+
+    # 2026-08-22+ source images are 51:58 (portrait).
+    # Fit proportionally inside the X-card hero region.
+    # Never stretch or crop the duck.
+    sw, sh = source_hero.size
+
+    scale = min(
+        hero_w / sw,
+        hero_h / sh,
+    )
+
+    rw = max(
+        1,
+        int(round(sw * scale)),
+    )
+
+    rh = max(
+        1,
+        int(round(sh * scale)),
+    )
+
+    hero = source_hero.resize(
+        (rw, rh),
+        Image.Resampling.LANCZOS,
     )
 
     card.paste(
@@ -997,13 +1016,20 @@ def render_english_first_card(
         ),
     )
 
-    # Rounded-corner hero mask.
+    # Center the 51:58 portrait source inside the hero region.
+    hero_left = (
+        hero_x
+        + (hero_w - hero.width) // 2
+    )
+
+    hero_top = (
+        hero_y
+        + (hero_h - hero.height) // 2
+    )
+
     hero_mask = Image.new(
         "L",
-        (
-            hero_w,
-            hero_h,
-        ),
+        hero.size,
         0,
     )
 
@@ -1015,8 +1041,8 @@ def render_english_first_card(
         (
             0,
             0,
-            hero_w,
-            hero_h,
+            hero.width,
+            hero.height,
         ),
         radius=28,
         fill=255,
@@ -1025,8 +1051,8 @@ def render_english_first_card(
     card.paste(
         hero,
         (
-            hero_x,
-            hero_y,
+            hero_left,
+            hero_top,
         ),
         hero_mask,
     )
