@@ -14,29 +14,80 @@ from typing import Any
 from google import genai
 
 
-APPROVED_STORY_PATH = Path("automation_state/approved_story.json")
-OPTIONS_PATH = Path("automation_state/design_options.json")
+APPROVED_STORY_PATH = Path(
+    "automation_state/approved_story.json"
+)
 
-TEXT_MODEL = (os.getenv("GEMINI_TEXT_MODEL") or "").strip() or "gemini-3.6-flash"
+OPTIONS_PATH = Path(
+    "automation_state/design_options.json"
+)
 
-EDITORIAL_MAX_ATTEMPTS = int(os.getenv("CONCEPT_MAX_ATTEMPTS", "3"))
-GEMINI_API_MAX_ATTEMPTS = int(os.getenv("GEMINI_API_MAX_ATTEMPTS", "5"))
+TEXT_MODEL = (
+    os.getenv(
+        "GEMINI_TEXT_MODEL"
+    )
+    or ""
+).strip() or "gemini-3.6-flash"
+
+
+# ============================================================
+# Generation settings
+# ============================================================
+
+IMAGE_CONCEPT_COUNT = 3
+TITLE_IDEA_COUNT = 3
+
+EDITORIAL_MAX_ATTEMPTS = int(
+    os.getenv(
+        "CONCEPT_MAX_ATTEMPTS",
+        "3",
+    )
+)
+
+GEMINI_API_MAX_ATTEMPTS = int(
+    os.getenv(
+        "GEMINI_API_MAX_ATTEMPTS",
+        "5",
+    )
+)
+
 GEMINI_RETRY_BASE_SECONDS = float(
-    os.getenv("GEMINI_RETRY_BASE_SECONDS", "10")
+    os.getenv(
+        "GEMINI_RETRY_BASE_SECONDS",
+        "10",
+    )
 )
 
 
-def required_env(name: str) -> str:
-    value = os.getenv(name, "").strip()
+# ============================================================
+# Basic helpers
+# ============================================================
+
+def required_env(
+    name: str,
+) -> str:
+
+    value = os.getenv(
+        name,
+        "",
+    ).strip()
+
     if not value:
+
         raise RuntimeError(
-            f"Missing required environment variable: {name}"
+            "Missing required environment "
+            f"variable: {name}"
         )
+
     return value
 
 
-def load_json(path: Path) -> dict[str, Any]:
+def load_json(
+    path: Path,
+) -> dict[str, Any]:
+
     if not path.exists():
+
         raise FileNotFoundError(
             f"Required file not found: {path}"
         )
@@ -47,22 +98,42 @@ def load_json(path: Path) -> dict[str, Any]:
         )
     )
 
-    if not isinstance(data, dict):
+    if not isinstance(
+        data,
+        dict,
+    ):
+
         raise ValueError(
-            f"{path} must contain a JSON object."
+            f"{path} must contain "
+            "a JSON object."
         )
 
     return data
 
 
-def first_text(*values: Any) -> str:
+def first_text(
+    *values: Any,
+) -> str:
+
     for value in values:
-        if isinstance(value, str) and value.strip():
+
+        if (
+            isinstance(
+                value,
+                str,
+            )
+            and value.strip()
+        ):
+
             return value.strip()
+
     return ""
 
 
-def clean_json_text(value: str) -> str:
+def clean_json_text(
+    value: str,
+) -> str:
+
     cleaned = value.strip()
 
     cleaned = re.sub(
@@ -81,15 +152,25 @@ def clean_json_text(value: str) -> str:
     return cleaned.strip()
 
 
-def validate_approved_state(data: dict[str, Any]) -> None:
+# ============================================================
+# Approved story validation
+# ============================================================
+
+def validate_approved_state(
+    data: dict[str, Any],
+) -> None:
+
     state = first_text(
-        data.get("state")
+        data.get(
+            "state"
+        )
     ).upper()
 
     if state != "APPROVED_STORY":
+
         raise ValueError(
-            "Design options may only be generated "
-            "from APPROVED_STORY; "
+            "Design options may only be "
+            "generated from APPROVED_STORY; "
             f"got {state!r}."
         )
 
@@ -97,6 +178,11 @@ def validate_approved_state(data: dict[str, Any]) -> None:
 def find_approved_story(
     data: dict[str, Any],
 ) -> dict[str, Any]:
+    """
+    Return the selected Gate A story while
+    tolerating the state shapes used by
+    The Daily Duck during Phase 2.
+    """
 
     for key in (
         "approved_story",
@@ -105,14 +191,27 @@ def find_approved_story(
         "story",
         "recommended_story",
     ):
-        value = data.get(key)
 
-        if isinstance(value, dict):
+        value = data.get(
+            key
+        )
+
+        if isinstance(
+            value,
+            dict,
+        ):
+
             return value
 
-    package = data.get("package")
+    package = data.get(
+        "package"
+    )
 
-    if isinstance(package, dict):
+    if isinstance(
+        package,
+        dict,
+    ):
+
         for key in (
             "approved_story",
             "selected_story",
@@ -120,10 +219,20 @@ def find_approved_story(
             "story",
             "recommended_story",
         ):
-            value = package.get(key)
 
-            if isinstance(value, dict):
+            value = package.get(
+                key
+            )
+
+            if isinstance(
+                value,
+                dict,
+            ):
+
                 return value
+
+    # Some versions persist the approved
+    # editorial package at root level.
 
     if any(
         key in data
@@ -136,6 +245,7 @@ def find_approved_story(
             "x_en",
         )
     ):
+
         return data
 
     raise ValueError(
@@ -150,19 +260,33 @@ def issue_date_from(
 ) -> str:
 
     issue_date = first_text(
-        data.get("issue_date"),
-        data.get("date"),
-        story.get("issue_date"),
-        story.get("date"),
+        data.get(
+            "issue_date"
+        ),
+        data.get(
+            "date"
+        ),
+        story.get(
+            "issue_date"
+        ),
+        story.get(
+            "date"
+        ),
     )
 
     if not issue_date:
+
         raise ValueError(
-            "Approved story is missing issue_date/date."
+            "Approved story is missing "
+            "issue_date/date."
         )
 
     return issue_date
 
+
+# ============================================================
+# Gemini retry
+# ============================================================
 
 def is_retryable_gemini_error(
     exc: Exception,
@@ -202,17 +326,21 @@ def call_gemini_with_retry(
 ):
 
     if GEMINI_API_MAX_ATTEMPTS < 1:
+
         raise ValueError(
             "GEMINI_API_MAX_ATTEMPTS "
             "must be at least 1."
         )
 
-    last_error: Exception | None = None
+    last_error: (
+        Exception | None
+    ) = None
 
     for attempt in range(
         1,
         GEMINI_API_MAX_ATTEMPTS + 1,
     ):
+
         print(
             "Gemini API request attempt "
             f"{attempt}/"
@@ -220,6 +348,7 @@ def call_gemini_with_retry(
         )
 
         try:
+
             response = (
                 client.models.generate_content(
                     model=TEXT_MODEL,
@@ -234,17 +363,22 @@ def call_gemini_with_retry(
             return response
 
         except Exception as exc:
+
             last_error = exc
 
-            if not is_retryable_gemini_error(
-                exc
+            if not (
+                is_retryable_gemini_error(
+                    exc
+                )
             ):
+
                 raise
 
             if (
                 attempt
                 >= GEMINI_API_MAX_ATTEMPTS
             ):
+
                 raise
 
             wait_seconds = (
@@ -258,8 +392,8 @@ def call_gemini_with_retry(
 
             print(
                 "WARNING: Temporary Gemini "
-                "API error. Retrying in "
-                f"approximately "
+                "API error. "
+                "Retrying in approximately "
                 f"{wait_seconds:.1f} seconds...",
                 file=sys.stderr,
             )
@@ -269,12 +403,18 @@ def call_gemini_with_retry(
             )
 
     if last_error is not None:
+
         raise last_error
 
     raise RuntimeError(
-        "Gemini retry loop ended unexpectedly."
+        "Gemini retry loop "
+        "ended unexpectedly."
     )
 
+
+# ============================================================
+# Generate concepts + title ideas
+# ============================================================
 
 def generate_options(
     approved_state: dict[str, Any],
@@ -285,6 +425,7 @@ def generate_options(
 ]:
     """
     Generate:
+
       - exactly THREE image concepts
       - exactly THREE English title options
 
@@ -299,7 +440,9 @@ def generate_options(
     )
 
     output_example = {
+
         "image_concepts": [
+
             {
                 "number":
                     1,
@@ -339,12 +482,14 @@ def generate_options(
                 "alt_ja":
                     "英語正本を基にした日本語alt案",
             }
+
             for _ in range(
-                3
+                IMAGE_CONCEPT_COUNT
             )
         ],
 
         "title_ideas": [
+
             {
                 "number":
                     1,
@@ -353,10 +498,14 @@ def generate_options(
                     "PUNCHY ENGLISH TITLE",
 
                 "meaning_ja":
-                    "日本語で意味・ニュアンスを簡潔に説明",
+                    (
+                        "日本語で意味・ニュアンスを"
+                        "簡潔に説明"
+                    ),
             }
+
             for _ in range(
-                3
+                TITLE_IDEA_COUNT
             )
         ],
     }
@@ -370,11 +519,23 @@ English is the canonical/master language.
 Japanese is review translation only.
 
 You are working on ONE story that has already passed Gate A.
+
 Do not change the story.
 
+============================================================
 TASK A — IMAGE CONCEPTS
+============================================================
 
-Create EXACTLY THREE distinct visual concepts for the approved story.
+Create EXACTLY THREE distinct visual concepts
+for the approved story.
+
+Do NOT create four or five concepts.
+
+Return exactly concepts:
+
+1
+2
+3
 
 For every concept, create the English master fields FIRST:
 
@@ -392,15 +553,16 @@ review translations:
 8. composition_ja
 9. alt_ja
 
-The three concepts must be meaningfully different visual approaches,
-but all three must represent the SAME approved story.
+The THREE concepts must be meaningfully different visual approaches,
+but all THREE must represent the SAME approved story.
 
 The human will select exactly ONE concept.
+
 After that selection, the system will generate EXACTLY FIVE real
 image variations from that ONE selected concept.
 
 Therefore generation_prompt_en must be precise enough to LOCK the
-concept while still allowing execution-level variation such as:
+selected concept while still allowing execution-level variation such as:
 
 - duck pose
 - subtle camera angle
@@ -410,9 +572,12 @@ concept while still allowing execution-level variation such as:
 - spacing
 - depth of field
 
-It must NOT allow the later generator to switch to another concept.
+It must NOT allow the later image generator to switch
+to another visual concept.
 
+============================================================
 THE DAILY DUCK MASCOT
+============================================================
 
 Every concept must preserve:
 
@@ -423,7 +588,9 @@ Every concept must preserve:
 - warm approachable expression
 - consistent mascot identity
 
+============================================================
 VISUAL DIRECTION
+============================================================
 
 - clean
 - modern
@@ -439,7 +606,9 @@ VISUAL DIRECTION
 - no readable embedded text
 - no headline inside the generated image
 
+============================================================
 FACTUAL RULE
+============================================================
 
 Use ONLY facts supported by the approved story package.
 
@@ -455,13 +624,15 @@ Do not invent:
 - scientific details
 - factual props that imply unsupported facts
 
-Illustrative visual metaphor is allowed only when it does not falsely
-present invented details as factual.
+Illustrative visual metaphor is allowed only when
+it does not falsely present invented details as factual.
 
+============================================================
 TASK B — TITLE IDEAS
+============================================================
 
-Create EXACTLY THREE short, punchy ENGLISH publication-title options
-for the SAME approved story.
+Create EXACTLY THREE short, punchy ENGLISH
+publication-title options for the SAME approved story.
 
 The title options must:
 
@@ -473,10 +644,13 @@ The title options must:
 - not use clickbait that changes the meaning
 - be suitable for the website and X card
 
-For each title, meaning_ja should explain the English meaning/nickname
-naturally in Japanese for the human editor.
+For each title, meaning_ja should explain
+the English meaning and nuance naturally
+in Japanese for the human editor.
 
+============================================================
 OUTPUT RULES
+============================================================
 
 - Exactly THREE image concepts.
 - Exactly THREE title ideas.
@@ -496,7 +670,9 @@ Return exactly this structure:
     indent=2,
 )}
 
-APPROVED STORY:
+============================================================
+APPROVED STORY
+============================================================
 
 {json.dumps(
     approved_story,
@@ -504,7 +680,9 @@ APPROVED STORY:
     indent=2,
 )}
 
-FULL APPROVED STATE:
+============================================================
+FULL APPROVED STATE
+============================================================
 
 {json.dumps(
     approved_state,
@@ -530,22 +708,28 @@ FULL APPROVED STATE:
         "meaning_ja",
     )
 
-    last_error: Exception | None = None
+    last_error: (
+        Exception | None
+    ) = None
 
     for attempt in range(
         1,
         EDITORIAL_MAX_ATTEMPTS + 1,
     ):
+
         try:
+
             print(
-                "Design option generation attempt "
-                f"{attempt}/"
+                "Design option generation "
+                f"attempt {attempt}/"
                 f"{EDITORIAL_MAX_ATTEMPTS}..."
             )
 
-            response = call_gemini_with_retry(
-                client,
-                prompt,
+            response = (
+                call_gemini_with_retry(
+                    client,
+                    prompt,
+                )
             )
 
             raw = getattr(
@@ -555,6 +739,7 @@ FULL APPROVED STATE:
             )
 
             if not raw:
+
                 raise RuntimeError(
                     "Gemini returned no "
                     "design option text."
@@ -570,9 +755,10 @@ FULL APPROVED STATE:
                 parsed,
                 dict,
             ):
+
                 raise ValueError(
-                    "Gemini response must be "
-                    "a JSON object."
+                    "Gemini response must "
+                    "be a JSON object."
                 )
 
             concepts = parsed.get(
@@ -583,6 +769,10 @@ FULL APPROVED STATE:
                 "title_ideas"
             )
 
+            # ------------------------------------------------
+            # Exact concept count = 3
+            # ------------------------------------------------
+
             if (
                 not isinstance(
                     concepts,
@@ -590,12 +780,18 @@ FULL APPROVED STATE:
                 )
                 or len(
                     concepts
-                ) != 3
+                ) != IMAGE_CONCEPT_COUNT
             ):
+
                 raise ValueError(
                     "Gemini must return exactly "
-                    "three image concepts."
+                    f"{IMAGE_CONCEPT_COUNT} "
+                    "image concepts."
                 )
+
+            # ------------------------------------------------
+            # Exact title count = 3
+            # ------------------------------------------------
 
             if (
                 not isinstance(
@@ -604,11 +800,13 @@ FULL APPROVED STATE:
                 )
                 or len(
                     titles
-                ) != 3
+                ) != TITLE_IDEA_COUNT
             ):
+
                 raise ValueError(
                     "Gemini must return exactly "
-                    "three title ideas."
+                    f"{TITLE_IDEA_COUNT} "
+                    "title ideas."
                 )
 
             normalized_concepts: list[
@@ -619,13 +817,16 @@ FULL APPROVED STATE:
                 concepts,
                 start=1,
             ):
+
                 if not isinstance(
                     item,
                     dict,
                 ):
+
                     raise ValueError(
-                        f"Image concept {index} "
-                        "must be an object."
+                        "Image concept "
+                        f"{index} must "
+                        "be an object."
                     )
 
                 normalized = dict(
@@ -639,6 +840,7 @@ FULL APPROVED STATE:
                 for field in (
                     required_concept_fields
                 ):
+
                     value = first_text(
                         normalized.get(
                             field
@@ -646,9 +848,11 @@ FULL APPROVED STATE:
                     )
 
                     if not value:
+
                         raise ValueError(
-                            f"Image concept {index} "
-                            f"is missing {field}."
+                            "Image concept "
+                            f"{index} is missing "
+                            f"{field}."
                         )
 
                     normalized[
@@ -667,13 +871,16 @@ FULL APPROVED STATE:
                 titles,
                 start=1,
             ):
+
                 if not isinstance(
                     item,
                     dict,
                 ):
+
                     raise ValueError(
-                        f"Title idea {index} "
-                        "must be an object."
+                        "Title idea "
+                        f"{index} must "
+                        "be an object."
                     )
 
                 normalized = dict(
@@ -687,6 +894,7 @@ FULL APPROVED STATE:
                 for field in (
                     required_title_fields
                 ):
+
                     value = first_text(
                         normalized.get(
                             field
@@ -694,9 +902,11 @@ FULL APPROVED STATE:
                     )
 
                     if not value:
+
                         raise ValueError(
-                            f"Title idea {index} "
-                            f"is missing {field}."
+                            "Title idea "
+                            f"{index} is missing "
+                            f"{field}."
                         )
 
                     normalized[
@@ -713,12 +923,14 @@ FULL APPROVED STATE:
             )
 
         except Exception as exc:
+
             last_error = exc
 
             if (
                 attempt
                 < EDITORIAL_MAX_ATTEMPTS
             ):
+
                 print(
                     "WARNING: Invalid/incomplete "
                     "design option package: "
@@ -733,6 +945,7 @@ FULL APPROVED STATE:
                 continue
 
     if last_error is not None:
+
         raise last_error
 
     raise RuntimeError(
@@ -740,6 +953,10 @@ FULL APPROVED STATE:
         "ended unexpectedly."
     )
 
+
+# ============================================================
+# Main
+# ============================================================
 
 def main() -> int:
 
@@ -751,8 +968,10 @@ def main() -> int:
         approved_state
     )
 
-    approved_story = find_approved_story(
-        approved_state
+    approved_story = (
+        find_approved_story(
+            approved_state
+        )
     )
 
     issue_date = issue_date_from(
@@ -769,6 +988,7 @@ def main() -> int:
     )
 
     package = {
+
         "state":
             "CONCEPTS_READY",
 
@@ -779,6 +999,10 @@ def main() -> int:
             datetime.now(
                 timezone.utc
             ).isoformat(),
+
+        # Preserve the complete Gate A approved
+        # state so later stages retain every field
+        # needed by website/X publication.
 
         "approved_story":
             approved_state,
@@ -802,6 +1026,7 @@ def main() -> int:
             [],
 
         "language_policy": {
+
             "primary_language":
                 "en",
 
@@ -815,7 +1040,12 @@ def main() -> int:
                 "english_master",
         },
 
+        # ----------------------------------------------------
+        # Human chooses ONE of the THREE concepts.
+        # ----------------------------------------------------
+
         "concept_selection_rule": {
+
             "valid_replies":
                 [
                     "1",
@@ -827,12 +1057,15 @@ def main() -> int:
                 "APPROVED_IMAGE_CONCEPT",
         },
 
+        # ----------------------------------------------------
+        # After concept selection:
+        # generate FIVE real images from that ONE concept.
+        # ----------------------------------------------------
+
         "real_image_flow": {
+
             "source":
                 "one_human_selected_concept",
-
-            "concept_count":
-                3,
 
             "candidate_count":
                 5,
@@ -841,7 +1074,18 @@ def main() -> int:
                 True,
         },
 
+        # ----------------------------------------------------
+        # Final selection:
+        #
+        # image = 1-5
+        # title = 1-3
+        #
+        # Example:
+        #   4 1
+        # ----------------------------------------------------
+
         "final_selection_rule": {
+
             "image_numbers":
                 [
                     1,
@@ -888,11 +1132,25 @@ def main() -> int:
     )
 
     print(
-        "Generated exactly 3 image concepts."
+        "Generated exactly "
+        f"{IMAGE_CONCEPT_COUNT} "
+        "image concepts."
     )
 
     print(
-        "Generated exactly 3 English title ideas."
+        "Generated exactly "
+        f"{TITLE_IDEA_COUNT} "
+        "English title ideas."
+    )
+
+    print(
+        "Concept selection replies: "
+        "1 / 2 / 3"
+    )
+
+    print(
+        "Real image count after "
+        "concept selection: 5"
     )
 
     print(
@@ -911,13 +1169,18 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+
     try:
+
         raise SystemExit(
             main()
         )
+
     except Exception as exc:
+
         print(
             f"ERROR: {exc}",
             file=sys.stderr,
         )
+
         raise
