@@ -1,0 +1,13 @@
+{
+  "action": "PUBLISH_COMPLETE_EMAIL_SENT",
+  "issue_date": "2026-08-22",
+  "sent_at": "2026-08-22T11:42:19.591553+00:00",
+  "website": "PUBLISHED",
+  "x": "X_POSTED",
+  "openai_cost_status": "UNAVAILABLE",
+  "openai_issue_day_cost_usd": null,
+  "openai_cost_note": "OPENAI_ADMIN_KEY is not configured. Add an OpenAI organization Admin API key to enable the official Costs API.",
+  "openai_credit_balance": "UNAVAILABLE_VIA_SUPPORTED_PUBLIC_API",
+  "gemini_cost": "NOT_REALTIME_AUTOMATED",
+  "gemini_credit_balance": "CHECK_AI_STUDIO"
+}
