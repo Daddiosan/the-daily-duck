@@ -323,9 +323,9 @@ def generate_options(
         "title_ideas": [
             {
                 "number": 1,
-                "title": "CATCHY DAILY DUCK POSTER COPY",
+                "title": "GENUINE ENGLISH DUCK PUN TITLE",
                 "meaning_ja": (
-                    "日本語の意味と、英語の言葉遊び・リズム・ニュアンスを簡潔に説明"
+                    "日本語の意味、元になった英語表現、ダジャレの仕組みを具体的に説明"
                 ),
             }
             for _ in range(TITLE_IDEA_COUNT)
@@ -412,86 +412,122 @@ Illustrative visual metaphor is allowed only when it does not
 falsely present invented details as factual.
 
 ============================================================
-TASK B — EXACTLY THREE DAILY DUCK POSTER-COPY TITLES
+TASK B — EXACTLY THREE GENUINE ENGLISH PUN TITLES
 ============================================================
 
-Create EXACTLY THREE short, catchy ENGLISH publication titles
-that feel like POSTER COPY rather than ordinary news headlines.
+Create EXACTLY THREE short, catchy ENGLISH publication titles.
 
-The Daily Duck title voice should be:
+CRITICAL REQUIREMENT:
+ALL THREE TITLES MUST CONTAIN A REAL, EXPLAINABLE ENGLISH PUN,
+WORDPLAY DEVICE, PHONETIC TWIST, IDIOM TWIST, OR RECOGNIZABLE
+PHRASE TRANSFORMATION.
+
+A title is NOT acceptable merely because it contains the words
+DUCK, QUACK, WADDLE, BILL, FEATHER, EGG, FLOCK, WEBBED, or BEAK.
+
+A valid title must have a clear wordplay mechanism that an
+English-speaking reader can understand.
+
+Examples of VALID wordplay mechanisms:
+- QUACK TO THE FUTURE! -> twist on "Back to the Future"
+- BILL-IEVE IT OR NOT! -> "believe it or not" using BILL
+- WADDLE IT TAKE? -> "what'll it take?"
+- QUACK OF DAWN! -> "crack of dawn"
+- EGG-CELLENT NEWS! -> "excellent"
+- DUCKING OUT OF SIGHT! -> "ducking" used with a double meaning
+
+Examples of INVALID titles:
+- AMAZING DUCK NEWS!
+- QUACKING DISCOVERY!
+- HAPPY WADDLE DAY!
+- DUCKS LOVE SCIENCE!
+These contain duck words but do NOT create meaningful wordplay.
+
+============================================================
+STYLE
+============================================================
+
+The titles should feel like POSTER COPY:
 - instantly readable
 - memorable
 - playful
 - visually punchy
 - warm rather than cynical
-- suitable for a poster, social card, or magazine cover
+- suitable for an X card, poster, or magazine cover
 
-Duck-related puns and wordplay are welcome when they fit naturally,
-but DO NOT force a duck pun into every title.
+Create three DIFFERENT pun styles:
 
-Useful duck-language vocabulary may include:
-- QUACK / QUACKING
-- DUCK / DUCKING
-- WADDLE
-- BILL
-- FEATHER / FEATHERS
-- EGG / EGG-CELLENT
-- FLOCK
-- WEBBED
-- BEAK
+1. PHRASE / IDIOM TWIST
+   Transform a recognizable English phrase, idiom, movie-title-like
+   phrase, proverb, or common expression into a duck-related version.
 
-IMPORTANT:
-The goal is NOT "maximum pun density."
-The goal is a catchy poster line that sounds like The Daily Duck.
+2. SOUND / DOUBLE-MEANING PUN
+   Use phonetic similarity, homophone-like wordplay, or a word with
+   a second meaning that fits both ducks and the approved story.
 
-Create three DIFFERENT styles:
+3. BIG POSTER PUN
+   The strongest, boldest, funniest headline that still fits the story.
 
-1. DUCK PUN
-   A natural, story-relevant duck pun or playful word twist.
+============================================================
+LENGTH
+============================================================
 
-2. SMART POSTER COPY
-   A clever, stylish, memorable line that may or may not use
-   explicit duck vocabulary.
+- Usually about 4 to 9 words.
+- Shorter is fine when the joke lands strongly.
+- Slightly longer is fine if the rhythm is excellent.
+- Avoid explanatory sentences.
 
-3. BIG PUNCH
-   The strongest, boldest, most poster-like line of the three.
+============================================================
+DIVERSITY RULE
+============================================================
 
-LENGTH:
-- Usually around 4 to 9 words.
-- Shorter is fine when the line is strong.
-- Slightly longer is fine when the rhythm is good.
-- Avoid long explanatory sentences.
+Do NOT make all three titles use QUACK.
+Do NOT make all three titles use the same pun mechanism.
+Use different duck-language vocabulary when possible.
 
-STYLE EXAMPLES ONLY:
-- QUACK TO THE FUTURE!
-- ONE SMALL WADDLE, ONE GIANT DISCOVERY!
-- WHALE, WHALE... WHAT HAVE WE HERE?
-- DUCKING INTO SOMETHING AMAZING!
-- WHAT THE DUCK?!
+Possible vocabulary includes:
+QUACK, QUACKING, DUCK, DUCKING, WADDLE, BILL, FEATHER,
+FEATHERS, EGG, EGG-CELLENT, FLOCK, WEBBED, BEAK.
 
-Do NOT copy these unless they genuinely fit the approved story.
+============================================================
+FACTUAL RULE
+============================================================
 
-QUALITY RULES:
-- English-speaking readers should understand the line immediately.
-- It must connect clearly to the approved story.
+- Every title must still relate clearly to the approved story.
 - Do not invent unsupported facts.
-- Avoid generic newspaper-style wording.
-- Avoid dry academic phrasing.
+- Do not distort the story just to make the pun work.
 - Avoid childish baby-talk.
-- Avoid awkward or incomprehensible forced puns.
-- Punchy punctuation is welcome when natural.
-- ALL CAPS is preferred for the final publication title.
-- At least ONE of the THREE titles should contain explicit
-  duck-themed wordplay when natural.
-- All three should still feel unmistakably like The Daily Duck.
+- Avoid obscure or incomprehensible wordplay.
+- English-speaking readers should be able to understand the joke.
 
-For each title, meaning_ja must explain:
-1. the natural Japanese meaning, and
-2. any English pun, wordplay, rhythm, or nuance.
+============================================================
+MANDATORY PUN EXPLANATION
+============================================================
 
-Before returning JSON, silently check:
-"Does this sound like poster copy?"
-If not, rewrite it.
+For EVERY title, meaning_ja must explain:
+
+1. the natural Japanese meaning,
+2. the exact English source phrase / word / idiom being played on,
+3. how the duck-related substitution or double meaning creates the pun.
+
+If you cannot clearly explain the source phrase or wordplay mechanism,
+the title is INVALID and must be rewritten before output.
+
+============================================================
+SELF-CHECK BEFORE OUTPUT
+============================================================
+
+Silently validate EACH title:
+
+A. What exact English phrase / word / idiom is the pun based on?
+B. What part was changed or given a double meaning?
+C. Would a native English reader recognize the joke?
+D. Does the title still fit the approved story?
+E. Is it short and punchy enough for poster copy?
+
+If any answer is weak or unclear, REWRITE THAT TITLE.
+
+ALL THREE titles must pass this test.
 
 ============================================================
 OUTPUT RULES
