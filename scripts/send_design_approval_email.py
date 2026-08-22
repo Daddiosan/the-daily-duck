@@ -5,6 +5,7 @@ import json
 import os
 import smtplib
 import sys
+from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
@@ -71,7 +72,10 @@ def first_text(
 
     for value in values:
         if (
-            isinstance(value, str)
+            isinstance(
+                value,
+                str,
+            )
             and value.strip()
         ):
             return value.strip()
@@ -91,10 +95,16 @@ def validate_package(
         package.get("state")
     ).upper()
 
-    if state != "CONCEPTS_READY":
+    # This script may be run once after generation.
+    # It may also be re-run safely while already waiting.
+    if state not in (
+        "CONCEPTS_READY",
+        "WAITING_CONCEPT_SELECTION",
+    ):
         raise ValueError(
             "Design approval email requires "
-            "state CONCEPTS_READY; "
+            "CONCEPTS_READY or "
+            "WAITING_CONCEPT_SELECTION; "
             f"got {state!r}."
         )
 
@@ -103,7 +113,10 @@ def validate_package(
     )
 
     if (
-        not isinstance(concepts, list)
+        not isinstance(
+            concepts,
+            list,
+        )
         or len(concepts)
         != EXPECTED_CONCEPT_COUNT
     ):
@@ -118,7 +131,10 @@ def validate_package(
     )
 
     if (
-        not isinstance(titles, list)
+        not isinstance(
+            titles,
+            list,
+        )
         or len(titles)
         != EXPECTED_TITLE_COUNT
     ):
@@ -132,6 +148,7 @@ def validate_package(
         concepts,
         start=1,
     ):
+
         if not isinstance(
             concept,
             dict,
@@ -155,6 +172,7 @@ def validate_package(
         titles,
         start=1,
     ):
+
         if not isinstance(
             title,
             dict,
@@ -188,27 +206,39 @@ def format_concept(
     )
 
     title_en = first_text(
-        concept.get("title_en")
+        concept.get(
+            "title_en"
+        )
     )
 
     concept_en = first_text(
-        concept.get("concept_en")
+        concept.get(
+            "concept_en"
+        )
     )
 
     composition_en = first_text(
-        concept.get("composition_en")
+        concept.get(
+            "composition_en"
+        )
     )
 
     title_ja = first_text(
-        concept.get("title_ja")
+        concept.get(
+            "title_ja"
+        )
     )
 
     concept_ja = first_text(
-        concept.get("concept_ja")
+        concept.get(
+            "concept_ja"
+        )
     )
 
     composition_ja = first_text(
-        concept.get("composition_ja")
+        concept.get(
+            "composition_ja"
+        )
     )
 
     return f"""
@@ -263,11 +293,15 @@ def format_title(
     )
 
     title_text = first_text(
-        title.get("title")
+        title.get(
+            "title"
+        )
     )
 
     meaning_ja = first_text(
-        title.get("meaning_ja")
+        title.get(
+            "meaning_ja"
+        )
     )
 
     return f"""
@@ -289,8 +323,12 @@ def build_email(
 ) -> tuple[str, str]:
 
     issue_date = first_text(
-        package.get("issue_date"),
-        package.get("date"),
+        package.get(
+            "issue_date"
+        ),
+        package.get(
+            "date"
+        ),
     )
 
     if not issue_date:
@@ -307,18 +345,22 @@ def build_email(
         "title_ideas"
     ]
 
-    concept_sections = "\n\n\n".join(
-        format_concept(
-            concept
+    concept_sections = (
+        "\n\n\n".join(
+            format_concept(
+                concept
+            )
+            for concept in concepts
         )
-        for concept in concepts
     )
 
-    title_sections = "\n\n".join(
-        format_title(
-            title
+    title_sections = (
+        "\n\n".join(
+            format_title(
+                title
+            )
+            for title in titles
         )
-        for title in titles
     )
 
     subject = (
@@ -402,10 +444,7 @@ IMPORTANT
 ==================================================
 
 この段階では、
-
-「画像コンセプト」
-
-だけを選択します。
+画像コンセプトだけを選択します。
 
 タイトル番号はまだ返信しないでください。
 
@@ -451,11 +490,9 @@ X
 
 NEXT 5
 
-全角入力:
+または
 
 ＮＥＸＴ ５
-
-にも対応します。
 
 
 No website or X publication occurs
@@ -502,17 +539,19 @@ def send_email(
 
     message = EmailMessage()
 
-    message["From"] = (
-        gmail_address
+    message[
+        "From"
+    ] = gmail_address
+
+    message[
+        "To"
+    ] = ", ".join(
+        recipients
     )
 
-    message["To"] = (
-        ", ".join(recipients)
-    )
-
-    message["Subject"] = (
-        subject
-    )
+    message[
+        "Subject"
+    ] = subject
 
     message.set_content(
         body
@@ -539,6 +578,57 @@ def send_email(
 
 
 # ============================================================
+# Persist waiting state
+# ============================================================
+
+def mark_waiting_for_concept_selection(
+    package: dict[str, Any],
+    subject: str,
+) -> None:
+
+    package[
+        "state"
+    ] = "WAITING_CONCEPT_SELECTION"
+
+    package[
+        "concept_email_subject"
+    ] = subject
+
+    package[
+        "email_subject"
+    ] = subject
+
+    package[
+        "concept_email_sent_at"
+    ] = datetime.now(
+        timezone.utc
+    ).isoformat()
+
+    package[
+        "concept_selection_rule"
+    ] = {
+        "valid_replies": [
+            "1",
+            "2",
+            "3",
+        ],
+        "full_width_supported": True,
+        "next_state":
+            "APPROVED_IMAGE_CONCEPT",
+    }
+
+    OPTIONS_PATH.write_text(
+        json.dumps(
+            package,
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+# ============================================================
 # Main
 # ============================================================
 
@@ -561,13 +651,23 @@ def main() -> int:
         body,
     )
 
+    # IMPORTANT:
+    # Only advance the state AFTER the email was
+    # successfully sent.
+    mark_waiting_for_concept_selection(
+        package,
+        subject,
+    )
+
     print(
         "Design selection email sent."
     )
 
     print(
         "Issue date:",
-        package.get("issue_date"),
+        package.get(
+            "issue_date"
+        ),
     )
 
     print(
@@ -589,7 +689,7 @@ def main() -> int:
     )
 
     print(
-        "Full-width replies also supported:"
+        "Full-width replies:"
     )
 
     print(
@@ -606,7 +706,8 @@ def main() -> int:
     )
 
     print(
-        "STATE: CONCEPTS_READY"
+        "STATE: "
+        "WAITING_CONCEPT_SELECTION"
     )
 
     return 0
@@ -615,6 +716,7 @@ def main() -> int:
 if __name__ == "__main__":
 
     try:
+
         raise SystemExit(
             main()
         )
