@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-21",
-  "generated_at": "2026-08-22T07:43:25.018678+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-22T09:49:22.912831+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-21",
     "issue_date": "2026-08-21",
     "phase": 2,
@@ -561,52 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-22T07:18:50.588085+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 31,
-    "title": "Your high school friends may shape whether you become an entrepreneur decades later",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-08-high-school-friends-entrepreneur-decades.html",
-    "category": "people",
-    "happiness": 8,
-    "hope": 9,
-    "general_interest": 9,
-    "surprise": 7,
-    "duck_visual": 7,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 85,
-    "reason": "A heartwarming and relatable story celebrating how teenage friendships foster lifelong ambition and entrepreneurial spirit.",
-    "candidate_number": 2,
-    "title_en": "High School Friendships Help Fuel Entrepreneurial Dreams Decades Later",
-    "reason_en": "This story explores how high school friendships can inspire lifelong ambition and help people become entrepreneurs decades later.",
-    "en_copy": "The bond you shared with your high school classmates might be doing more work than you think! Researchers found that teenage friendships can shape whether someone becomes an entrepreneur decades later. Connecting with supportive friends early in life can spark ambitions that last a lifetime.",
-    "duck_name": "High School Buddy",
-    "duck_en": "Quack! Friendship is the ultimate business partner!",
-    "x_en": "Did you know high school friendships can influence whether you start a business decades later? Teenage bonds help inspire lifelong ambition!",
-    "title_ja": "高校時代の友情が、数十年後の起業家への道を後押し？",
-    "reason_ja": "高校時代の友人が、数十年後に起業家になるかどうかに影響を与える可能性があるという、友情と野心を称える心温まるストーリーです。",
-    "jp_copy": "高校時代に築いた友人との絆は、私たちが思う以上の影響力を持っているのかもしれません。研究によると、10代の頃の友情が数十年後に起業家になるかどうかに影響を与えることが分かりました。若い頃の温かい友達とのつながりが、生涯続く抱負や挑戦する心を育みます。",
-    "duck_jp": "クワック！友情こそが最高のビジネスパートナーだね！",
-    "x_jp": "高校時代の友情が、数十年後に起業するかどうかに影響を与えるかも？若い頃の絆が生涯の夢や挑戦を後押ししてくれます！"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "From Classroom to CEO Desk",
-      "concept_en": "Visualizing the trajectory from high school memories to modern entrepreneurial success through a blended desk scene featuring nostalgic yearbook elements alongside sleek startup tools.",
-      "composition_en": "A wide landscape editorial view of a sleek wooden office desk in soft morning daylight. The friendly yellow duck mascot stands beside an open high school yearbook resting next to a modern laptop and a warm cup of coffee, looking with inspiration at the memory.",
-      "generation_prompt_en": "A clean modern editorial hero image featuring a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, and a small feather tuft. The duck stands on a sleek wooden office desk bathed in soft warm morning sunlight. On the desk sits an open high school yearbook alongside a minimalist modern laptop and a ceramic coffee mug. Warm, cozy, inspiring atmosphere, high-end editorial photography style, soft depth of field, neutral warm background, no text, no logos.",
-      "alt_en": "A yellow duck mascot looking warmly at an open high school yearbook resting on a modern startup office desk.",
-      "title_ja": "教室の思い出から起業家のデスクへ",
-      "concept_ja": "高校時代の思い出の卒業アルバムと現代の起業デスクを組み合わせることで、過去の友情が現在の起業活動に繋がっている軌跡を視覚化するコンセプト。",
-      "composition_ja": "朝の柔らかい光が差し込むモダンな木製デスクの横長構図。広げられた卒業アルバムとノートPCの横に、アヒルのマスコットが立ち、思い出を温かく見つめています。",
-      "alt_ja": "モダンなオフィスのデスクで、開かれた卒業アルバムを温かく見つめる黄色の文脈アヒルのマスコット。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "Early Sparks of Ambition",
       "concept_en": "Capturing the spirit of teenage brainstorming where shared ideas and mutual encouragement in school plant the initial seeds of future business ventures.",
@@ -618,36 +575,9 @@
       "composition_ja": "太陽光が爽やかに差し込む学習スペース。アヒルのマスコットが、色とりどりのアイディアノートやスケッチに囲まれた木製テーブルに座り、未来への野心を膨らませています。",
       "alt_ja": "光が差し込むテーブルで、ノートやスケッチに囲まれ嬉しそうに座る黄色の文脈アヒルのマスコット。"
     },
-    {
-      "number": 3,
-      "title_en": "Nurturing the Seeds of Success",
-      "concept_en": "An elegant visual metaphor of a fresh green seedling nurtured on a desk, representing how early high school bonds act as nutrient-rich roots for lifelong success.",
-      "composition_en": "A clean studio visual metaphor featuring a small potted green plant sprouting out of a desk setting. The friendly yellow duck mascot holds a tiny watering can with a cheerful expression, symbolic of nourishing early friendships into thriving dreams.",
-      "generation_prompt_en": "A clean, modern visual metaphor visual in landscape orientation. The friendly yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft joyfully holds a miniature watering can beside a small, vibrant green plant seedling growing in a simple wooden pot on a bright desk. Soft natural lighting, elegant pastel backplate, high-end commercial aesthetic, clean focal point, no text, no logos.",
-      "alt_en": "The yellow duck mascot holding a miniature watering can next to a growing green plant seedling on a desk.",
-      "title_ja": "成功の種を育む友情の絆",
-      "concept_ja": "10代の友情という土壌で育った小さな芽が、時間をかけて大きな挑戦へと実を結ぶ様子を「植物の若芽」で表現した視覚的メタファーのコンセプト。",
-      "composition_ja": "明るくシンプルなデスク環境。アヒルのマスコットが小さなジョウロを持ち、鉢植えの青々とした新芽に水をやるような心温まる構図。",
-      "alt_ja": "デスクの上で小さな緑の若芽の隣に立ち、ミニチュアのジョウロを持つ黄色の文脈アヒルのマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "The High School Spark",
-      "meaning_ja": "高校時代に芽生えた友情や刺激が、数十年後の起業の火種になることを表現した短く魅力的なタイトル。"
-    },
-    {
-      "number": 2,
-      "title": "Classmates to Founders",
-      "meaning_ja": "高校の同級生という関係が、将来の起業家としての道を開く後押しになるストーリーをストレートに伝えるタイトル。"
-    },
-    {
-      "number": 3,
-      "title": "The Decades-Long Bond",
-      "meaning_ja": "10代の頃に築いた絆が、数十年という長い年月を超えて挑戦する心を支え続ける温かさを描くタイトル。"
-    }
-  ],
+    "selected_title_number": 1,
+    "selected_title": "The High School Spark"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -661,117 +591,39 @@
     "composition_ja": "太陽光が爽やかに差し込む学習スペース。アヒルのマスコットが、色とりどりのアイディアノートやスケッチに囲まれた木製テーブルに座り、未来への野心を膨らませています。",
     "alt_ja": "光が差し込むテーブルで、ノートやスケッチに囲まれ嬉しそうに座る黄色の文脈アヒルのマスコット。"
   },
-  "design_previews": [
-    {
-      "number": 1,
-      "variation_number": 1,
-      "variation_recipe": "VARIATION 1 — ESTABLISHING EDITORIAL VIEW\n\n- Use a wider establishing composition.\n- Show enough of the environment to communicate the selected concept clearly.\n- Keep the yellow duck as the unmistakable focal point.\n- Camera approximately at eye level.\n- Use clean editorial negative space.\n- Calm, balanced, warm composition.",
-      "batch_number": 1,
-      "selected_concept_number": 2,
-      "concept_title_en": "Early Sparks of Ambition",
-      "concept_title_ja": "若き日に芽生えた野心とアイディア",
-      "image_path": "automation_images/design_previews/2026-08-21/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "205175fb4d851e2c2da9eb5c83df2187c42fc37327e240050954afb057046f6a",
-      "generation_prompt": "Create ONE polished, publishable hero-image candidate\nfor The Daily Duck.\n\n============================================================\nLANGUAGE POLICY\n============================================================\n\nAll generation direction is canonical English.\n\nDo not place Japanese or any other readable text\ninside the generated image.\n\n============================================================\nAPPROVED STORY — LOCKED\n============================================================\n\nHeadline:\nHigh School Friendships Help Fuel Entrepreneurial Dreams Decades Later\n\nSummary:\nThis story explores how high school friendships can inspire lifelong ambition and help people become entrepreneurs decades later.\n\nSource:\nPhys.org\n\n============================================================\nHUMAN-SELECTED IMAGE CONCEPT — LOCKED\n============================================================\n\nConcept title:\nEarly Sparks of Ambition\n\nConcept:\nCapturing the spirit of teenage brainstorming where shared ideas and mutual encouragement in school plant the initial seeds of future business ventures.\n\nComposition:\nA vibrant high school study room setup where the friendly yellow duck mascot sits proudly at a wooden table surrounded by colorful brainstorming pads, creative sketches, and a drawn idea map under bright, encouraging sunlight.\n\nProduction direction:\nA warm and charming editorial visual in a sunlit study space. The friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft sits happily at a wooden table surrounded by colorful creative notebooks and sketchpads. Bright natural light pouring through large windows creates an optimistic, ambitious atmosphere. Clean aesthetic, single visual focus on the duck mascot, gentle blurred background, premium editorial magazine style, no text, no logos.\n\n============================================================\nCURRENT IMAGE\n============================================================\n\nReal-image batch:\n1\n\nVariation:\n1 of 3\n\nThe THREE images must all represent the SAME\nhuman-selected concept.\n\nThey must NOT be duplicate renders.\n\n============================================================\nMANDATORY VARIATION RECIPE\n============================================================\n\nVARIATION 1 — ESTABLISHING EDITORIAL VIEW\n\n- Use a wider establishing composition.\n- Show enough of the environment to communicate the selected concept clearly.\n- Keep the yellow duck as the unmistakable focal point.\n- Camera approximately at eye level.\n- Use clean editorial negative space.\n- Calm, balanced, warm composition.\n\n\n\n============================================================\nDISTINCTNESS REQUIREMENT\n============================================================\n\nCompared with the other two candidates,\nthis image must be visibly different in\nat least THREE of these execution dimensions:\n\n- camera distance\n- camera angle\n- duck pose\n- duck placement in frame\n- crop\n- foreground/background depth\n- lighting direction\n- prop placement\n- body orientation\n\nDo NOT merely change tiny facial details,\ntextures or lighting.\n\n============================================================\nCRITICAL CONCEPT LOCK\n============================================================\n\nThe following are LOCKED:\n\n- approved news story\n- selected image concept\n- central visual metaphor\n- setting\n- Daily Duck mascot identity\n\nDo NOT:\n\n- switch to another concept\n- invent a new central scene\n- replace the setting\n- change the story\n- add unsupported factual details\n\n============================================================\nTHE DAILY DUCK MASCOT\n============================================================\n\nPreserve:\n\n- recognizable friendly yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm approachable expression\n- consistent mascot identity\n- consistent mascot proportions\n\n============================================================\nSTYLE\n============================================================\n\n- clean\n- modern\n- charming\n- warm\n- premium editorial\n- simple rather than overly vintage\n- polished\n- strong focal point\n- landscape hero composition\n- suitable for website publication\n\n============================================================\nDO NOT INCLUDE\n============================================================\n\n- headlines\n- captions\n- readable text\n- numbers\n- logos\n- watermarks\n- UI\n- X card borders or overlays\n\n============================================================\nFACTUAL RULE\n============================================================\n\nDo not invent factual, scientific,\ngeographic, organizational or biographical\ndetails beyond what the approved story supports.\n\nGenerate a genuinely distinct execution\nof the SAME selected concept."
-    },
-    {
-      "number": 2,
-      "variation_number": 2,
-      "variation_recipe": "VARIATION 2 — CLOSE HERO VIEW\n\n- Use a substantially closer composition than Variation 1.\n- Make the duck occupy significantly more of the frame.\n- Use a slightly lower or three-quarter camera angle.\n- Emphasize expression and body language.\n- Simplify the background and create strong subject separation.\n- Preserve the exact same selected concept.",
-      "batch_number": 1,
-      "selected_concept_number": 2,
-      "concept_title_en": "Early Sparks of Ambition",
-      "concept_title_ja": "若き日に芽生えた野心とアイディア",
-      "image_path": "automation_images/design_previews/2026-08-21/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "b1ed3ae8df3776d4d3c29efac3a67b28b7605fd403778b078ec4e5f414511de1",
-      "generation_prompt": "Create ONE polished, publishable hero-image candidate\nfor The Daily Duck.\n\n============================================================\nLANGUAGE POLICY\n============================================================\n\nAll generation direction is canonical English.\n\nDo not place Japanese or any other readable text\ninside the generated image.\n\n============================================================\nAPPROVED STORY — LOCKED\n============================================================\n\nHeadline:\nHigh School Friendships Help Fuel Entrepreneurial Dreams Decades Later\n\nSummary:\nThis story explores how high school friendships can inspire lifelong ambition and help people become entrepreneurs decades later.\n\nSource:\nPhys.org\n\n============================================================\nHUMAN-SELECTED IMAGE CONCEPT — LOCKED\n============================================================\n\nConcept title:\nEarly Sparks of Ambition\n\nConcept:\nCapturing the spirit of teenage brainstorming where shared ideas and mutual encouragement in school plant the initial seeds of future business ventures.\n\nComposition:\nA vibrant high school study room setup where the friendly yellow duck mascot sits proudly at a wooden table surrounded by colorful brainstorming pads, creative sketches, and a drawn idea map under bright, encouraging sunlight.\n\nProduction direction:\nA warm and charming editorial visual in a sunlit study space. The friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft sits happily at a wooden table surrounded by colorful creative notebooks and sketchpads. Bright natural light pouring through large windows creates an optimistic, ambitious atmosphere. Clean aesthetic, single visual focus on the duck mascot, gentle blurred background, premium editorial magazine style, no text, no logos.\n\n============================================================\nCURRENT IMAGE\n============================================================\n\nReal-image batch:\n1\n\nVariation:\n2 of 3\n\nThe THREE images must all represent the SAME\nhuman-selected concept.\n\nThey must NOT be duplicate renders.\n\n============================================================\nMANDATORY VARIATION RECIPE\n============================================================\n\nVARIATION 2 — CLOSE HERO VIEW\n\n- Use a substantially closer composition than Variation 1.\n- Make the duck occupy significantly more of the frame.\n- Use a slightly lower or three-quarter camera angle.\n- Emphasize expression and body language.\n- Simplify the background and create strong subject separation.\n- Preserve the exact same selected concept.\n\n\n\n============================================================\nDISTINCTNESS REQUIREMENT\n============================================================\n\nCompared with the other two candidates,\nthis image must be visibly different in\nat least THREE of these execution dimensions:\n\n- camera distance\n- camera angle\n- duck pose\n- duck placement in frame\n- crop\n- foreground/background depth\n- lighting direction\n- prop placement\n- body orientation\n\nDo NOT merely change tiny facial details,\ntextures or lighting.\n\n============================================================\nCRITICAL CONCEPT LOCK\n============================================================\n\nThe following are LOCKED:\n\n- approved news story\n- selected image concept\n- central visual metaphor\n- setting\n- Daily Duck mascot identity\n\nDo NOT:\n\n- switch to another concept\n- invent a new central scene\n- replace the setting\n- change the story\n- add unsupported factual details\n\n============================================================\nTHE DAILY DUCK MASCOT\n============================================================\n\nPreserve:\n\n- recognizable friendly yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm approachable expression\n- consistent mascot identity\n- consistent mascot proportions\n\n============================================================\nSTYLE\n============================================================\n\n- clean\n- modern\n- charming\n- warm\n- premium editorial\n- simple rather than overly vintage\n- polished\n- strong focal point\n- landscape hero composition\n- suitable for website publication\n\n============================================================\nDO NOT INCLUDE\n============================================================\n\n- headlines\n- captions\n- readable text\n- numbers\n- logos\n- watermarks\n- UI\n- X card borders or overlays\n\n============================================================\nFACTUAL RULE\n============================================================\n\nDo not invent factual, scientific,\ngeographic, organizational or biographical\ndetails beyond what the approved story supports.\n\nGenerate a genuinely distinct execution\nof the SAME selected concept."
-    },
-    {
-      "number": 3,
-      "variation_number": 3,
-      "variation_recipe": "VARIATION 3 — DYNAMIC STORY VIEW\n\n- Create the most dynamic storytelling version of the same concept.\n- Use a clearly different camera position and crop.\n- Show the duck interacting naturally with the concept's key visual element.\n- Use stronger foreground/background depth or a diagonal composition.\n- Preserve the same story, setting and central visual concept.",
-      "batch_number": 1,
-      "selected_concept_number": 2,
-      "concept_title_en": "Early Sparks of Ambition",
-      "concept_title_ja": "若き日に芽生えた野心とアイディア",
-      "image_path": "automation_images/design_previews/2026-08-21/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1536x1024",
-      "quality": "medium",
-      "sha256": "4da3b993489e1b087d35bce91859fffad4ed788e64d7a5e8794d720480ba0c4b",
-      "generation_prompt": "Create ONE polished, publishable hero-image candidate\nfor The Daily Duck.\n\n============================================================\nLANGUAGE POLICY\n============================================================\n\nAll generation direction is canonical English.\n\nDo not place Japanese or any other readable text\ninside the generated image.\n\n============================================================\nAPPROVED STORY — LOCKED\n============================================================\n\nHeadline:\nHigh School Friendships Help Fuel Entrepreneurial Dreams Decades Later\n\nSummary:\nThis story explores how high school friendships can inspire lifelong ambition and help people become entrepreneurs decades later.\n\nSource:\nPhys.org\n\n============================================================\nHUMAN-SELECTED IMAGE CONCEPT — LOCKED\n============================================================\n\nConcept title:\nEarly Sparks of Ambition\n\nConcept:\nCapturing the spirit of teenage brainstorming where shared ideas and mutual encouragement in school plant the initial seeds of future business ventures.\n\nComposition:\nA vibrant high school study room setup where the friendly yellow duck mascot sits proudly at a wooden table surrounded by colorful brainstorming pads, creative sketches, and a drawn idea map under bright, encouraging sunlight.\n\nProduction direction:\nA warm and charming editorial visual in a sunlit study space. The friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft sits happily at a wooden table surrounded by colorful creative notebooks and sketchpads. Bright natural light pouring through large windows creates an optimistic, ambitious atmosphere. Clean aesthetic, single visual focus on the duck mascot, gentle blurred background, premium editorial magazine style, no text, no logos.\n\n============================================================\nCURRENT IMAGE\n============================================================\n\nReal-image batch:\n1\n\nVariation:\n3 of 3\n\nThe THREE images must all represent the SAME\nhuman-selected concept.\n\nThey must NOT be duplicate renders.\n\n============================================================\nMANDATORY VARIATION RECIPE\n============================================================\n\nVARIATION 3 — DYNAMIC STORY VIEW\n\n- Create the most dynamic storytelling version of the same concept.\n- Use a clearly different camera position and crop.\n- Show the duck interacting naturally with the concept's key visual element.\n- Use stronger foreground/background depth or a diagonal composition.\n- Preserve the same story, setting and central visual concept.\n\n\n\n============================================================\nDISTINCTNESS REQUIREMENT\n============================================================\n\nCompared with the other two candidates,\nthis image must be visibly different in\nat least THREE of these execution dimensions:\n\n- camera distance\n- camera angle\n- duck pose\n- duck placement in frame\n- crop\n- foreground/background depth\n- lighting direction\n- prop placement\n- body orientation\n\nDo NOT merely change tiny facial details,\ntextures or lighting.\n\n============================================================\nCRITICAL CONCEPT LOCK\n============================================================\n\nThe following are LOCKED:\n\n- approved news story\n- selected image concept\n- central visual metaphor\n- setting\n- Daily Duck mascot identity\n\nDo NOT:\n\n- switch to another concept\n- invent a new central scene\n- replace the setting\n- change the story\n- add unsupported factual details\n\n============================================================\nTHE DAILY DUCK MASCOT\n============================================================\n\nPreserve:\n\n- recognizable friendly yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm approachable expression\n- consistent mascot identity\n- consistent mascot proportions\n\n============================================================\nSTYLE\n============================================================\n\n- clean\n- modern\n- charming\n- warm\n- premium editorial\n- simple rather than overly vintage\n- polished\n- strong focal point\n- landscape hero composition\n- suitable for website publication\n\n============================================================\nDO NOT INCLUDE\n============================================================\n\n- headlines\n- captions\n- readable text\n- numbers\n- logos\n- watermarks\n- UI\n- X card borders or overlays\n\n============================================================\nFACTUAL RULE\n============================================================\n\nDo not invent factual, scientific,\ngeographic, organizational or biographical\ndetails beyond what the approved story supports.\n\nGenerate a genuinely distinct execution\nof the SAME selected concept."
-    }
-  ],
-  "language_policy": {
-    "primary_language": "en",
-    "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "concept_selection_rule": {
-    "valid_replies": [
-      "1",
-      "2",
-      "3"
-    ],
-    "full_width_supported": true,
-    "next_state": "APPROVED_IMAGE_CONCEPT"
-  },
-  "real_image_flow": {
-    "source": "one_human_selected_concept",
-    "candidate_count": 3,
-    "next_3_supported": true,
-    "concept_remains_locked_on_next": true
-  },
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "2 1",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "concept_email_subject": "The Daily Duck — Choose Image Concept — 2026-08-21",
-  "email_subject": "The Daily Duck — Final Image & Title Selection — 2026-08-21 — Batch 1",
-  "concept_email_sent_at": "2026-08-22T07:43:26.479015+00:00",
-  "concept_approval_reply": "2",
-  "concept_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "concept_selected_at": "2026-08-22T07:54:16.338422+00:00",
-  "preview_batch_number": 1,
-  "image_provider": "OpenAI",
-  "image_model": "gpt-image-2",
-  "image_size": "1536x1024",
-  "image_quality": "medium",
-  "preview_batch_path": "automation_images/design_previews/2026-08-21/batch_01",
-  "preview_candidate_count": 3,
-  "preview_generation_rule": "Exactly three visibly distinct execution-level variations generated from the one locked human-selected concept.",
-  "final_email_subject": "The Daily Duck — Final Image & Title Selection — 2026-08-21 — Batch 1",
-  "final_email_sent_at": "2026-08-22T09:46:39.163791+00:00",
   "selected_image_number": 2,
   "selected_title_number": 1,
   "selected_title": "The High School Spark",
-  "final_selection_reply": "2 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-22T09:49:22.913750+00:00"
+  "selected_title_detail": {
+    "number": 1,
+    "title": "The High School Spark",
+    "meaning_ja": "高校時代に芽生えた友情や刺激が、数十年後の起業の火種になることを表現した短く魅力的なタイトル。"
+  },
+  "selected_preview": {
+    "number": 2,
+    "variation_number": 2,
+    "variation_recipe": "VARIATION 2 — CLOSE HERO VIEW\n\n- Use a substantially closer composition than Variation 1.\n- Make the duck occupy significantly more of the frame.\n- Use a slightly lower or three-quarter camera angle.\n- Emphasize expression and body language.\n- Simplify the background and create strong subject separation.\n- Preserve the exact same selected concept.",
+    "batch_number": 1,
+    "selected_concept_number": 2,
+    "concept_title_en": "Early Sparks of Ambition",
+    "concept_title_ja": "若き日に芽生えた野心とアイディア",
+    "image_path": "automation_images/design_previews/2026-08-21/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1536x1024",
+    "quality": "medium",
+    "sha256": "b1ed3ae8df3776d4d3c29efac3a67b28b7605fd403778b078ec4e5f414511de1",
+    "generation_prompt": "Create ONE polished, publishable hero-image candidate\nfor The Daily Duck.\n\n============================================================\nLANGUAGE POLICY\n============================================================\n\nAll generation direction is canonical English.\n\nDo not place Japanese or any other readable text\ninside the generated image.\n\n============================================================\nAPPROVED STORY — LOCKED\n============================================================\n\nHeadline:\nHigh School Friendships Help Fuel Entrepreneurial Dreams Decades Later\n\nSummary:\nThis story explores how high school friendships can inspire lifelong ambition and help people become entrepreneurs decades later.\n\nSource:\nPhys.org\n\n============================================================\nHUMAN-SELECTED IMAGE CONCEPT — LOCKED\n============================================================\n\nConcept title:\nEarly Sparks of Ambition\n\nConcept:\nCapturing the spirit of teenage brainstorming where shared ideas and mutual encouragement in school plant the initial seeds of future business ventures.\n\nComposition:\nA vibrant high school study room setup where the friendly yellow duck mascot sits proudly at a wooden table surrounded by colorful brainstorming pads, creative sketches, and a drawn idea map under bright, encouraging sunlight.\n\nProduction direction:\nA warm and charming editorial visual in a sunlit study space. The friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft sits happily at a wooden table surrounded by colorful creative notebooks and sketchpads. Bright natural light pouring through large windows creates an optimistic, ambitious atmosphere. Clean aesthetic, single visual focus on the duck mascot, gentle blurred background, premium editorial magazine style, no text, no logos.\n\n============================================================\nCURRENT IMAGE\n============================================================\n\nReal-image batch:\n1\n\nVariation:\n2 of 3\n\nThe THREE images must all represent the SAME\nhuman-selected concept.\n\nThey must NOT be duplicate renders.\n\n============================================================\nMANDATORY VARIATION RECIPE\n============================================================\n\nVARIATION 2 — CLOSE HERO VIEW\n\n- Use a substantially closer composition than Variation 1.\n- Make the duck occupy significantly more of the frame.\n- Use a slightly lower or three-quarter camera angle.\n- Emphasize expression and body language.\n- Simplify the background and create strong subject separation.\n- Preserve the exact same selected concept.\n\n\n\n============================================================\nDISTINCTNESS REQUIREMENT\n============================================================\n\nCompared with the other two candidates,\nthis image must be visibly different in\nat least THREE of these execution dimensions:\n\n- camera distance\n- camera angle\n- duck pose\n- duck placement in frame\n- crop\n- foreground/background depth\n- lighting direction\n- prop placement\n- body orientation\n\nDo NOT merely change tiny facial details,\ntextures or lighting.\n\n============================================================\nCRITICAL CONCEPT LOCK\n============================================================\n\nThe following are LOCKED:\n\n- approved news story\n- selected image concept\n- central visual metaphor\n- setting\n- Daily Duck mascot identity\n\nDo NOT:\n\n- switch to another concept\n- invent a new central scene\n- replace the setting\n- change the story\n- add unsupported factual details\n\n============================================================\nTHE DAILY DUCK MASCOT\n============================================================\n\nPreserve:\n\n- recognizable friendly yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm approachable expression\n- consistent mascot identity\n- consistent mascot proportions\n\n============================================================\nSTYLE\n============================================================\n\n- clean\n- modern\n- charming\n- warm\n- premium editorial\n- simple rather than overly vintage\n- polished\n- strong focal point\n- landscape hero composition\n- suitable for website publication\n\n============================================================\nDO NOT INCLUDE\n============================================================\n\n- headlines\n- captions\n- readable text\n- numbers\n- logos\n- watermarks\n- UI\n- X card borders or overlays\n\n============================================================\nFACTUAL RULE\n============================================================\n\nDo not invent factual, scientific,\ngeographic, organizational or biographical\ndetails beyond what the approved story supports.\n\nGenerate a genuinely distinct execution\nof the SAME selected concept."
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-21.png",
+  "design_approval_reply": "2 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
 }
