@@ -31,11 +31,41 @@ TEXT_MODEL = (
 
 
 # ============================================================
-# Generation settings
+# Current Daily Duck design specification
+# ============================================================
+#
+# Gate A:
+#   5 story candidates
+#
+# Design concept stage:
+#   3 image concepts
+#   3 title ideas
+#
+# Human selects:
+#   1 / 2 / 3
+#
+# Real image stage:
+#   exactly 3 real images from ONE locked concept
+#
+# Regeneration:
+#   NEXT 3
+#
+# Final selection:
+#   IMAGE_NUMBER TITLE_NUMBER
+#
+# Example:
+#   2 1
+#
 # ============================================================
 
 IMAGE_CONCEPT_COUNT = 3
 TITLE_IDEA_COUNT = 3
+REAL_IMAGE_COUNT = 3
+
+
+# ============================================================
+# Retry settings
+# ============================================================
 
 EDITORIAL_MAX_ATTEMPTS = int(
     os.getenv(
@@ -413,7 +443,7 @@ def call_gemini_with_retry(
 
 
 # ============================================================
-# Generate concepts + title ideas
+# Generate exactly 3 concepts + 3 title ideas
 # ============================================================
 
 def generate_options(
@@ -423,15 +453,6 @@ def generate_options(
     list[dict[str, Any]],
     list[dict[str, Any]],
 ]:
-    """
-    Generate:
-
-      - exactly THREE image concepts
-      - exactly THREE English title options
-
-    English is canonical.
-    Japanese fields are review translations only.
-    """
 
     client = genai.Client(
         api_key=required_env(
@@ -463,7 +484,7 @@ def generate_options(
                 "generation_prompt_en":
                     (
                         "Production-ready English prompt "
-                        "for generating five real variations "
+                        "for generating three real variations "
                         "of this same concept later"
                     ),
 
@@ -531,7 +552,7 @@ for the approved story.
 
 Do NOT create four or five concepts.
 
-Return exactly concepts:
+Return exactly:
 
 1
 2
@@ -545,35 +566,39 @@ For every concept, create the English master fields FIRST:
 4. generation_prompt_en
 5. alt_en
 
-Only after the English master is complete, create the Japanese
-review translations:
+Only after the English master is complete,
+create the Japanese review translations:
 
 6. title_ja
 7. concept_ja
 8. composition_ja
 9. alt_ja
 
-The THREE concepts must be meaningfully different visual approaches,
-but all THREE must represent the SAME approved story.
+The THREE concepts must be meaningfully different
+visual approaches, but all THREE must represent
+the SAME approved story.
 
 The human will select exactly ONE concept.
 
-After that selection, the system will generate EXACTLY FIVE real
-image variations from that ONE selected concept.
+After that selection, the system will generate
+EXACTLY THREE real image variations from that
+ONE selected concept.
 
-Therefore generation_prompt_en must be precise enough to LOCK the
-selected concept while still allowing execution-level variation such as:
+Therefore generation_prompt_en must be precise
+enough to LOCK the selected concept while still
+allowing execution-level variation such as:
 
 - duck pose
-- subtle camera angle
+- camera angle
 - crop
 - lighting nuance
-- small prop placement
+- prop placement
 - spacing
 - depth of field
+- body orientation
 
-It must NOT allow the later image generator to switch
-to another visual concept.
+The later image generator must NOT be allowed
+to switch to another concept.
 
 ============================================================
 THE DAILY DUCK MASCOT
@@ -769,10 +794,6 @@ FULL APPROVED STATE
                 "title_ideas"
             )
 
-            # ------------------------------------------------
-            # Exact concept count = 3
-            # ------------------------------------------------
-
             if (
                 not isinstance(
                     concepts,
@@ -788,10 +809,6 @@ FULL APPROVED STATE
                     f"{IMAGE_CONCEPT_COUNT} "
                     "image concepts."
                 )
-
-            # ------------------------------------------------
-            # Exact title count = 3
-            # ------------------------------------------------
 
             if (
                 not isinstance(
@@ -1000,30 +1017,34 @@ def main() -> int:
                 timezone.utc
             ).isoformat(),
 
-        # Preserve the complete Gate A approved
-        # state so later stages retain every field
-        # needed by website/X publication.
-
+        # Preserve complete Gate A state.
         "approved_story":
             approved_state,
 
         "approved_story_compact":
             approved_story,
 
+        # Exactly three concepts.
         "image_concepts":
             image_concepts,
 
+        # Exactly three titles.
         "title_ideas":
             title_ideas,
 
+        # Nothing selected yet.
         "selected_image_concept_number":
             None,
 
         "selected_image_concept":
             None,
 
+        # No real images yet.
         "design_previews":
             [],
+
+        "preview_batch_number":
+            0,
 
         "language_policy": {
 
@@ -1041,7 +1062,7 @@ def main() -> int:
         },
 
         # ----------------------------------------------------
-        # Human chooses ONE of the THREE concepts.
+        # Human selects ONE of THREE concepts.
         # ----------------------------------------------------
 
         "concept_selection_rule": {
@@ -1053,13 +1074,18 @@ def main() -> int:
                     "3",
                 ],
 
+            "full_width_supported":
+                True,
+
             "next_state":
                 "APPROVED_IMAGE_CONCEPT",
         },
 
         # ----------------------------------------------------
         # After concept selection:
-        # generate FIVE real images from that ONE concept.
+        #
+        # EXACTLY THREE real images are generated
+        # from that ONE locked concept.
         # ----------------------------------------------------
 
         "real_image_flow": {
@@ -1068,20 +1094,30 @@ def main() -> int:
                 "one_human_selected_concept",
 
             "candidate_count":
-                5,
+                REAL_IMAGE_COUNT,
 
-            "next_5_supported":
+            "next_3_supported":
+                True,
+
+            "concept_remains_locked_on_next":
                 True,
         },
 
         # ----------------------------------------------------
         # Final selection:
         #
-        # image = 1-5
+        # image = 1-3
         # title = 1-3
         #
-        # Example:
-        #   4 1
+        # Examples:
+        #
+        #   2 1
+        #   ２ １
+        #
+        # Regeneration:
+        #
+        #   NEXT 3
+        #   ＮＥＸＴ ３
         # ----------------------------------------------------
 
         "final_selection_rule": {
@@ -1091,8 +1127,6 @@ def main() -> int:
                     1,
                     2,
                     3,
-                    4,
-                    5,
                 ],
 
             "title_numbers":
@@ -1106,10 +1140,13 @@ def main() -> int:
                 "IMAGE_NUMBER TITLE_NUMBER",
 
             "example":
-                "4 1",
+                "2 1",
 
-            "next_5_command":
-                "NEXT 5",
+            "next_3_command":
+                "NEXT 3",
+
+            "full_width_supported":
+                True,
 
             "next_state":
                 "READY_TO_PUBLISH",
@@ -1144,13 +1181,41 @@ def main() -> int:
     )
 
     print(
-        "Concept selection replies: "
+        "Concept selection replies:"
+    )
+
+    print(
         "1 / 2 / 3"
     )
 
     print(
+        "Full-width concept replies:"
+    )
+
+    print(
+        "１ / ２ / ３"
+    )
+
+    print(
         "Real image count after "
-        "concept selection: 5"
+        f"concept selection: "
+        f"{REAL_IMAGE_COUNT}"
+    )
+
+    print(
+        "Regeneration command:"
+    )
+
+    print(
+        "NEXT 3"
+    )
+
+    print(
+        "Final selection:"
+    )
+
+    print(
+        "IMAGE 1-3 + TITLE 1-3"
     )
 
     print(
