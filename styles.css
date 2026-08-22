@@ -128,7 +128,8 @@ nav a.active::after {
 }
 
 .hero-art {
-  min-height: 570px;
+  width: 100%;
+  aspect-ratio: 3 / 2;
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
@@ -138,12 +139,12 @@ nav a.active::after {
 }
 
 .hero-art img {
-  width: min(80%, 520px);
-  height: auto;
+  width: 80%;
+  height: 80%;
   object-fit: contain;
   /* 2026-08-22 forward:
-     show the current day's image at roughly 80% of the image frame
-     while preserving the original aspect ratio and avoiding cropping. */
+     the hero frame matches the 3:2 generated image ratio,
+     so the artwork occupies about 80% of BOTH frame width and height. */
 }
 
 .hero-copy { min-width: 0; }
@@ -445,12 +446,13 @@ noscript {
 
   .hero-art {
     width: min(100%, 620px);
-    min-height: 520px;
+    aspect-ratio: 3 / 2;
     margin-inline: auto;
   }
 
   .hero-art img {
-    width: min(80%, 500px);
+    width: 80%;
+    height: 80%;
   }
 
   h1 {
@@ -491,11 +493,12 @@ noscript {
   }
 
   .hero-art {
-    min-height: 420px;
+    aspect-ratio: 3 / 2;
   }
 
   .hero-art img {
-    width: min(80%, 400px);
+    width: 80%;
+    height: 80%;
   }
 
   .story-grid {
@@ -549,11 +552,12 @@ noscript {
 
 @media (max-width: 430px) {
   .hero-art {
-    min-height: 360px;
+    aspect-ratio: 3 / 2;
   }
 
   .hero-art img {
     width: 80%;
+    height: 80%;
   }
 
   h1 {
@@ -645,6 +649,7 @@ noscript {
   .brand-official img { width: 36px; height: 36px; }
 }
 
-/* Version 3.8 — 2026-08-22 forward hero image sizing
-   TODAY hero images use ~80% of the available art frame on desktop,
-   tablet and mobile. Archive cards remain unchanged. */
+/* Version 3.9 — TRUE 80% hero sizing
+   The TODAY image frame now uses the same 3:2 aspect ratio as the generated art.
+   The image uses 80% of both frame width and frame height, with no max-width cap.
+   Archive card sizing is intentionally unchanged. */
