@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-22",
+    "displayDate": "August 22, 2026",
+    "slug": "wool-to-bone",
+    "title": "WOOL TO BONE",
+    "duckName": "Wool to Bone",
+    "storyTitleEn": "Scientists turn sheep’s wool into a material that helps regrow bone",
+    "storyTitleJa": "Scientists turn sheep’s wool into a material that helps regrow bone",
+    "image": "assets/ducks/2026-08-22-wool-to-bone.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Wool to Bone",
+    "imageAltJa": "Wool to BoneをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "In a clever health innovation, scientists have successfully turned everyday sheep’s wool into a novel material that helps regrow bone. This charming discovery transforms simple farm wool into a valuable healing tool for regenerative medicine.",
+    "storyJa": "素晴らしい医療イノベーションにより、科学者たちは身近な羊毛を骨の再生を助ける新しい素材へと変化させることに成功しました。この発見は、農場のシンプルな羊毛を再生医療に役立つ価値ある修復ツールへと生まれ変わらせました。",
+    "duckEn": "Everyday sheep's wool is helping us heal in amazing new ways!",
+    "duckJa": "身近な羊毛が驚きの方法で健康をサポートします！",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260812015210.htm",
+    "archiveSummaryEn": "Scientists have converted everyday sheep’s wool into a healing material that helps regrow bone! A clever innovation for regenerative health.",
+    "archiveSummaryJa": "科学者たちが日常の羊毛を骨の再生を助ける医療素材に変換！再生医療における賢いイノベーションです。",
+    "reasonEn": "Scientists have converted everyday sheep’s wool into a healing material that helps regrow bone! A clever innovation for regenerative health.",
+    "reasonJa": "科学者たちが日常の羊毛を骨の再生を助ける医療素材に変換！再生医療における賢いイノベーションです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-21",
     "displayDate": "August 21, 2026",
     "slug": "high-school-buddy",

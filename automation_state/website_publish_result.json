@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-08-22T11:41:49.088025+00:00",
+  "issue_date": "2026-08-22",
+  "image": "assets/ducks/2026-08-22-wool-to-bone.png",
+  "page": "ducks/2026-08-22/index.html",
+  "title": "Scientists turn sheep’s wool into a material that helps regrow bone",
+  "duck_name": "Wool to Bone",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
