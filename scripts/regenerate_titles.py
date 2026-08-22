@@ -177,10 +177,10 @@ def approved_story_from(
 def is_retryable(
     exc: Exception,
 ) -> bool:
-    text = str(exc).lower()
+    error_text = str(exc).lower()
 
     return any(
-        marker in text
+        marker in error_text
         for marker in (
             "429",
             "500",
@@ -216,10 +216,16 @@ def call_gemini(
                 f"{attempt}/{GEMINI_API_MAX_ATTEMPTS}..."
             )
 
-            return client.models.generate_content(
+            response = client.models.generate_content(
                 model=TEXT_MODEL,
                 contents=prompt,
             )
+
+            print(
+                "Gemini title request succeeded."
+            )
+
+            return response
 
         except Exception as exc:
             last_error = exc
@@ -269,10 +275,10 @@ def generate_titles(
         "title_ideas": [
             {
                 "number": 1,
-                "title": "DUCK-PUN ENGLISH TITLE",
+                "title": "CATCHY DAILY DUCK POSTER COPY",
                 "meaning_ja": (
-                    "日本語の意味と英語のダジャレ・"
-                    "言葉遊びの説明"
+                    "日本語の意味と、英語の言葉遊び・"
+                    "リズム・ニュアンスの説明"
                 ),
             }
             for _ in range(TITLE_COUNT)
@@ -293,67 +299,79 @@ DO NOT change, regenerate, or discuss the existing images.
 This task is TITLES ONLY.
 
 ============================================================
-THE DAILY DUCK HEADLINE VOICE
+THE DAILY DUCK POSTER-COPY VOICE
 ============================================================
 
-The titles must sound unmistakably like The Daily Duck.
+The titles should feel like POSTER COPY,
+not ordinary news headlines.
 
-Do NOT return:
-- ordinary newspaper headlines
-- neutral summaries
-- academic titles
-- generic clickbait
+The tone should be:
+- instantly readable
+- memorable
+- playful
+- visually punchy
+- warm rather than cynical
+- suitable for a poster, social card, or magazine cover
 
-Use clever, natural duck-related English wordplay whenever
-the story allows it.
+Duck-related puns and wordplay are welcome when they fit naturally,
+but DO NOT force a duck pun into every title.
 
-Useful vocabulary includes, but is not limited to:
+Useful duck-language vocabulary may include:
 QUACK, QUACKING, DUCK, DUCKING, WADDLE, BILL, FEATHER,
-EGG, EGG-CELLENT, FLOCK, WEBBED, BEAK.
+FEATHERS, EGG, EGG-CELLENT, FLOCK, WEBBED, BEAK.
 
-Do not mechanically force the same duck word into every title.
+IMPORTANT:
+The goal is NOT maximum pun density.
+The goal is a catchy poster line that sounds like The Daily Duck.
 
 Create three DIFFERENT styles:
 
-1. BIG PUN
-   Strongest and funniest story-appropriate duck pun.
+1. DUCK PUN
+   A natural, story-relevant duck pun or playful word twist.
 
-2. SMART WORDPLAY
-   Clever idiom twist, double meaning, or story-specific
-   duck-flavored phrase.
+2. SMART POSTER COPY
+   A clever, stylish, memorable line that may or may not use
+   explicit duck vocabulary.
 
-3. SHORT DUCK PUNCH
-   Very short, memorable, energetic and brandable.
+3. BIG PUNCH
+   The strongest, boldest, most poster-like line of the three.
 
-Style examples only:
-- WHALE, WHALE, WHALE... QUACKING GOOD NEWS!
-- DUCKING OUT OF SIGHT!
+LENGTH:
+- Usually around 4 to 9 words.
+- Shorter is fine when the line is strong.
+- Slightly longer is fine when the rhythm is good.
+- Avoid long explanatory sentences.
+
+STYLE EXAMPLES ONLY:
 - QUACK TO THE FUTURE!
-- EGG-CELLENT NEWS!
+- ONE SMALL WADDLE, ONE GIANT DISCOVERY!
+- WHALE, WHALE... WHAT HAVE WE HERE?
+- DUCKING INTO SOMETHING AMAZING!
 - WHAT THE DUCK?!
 
-Do not copy an example unless it genuinely fits this story.
+Do NOT copy these unless they genuinely fit the approved story.
 
 QUALITY RULES:
-- English-speaking readers should understand the joke.
-- Keep the meaning connected to the approved story.
-- Prefer roughly 2-8 words.
-- ALL CAPS preferred.
-- At least TWO of THREE titles must contain explicit
-  duck-related wordplay.
-- Ideally all three feel duck-flavored.
-- Avoid awkward forced puns.
-- Avoid childish baby-talk.
+- English-speaking readers should understand the line immediately.
+- It must connect clearly to the approved story.
 - Do not invent unsupported facts.
-- Japanese must not appear inside the English title.
+- Avoid generic newspaper-style wording.
+- Avoid dry academic phrasing.
+- Avoid childish baby-talk.
+- Avoid awkward or incomprehensible forced puns.
+- Punchy punctuation is welcome when natural.
+- ALL CAPS is preferred.
+- At least ONE of the THREE titles should contain explicit
+  duck-themed wordplay when natural.
+- All three should feel unmistakably like The Daily Duck.
 
-For meaning_ja, explain BOTH:
-- the natural Japanese meaning
-- the English pun/wordplay or nuance
+For meaning_ja, explain:
+1. the natural Japanese meaning, and
+2. any English pun, wordplay, rhythm, or nuance.
 
-Before returning JSON, silently ask:
-"Could this title appear unchanged on an ordinary news site?"
-If yes, rewrite it to sound more like The Daily Duck.
+Before returning JSON, silently check:
+"Does this sound like poster copy?"
+If not, rewrite it.
 
 Return ONLY valid JSON.
 No Markdown fences.
@@ -479,15 +497,14 @@ def main() -> int:
 
     package[
         "title_style"
-    ] = "DAILY_DUCK_PUN_ENGLISH"
+    ] = "DAILY_DUCK_POSTER_COPY"
 
+    # Existing concepts and images are preserved exactly.
     # Put the package back into an email-ready state.
-    # Existing images and concepts are preserved byte-for-byte.
     package[
         "state"
     ] = "DESIGN_OPTIONS_READY"
 
-    # The next email should be treated as the current approval email.
     package.pop(
         "final_email_subject",
         None,
@@ -509,20 +526,25 @@ def main() -> int:
     )
 
     print(
-        "Exactly 3 Daily Duck pun-style titles regenerated."
+        "Exactly 3 Daily Duck poster-copy titles regenerated."
     )
+
     print(
         "Existing 3 concepts preserved."
     )
+
     print(
         "Existing 3 image files preserved."
     )
+
     print(
         "No OpenAI image request was made."
     )
+
     print(
         "STATE: DESIGN_OPTIONS_READY"
     )
+
     print(
         "NEXT: run send_design_approval_email.py"
     )
