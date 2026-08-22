@@ -655,23 +655,25 @@ noscript {
 
 
 /* ==========================================================
-   Version 3.11 — Compact Archive Cards
-   Target:
-   - desktop: compact horizontal cards, maximum 2 columns
-   - tablet: 1 column
-   - description: max 2 lines, then ellipsis
-   - archive artwork: compact and fully visible
-   - current-day hero rules remain unchanged
+   Version 3.14 — FINAL ARCHIVE LAYOUT
+   IMPORTANT:
+   The clickable archive structure is:
+     .duck-card
+       .duck-card-link
+         .duck-card-image
+         <text column>
+   Therefore the GRID belongs on .duck-card-link, not .duck-card.
    ========================================================== */
 
 .archive-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: 30px;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 28px;
 }
 
 .duck-card {
+  display: block;
   min-width: 0;
   padding: 0;
   overflow: hidden;
@@ -683,499 +685,18 @@ noscript {
 .duck-card-link {
   display: grid;
   grid-template-columns: 150px minmax(0, 1fr);
-  gap: 20px;
+  gap: 22px;
   align-items: center;
   width: 100%;
-  min-height: 210px;
-  padding: 18px;
-  text-decoration: none;
+  min-height: 176px;
+  padding: 14px 18px;
   color: inherit;
-}
-
-.duck-card-image {
-  width: 150px;
-  height: 170px;
-  min-height: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 16px;
+  text-decoration: none;
   background: #fff;
-  overflow: hidden;
-}
-
-.duck-card-image img {
-  display: block;
-  width: auto;
-  height: 92%;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-.duck-card-link > div:last-child {
-  min-width: 0;
-}
-
-.duck-card time {
-  display: block;
-  margin: 0 0 8px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.2;
-}
-
-.duck-card h3 {
-  margin: 0 0 8px;
-  font-size: clamp(22px, 2vw, 28px);
-  line-height: 1.02;
-  letter-spacing: -.035em;
-  overflow-wrap: normal;
-  word-break: normal;
-}
-
-.duck-card p {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  color: var(--ink);
-  font-size: 14px;
-  line-height: 1.35;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
-.view-story {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 13px;
-  font-weight: 800;
-  color: #0067d9;
 }
 
 .duck-card-link:hover {
   background: #fffaf0;
-}
-
-@media (max-width: 1050px) {
-  .archive-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .duck-card-link {
-    grid-template-columns: 145px minmax(0, 1fr);
-    min-height: 195px;
-  }
-
-  .duck-card-image {
-    width: 145px;
-    height: 160px;
-  }
-}
-
-@media (max-width: 600px) {
-  .archive-grid {
-    gap: 14px;
-    margin-top: 24px;
-  }
-
-  .duck-card-link {
-    grid-template-columns: 112px minmax(0, 1fr);
-    gap: 14px;
-    min-height: 154px;
-    padding: 14px;
-  }
-
-  .duck-card-image {
-    width: 112px;
-    height: 128px;
-    border-radius: 13px;
-  }
-
-  .duck-card-image img {
-    height: 90%;
-  }
-
-  .duck-card time {
-    margin-bottom: 6px;
-    font-size: 11px;
-  }
-
-  .duck-card h3 {
-    margin-bottom: 6px;
-    font-size: clamp(19px, 6vw, 24px);
-  }
-
-  .duck-card p {
-    font-size: 13px;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-  }
-
-  .view-story {
-    margin-top: 8px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 390px) {
-  .duck-card-link {
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: 12px;
-    min-height: 140px;
-    padding: 12px;
-  }
-
-  .duck-card-image {
-    width: 96px;
-    height: 112px;
-  }
-
-  .duck-card h3 {
-    font-size: 18px;
-  }
-
-  .duck-card p {
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-  }
-}
-
-
-/* ==========================================================
-   Version 3.12 — Archive Card Structure Fix
-   The archive DOM uses .duck-card itself as the grid container.
-   This override restores the text column and keeps description
-   visible for max 2 lines.
-   ========================================================== */
-
-.archive-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: 30px;
-}
-
-.duck-card {
-  display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
-  gap: 20px;
-  align-items: center;
-  min-width: 0;
-  min-height: 205px;
-  padding: 18px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: #fff;
-}
-
-.duck-card-image {
-  width: 150px;
-  height: 168px;
-  min-height: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 16px;
-  background: #fff;
-  overflow: hidden;
-}
-
-.duck-card-image img {
-  display: block;
-  width: auto;
-  height: 92%;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-.duck-card > div:last-child {
-  min-width: 0;
-  width: 100%;
-}
-
-.duck-card time {
-  display: block;
-  margin: 0 0 7px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.2;
-}
-
-.duck-card h3 {
-  margin: 0 0 8px;
-  font-size: clamp(22px, 2vw, 28px);
-  line-height: 1.05;
-  letter-spacing: -.035em;
-  overflow-wrap: break-word;
-  word-break: normal;
-}
-
-.duck-card p {
-  display: -webkit-box !important;
-  max-height: calc(1.4em * 2);
-  margin: 0 !important;
-  overflow: hidden;
-  color: var(--ink);
-  font-size: 14px;
-  line-height: 1.4;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  white-space: normal;
-}
-
-.duck-card .view-story {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 13px;
-  line-height: 1.25;
-  font-weight: 800;
-  color: #0067d9;
-  white-space: nowrap;
-}
-
-@media (max-width: 1050px) {
-  .archive-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .duck-card {
-    grid-template-columns: 145px minmax(0, 1fr);
-    min-height: 190px;
-    padding: 17px;
-  }
-
-  .duck-card-image {
-    width: 145px;
-    height: 158px;
-  }
-}
-
-@media (max-width: 600px) {
-  .archive-grid {
-    gap: 14px;
-    margin-top: 24px;
-  }
-
-  .duck-card {
-    grid-template-columns: 112px minmax(0, 1fr);
-    gap: 14px;
-    min-height: 150px;
-    padding: 14px;
-  }
-
-  .duck-card-image {
-    width: 112px;
-    height: 126px;
-    border-radius: 13px;
-  }
-
-  .duck-card-image img {
-    height: 90%;
-  }
-
-  .duck-card time {
-    margin-bottom: 5px;
-    font-size: 11px;
-  }
-
-  .duck-card h3 {
-    margin-bottom: 6px;
-    font-size: clamp(19px, 6vw, 24px);
-  }
-
-  .duck-card p {
-    font-size: 13px;
-    line-height: 1.35;
-    max-height: calc(1.35em * 2);
-  }
-
-  .duck-card .view-story {
-    margin-top: 7px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 390px) {
-  .duck-card {
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: 12px;
-    min-height: 138px;
-    padding: 12px;
-  }
-
-  .duck-card-image {
-    width: 96px;
-    height: 110px;
-  }
-
-  .duck-card h3 {
-    font-size: 18px;
-  }
-
-  .duck-card p {
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-  }
-}
-
-
-/* ==========================================================
-   Version 3.13 — Shorter Archive Cards
-   Keep the archive compact even when titles/descriptions are long.
-   Text is intentionally clipped.
-   ========================================================== */
-
-.archive-grid {
-  gap: 16px;
-}
-
-.duck-card {
-  grid-template-columns: 132px minmax(0, 1fr);
-  gap: 16px;
-  min-height: 0;
-  height: 176px;
-  padding: 14px 16px;
-}
-
-.duck-card-image {
-  width: 132px;
-  height: 146px;
-}
-
-.duck-card-image img {
-  width: auto;
-  height: 92%;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-.duck-card time {
-  margin-bottom: 5px;
-  font-size: 11px;
-}
-
-.duck-card h3 {
-  display: -webkit-box;
-  margin: 0 0 6px;
-  max-height: calc(1.02em * 2);
-  overflow: hidden;
-  font-size: clamp(20px, 1.7vw, 25px);
-  line-height: 1.02;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
-.duck-card p {
-  display: -webkit-box !important;
-  margin: 0 !important;
-  max-height: calc(1.3em * 2);
-  overflow: hidden;
-  font-size: 13px;
-  line-height: 1.3;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
-.duck-card .view-story {
-  margin-top: 7px;
-  font-size: 12px;
-  line-height: 1.1;
-}
-
-@media (max-width: 1050px) {
-  .duck-card {
-    grid-template-columns: 128px minmax(0, 1fr);
-    height: 170px;
-    padding: 13px 15px;
-  }
-
-  .duck-card-image {
-    width: 128px;
-    height: 140px;
-  }
-}
-
-@media (max-width: 600px) {
-  .duck-card {
-    grid-template-columns: 100px minmax(0, 1fr);
-    gap: 12px;
-    height: 146px;
-    padding: 11px 12px;
-  }
-
-  .duck-card-image {
-    width: 100px;
-    height: 120px;
-  }
-
-  .duck-card h3 {
-    margin-bottom: 5px;
-    font-size: 18px;
-  }
-
-  .duck-card p {
-    max-height: 1.3em;
-    font-size: 12px;
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-  }
-
-  .duck-card .view-story {
-    margin-top: 5px;
-    font-size: 11px;
-  }
-}
-
-@media (max-width: 390px) {
-  .duck-card {
-    grid-template-columns: 88px minmax(0, 1fr);
-    height: 136px;
-    padding: 10px;
-  }
-
-  .duck-card-image {
-    width: 88px;
-    height: 108px;
-  }
-
-  .duck-card h3 {
-    font-size: 17px;
-  }
-}
-
-
-/* ==========================================================
-   Version 3.14 — Final Archive Card Layout
-   Goal:
-   - visually match the approved compact horizontal mockup
-   - title: max 2 lines
-   - description: max 3 lines, then ellipsis
-   - compact fixed-height cards
-   - image left, copy right
-   ========================================================== */
-
-.archive-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  margin-top: 28px;
-}
-
-.duck-card {
-  display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
-  gap: 22px;
-  align-items: center;
-  min-width: 0;
-  height: 176px;
-  padding: 14px 18px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: #fff;
 }
 
 .duck-card-image {
@@ -1193,13 +714,13 @@ noscript {
   display: block;
   width: 100%;
   height: 100%;
+  max-width: 100%;
   object-fit: contain;
 }
 
-.duck-card > div:last-child {
+.duck-card-link > div:last-child {
   min-width: 0;
   width: 100%;
-  align-self: center;
 }
 
 .duck-card time {
@@ -1213,10 +734,9 @@ noscript {
 .duck-card h3 {
   display: -webkit-box;
   margin: 0 0 8px;
-  max-height: calc(1.02em * 2);
   overflow: hidden;
   font-size: clamp(22px, 2.2vw, 30px);
-  line-height: 1.02;
+  line-height: 1.04;
   letter-spacing: -.03em;
   overflow-wrap: break-word;
   word-break: normal;
@@ -1226,15 +746,13 @@ noscript {
 }
 
 .duck-card p {
-  display: -webkit-box !important;
-  margin: 0 !important;
-  max-height: calc(1.35em * 3);
+  display: -webkit-box;
+  margin: 0;
   overflow: hidden;
   color: var(--ink);
   font-size: 14px;
   line-height: 1.35;
   white-space: normal;
-  text-overflow: ellipsis;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -1256,10 +774,10 @@ noscript {
 }
 
 @media (max-width: 760px) {
-  .duck-card {
+  .duck-card-link {
     grid-template-columns: 118px minmax(0, 1fr);
     gap: 16px;
-    height: 158px;
+    min-height: 158px;
     padding: 12px 14px;
   }
 
@@ -1279,7 +797,6 @@ noscript {
   }
 
   .duck-card p {
-    max-height: calc(1.3em * 3);
     font-size: 13px;
     line-height: 1.3;
     -webkit-line-clamp: 3;
@@ -1298,10 +815,10 @@ noscript {
     margin-top: 22px;
   }
 
-  .duck-card {
+  .duck-card-link {
     grid-template-columns: 96px minmax(0, 1fr);
     gap: 12px;
-    height: 142px;
+    min-height: 142px;
     padding: 10px 11px;
   }
 
@@ -1312,10 +829,11 @@ noscript {
 
   .duck-card h3 {
     font-size: 18px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .duck-card p {
-    max-height: calc(1.25em * 2);
     font-size: 12px;
     line-height: 1.25;
     -webkit-line-clamp: 2;
