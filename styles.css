@@ -845,3 +845,157 @@ noscript {
     font-size: 11px;
   }
 }
+
+
+/* ==========================================================
+   Version 3.15 — Three Archive Cards Per Row
+   Desktop: 3 compact horizontal cards per row
+   Tablet: 2 cards per row
+   Mobile: 1 card per row
+   Title: max 2 lines
+   Description: max 3 lines
+   ========================================================== */
+
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.duck-card {
+  min-width: 0;
+}
+
+.duck-card-link {
+  display: grid;
+  grid-template-columns: 105px minmax(0, 1fr);
+  gap: 13px;
+  align-items: center;
+  width: 100%;
+  min-height: 170px;
+  padding: 12px;
+}
+
+.duck-card-image {
+  width: 105px;
+  height: 126px;
+  min-height: 0;
+}
+
+.duck-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.duck-card time {
+  margin-bottom: 5px;
+  font-size: 10px;
+}
+
+.duck-card h3 {
+  margin-bottom: 6px;
+  font-size: clamp(17px, 1.45vw, 22px);
+  line-height: 1.03;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.duck-card p {
+  font-size: 12px;
+  line-height: 1.28;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.duck-card .view-story {
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  .archive-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .duck-card-link {
+    grid-template-columns: 112px minmax(0, 1fr);
+    min-height: 168px;
+  }
+
+  .duck-card-image {
+    width: 112px;
+    height: 130px;
+  }
+
+  .duck-card h3 {
+    font-size: 20px;
+  }
+
+  .duck-card p {
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 720px) {
+  .archive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .duck-card-link {
+    grid-template-columns: 118px minmax(0, 1fr);
+    gap: 16px;
+    min-height: 158px;
+    padding: 12px 14px;
+  }
+
+  .duck-card-image {
+    width: 118px;
+    height: 132px;
+  }
+
+  .duck-card time {
+    font-size: 11px;
+  }
+
+  .duck-card h3 {
+    font-size: clamp(19px, 5vw, 24px);
+  }
+
+  .duck-card p {
+    font-size: 13px;
+  }
+
+  .duck-card .view-story {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .duck-card-link {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
+    min-height: 142px;
+    padding: 10px 11px;
+  }
+
+  .duck-card-image {
+    width: 96px;
+    height: 114px;
+  }
+
+  .duck-card h3 {
+    font-size: 18px;
+  }
+
+  .duck-card p {
+    font-size: 12px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .duck-card .view-story {
+    font-size: 11px;
+  }
+}
