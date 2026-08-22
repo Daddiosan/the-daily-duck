@@ -652,3 +652,190 @@ noscript {
    Current-day artwork uses exact width:height = 51:58.
    No stretching; image is shown at its native aspect ratio.
    Archive card sizing remains unchanged. */
+
+
+/* ==========================================================
+   Version 3.11 — Compact Archive Cards
+   Target:
+   - desktop: compact horizontal cards, maximum 2 columns
+   - tablet: 1 column
+   - description: max 2 lines, then ellipsis
+   - archive artwork: compact and fully visible
+   - current-day hero rules remain unchanged
+   ========================================================== */
+
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.duck-card {
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.duck-card-link {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+  min-height: 210px;
+  padding: 18px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.duck-card-image {
+  width: 150px;
+  height: 170px;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.duck-card-image img {
+  display: block;
+  width: auto;
+  height: 92%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.duck-card-link > div:last-child {
+  min-width: 0;
+}
+
+.duck-card time {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.duck-card h3 {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 2vw, 28px);
+  line-height: 1.02;
+  letter-spacing: -.035em;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.duck-card p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.view-story {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0067d9;
+}
+
+.duck-card-link:hover {
+  background: #fffaf0;
+}
+
+@media (max-width: 1050px) {
+  .archive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .duck-card-link {
+    grid-template-columns: 145px minmax(0, 1fr);
+    min-height: 195px;
+  }
+
+  .duck-card-image {
+    width: 145px;
+    height: 160px;
+  }
+}
+
+@media (max-width: 600px) {
+  .archive-grid {
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .duck-card-link {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 14px;
+    min-height: 154px;
+    padding: 14px;
+  }
+
+  .duck-card-image {
+    width: 112px;
+    height: 128px;
+    border-radius: 13px;
+  }
+
+  .duck-card-image img {
+    height: 90%;
+  }
+
+  .duck-card time {
+    margin-bottom: 6px;
+    font-size: 11px;
+  }
+
+  .duck-card h3 {
+    margin-bottom: 6px;
+    font-size: clamp(19px, 6vw, 24px);
+  }
+
+  .duck-card p {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .view-story {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .duck-card-link {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
+    min-height: 140px;
+    padding: 12px;
+  }
+
+  .duck-card-image {
+    width: 96px;
+    height: 112px;
+  }
+
+  .duck-card h3 {
+    font-size: 18px;
+  }
+
+  .duck-card p {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+}
