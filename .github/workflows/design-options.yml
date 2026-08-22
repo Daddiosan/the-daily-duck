@@ -35,6 +35,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-phase2.txt
+          pip install Pillow
 
       - name: Verify APPROVED_STORY
         run: |
@@ -107,7 +108,7 @@ jobs:
         run: |
           python scripts/reset_after_approved_story.py
 
-      - name: Generate 3 concepts + 3 real images + 3 titles
+      - name: Generate 3 concepts + 3 real images + 3 titles in 51x58 final ratio
         if: steps.design_gate.outputs.should_run == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -158,6 +159,9 @@ jobs:
         run: |
           echo "Exactly 3 image concepts created."
           echo "Exactly 1 real image generated for each concept."
+          echo "Final source-image ratio: 51:58 (width:height)."
+          echo "Final stored size: 1020x1160."
+          echo "No stretching or squashing is allowed."
           echo "Exactly 3 title ideas created."
           echo "One email with all 3 images was sent."
           echo "Waiting for: IMAGE_NUMBER TITLE_NUMBER"
