@@ -54,6 +54,10 @@ GEMINI_RETRY_BASE_SECONDS = float(
 )
 
 
+# ============================================================
+# Environment helpers
+# ============================================================
+
 def required_env(name: str) -> str:
     value = os.getenv(name, "").strip()
 
@@ -64,6 +68,70 @@ def required_env(name: str) -> str:
 
     return value
 
+
+def get_issue_date() -> str:
+    """
+    Return the Daily Duck issue date.
+
+    Manual rerun:
+      DAILY_DUCK_TARGET_DATE=2026-08-21
+
+    Normal scheduled run:
+      current JST date
+
+    The supplied date must use YYYY-MM-DD format.
+    """
+
+    target_date = os.getenv(
+        "DAILY_DUCK_TARGET_DATE",
+        "",
+    ).strip()
+
+    if target_date:
+
+        try:
+            parsed = datetime.strptime(
+                target_date,
+                "%Y-%m-%d",
+            )
+
+        except ValueError as exc:
+            raise ValueError(
+                "DAILY_DUCK_TARGET_DATE must "
+                "use YYYY-MM-DD format. "
+                f"Received: {target_date!r}"
+            ) from exc
+
+        issue_date = (
+            parsed.date().isoformat()
+        )
+
+        print(
+            "Using manually specified "
+            f"Daily Duck issue date: {issue_date}"
+        )
+
+        return issue_date
+
+    issue_date = (
+        datetime.now(
+            JST
+        )
+        .date()
+        .isoformat()
+    )
+
+    print(
+        "Using current JST "
+        f"Daily Duck issue date: {issue_date}"
+    )
+
+    return issue_date
+
+
+# ============================================================
+# JSON helpers
+# ============================================================
 
 def load_json(
     path: Path,
@@ -658,11 +726,6 @@ FIVE SOURCE STORIES:
                 f"{EDITORIAL_MAX_ATTEMPTS}..."
             )
 
-            # --------------------------------------------
-            # Gemini API呼び出し
-            # 503等は内部で最大5回自動リトライ
-            # --------------------------------------------
-
             response = (
                 call_gemini_with_retry(
                     client=client,
@@ -934,16 +997,7 @@ def build_package(
     recommended_id: str,
 ) -> dict[str, Any]:
 
-    # Daily Duck issue dates are based on JST,
-    # regardless of the GitHub Actions runner timezone.
-
-    issue_date = (
-        datetime.now(
-            JST
-        )
-        .date()
-        .isoformat()
-    )
+    issue_date = get_issue_date()
 
     recommended_number = None
 
@@ -1258,7 +1312,7 @@ IMPORTANT:
 - 選択した1件だけが本日の正式記事になります。
 - 英語版がcanonical/master copyです。
 - 日本語版は英語正本から生成された翻訳です。
-- 記事選択後、その記事専用の画像コンセプトを5案作成します。
+- 記事選択後、その記事専用の画像コンセプトを3案作成します。
 - 画像コンセプトは別メールで送信します。
 - 画像コンセプト選択後、その1つのコンセプトから実画像を5枚生成します。
 - 最終画像選択が終わるまでWebサイト/Xには公開しません。
@@ -1431,7 +1485,7 @@ def main() -> int:
     )
 
     print(
-        "Issue date (JST): "
+        "Issue date: "
         f"{package['issue_date']}"
     )
 
