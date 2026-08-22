@@ -679,16 +679,15 @@
   },
   "real_image_flow": {
     "source": "one_human_selected_concept",
-    "candidate_count": 5,
-    "next_5_supported": true
+    "candidate_count": 3,
+    "next_3_supported": true,
+    "concept_remains_locked_on_next": true
   },
   "final_selection_rule": {
     "image_numbers": [
       1,
       2,
-      3,
-      4,
-      5
+      3
     ],
     "title_numbers": [
       1,
@@ -696,8 +695,9 @@
       3
     ],
     "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "4 1",
-    "next_5_command": "NEXT 5",
+    "example": "2 1",
+    "next_3_command": "NEXT 3",
+    "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
   },
   "concept_email_subject": "The Daily Duck — Choose Image Concept — 2026-08-21",
