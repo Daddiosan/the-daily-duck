@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import base64
 import email
+import hashlib
 import imaplib
 import json
 import os
@@ -13,6 +15,8 @@ from email.header import decode_header, make_header
 from email.utils import parseaddr
 from pathlib import Path
 from typing import Any
+
+from openai import OpenAI
 
 
 STATE_DIR = Path("automation_state")
@@ -37,32 +41,8 @@ CANONICAL_DIR = (
     / "canonical"
 )
 
-
-# ============================================================
-# Current Daily Duck selection rules
-#
-# Image concepts:
-#   1 / 2 / 3
-#
-# Final image:
-#   1 / 2 / 3
-#
-# Final title:
-#   1 / 2 / 3
-#
-# Regeneration:
-#   NEXT 3
-#
-# Full-width input is normalized before validation:
-#
-#   ２       -> 2
-#   ３ １     -> 3 1
-#   ３　１    -> 3 1
-#   ＮＥＸＴ ３ -> NEXT 3
-# ============================================================
-
-CONCEPT_RE = re.compile(
-    r"^([1-3])$"
+PREVIEW_ROOT = Path(
+    "automation_images/design_previews"
 )
 
 FINAL_RE = re.compile(
@@ -74,19 +54,23 @@ NEXT_3_RE = re.compile(
     flags=re.IGNORECASE,
 )
 
+OPENAI_IMAGE_MODEL = (
+    os.getenv("OPENAI_IMAGE_MODEL") or ""
+).strip() or "gpt-image-2"
 
-# ============================================================
-# Helpers
-# ============================================================
+OPENAI_IMAGE_SIZE = (
+    os.getenv("OPENAI_IMAGE_SIZE") or ""
+).strip() or "1536x1024"
 
-def required_env(
-    name: str,
-) -> str:
+OPENAI_IMAGE_QUALITY = (
+    os.getenv("OPENAI_IMAGE_QUALITY") or ""
+).strip() or "medium"
 
-    value = os.getenv(
-        name,
-        "",
-    ).strip()
+MAX_DUPLICATE_RETRIES = 2
+
+
+def required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
 
     if not value:
         raise RuntimeError(
@@ -96,40 +80,16 @@ def required_env(
     return value
 
 
-def first_text(
-    *values: Any,
-) -> str:
-
+def first_text(*values: Any) -> str:
     for value in values:
-
-        if (
-            isinstance(
-                value,
-                str,
-            )
-            and value.strip()
-        ):
+        if isinstance(value, str) and value.strip():
             return value.strip()
-
     return ""
 
 
 def normalize_command(
     value: str,
 ) -> str:
-    """
-    Normalize full-width Japanese/Unicode input
-    before command validation.
-
-    Examples:
-
-      １       -> 1
-      ２       -> 2
-      ３ １     -> 3 1
-      ３　１    -> 3 1
-      ＮＥＸＴ ３ -> NEXT 3
-    """
-
     normalized = unicodedata.normalize(
         "NFKC",
         value,
@@ -150,26 +110,18 @@ def normalize_command(
     return normalized.strip()
 
 
-# ============================================================
-# Email parsing
-# ============================================================
-
 def decode_mime(
     value: str | None,
 ) -> str:
-
     if not value:
         return ""
 
     try:
         return str(
             make_header(
-                decode_header(
-                    value
-                )
+                decode_header(value)
             )
         )
-
     except Exception:
         return value
 
@@ -177,7 +129,6 @@ def decode_mime(
 def message_text(
     msg: email.message.Message,
 ) -> str:
-
     chunks: list[str] = []
 
     parts = (
@@ -187,7 +138,6 @@ def message_text(
     )
 
     for part in parts:
-
         if (
             part.get_content_type()
             != "text/plain"
@@ -207,7 +157,6 @@ def message_text(
         )
 
         if payload is not None:
-
             chunks.append(
                 payload.decode(
                     part.get_content_charset()
@@ -216,29 +165,19 @@ def message_text(
                 )
             )
 
-    return "\n".join(
-        chunks
-    )
+    return "\n".join(chunks)
 
 
 def fresh_reply_lines(
     text: str,
 ) -> list[str]:
-
     fresh: list[str] = []
 
     for line in (
-        text.replace(
-            "\r\n",
-            "\n",
-        )
-        .replace(
-            "\r",
-            "\n",
-        )
+        text.replace("\r\n", "\n")
+        .replace("\r", "\n")
         .splitlines()
     ):
-
         stripped = line.strip()
 
         if stripped.startswith(">"):
@@ -273,73 +212,12 @@ def fresh_reply_lines(
         ):
             break
 
-        fresh.append(
-            stripped
-        )
+        fresh.append(stripped)
 
     return fresh
 
 
-# ============================================================
-# Concept selection
-# ============================================================
-
-def extract_concept_selection(
-    text: str,
-) -> tuple[
-    int,
-    str,
-] | None:
-
-    matches: list[
-        tuple[
-            int,
-            str,
-        ]
-    ] = []
-
-    for line in fresh_reply_lines(
-        text
-    ):
-
-        candidate = normalize_command(
-            line
-        )
-
-        match = CONCEPT_RE.fullmatch(
-            candidate
-        )
-
-        if match:
-
-            matches.append(
-                (
-                    int(
-                        match.group(1)
-                    ),
-                    candidate,
-                )
-            )
-
-    if not matches:
-        return None
-
-    unique = {
-        number
-        for number, _ in matches
-    }
-
-    if len(unique) != 1:
-        return None
-
-    return matches[0]
-
-
-# ============================================================
-# Final image/title selection + NEXT 3
-# ============================================================
-
-def extract_final_command(
+def extract_command(
     text: str,
 ) -> tuple[
     str,
@@ -347,20 +225,9 @@ def extract_final_command(
     int | None,
     str,
 ] | None:
+    commands = []
 
-    commands: list[
-        tuple[
-            str,
-            int | None,
-            int | None,
-            str,
-        ]
-    ] = []
-
-    for line in fresh_reply_lines(
-        text
-    ):
-
+    for line in fresh_reply_lines(text):
         candidate = normalize_command(
             line
         )
@@ -370,26 +237,19 @@ def extract_final_command(
         )
 
         if final_match:
-
             commands.append(
                 (
                     "FINAL",
-                    int(
-                        final_match.group(1)
-                    ),
-                    int(
-                        final_match.group(2)
-                    ),
+                    int(final_match.group(1)),
+                    int(final_match.group(2)),
                     candidate,
                 )
             )
-
             continue
 
         if NEXT_3_RE.fullmatch(
             candidate
         ):
-
             commands.append(
                 (
                     "NEXT_3",
@@ -422,27 +282,10 @@ def extract_final_command(
     return commands[0]
 
 
-# ============================================================
-# Result state
-# ============================================================
-
 def save_result(
     action: str,
     **extra: Any,
 ) -> None:
-
-    payload = {
-        "action":
-            action,
-
-        "checked_at":
-            datetime.now(
-                timezone.utc
-            ).isoformat(),
-
-        **extra,
-    }
-
     RESULT_PATH.parent.mkdir(
         parents=True,
         exist_ok=True,
@@ -450,7 +293,13 @@ def save_result(
 
     RESULT_PATH.write_text(
         json.dumps(
-            payload,
+            {
+                "action": action,
+                "checked_at": datetime.now(
+                    timezone.utc
+                ).isoformat(),
+                **extra,
+            },
             ensure_ascii=False,
             indent=2,
         )
@@ -459,12 +308,7 @@ def save_result(
     )
 
 
-# ============================================================
-# Allowed senders
-# ============================================================
-
 def allowed_senders() -> set[str]:
-
     return {
         x.strip().lower()
         for x in required_env(
@@ -474,37 +318,27 @@ def allowed_senders() -> set[str]:
     }
 
 
-# ============================================================
-# Find reply
-# ============================================================
-
 def find_reply(
     subject: str,
-    mode: str,
 ) -> tuple[
-    Any,
-    ...,
+    str,
+    int | None,
+    int | None,
+    str,
+    str,
 ] | None:
-
     allowed = allowed_senders()
 
     with imaplib.IMAP4_SSL(
         "imap.gmail.com",
         993,
     ) as imap:
-
         imap.login(
-            required_env(
-                "GMAIL_ADDRESS"
-            ),
-            required_env(
-                "GMAIL_APP_PASSWORD"
-            ),
+            required_env("GMAIL_ADDRESS"),
+            required_env("GMAIL_APP_PASSWORD"),
         )
 
-        imap.select(
-            "INBOX"
-        )
+        imap.select("INBOX")
 
         status, data = imap.search(
             None,
@@ -512,7 +346,6 @@ def find_reply(
         )
 
         if status != "OK":
-
             raise RuntimeError(
                 "IMAP search failed."
             )
@@ -520,7 +353,6 @@ def find_reply(
         for msg_id in reversed(
             data[0].split()[-250:]
         ):
-
             status, payload = imap.fetch(
                 msg_id,
                 "(RFC822)",
@@ -541,16 +373,12 @@ def find_reply(
             )
 
             msg_subject = decode_mime(
-                msg.get(
-                    "Subject"
-                )
+                msg.get("Subject")
             )
 
             sender = parseaddr(
                 decode_mime(
-                    msg.get(
-                        "From"
-                    )
+                    msg.get("From")
                 )
             )[1].lower()
 
@@ -563,319 +391,278 @@ def find_reply(
             ):
                 continue
 
-            body = message_text(
-                msg
+            command = extract_command(
+                message_text(msg)
             )
 
-            if mode == "CONCEPT":
+            if command:
+                (
+                    command_type,
+                    image_number,
+                    title_number,
+                    normalized,
+                ) = command
 
-                selection = (
-                    extract_concept_selection(
-                        body
-                    )
-                )
-
-                if selection:
-
-                    (
-                        number,
-                        normalized,
-                    ) = selection
-
-                    return (
-                        number,
-                        sender,
-                        normalized,
-                    )
-
-            elif mode == "FINAL":
-
-                command = (
-                    extract_final_command(
-                        body
-                    )
-                )
-
-                if command:
-
-                    (
-                        command_type,
-                        image_number,
-                        title_number,
-                        normalized,
-                    ) = command
-
-                    return (
-                        command_type,
-                        image_number,
-                        title_number,
-                        sender,
-                        normalized,
-                    )
-
-            else:
-
-                raise ValueError(
-                    f"Unknown reply mode: {mode}"
+                return (
+                    command_type,
+                    image_number,
+                    title_number,
+                    sender,
+                    normalized,
                 )
 
     return None
 
 
-# ============================================================
-# Select image concept 1-3
-# ============================================================
+def build_next_image_prompt(
+    package: dict[str, Any],
+    concept: dict[str, Any],
+    number: int,
+    batch_number: int,
+    retry: int,
+) -> str:
+    approved_story = package.get(
+        "approved_story_compact"
+    )
 
-def select_concept(
+    if not isinstance(
+        approved_story,
+        dict,
+    ):
+        raise ValueError(
+            "approved_story_compact is missing."
+        )
+
+    retry_note = ""
+
+    if retry > 0:
+        retry_note = f"""
+RETRY {retry}:
+Make this new rendition clearly different from the previous batch,
+while preserving this exact concept.
+""".strip()
+
+    return f"""
+Create ONE fresh publishable landscape hero image
+for The Daily Duck.
+
+This is regenerated batch {batch_number},
+concept {number} of 3.
+
+APPROVED STORY:
+{first_text(
+    approved_story.get("title_en"),
+    approved_story.get("title"),
+)}
+
+CONCEPT TITLE:
+{first_text(concept.get("title_en"))}
+
+CONCEPT:
+{first_text(concept.get("concept_en"))}
+
+COMPOSITION:
+{first_text(concept.get("composition_en"))}
+
+PRODUCTION DIRECTION:
+{first_text(concept.get("generation_prompt_en"))}
+
+{retry_note}
+
+Preserve the exact concept, but produce a fresh execution.
+Keep the friendly yellow Daily Duck mascot consistent.
+No readable text, numbers, logos, watermarks or UI.
+Do not invent unsupported facts.
+""".strip()
+
+
+def generate_next_three(
     package: dict[str, Any],
 ) -> int:
-
-    subject = first_text(
-        package.get(
-            "concept_email_subject"
-        ),
-        package.get(
-            "email_subject"
-        ),
-    )
-
-    if not subject:
-
-        raise ValueError(
-            "design_options.json is missing "
-            "concept_email_subject."
-        )
-
-    found = find_reply(
-        subject,
-        "CONCEPT",
-    )
-
-    if found is None:
-
-        save_result(
-            "WAIT",
-            stage="CONCEPT_SELECTION",
-            issue_date=package.get(
-                "issue_date"
-            ),
-        )
-
-        print(
-            "No valid concept reply found."
-        )
-
-        print(
-            "Valid replies:"
-        )
-
-        print(
-            "1 / 2 / 3"
-        )
-
-        print(
-            "Full-width:"
-        )
-
-        print(
-            "１ / ２ / ３"
-        )
-
-        print(
-            "STATE: "
-            "WAITING_CONCEPT_SELECTION"
-        )
-
-        return 0
-
-    (
-        concept_number,
-        sender,
-        normalized,
-    ) = found
-
     concepts = package.get(
         "image_concepts"
     )
 
     if (
-        not isinstance(
-            concepts,
-            list,
-        )
-        or len(
-            concepts
-        ) != 3
+        not isinstance(concepts, list)
+        or len(concepts) != 3
     ):
-
         raise ValueError(
-            "Exactly 3 image concepts "
-            "are required."
+            "Exactly 3 image concepts are required for NEXT 3."
         )
 
-    selected_concept = next(
-        (
-            item
-            for item in concepts
-            if isinstance(
-                item,
-                dict,
-            )
-            and int(
-                item.get(
-                    "number",
-                    0,
-                )
-            )
-            == concept_number
-        ),
-        None,
+    issue_date = first_text(
+        package.get("issue_date")
     )
 
-    if not isinstance(
-        selected_concept,
-        dict,
-    ):
-
+    if not issue_date:
         raise ValueError(
-            f"Selected concept "
-            f"{concept_number} "
-            "was not found."
+            "issue_date is missing."
         )
 
-    package[
-        "selected_image_concept_number"
-    ] = concept_number
-
-    package[
-        "selected_image_concept"
-    ] = selected_concept
-
-    package[
-        "concept_approval_reply"
-    ] = normalized
-
-    package[
-        "concept_approval_sender"
-    ] = sender
-
-    package[
-        "concept_selected_at"
-    ] = datetime.now(
-        timezone.utc
-    ).isoformat()
-
-    package[
-        "preview_batch_number"
-    ] = 0
-
-    package[
-        "design_previews"
-    ] = []
-
-    package[
-        "state"
-    ] = "APPROVED_IMAGE_CONCEPT"
-
-    OPTIONS_PATH.write_text(
-        json.dumps(
-            package,
-            ensure_ascii=False,
-            indent=2,
+    previous_batch = int(
+        package.get(
+            "preview_batch_number",
+            1,
         )
-        + "\n",
-        encoding="utf-8",
+        or 1
     )
 
-    save_result(
-        "APPROVED_IMAGE_CONCEPT",
-        issue_date=package.get(
-            "issue_date"
-        ),
-        concept_number=concept_number,
-        concept_title=first_text(
-            selected_concept.get(
-                "title_en"
-            ),
-            selected_concept.get(
-                "title_ja"
-            ),
-        ),
-        sender=sender,
-        normalized_reply=normalized,
+    batch_number = previous_batch + 1
+
+    out_dir = (
+        PREVIEW_ROOT
+        / issue_date
+        / f"batch_{batch_number:02d}"
     )
 
-    print(
-        "SELECTED CONCEPT: "
-        f"{concept_number}"
+    out_dir.mkdir(
+        parents=True,
+        exist_ok=True,
     )
 
-    print(
-        "NORMALIZED REPLY: "
-        f"{normalized}"
-    )
-
-    print(
-        "STATE: "
-        "APPROVED_IMAGE_CONCEPT"
-    )
-
-    return 0
-
-
-# ============================================================
-# NEXT 3
-# ============================================================
-
-def request_next_three(
-    package: dict[str, Any],
-    sender: str,
-    normalized: str,
-) -> int:
-
-    selected_concept = package.get(
-        "selected_image_concept"
-    )
-
-    if not isinstance(
-        selected_concept,
-        dict,
-    ):
-
-        raise ValueError(
-            "NEXT 3 cannot run because "
-            "selected_image_concept "
-            "is missing."
+    client = OpenAI(
+        api_key=required_env(
+            "OPENAI_API_KEY"
         )
+    )
 
-    package[
-        "previous_design_previews"
-    ] = package.get(
+    old_previews = package.get(
         "design_previews",
         [],
     )
 
+    old_hashes = {
+        str(item.get("sha256"))
+        for item in old_previews
+        if isinstance(item, dict)
+        and item.get("sha256")
+    }
+
+    new_hashes: set[str] = set()
+    previews = []
+
+    for concept in concepts:
+        number = int(
+            concept.get("number", 0)
+            or 0
+        )
+
+        chosen_bytes = None
+        chosen_hash = ""
+        chosen_prompt = ""
+
+        for retry in range(
+            0,
+            MAX_DUPLICATE_RETRIES + 1,
+        ):
+            prompt = build_next_image_prompt(
+                package,
+                concept,
+                number,
+                batch_number,
+                retry,
+            )
+
+            result = client.images.generate(
+                model=OPENAI_IMAGE_MODEL,
+                prompt=prompt,
+                n=1,
+                size=OPENAI_IMAGE_SIZE,
+                quality=OPENAI_IMAGE_QUALITY,
+                output_format="png",
+            )
+
+            if (
+                not result.data
+                or not result.data[0].b64_json
+            ):
+                raise RuntimeError(
+                    f"No image returned for concept {number}."
+                )
+
+            image_bytes = base64.b64decode(
+                result.data[0].b64_json
+            )
+
+            digest = hashlib.sha256(
+                image_bytes
+            ).hexdigest()
+
+            if (
+                digest not in old_hashes
+                and digest not in new_hashes
+            ):
+                chosen_bytes = image_bytes
+                chosen_hash = digest
+                chosen_prompt = prompt
+                break
+
+        if chosen_bytes is None:
+            raise RuntimeError(
+                f"Could not generate a fresh unique image "
+                f"for concept {number}."
+            )
+
+        new_hashes.add(
+            chosen_hash
+        )
+
+        path = (
+            out_dir
+            / f"preview_{number}.png"
+        )
+
+        path.write_bytes(
+            chosen_bytes
+        )
+
+        previews.append(
+            {
+                "number": number,
+                "concept_number": number,
+                "concept_title_en": first_text(
+                    concept.get("title_en")
+                ),
+                "concept_title_ja": first_text(
+                    concept.get("title_ja")
+                ),
+                "image_path": path.as_posix(),
+                "mime_type": "image/png",
+                "provider": "OpenAI",
+                "model": OPENAI_IMAGE_MODEL,
+                "size": OPENAI_IMAGE_SIZE,
+                "quality": OPENAI_IMAGE_QUALITY,
+                "sha256": chosen_hash,
+                "generation_prompt": chosen_prompt,
+                "alt_en": first_text(
+                    concept.get("alt_en")
+                ),
+                "alt_ja": first_text(
+                    concept.get("alt_ja")
+                ),
+            }
+        )
+
+    package[
+        "previous_design_previews"
+    ] = old_previews
+
     package[
         "design_previews"
-    ] = []
+    ] = previews
 
     package[
-        "next_3_requested_at"
-    ] = datetime.now(
-        timezone.utc
-    ).isoformat()
+        "preview_batch_number"
+    ] = batch_number
 
     package[
-        "next_3_reply"
-    ] = normalized
-
-    package[
-        "next_3_sender"
-    ] = sender
+        "preview_batch_path"
+    ] = out_dir.as_posix()
 
     package[
         "state"
-    ] = "APPROVED_IMAGE_CONCEPT"
+    ] = "DESIGN_OPTIONS_READY"
 
     OPTIONS_PATH.write_text(
         json.dumps(
@@ -888,44 +675,26 @@ def request_next_three(
     )
 
     save_result(
-        "NEXT_3_REQUESTED",
-        issue_date=package.get(
-            "issue_date"
-        ),
-        selected_concept_number=package.get(
-            "selected_image_concept_number"
-        ),
-        current_batch=package.get(
-            "preview_batch_number",
-            0,
-        ),
-        sender=sender,
-        normalized_reply=normalized,
+        "NEXT_3_GENERATED",
+        issue_date=issue_date,
+        preview_batch_number=batch_number,
     )
 
     print(
-        "NEXT 3 REQUESTED."
+        "NEXT 3 generated."
     )
-
     print(
-        "Selected concept "
-        "remains LOCKED."
+        "Three concepts preserved."
     )
-
     print(
-        "STATE: "
-        "APPROVED_IMAGE_CONCEPT"
+        "One fresh image regenerated for each concept."
+    )
+    print(
+        "STATE: DESIGN_OPTIONS_READY"
     )
 
     return 0
 
-
-# ============================================================
-# Final selection
-#
-# image: 1-3
-# title: 1-3
-# ============================================================
 
 def finalize_selection(
     package: dict[str, Any],
@@ -934,6 +703,9 @@ def finalize_selection(
     sender: str,
     normalized: str,
 ) -> int:
+    concepts = package.get(
+        "image_concepts"
+    )
 
     titles = package.get(
         "title_ideas"
@@ -943,61 +715,39 @@ def finalize_selection(
         "design_previews"
     )
 
-    selected_concept = package.get(
-        "selected_image_concept"
-    )
+    if (
+        not isinstance(concepts, list)
+        or len(concepts) != 3
+    ):
+        raise ValueError(
+            "Exactly 3 image concepts are required."
+        )
 
     if (
-        not isinstance(
-            titles,
-            list,
-        )
+        not isinstance(titles, list)
         or len(titles) != 3
     ):
-
         raise ValueError(
-            "Exactly 3 title ideas "
-            "are required."
+            "Exactly 3 title ideas are required."
         )
 
     if (
-        not isinstance(
-            previews,
-            list,
-        )
+        not isinstance(previews, list)
         or len(previews) != 3
     ):
-
         raise ValueError(
-            "Exactly 3 real image "
-            "previews are required."
+            "Exactly 3 real image previews are required."
         )
 
-    if not isinstance(
-        selected_concept,
-        dict,
-    ):
-
-        raise ValueError(
-            "selected_image_concept "
-            "is missing."
-        )
-
-    selected_title = next(
+    selected_concept = next(
         (
             item
-            for item in titles
-            if isinstance(
-                item,
-                dict,
-            )
+            for item in concepts
+            if isinstance(item, dict)
             and int(
-                item.get(
-                    "number",
-                    0,
-                )
-            )
-            == title_number
+                item.get("number", 0)
+                or 0
+            ) == image_number
         ),
         None,
     )
@@ -1006,39 +756,50 @@ def finalize_selection(
         (
             item
             for item in previews
-            if isinstance(
-                item,
-                dict,
-            )
+            if isinstance(item, dict)
             and int(
-                item.get(
-                    "number",
-                    0,
-                )
-            )
-            == image_number
+                item.get("number", 0)
+                or 0
+            ) == image_number
+        ),
+        None,
+    )
+
+    selected_title = next(
+        (
+            item
+            for item in titles
+            if isinstance(item, dict)
+            and int(
+                item.get("number", 0)
+                or 0
+            ) == title_number
         ),
         None,
     )
 
     if not isinstance(
-        selected_title,
+        selected_concept,
         dict,
     ):
-
         raise ValueError(
-            f"Title {title_number} "
-            "was not found."
+            f"Concept {image_number} not found."
         )
 
     if not isinstance(
         selected_preview,
         dict,
     ):
-
         raise ValueError(
-            f"Image {image_number} "
-            "was not found."
+            f"Image {image_number} not found."
+        )
+
+    if not isinstance(
+        selected_title,
+        dict,
+    ):
+        raise ValueError(
+            f"Title {title_number} not found."
         )
 
     source_image = Path(
@@ -1050,21 +811,15 @@ def finalize_selection(
     )
 
     if not source_image.exists():
-
         raise FileNotFoundError(
-            "Selected preview image "
-            "does not exist: "
-            f"{source_image}"
+            f"Selected image not found: {source_image}"
         )
 
     issue_date = first_text(
-        package.get(
-            "issue_date"
-        )
+        package.get("issue_date")
     )
 
     if not issue_date:
-
         raise ValueError(
             "issue_date is missing."
         )
@@ -1097,20 +852,15 @@ def finalize_selection(
         approved,
         dict,
     ):
-
         raise ValueError(
             "approved_story is missing."
         )
 
-    approved = dict(
-        approved
-    )
+    approved = dict(approved)
 
     approved[
         "selected_image_concept_number"
-    ] = package.get(
-        "selected_image_concept_number"
-    )
+    ] = image_number
 
     approved[
         "selected_image_concept"
@@ -1123,88 +873,67 @@ def finalize_selection(
     approved[
         "selected_title"
     ] = first_text(
-        selected_title.get(
-            "title"
-        )
+        selected_title.get("title")
     )
-
-    ready_payload = {
-
-        "state":
-            "READY_TO_PUBLISH",
-
-        "issue_date":
-            issue_date,
-
-        "ready_at":
-            datetime.now(
-                timezone.utc
-            ).isoformat(),
-
-        "gate_a_approved_story":
-            approved,
-
-        "selected_image_concept_number":
-            package.get(
-                "selected_image_concept_number"
-            ),
-
-        "selected_image_concept":
-            selected_concept,
-
-        "selected_image_number":
-            image_number,
-
-        "selected_title_number":
-            title_number,
-
-        "selected_title":
-            first_text(
-                selected_title.get(
-                    "title"
-                )
-            ),
-
-        "selected_title_detail":
-            selected_title,
-
-        "selected_preview":
-            selected_preview,
-
-        "preview_batch_number":
-            package.get(
-                "preview_batch_number",
-                1,
-            ),
-
-        "canonical_image_path":
-            canonical_path.as_posix(),
-
-        "design_approval_reply":
-            normalized,
-
-        "design_approval_sender":
-            sender,
-
-        "publish_started":
-            False,
-
-        "language_policy": {
-
-            "primary_language":
-                "en",
-
-            "canonical_language":
-                "en",
-
-            "translation_language":
-                "ja",
-        },
-    }
 
     READY_PATH.write_text(
         json.dumps(
-            ready_payload,
+            {
+                "state": "READY_TO_PUBLISH",
+                "issue_date": issue_date,
+                "ready_at": datetime.now(
+                    timezone.utc
+                ).isoformat(),
+
+                "gate_a_approved_story": approved,
+
+                "selected_image_concept_number":
+                    image_number,
+
+                "selected_image_concept":
+                    selected_concept,
+
+                "selected_image_number":
+                    image_number,
+
+                "selected_title_number":
+                    title_number,
+
+                "selected_title":
+                    first_text(
+                        selected_title.get("title")
+                    ),
+
+                "selected_title_detail":
+                    selected_title,
+
+                "selected_preview":
+                    selected_preview,
+
+                "preview_batch_number":
+                    package.get(
+                        "preview_batch_number",
+                        1,
+                    ),
+
+                "canonical_image_path":
+                    canonical_path.as_posix(),
+
+                "design_approval_reply":
+                    normalized,
+
+                "design_approval_sender":
+                    sender,
+
+                "publish_started":
+                    False,
+
+                "language_policy": {
+                    "primary_language": "en",
+                    "canonical_language": "en",
+                    "translation_language": "ja",
+                },
+            },
             ensure_ascii=False,
             indent=2,
         )
@@ -1214,9 +943,15 @@ def finalize_selection(
 
     package[
         "state"
-    ] = (
-        "DESIGN_SELECTED_READY_TO_PUBLISH"
-    )
+    ] = "DESIGN_SELECTED_READY_TO_PUBLISH"
+
+    package[
+        "selected_image_concept_number"
+    ] = image_number
+
+    package[
+        "selected_image_concept"
+    ] = selected_concept
 
     package[
         "selected_image_number"
@@ -1229,9 +964,7 @@ def finalize_selection(
     package[
         "selected_title"
     ] = first_text(
-        selected_title.get(
-            "title"
-        )
+        selected_title.get("title")
     )
 
     package[
@@ -1262,178 +995,35 @@ def finalize_selection(
         "READY_TO_PUBLISH",
         issue_date=issue_date,
         image_number=image_number,
+        concept_number=image_number,
         title_number=title_number,
-        selected_title=first_text(
-            selected_title.get(
-                "title"
-            )
-        ),
         canonical_image_path=(
             canonical_path.as_posix()
-        ),
-        preview_batch_number=package.get(
-            "preview_batch_number",
-            1,
         ),
         normalized_reply=normalized,
     )
 
     print(
-        "FINAL IMAGE: "
-        f"preview {image_number}"
+        f"FINAL IMAGE / CONCEPT: {image_number}"
     )
-
     print(
-        "FINAL TITLE: "
-        f"title {title_number} — "
-        f"{selected_title['title']}"
+        f"FINAL TITLE: {title_number}"
     )
-
     print(
-        "NORMALIZED REPLY: "
-        f"{normalized}"
+        f"CANONICAL: {canonical_path}"
     )
-
     print(
-        f"CANONICAL: "
-        f"{canonical_path}"
-    )
-
-    print(
-        "STATE: "
-        "READY_TO_PUBLISH"
+        "STATE: READY_TO_PUBLISH"
     )
 
     return 0
 
 
-# ============================================================
-# Check final selection
-# ============================================================
-
-def check_final_selection(
-    package: dict[str, Any],
-) -> int:
-
-    subject = first_text(
-        package.get(
-            "final_email_subject"
-        ),
-        package.get(
-            "email_subject"
-        ),
-    )
-
-    if not subject:
-
-        raise ValueError(
-            "design_options.json "
-            "is missing "
-            "final_email_subject."
-        )
-
-    found = find_reply(
-        subject,
-        "FINAL",
-    )
-
-    if found is None:
-
-        save_result(
-            "WAIT",
-            stage="FINAL_SELECTION",
-            issue_date=package.get(
-                "issue_date"
-            ),
-        )
-
-        print(
-            "No valid final reply "
-            "or NEXT 3 command found."
-        )
-
-        print(
-            "Valid examples:"
-        )
-
-        print(
-            "2 1"
-        )
-
-        print(
-            "２ １"
-        )
-
-        print(
-            "NEXT 3"
-        )
-
-        print(
-            "ＮＥＸＴ ３"
-        )
-
-        print(
-            "STATE: "
-            "WAITING_FINAL_SELECTION"
-        )
-
-        return 0
-
-    (
-        command_type,
-        image_number,
-        title_number,
-        sender,
-        normalized,
-    ) = found
-
-    if (
-        command_type
-        == "NEXT_3"
-    ):
-
-        return request_next_three(
-            package,
-            sender,
-            normalized,
-        )
-
-    assert (
-        image_number
-        is not None
-    )
-
-    assert (
-        title_number
-        is not None
-    )
-
-    return finalize_selection(
-        package,
-        image_number,
-        title_number,
-        sender,
-        normalized,
-    )
-
-
-# ============================================================
-# Main
-# ============================================================
-
 def main() -> int:
-
     if not OPTIONS_PATH.exists():
-
         save_result(
             "WAIT",
-            reason=(
-                "design_options.json missing"
-            ),
-        )
-
-        print(
-            "No design_options.json yet."
+            reason="design_options.json missing",
         )
 
         print(
@@ -1452,93 +1042,101 @@ def main() -> int:
         package,
         dict,
     ):
-
         raise ValueError(
-            "design_options.json "
-            "must contain an object."
+            "design_options.json must contain an object."
         )
 
     state = first_text(
-        package.get(
-            "state"
-        )
+        package.get("state")
     ).upper()
 
-    # --------------------------------------------------------
-    # Concept-selection reply expected
-    # --------------------------------------------------------
-
-    if (
-        state
-        == "WAITING_CONCEPT_SELECTION"
-    ):
-
-        return select_concept(
-            package
+    if state == "WAITING_FINAL_SELECTION":
+        subject = first_text(
+            package.get("final_email_subject"),
+            package.get("email_subject"),
         )
 
-    # --------------------------------------------------------
-    # Final image + title reply expected
-    # --------------------------------------------------------
+        if not subject:
+            raise ValueError(
+                "final_email_subject is missing."
+            )
 
-    if (
-        state
-        == "WAITING_FINAL_SELECTION"
-    ):
-
-        return check_final_selection(
-            package
+        found = find_reply(
+            subject
         )
 
-    # --------------------------------------------------------
-    # Workflow processing states
-    # --------------------------------------------------------
+        if found is None:
+            save_result(
+                "WAIT",
+                stage="FINAL_SELECTION",
+                issue_date=package.get(
+                    "issue_date"
+                ),
+            )
 
-    if state in (
-        "CONCEPTS_READY",
-        "APPROVED_IMAGE_CONCEPT",
-        "DESIGN_PREVIEWS_READY",
-    ):
+            print(
+                "No valid final reply found."
+            )
+            print(
+                "Valid: 1 3 / １ ３ / NEXT 3 / ＮＥＸＴ ３"
+            )
+            print(
+                "STATE: WAITING_FINAL_SELECTION"
+            )
 
+            return 0
+
+        (
+            command_type,
+            image_number,
+            title_number,
+            sender,
+            normalized,
+        ) = found
+
+        if command_type == "NEXT_3":
+            return generate_next_three(
+                package
+            )
+
+        assert image_number is not None
+        assert title_number is not None
+
+        return finalize_selection(
+            package,
+            image_number,
+            title_number,
+            sender,
+            normalized,
+        )
+
+    if state == "DESIGN_OPTIONS_READY":
         save_result(
-            "WAIT",
-            stage=state,
+            "SEND_DESIGN_EMAIL",
             issue_date=package.get(
                 "issue_date"
             ),
         )
 
         print(
-            "No email check required "
-            f"in state {state}."
+            "Design images exist but approval email "
+            "has not been marked waiting yet."
         )
-
         print(
-            "STATE: WAIT"
+            "STATE: DESIGN_OPTIONS_READY"
         )
 
         return 0
-
-    # --------------------------------------------------------
-    # Already completed
-    # --------------------------------------------------------
 
     if (
         state
         == "DESIGN_SELECTED_READY_TO_PUBLISH"
     ):
-
         save_result(
             "ALREADY_SELECTED",
-            state=state,
             issue_date=package.get(
                 "issue_date"
             ),
-        )
-
-        print(
-            "Final design selection "
-            "already completed."
         )
 
         print(
@@ -1546,10 +1144,6 @@ def main() -> int:
         )
 
         return 0
-
-    # --------------------------------------------------------
-    # Unknown / inactive state
-    # --------------------------------------------------------
 
     save_result(
         "WAIT",
@@ -1560,10 +1154,8 @@ def main() -> int:
     )
 
     print(
-        f"No action for state "
-        f"{state!r}."
+        f"No action for state {state!r}."
     )
-
     print(
         "STATE: WAIT"
     )
@@ -1572,7 +1164,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-
     raise SystemExit(
         main()
     )

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 import os
 import random
@@ -12,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from google import genai
+from openai import OpenAI
 
 
 APPROVED_STORY_PATH = Path(
@@ -22,148 +25,80 @@ OPTIONS_PATH = Path(
     "automation_state/design_options.json"
 )
 
+PREVIEW_ROOT = Path(
+    "automation_images/design_previews"
+)
+
 TEXT_MODEL = (
-    os.getenv(
-        "GEMINI_TEXT_MODEL"
-    )
-    or ""
+    os.getenv("GEMINI_TEXT_MODEL") or ""
 ).strip() or "gemini-3.6-flash"
 
+OPENAI_IMAGE_MODEL = (
+    os.getenv("OPENAI_IMAGE_MODEL") or ""
+).strip() or "gpt-image-2"
 
-# ============================================================
-# Current Daily Duck design specification
-# ============================================================
-#
-# Gate A:
-#   5 story candidates
-#
-# Design concept stage:
-#   3 image concepts
-#   3 title ideas
-#
-# Human selects:
-#   1 / 2 / 3
-#
-# Real image stage:
-#   exactly 3 real images from ONE locked concept
-#
-# Regeneration:
-#   NEXT 3
-#
-# Final selection:
-#   IMAGE_NUMBER TITLE_NUMBER
-#
-# Example:
-#   2 1
-#
-# ============================================================
+OPENAI_IMAGE_SIZE = (
+    os.getenv("OPENAI_IMAGE_SIZE") or ""
+).strip() or "1536x1024"
+
+OPENAI_IMAGE_QUALITY = (
+    os.getenv("OPENAI_IMAGE_QUALITY") or ""
+).strip() or "medium"
+
 
 IMAGE_CONCEPT_COUNT = 3
 TITLE_IDEA_COUNT = 3
-REAL_IMAGE_COUNT = 3
-
-
-# ============================================================
-# Retry settings
-# ============================================================
 
 EDITORIAL_MAX_ATTEMPTS = int(
-    os.getenv(
-        "CONCEPT_MAX_ATTEMPTS",
-        "3",
-    )
+    os.getenv("CONCEPT_MAX_ATTEMPTS", "3")
 )
 
 GEMINI_API_MAX_ATTEMPTS = int(
-    os.getenv(
-        "GEMINI_API_MAX_ATTEMPTS",
-        "5",
-    )
+    os.getenv("GEMINI_API_MAX_ATTEMPTS", "5")
 )
 
 GEMINI_RETRY_BASE_SECONDS = float(
-    os.getenv(
-        "GEMINI_RETRY_BASE_SECONDS",
-        "10",
-    )
+    os.getenv("GEMINI_RETRY_BASE_SECONDS", "10")
 )
 
+MAX_DUPLICATE_RETRIES = 2
 
-# ============================================================
-# Basic helpers
-# ============================================================
 
-def required_env(
-    name: str,
-) -> str:
-
-    value = os.getenv(
-        name,
-        "",
-    ).strip()
-
+def required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
     if not value:
-
         raise RuntimeError(
-            "Missing required environment "
-            f"variable: {name}"
+            f"Missing required environment variable: {name}"
         )
-
     return value
 
 
-def load_json(
-    path: Path,
-) -> dict[str, Any]:
-
+def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
-
         raise FileNotFoundError(
             f"Required file not found: {path}"
         )
 
     data = json.loads(
-        path.read_text(
-            encoding="utf-8"
-        )
+        path.read_text(encoding="utf-8")
     )
 
-    if not isinstance(
-        data,
-        dict,
-    ):
-
+    if not isinstance(data, dict):
         raise ValueError(
-            f"{path} must contain "
-            "a JSON object."
+            f"{path} must contain a JSON object."
         )
 
     return data
 
 
-def first_text(
-    *values: Any,
-) -> str:
-
+def first_text(*values: Any) -> str:
     for value in values:
-
-        if (
-            isinstance(
-                value,
-                str,
-            )
-            and value.strip()
-        ):
-
+        if isinstance(value, str) and value.strip():
             return value.strip()
-
     return ""
 
 
-def clean_json_text(
-    value: str,
-) -> str:
-
+def clean_json_text(value: str) -> str:
     cleaned = value.strip()
 
     cleaned = re.sub(
@@ -182,38 +117,27 @@ def clean_json_text(
     return cleaned.strip()
 
 
-# ============================================================
-# Approved story validation
-# ============================================================
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
 
 def validate_approved_state(
     data: dict[str, Any],
 ) -> None:
-
     state = first_text(
-        data.get(
-            "state"
-        )
+        data.get("state")
     ).upper()
 
     if state != "APPROVED_STORY":
-
         raise ValueError(
-            "Design options may only be "
-            "generated from APPROVED_STORY; "
-            f"got {state!r}."
+            "Design options may only be generated "
+            f"from APPROVED_STORY; got {state!r}."
         )
 
 
 def find_approved_story(
     data: dict[str, Any],
 ) -> dict[str, Any]:
-    """
-    Return the selected Gate A story while
-    tolerating the state shapes used by
-    The Daily Duck during Phase 2.
-    """
-
     for key in (
         "approved_story",
         "selected_story",
@@ -221,27 +145,13 @@ def find_approved_story(
         "story",
         "recommended_story",
     ):
-
-        value = data.get(
-            key
-        )
-
-        if isinstance(
-            value,
-            dict,
-        ):
-
+        value = data.get(key)
+        if isinstance(value, dict):
             return value
 
-    package = data.get(
-        "package"
-    )
+    package = data.get("package")
 
-    if isinstance(
-        package,
-        dict,
-    ):
-
+    if isinstance(package, dict):
         for key in (
             "approved_story",
             "selected_story",
@@ -249,20 +159,9 @@ def find_approved_story(
             "story",
             "recommended_story",
         ):
-
-            value = package.get(
-                key
-            )
-
-            if isinstance(
-                value,
-                dict,
-            ):
-
+            value = package.get(key)
+            if isinstance(value, dict):
                 return value
-
-    # Some versions persist the approved
-    # editorial package at root level.
 
     if any(
         key in data
@@ -275,12 +174,10 @@ def find_approved_story(
             "x_en",
         )
     ):
-
         return data
 
     raise ValueError(
-        "Could not locate the approved story "
-        "in approved_story.json."
+        "Could not locate the approved story."
     )
 
 
@@ -288,43 +185,25 @@ def issue_date_from(
     data: dict[str, Any],
     story: dict[str, Any],
 ) -> str:
-
     issue_date = first_text(
-        data.get(
-            "issue_date"
-        ),
-        data.get(
-            "date"
-        ),
-        story.get(
-            "issue_date"
-        ),
-        story.get(
-            "date"
-        ),
+        data.get("issue_date"),
+        data.get("date"),
+        story.get("issue_date"),
+        story.get("date"),
     )
 
     if not issue_date:
-
         raise ValueError(
-            "Approved story is missing "
-            "issue_date/date."
+            "Approved story is missing issue_date/date."
         )
 
     return issue_date
 
 
-# ============================================================
-# Gemini retry
-# ============================================================
-
 def is_retryable_gemini_error(
     exc: Exception,
 ) -> bool:
-
-    error_text = str(
-        exc
-    ).lower()
+    error_text = str(exc).lower()
 
     retryable_markers = (
         "429",
@@ -354,36 +233,21 @@ def call_gemini_with_retry(
     client: genai.Client,
     prompt: str,
 ):
-
-    if GEMINI_API_MAX_ATTEMPTS < 1:
-
-        raise ValueError(
-            "GEMINI_API_MAX_ATTEMPTS "
-            "must be at least 1."
-        )
-
-    last_error: (
-        Exception | None
-    ) = None
+    last_error: Exception | None = None
 
     for attempt in range(
         1,
         GEMINI_API_MAX_ATTEMPTS + 1,
     ):
-
         print(
             "Gemini API request attempt "
-            f"{attempt}/"
-            f"{GEMINI_API_MAX_ATTEMPTS}..."
+            f"{attempt}/{GEMINI_API_MAX_ATTEMPTS}..."
         )
 
         try:
-
-            response = (
-                client.models.generate_content(
-                    model=TEXT_MODEL,
-                    contents=prompt,
-                )
+            response = client.models.generate_content(
+                model=TEXT_MODEL,
+                contents=prompt,
             )
 
             print(
@@ -393,58 +257,35 @@ def call_gemini_with_retry(
             return response
 
         except Exception as exc:
-
             last_error = exc
 
-            if not (
-                is_retryable_gemini_error(
-                    exc
-                )
-            ):
-
+            if not is_retryable_gemini_error(exc):
                 raise
 
-            if (
-                attempt
-                >= GEMINI_API_MAX_ATTEMPTS
-            ):
-
+            if attempt >= GEMINI_API_MAX_ATTEMPTS:
                 raise
 
             wait_seconds = (
                 GEMINI_RETRY_BASE_SECONDS
                 * (2 ** (attempt - 1))
-                + random.uniform(
-                    0,
-                    3,
-                )
+                + random.uniform(0, 3)
             )
 
             print(
-                "WARNING: Temporary Gemini "
-                "API error. "
-                "Retrying in approximately "
-                f"{wait_seconds:.1f} seconds...",
+                "WARNING: Temporary Gemini API error. "
+                f"Retrying in {wait_seconds:.1f}s...",
                 file=sys.stderr,
             )
 
-            time.sleep(
-                wait_seconds
-            )
+            time.sleep(wait_seconds)
 
     if last_error is not None:
-
         raise last_error
 
     raise RuntimeError(
-        "Gemini retry loop "
-        "ended unexpectedly."
+        "Gemini retry loop ended unexpectedly."
     )
 
-
-# ============================================================
-# Generate exactly 3 concepts + 3 title ideas
-# ============================================================
 
 def generate_options(
     approved_state: dict[str, Any],
@@ -453,81 +294,41 @@ def generate_options(
     list[dict[str, Any]],
     list[dict[str, Any]],
 ]:
-
     client = genai.Client(
-        api_key=required_env(
-            "GEMINI_API_KEY"
-        )
+        api_key=required_env("GEMINI_API_KEY")
     )
 
     output_example = {
-
         "image_concepts": [
-
             {
-                "number":
-                    1,
-
-                "title_en":
-                    "Short English concept title",
-
-                "concept_en":
-                    "Canonical English visual concept",
-
-                "composition_en":
-                    (
-                        "Canonical English composition, "
-                        "setting, framing, subject, props "
-                        "and mood direction"
-                    ),
-
-                "generation_prompt_en":
-                    (
-                        "Production-ready English prompt "
-                        "for generating three real variations "
-                        "of this same concept later"
-                    ),
-
-                "alt_en":
-                    "Canonical English alt-text draft",
-
-                "title_ja":
-                    "自然な日本語コンセプト名",
-
-                "concept_ja":
-                    "英語正本を基にした自然な日本語説明",
-
-                "composition_ja":
-                    "英語正本を基にした自然な日本語構図説明",
-
-                "alt_ja":
-                    "英語正本を基にした日本語alt案",
+                "number": 1,
+                "title_en": "Short English concept title",
+                "concept_en": "Canonical English visual concept",
+                "composition_en": (
+                    "Canonical English composition, setting, "
+                    "framing, subject, props and mood direction"
+                ),
+                "generation_prompt_en": (
+                    "Production-ready English prompt for creating "
+                    "one publishable image for this concept"
+                ),
+                "alt_en": "Canonical English alt-text draft",
+                "title_ja": "自然な日本語コンセプト名",
+                "concept_ja": "英語正本を基にした自然な日本語説明",
+                "composition_ja": "英語正本を基にした自然な日本語構図説明",
+                "alt_ja": "英語正本を基にした日本語alt案",
             }
-
-            for _ in range(
-                IMAGE_CONCEPT_COUNT
-            )
+            for _ in range(IMAGE_CONCEPT_COUNT)
         ],
-
         "title_ideas": [
-
             {
-                "number":
-                    1,
-
-                "title":
-                    "PUNCHY ENGLISH TITLE",
-
-                "meaning_ja":
-                    (
-                        "日本語で意味・ニュアンスを"
-                        "簡潔に説明"
-                    ),
+                "number": 1,
+                "title": "PUNCHY ENGLISH TITLE",
+                "meaning_ja": (
+                    "日本語で意味・ニュアンスを簡潔に説明"
+                ),
             }
-
-            for _ in range(
-                TITLE_IDEA_COUNT
-            )
+            for _ in range(TITLE_IDEA_COUNT)
         ],
     }
 
@@ -535,77 +336,43 @@ def generate_options(
 You are the visual editorial director for The Daily Duck.
 
 The Daily Duck is ENGLISH-FIRST.
-
-English is the canonical/master language.
+English is canonical/master.
 Japanese is review translation only.
 
-You are working on ONE story that has already passed Gate A.
-
+The story below has already passed Gate A.
 Do not change the story.
 
 ============================================================
-TASK A — IMAGE CONCEPTS
+TASK A — EXACTLY THREE IMAGE CONCEPTS
 ============================================================
 
-Create EXACTLY THREE distinct visual concepts
-for the approved story.
+Create EXACTLY THREE meaningfully different visual concepts.
 
-Do NOT create four or five concepts.
+The system will immediately generate ONE real image for EACH concept.
 
-Return exactly:
+Therefore:
+- concept 1 must have its own distinct visual idea
+- concept 2 must have its own distinct visual idea
+- concept 3 must have its own distinct visual idea
+- generation_prompt_en must be production-ready for ONE image
+- the three concepts must not be minor camera variations of one concept
 
-1
-2
-3
+Each generated image will later be attached to one approval email.
 
-For every concept, create the English master fields FIRST:
+The human will reply with:
 
-1. title_en
-2. concept_en
-3. composition_en
-4. generation_prompt_en
-5. alt_en
+IMAGE_NUMBER TITLE_NUMBER
 
-Only after the English master is complete,
-create the Japanese review translations:
+Example:
+1 3
 
-6. title_ja
-7. concept_ja
-8. composition_ja
-9. alt_ja
-
-The THREE concepts must be meaningfully different
-visual approaches, but all THREE must represent
-the SAME approved story.
-
-The human will select exactly ONE concept.
-
-After that selection, the system will generate
-EXACTLY THREE real image variations from that
-ONE selected concept.
-
-Therefore generation_prompt_en must be precise
-enough to LOCK the selected concept while still
-allowing execution-level variation such as:
-
-- duck pose
-- camera angle
-- crop
-- lighting nuance
-- prop placement
-- spacing
-- depth of field
-- body orientation
-
-The later image generator must NOT be allowed
-to switch to another concept.
+There is NO separate concept-selection turn.
 
 ============================================================
 THE DAILY DUCK MASCOT
 ============================================================
 
 Every concept must preserve:
-
 - recognizable friendly yellow duck
 - orange beak
 - large dark glossy eyes
@@ -623,7 +390,7 @@ VISUAL DIRECTION
 - warm
 - premium editorial
 - simple rather than overly vintage
-- strong single focal point
+- strong focal point
 - landscape hero-image composition
 - no logos
 - no watermarks
@@ -637,41 +404,21 @@ FACTUAL RULE
 
 Use ONLY facts supported by the approved story package.
 
-Do not invent:
+Do not invent names, people, dates, numbers, locations,
+quotations, organizations, scientific details, or factual
+props that imply unsupported facts.
 
-- names
-- people
-- dates
-- numbers
-- locations
-- quotations
-- organizations
-- scientific details
-- factual props that imply unsupported facts
-
-Illustrative visual metaphor is allowed only when
-it does not falsely present invented details as factual.
+Illustrative visual metaphor is allowed only when it does not
+falsely present invented details as factual.
 
 ============================================================
-TASK B — TITLE IDEAS
+TASK B — EXACTLY THREE TITLE IDEAS
 ============================================================
 
-Create EXACTLY THREE short, punchy ENGLISH
-publication-title options for the SAME approved story.
+Create EXACTLY THREE short, punchy ENGLISH publication titles.
 
-The title options must:
-
-- be English only
-- be concise
-- be memorable
-- fit The Daily Duck tone
-- not invent facts
-- not use clickbait that changes the meaning
-- be suitable for the website and X card
-
-For each title, meaning_ja should explain
-the English meaning and nuance naturally
-in Japanese for the human editor.
+For each title, meaning_ja explains the English meaning
+and nuance naturally in Japanese.
 
 ============================================================
 OUTPUT RULES
@@ -679,11 +426,9 @@ OUTPUT RULES
 
 - Exactly THREE image concepts.
 - Exactly THREE title ideas.
-- Number image concepts 1-3.
-- Number title ideas 1-3.
-- Every required field must be non-empty.
-- English is canonical.
-- Japanese is translation/review support.
+- Number concepts 1-3.
+- Number titles 1-3.
+- Every required field non-empty.
 - Return ONLY valid JSON.
 - No Markdown fences.
 
@@ -733,28 +478,21 @@ FULL APPROVED STATE
         "meaning_ja",
     )
 
-    last_error: (
-        Exception | None
-    ) = None
+    last_error: Exception | None = None
 
     for attempt in range(
         1,
         EDITORIAL_MAX_ATTEMPTS + 1,
     ):
-
         try:
-
             print(
-                "Design option generation "
-                f"attempt {attempt}/"
-                f"{EDITORIAL_MAX_ATTEMPTS}..."
+                "Design option generation attempt "
+                f"{attempt}/{EDITORIAL_MAX_ATTEMPTS}..."
             )
 
-            response = (
-                call_gemini_with_retry(
-                    client,
-                    prompt,
-                )
+            response = call_gemini_with_retry(
+                client,
+                prompt,
             )
 
             raw = getattr(
@@ -764,171 +502,93 @@ FULL APPROVED STATE
             )
 
             if not raw:
-
                 raise RuntimeError(
-                    "Gemini returned no "
-                    "design option text."
+                    "Gemini returned no design option text."
                 )
 
             parsed = json.loads(
-                clean_json_text(
-                    raw
-                )
+                clean_json_text(raw)
             )
 
-            if not isinstance(
-                parsed,
-                dict,
-            ):
-
+            if not isinstance(parsed, dict):
                 raise ValueError(
-                    "Gemini response must "
-                    "be a JSON object."
+                    "Gemini response must be a JSON object."
                 )
 
-            concepts = parsed.get(
-                "image_concepts"
-            )
-
-            titles = parsed.get(
-                "title_ideas"
-            )
+            concepts = parsed.get("image_concepts")
+            titles = parsed.get("title_ideas")
 
             if (
-                not isinstance(
-                    concepts,
-                    list,
-                )
-                or len(
-                    concepts
-                ) != IMAGE_CONCEPT_COUNT
+                not isinstance(concepts, list)
+                or len(concepts) != IMAGE_CONCEPT_COUNT
             ):
-
                 raise ValueError(
-                    "Gemini must return exactly "
-                    f"{IMAGE_CONCEPT_COUNT} "
-                    "image concepts."
+                    "Gemini must return exactly 3 image concepts."
                 )
 
             if (
-                not isinstance(
-                    titles,
-                    list,
-                )
-                or len(
-                    titles
-                ) != TITLE_IDEA_COUNT
+                not isinstance(titles, list)
+                or len(titles) != TITLE_IDEA_COUNT
             ):
-
                 raise ValueError(
-                    "Gemini must return exactly "
-                    f"{TITLE_IDEA_COUNT} "
-                    "title ideas."
+                    "Gemini must return exactly 3 title ideas."
                 )
 
-            normalized_concepts: list[
-                dict[str, Any]
-            ] = []
+            normalized_concepts = []
 
             for index, item in enumerate(
                 concepts,
                 start=1,
             ):
-
-                if not isinstance(
-                    item,
-                    dict,
-                ):
-
+                if not isinstance(item, dict):
                     raise ValueError(
-                        "Image concept "
-                        f"{index} must "
-                        "be an object."
+                        f"Image concept {index} must be an object."
                     )
 
-                normalized = dict(
-                    item
-                )
+                normalized = dict(item)
+                normalized["number"] = index
 
-                normalized[
-                    "number"
-                ] = index
-
-                for field in (
-                    required_concept_fields
-                ):
-
+                for field in required_concept_fields:
                     value = first_text(
-                        normalized.get(
-                            field
-                        )
+                        normalized.get(field)
                     )
 
                     if not value:
-
                         raise ValueError(
-                            "Image concept "
-                            f"{index} is missing "
-                            f"{field}."
+                            f"Image concept {index} is missing {field}."
                         )
 
-                    normalized[
-                        field
-                    ] = value
+                    normalized[field] = value
 
                 normalized_concepts.append(
                     normalized
                 )
 
-            normalized_titles: list[
-                dict[str, Any]
-            ] = []
+            normalized_titles = []
 
             for index, item in enumerate(
                 titles,
                 start=1,
             ):
-
-                if not isinstance(
-                    item,
-                    dict,
-                ):
-
+                if not isinstance(item, dict):
                     raise ValueError(
-                        "Title idea "
-                        f"{index} must "
-                        "be an object."
+                        f"Title idea {index} must be an object."
                     )
 
-                normalized = dict(
-                    item
-                )
+                normalized = dict(item)
+                normalized["number"] = index
 
-                normalized[
-                    "number"
-                ] = index
-
-                for field in (
-                    required_title_fields
-                ):
-
+                for field in required_title_fields:
                     value = first_text(
-                        normalized.get(
-                            field
-                        )
+                        normalized.get(field)
                     )
 
                     if not value:
-
                         raise ValueError(
-                            "Title idea "
-                            f"{index} is missing "
-                            f"{field}."
+                            f"Title idea {index} is missing {field}."
                         )
 
-                    normalized[
-                        field
-                    ] = value
+                    normalized[field] = value
 
                 normalized_titles.append(
                     normalized
@@ -940,43 +600,262 @@ FULL APPROVED STATE
             )
 
         except Exception as exc:
-
             last_error = exc
 
-            if (
-                attempt
-                < EDITORIAL_MAX_ATTEMPTS
-            ):
-
+            if attempt < EDITORIAL_MAX_ATTEMPTS:
                 print(
-                    "WARNING: Invalid/incomplete "
-                    "design option package: "
+                    "WARNING: Invalid/incomplete package: "
                     f"{exc}"
                 )
-
                 print(
-                    "Retrying design option "
-                    "generation..."
+                    "Retrying design option generation..."
                 )
-
                 continue
 
     if last_error is not None:
-
         raise last_error
 
     raise RuntimeError(
-        "Design option generation "
-        "ended unexpectedly."
+        "Design option generation ended unexpectedly."
     )
 
 
-# ============================================================
-# Main
-# ============================================================
+def build_image_prompt(
+    approved_story: dict[str, Any],
+    concept: dict[str, Any],
+    concept_number: int,
+    retry: int,
+) -> str:
+    headline = first_text(
+        approved_story.get("title_en"),
+        approved_story.get("title"),
+        approved_story.get("title_ja"),
+    )
+
+    summary = first_text(
+        approved_story.get("reason_en"),
+        approved_story.get("en_copy"),
+        approved_story.get("reason"),
+        approved_story.get("jp_copy"),
+    )
+
+    retry_note = ""
+
+    if retry > 0:
+        retry_note = f"""
+RETRY {retry}:
+The previous generated image was byte-identical to another option.
+Make this concept visually unmistakable and distinct while preserving
+the exact concept below.
+""".strip()
+
+    return f"""
+Create ONE polished, publishable landscape hero image for The Daily Duck.
+
+APPROVED STORY:
+Headline: {headline}
+Summary: {summary}
+
+THIS IS CONCEPT {concept_number} OF 3.
+
+CONCEPT TITLE:
+{first_text(concept.get("title_en"))}
+
+CONCEPT:
+{first_text(concept.get("concept_en"))}
+
+COMPOSITION:
+{first_text(concept.get("composition_en"))}
+
+PRODUCTION DIRECTION:
+{first_text(concept.get("generation_prompt_en"))}
+
+{retry_note}
+
+The three concept images must look meaningfully different from each other.
+
+Preserve The Daily Duck mascot:
+- friendly recognizable yellow duck
+- orange beak
+- large dark glossy eyes
+- small feather tuft
+- warm expression
+
+Style:
+- clean
+- modern
+- charming
+- premium editorial
+- landscape hero composition
+- publication quality
+
+Do not include:
+- readable text
+- numbers
+- headlines
+- logos
+- watermarks
+- UI
+
+Do not invent unsupported facts.
+""".strip()
+
+
+def generate_one_image(
+    client: OpenAI,
+    prompt: str,
+    number: int,
+) -> bytes:
+    print(
+        f"Generating concept image {number}/3: "
+        f"{OPENAI_IMAGE_MODEL}, "
+        f"{OPENAI_IMAGE_SIZE}, "
+        f"quality={OPENAI_IMAGE_QUALITY}"
+    )
+
+    result = client.images.generate(
+        model=OPENAI_IMAGE_MODEL,
+        prompt=prompt,
+        n=1,
+        size=OPENAI_IMAGE_SIZE,
+        quality=OPENAI_IMAGE_QUALITY,
+        output_format="png",
+    )
+
+    if (
+        not result.data
+        or not result.data[0].b64_json
+    ):
+        raise RuntimeError(
+            f"OpenAI returned no image for concept {number}."
+        )
+
+    return base64.b64decode(
+        result.data[0].b64_json
+    )
+
+
+def generate_concept_images(
+    issue_date: str,
+    approved_story: dict[str, Any],
+    concepts: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], int, Path]:
+    openai_client = OpenAI(
+        api_key=required_env("OPENAI_API_KEY")
+    )
+
+    batch_number = 1
+
+    out_dir = (
+        PREVIEW_ROOT
+        / issue_date
+        / f"batch_{batch_number:02d}"
+    )
+
+    out_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    previews: list[dict[str, Any]] = []
+    seen_hashes: set[str] = set()
+
+    for concept in concepts:
+        number = int(concept["number"])
+
+        chosen_bytes: bytes | None = None
+        chosen_prompt = ""
+        chosen_hash = ""
+
+        for retry in range(
+            0,
+            MAX_DUPLICATE_RETRIES + 1,
+        ):
+            prompt = build_image_prompt(
+                approved_story=approved_story,
+                concept=concept,
+                concept_number=number,
+                retry=retry,
+            )
+
+            image_bytes = generate_one_image(
+                openai_client,
+                prompt,
+                number,
+            )
+
+            digest = sha256_bytes(
+                image_bytes
+            )
+
+            if digest not in seen_hashes:
+                chosen_bytes = image_bytes
+                chosen_prompt = prompt
+                chosen_hash = digest
+                break
+
+            print(
+                f"WARNING: concept image {number} "
+                "was byte-identical to an earlier image. "
+                "Regenerating..."
+            )
+
+        if chosen_bytes is None:
+            raise RuntimeError(
+                f"Could not create a unique image for concept {number}."
+            )
+
+        seen_hashes.add(chosen_hash)
+
+        path = (
+            out_dir
+            / f"preview_{number}.png"
+        )
+
+        path.write_bytes(
+            chosen_bytes
+        )
+
+        previews.append(
+            {
+                "number": number,
+                "concept_number": number,
+                "concept_title_en": first_text(
+                    concept.get("title_en")
+                ),
+                "concept_title_ja": first_text(
+                    concept.get("title_ja")
+                ),
+                "image_path": path.as_posix(),
+                "mime_type": "image/png",
+                "provider": "OpenAI",
+                "model": OPENAI_IMAGE_MODEL,
+                "size": OPENAI_IMAGE_SIZE,
+                "quality": OPENAI_IMAGE_QUALITY,
+                "sha256": chosen_hash,
+                "generation_prompt": chosen_prompt,
+                "alt_en": first_text(
+                    concept.get("alt_en")
+                ),
+                "alt_ja": first_text(
+                    concept.get("alt_ja")
+                ),
+            }
+        )
+
+    if len(previews) != 3:
+        raise RuntimeError(
+            f"Expected exactly 3 previews, got {len(previews)}."
+        )
+
+    return (
+        previews,
+        batch_number,
+        out_dir,
+    )
+
 
 def main() -> int:
-
     approved_state = load_json(
         APPROVED_STORY_PATH
     )
@@ -985,10 +864,8 @@ def main() -> int:
         approved_state
     )
 
-    approved_story = (
-        find_approved_story(
-            approved_state
-        )
+    approved_story = find_approved_story(
+        approved_state
     )
 
     issue_date = issue_date_from(
@@ -1004,152 +881,58 @@ def main() -> int:
         approved_story,
     )
 
+    (
+        previews,
+        batch_number,
+        preview_path,
+    ) = generate_concept_images(
+        issue_date,
+        approved_story,
+        image_concepts,
+    )
+
     package = {
+        "state": "DESIGN_OPTIONS_READY",
+        "issue_date": issue_date,
+        "generated_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
 
-        "state":
-            "CONCEPTS_READY",
+        "approved_story": approved_state,
+        "approved_story_compact": approved_story,
 
-        "issue_date":
-            issue_date,
+        "image_concepts": image_concepts,
+        "title_ideas": title_ideas,
 
-        "generated_at":
-            datetime.now(
-                timezone.utc
-            ).isoformat(),
+        # One real image is attached to each concept.
+        "design_previews": previews,
 
-        # Preserve complete Gate A state.
-        "approved_story":
-            approved_state,
+        "preview_batch_number": batch_number,
+        "preview_batch_path": preview_path.as_posix(),
+        "preview_candidate_count": 3,
 
-        "approved_story_compact":
-            approved_story,
+        "selected_image_concept_number": None,
+        "selected_image_concept": None,
+        "selected_image_number": None,
+        "selected_title_number": None,
 
-        # Exactly three concepts.
-        "image_concepts":
-            image_concepts,
-
-        # Exactly three titles.
-        "title_ideas":
-            title_ideas,
-
-        # Nothing selected yet.
-        "selected_image_concept_number":
-            None,
-
-        "selected_image_concept":
-            None,
-
-        # No real images yet.
-        "design_previews":
-            [],
-
-        "preview_batch_number":
-            0,
+        "design_flow": {
+            "selection_turns_after_gate_a": 1,
+            "concept_count": 3,
+            "images_per_concept": 1,
+            "image_count": 3,
+            "title_count": 3,
+            "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
+            "example": "1 3",
+            "next_3_supported": True,
+            "full_width_supported": True,
+        },
 
         "language_policy": {
-
-            "primary_language":
-                "en",
-
-            "canonical_language":
-                "en",
-
-            "translation_language":
-                "ja",
-
-            "translation_source":
-                "english_master",
-        },
-
-        # ----------------------------------------------------
-        # Human selects ONE of THREE concepts.
-        # ----------------------------------------------------
-
-        "concept_selection_rule": {
-
-            "valid_replies":
-                [
-                    "1",
-                    "2",
-                    "3",
-                ],
-
-            "full_width_supported":
-                True,
-
-            "next_state":
-                "APPROVED_IMAGE_CONCEPT",
-        },
-
-        # ----------------------------------------------------
-        # After concept selection:
-        #
-        # EXACTLY THREE real images are generated
-        # from that ONE locked concept.
-        # ----------------------------------------------------
-
-        "real_image_flow": {
-
-            "source":
-                "one_human_selected_concept",
-
-            "candidate_count":
-                REAL_IMAGE_COUNT,
-
-            "next_3_supported":
-                True,
-
-            "concept_remains_locked_on_next":
-                True,
-        },
-
-        # ----------------------------------------------------
-        # Final selection:
-        #
-        # image = 1-3
-        # title = 1-3
-        #
-        # Examples:
-        #
-        #   2 1
-        #   ２ １
-        #
-        # Regeneration:
-        #
-        #   NEXT 3
-        #   ＮＥＸＴ ３
-        # ----------------------------------------------------
-
-        "final_selection_rule": {
-
-            "image_numbers":
-                [
-                    1,
-                    2,
-                    3,
-                ],
-
-            "title_numbers":
-                [
-                    1,
-                    2,
-                    3,
-                ],
-
-            "format":
-                "IMAGE_NUMBER TITLE_NUMBER",
-
-            "example":
-                "2 1",
-
-            "next_3_command":
-                "NEXT 3",
-
-            "full_width_supported":
-                True,
-
-            "next_state":
-                "READY_TO_PUBLISH",
+            "primary_language": "en",
+            "canonical_language": "en",
+            "translation_language": "ja",
+            "translation_source": "english_master",
         },
     }
 
@@ -1168,84 +951,22 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print(
-        "Generated exactly "
-        f"{IMAGE_CONCEPT_COUNT} "
-        "image concepts."
-    )
-
-    print(
-        "Generated exactly "
-        f"{TITLE_IDEA_COUNT} "
-        "English title ideas."
-    )
-
-    print(
-        "Concept selection replies:"
-    )
-
-    print(
-        "1 / 2 / 3"
-    )
-
-    print(
-        "Full-width concept replies:"
-    )
-
-    print(
-        "１ / ２ / ３"
-    )
-
-    print(
-        "Real image count after "
-        f"concept selection: "
-        f"{REAL_IMAGE_COUNT}"
-    )
-
-    print(
-        "Regeneration command:"
-    )
-
-    print(
-        "NEXT 3"
-    )
-
-    print(
-        "Final selection:"
-    )
-
-    print(
-        "IMAGE 1-3 + TITLE 1-3"
-    )
-
-    print(
-        "LANGUAGE: ENGLISH-FIRST"
-    )
-
-    print(
-        f"Saved: {OPTIONS_PATH}"
-    )
-
-    print(
-        "STATE: CONCEPTS_READY"
-    )
+    print("Generated exactly 3 image concepts.")
+    print("Generated exactly 1 real image per concept.")
+    print("Generated exactly 3 real images total.")
+    print("Generated exactly 3 title ideas.")
+    print("STATE: DESIGN_OPTIONS_READY")
+    print(f"Saved: {OPTIONS_PATH}")
 
     return 0
 
 
 if __name__ == "__main__":
-
     try:
-
-        raise SystemExit(
-            main()
-        )
-
+        raise SystemExit(main())
     except Exception as exc:
-
         print(
             f"ERROR: {exc}",
             file=sys.stderr,
         )
-
         raise
