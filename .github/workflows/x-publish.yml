@@ -21,15 +21,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ======================================================
+      # Checkout
+      # ======================================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # ======================================================
+      # Always use latest main
+      # ======================================================
+
+      - name: Sync latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch origin main
+          git reset --hard origin/main
+
+          echo "Repository synchronized to:"
+          git rev-parse HEAD
+
+      # ======================================================
+      # Python
+      # ======================================================
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # ======================================================
+      # Dependencies
+      # ======================================================
 
       - name: Install X card and publishing dependencies
         run: |
@@ -38,9 +65,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install Pillow requests requests-oauthlib
 
+      # ======================================================
+      # Build X card
+      #
+      # 2026-08-22+ build_x_card.py:
+      # - 1500x1200 (5:4)
+      # - large ~80% hero image
+      # - English description
+      # ======================================================
+
       - name: Build fixed 5:4 Daily Duck X card
         run: |
           python scripts/build_x_card.py
+
+      # ======================================================
+      # Validate card
+      # ======================================================
 
       - name: Validate X card ratio
         run: |
@@ -49,27 +89,30 @@ jobs:
           from pathlib import Path
           from PIL import Image
 
-          ready = json.load(
-              open(
-                  'automation_state/ready_to_publish.json',
-                  encoding='utf-8'
-              )
-          )
+          with open(
+              "automation_state/ready_to_publish.json",
+              encoding="utf-8",
+          ) as f:
+              ready = json.load(f)
 
           p = Path(
-              ready['canonical_x_image_path']
+              ready["canonical_x_image_path"]
           )
 
           with Image.open(p) as im:
-              print('X image:', p)
-              print('Size:', im.size)
+              print("X image:", p)
+              print("Size:", im.size)
 
               if im.size != (1500, 1200):
                   raise SystemExit(
-                      f'Unexpected X image size: '
-                      f'{im.size}; expected 1500x1200'
+                      f"Unexpected X image size: "
+                      f"{im.size}; expected 1500x1200"
                   )
           PY
+
+      # ======================================================
+      # Artifact
+      # ======================================================
 
       - name: Upload X card artifact
         if: always()
@@ -80,12 +123,21 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      # ======================================================
+      # Test only
+      # ======================================================
+
       - name: Report test-only mode
         if: ${{ inputs.test_only == true }}
         run: |
           echo "TEST ONLY MODE"
           echo "X card was generated and uploaded as an artifact."
           echo "No X post was attempted."
+          echo "No publish-complete email will be sent."
+
+      # ======================================================
+      # Live publish
+      # ======================================================
 
       - name: Publish to X
         if: ${{ inputs.test_only == false }}
@@ -97,30 +149,42 @@ jobs:
         run: |
           python scripts/publish_x.py
 
+      # ======================================================
+      # Read X result
+      # ======================================================
+
       - name: Read X publish result
         id: xpublish
         if: ${{ always() && inputs.test_only == false }}
         shell: bash
         run: |
+          set -euo pipefail
+
           if [ ! -f automation_state/x_publish_result.json ]; then
             echo "No x_publish_result.json was created."
             echo "action=FAILED_BEFORE_RESULT" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          ACTION=$(python -c "
+          ACTION=$(python - <<'PY'
           import json
-          data = json.load(
-              open(
-                  'automation_state/x_publish_result.json',
-                  encoding='utf-8'
-              )
+
+          with open(
+              "automation_state/x_publish_result.json",
+              encoding="utf-8",
+          ) as f:
+              data = json.load(f)
+
+          print(data.get("action", "UNKNOWN"))
+          PY
           )
-          print(data.get('action', 'UNKNOWN'))
-          ")
 
           echo "action=$ACTION" >> "$GITHUB_OUTPUT"
           echo "X publish action: $ACTION"
+
+      # ======================================================
+      # Commit successful X publication
+      # ======================================================
 
       - name: Commit X card and X post state
         if: |
@@ -131,7 +195,8 @@ jobs:
           set -euo pipefail
 
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add automation_state/ready_to_publish.json
           git add automation_state/x_publish_result.json
@@ -142,9 +207,111 @@ jobs:
             exit 0
           fi
 
-          git commit -m "publish: Daily Duck 5x4 card to X"
-          git pull --rebase origin main
+          git commit \
+            -m "publish: Daily Duck 5x4 card to X"
+
+          git pull --rebase --autostash origin main
           git push origin HEAD:main
+
+      # ======================================================
+      # Publish-complete notification
+      #
+      # Only after confirmed X_POSTED.
+      #
+      # OPENAI_ADMIN_KEY:
+      #   Optional but required for official OpenAI Costs API.
+      #
+      # OPENAI_PROJECT_ID:
+      #   Strongly recommended. If this project is dedicated
+      #   to The Daily Duck, the email can report the project's
+      #   issue-day OpenAI cost.
+      #
+      # Credit balance:
+      #   OpenAI does not currently expose a documented
+      #   supported public prepaid-credit-balance endpoint.
+      #   The email states this rather than using a private/
+      #   legacy billing endpoint.
+      #
+      # Gemini:
+      #   AI Studio / Cloud Billing data can be delayed, so the
+      #   email links the operational status conceptually rather
+      #   than claiming a false real-time balance.
+      # ======================================================
+
+      - name: Send publish complete email with API billing status
+        if: |
+          inputs.test_only == false &&
+          steps.xpublish.outputs.action == 'X_POSTED'
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+
+          OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
+          OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ISSUE_DATE=$(python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/ready_to_publish.json",
+              encoding="utf-8",
+          ) as f:
+              data = json.load(f)
+
+          print(data.get("issue_date", ""))
+          PY
+          )
+
+          if [ -z "$ISSUE_DATE" ]; then
+            echo "ERROR: issue_date is empty."
+            exit 1
+          fi
+
+          export ISSUE_DATE
+
+          python scripts/send_publish_complete_email.py
+
+      # ======================================================
+      # Commit completion-notification state
+      # ======================================================
+
+      - name: Commit publish completion notification state
+        if: |
+          inputs.test_only == false &&
+          steps.xpublish.outputs.action == 'X_POSTED'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f automation_state/publish_complete_notification.json ]; then
+            echo "No completion notification state file."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add automation_state/publish_complete_notification.json
+
+          if git diff --cached --quiet; then
+            echo "No completion notification change to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "automation: record Daily Duck publish completion"
+
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      # ======================================================
+      # Commit blocked result
+      # ======================================================
 
       - name: Commit blocked X result
         if: |
@@ -160,7 +327,8 @@ jobs:
           set -euo pipefail
 
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add automation_state/x_publish_result.json
 
@@ -173,9 +341,15 @@ jobs:
             exit 0
           fi
 
-          git commit -m "automation: record blocked X publish"
-          git pull --rebase origin main
+          git commit \
+            -m "automation: record blocked X publish"
+
+          git pull --rebase --autostash origin main
           git push origin HEAD:main
+
+      # ======================================================
+      # Report
+      # ======================================================
 
       - name: Report X publish result
         if: always()
@@ -188,7 +362,15 @@ jobs:
           else
             echo "Mode: LIVE PUBLISH"
             echo "Result: ${{ steps.xpublish.outputs.action }}"
+
+            if [ "${{ steps.xpublish.outputs.action }}" = "X_POSTED" ]; then
+              echo "Publish-complete email requested."
+            fi
           fi
+
+      # ======================================================
+      # Failure notification
+      # ======================================================
 
       - name: Notify failure by email
         if: failure()
@@ -196,7 +378,8 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          FAILURE_STAGE: X Publish
+          FAILURE_STAGE: X Publish / Completion Notification
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python scripts/send_workflow_failure_email.py
+        run: |
+          python scripts/send_workflow_failure_email.py
