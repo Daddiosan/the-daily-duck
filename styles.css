@@ -138,11 +138,12 @@ nav a.active::after {
 }
 
 .hero-art img {
-  width: min(72%, 410px);
+  width: min(80%, 520px);
   height: auto;
   object-fit: contain;
-  /* The original user-provided image is preserved exactly.
-     Only its displayed size is reduced so the whole seated astronaut is visible. */
+  /* 2026-08-22 forward:
+     show the current day's image at roughly 80% of the image frame
+     while preserving the original aspect ratio and avoiding cropping. */
 }
 
 .hero-copy { min-width: 0; }
@@ -449,7 +450,7 @@ noscript {
   }
 
   .hero-art img {
-    width: min(68%, 390px);
+    width: min(80%, 500px);
   }
 
   h1 {
@@ -494,7 +495,7 @@ noscript {
   }
 
   .hero-art img {
-    width: min(70%, 330px);
+    width: min(80%, 400px);
   }
 
   .story-grid {
@@ -552,7 +553,7 @@ noscript {
   }
 
   .hero-art img {
-    width: 72%;
+    width: 80%;
   }
 
   h1 {
@@ -643,3 +644,7 @@ noscript {
   .brand-official { gap: 8px; }
   .brand-official img { width: 36px; height: 36px; }
 }
+
+/* Version 3.8 — 2026-08-22 forward hero image sizing
+   TODAY hero images use ~80% of the available art frame on desktop,
+   tablet and mobile. Archive cards remain unchanged. */
