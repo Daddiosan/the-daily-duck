@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       force_regenerate:
-        description: "Regenerate today's concept package even if already created"
+        description: "Regenerate today's 3 concept+image options even if already created"
         required: false
         type: boolean
         default: false
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  approved-story-to-concept-email:
+  approved-story-to-design-email:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +32,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements-phase2.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-phase2.txt
 
       - name: Verify APPROVED_STORY
         run: |
@@ -41,13 +43,10 @@ jobs:
           from pathlib import Path
 
           p = Path("automation_state/approved_story.json")
-
           if not p.exists():
               raise SystemExit("approved_story.json not found.")
 
-          d = json.loads(
-              p.read_text(encoding="utf-8")
-          )
+          d = json.loads(p.read_text(encoding="utf-8"))
 
           if d.get("state") != "APPROVED_STORY":
               raise SystemExit(
@@ -60,8 +59,8 @@ jobs:
           )
           PY
 
-      - name: Check whether today's concept package already exists
-        id: concept_gate
+      - name: Check whether today's design package already exists
+        id: design_gate
         shell: bash
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
@@ -73,11 +72,7 @@ jobs:
               .read_text(encoding="utf-8")
           )
 
-          issue = (
-              approved.get("issue_date")
-              or approved.get("date")
-          )
-
+          issue = approved.get("issue_date") or approved.get("date")
           force = "${{ inputs.force_regenerate }}" == "true"
 
           p = Path("automation_state/design_options.json")
@@ -87,71 +82,63 @@ jobs:
 
           if p.exists():
               try:
-                  d = json.loads(
-                      p.read_text(encoding="utf-8")
-                  )
-
-                  same_issue = (
-                      d.get("issue_date") == issue
-                  )
-
-                  existing_state = str(
-                      d.get("state") or ""
-                  )
-
+                  d = json.loads(p.read_text(encoding="utf-8"))
+                  same_issue = d.get("issue_date") == issue
+                  existing_state = str(d.get("state") or "")
               except Exception:
                   pass
 
           should_run = force or not same_issue
 
-          print(
-              f"should_run={'true' if should_run else 'false'}"
-          )
-
-          print(
-              f"issue_date={issue}"
-          )
-
-          print(
-              f"existing_state={existing_state}"
-          )
+          print(f"should_run={'true' if should_run else 'false'}")
+          print(f"issue_date={issue}")
+          print(f"existing_state={existing_state}")
           PY
 
-      - name: Report existing concept package
-        if: steps.concept_gate.outputs.should_run != 'true'
+      - name: Report existing design package
+        if: steps.design_gate.outputs.should_run != 'true'
         run: |
-          echo "A design/concept package already exists for this issue."
+          echo "A design package already exists for this issue."
           echo "Automatic duplicate generation is skipped."
-          echo "If deliberate regeneration is required, run this workflow with force_regenerate=true."
+          echo "Use force_regenerate=true only when deliberate regeneration is required."
 
       - name: Clear only stale downstream state
-        if: steps.concept_gate.outputs.should_run == 'true'
-        run: python scripts/reset_after_approved_story.py
+        if: steps.design_gate.outputs.should_run == 'true'
+        run: |
+          python scripts/reset_after_approved_story.py
 
-      - name: Generate exactly 5 concepts + exactly 3 titles with Gemini
-        if: steps.concept_gate.outputs.should_run == 'true'
+      - name: Generate 3 concepts + 3 real images + 3 titles
+        if: steps.design_gate.outputs.should_run == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TEXT_MODEL: gemini-3.6-flash
-        run: python scripts/generate_image_concepts.py
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: gpt-image-2
+          OPENAI_IMAGE_SIZE: "1536x1024"
+          OPENAI_IMAGE_QUALITY: medium
+        run: |
+          python scripts/generate_image_concepts.py
 
-      - name: Send concept selection email
-        if: steps.concept_gate.outputs.should_run == 'true'
+      - name: Send design selection email with 3 images
+        if: steps.design_gate.outputs.should_run == 'true'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python scripts/send_design_approval_email.py
+        run: |
+          python scripts/send_design_approval_email.py
 
-      - name: Commit concept-stage output
-        if: steps.concept_gate.outputs.should_run == 'true'
+      - name: Commit design-stage output
+        if: steps.design_gate.outputs.should_run == 'true'
+        shell: bash
         run: |
           set -euo pipefail
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -A automation_state
+          git add automation_state/
+          git add automation_images/design_previews/
 
           echo "=== Git status before commit ==="
           git status --short
@@ -161,22 +148,22 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Phase 2: create 5 image concepts and 3 titles"
-
-          echo "=== Git status after commit ==="
-          git status --short
+          git commit -m "Phase 2: create 3 concept images and 3 titles"
 
           git pull --rebase --autostash origin main
           git push origin HEAD:main
 
       - name: Phase boundary
-        if: steps.concept_gate.outputs.should_run == 'true'
+        if: steps.design_gate.outputs.should_run == 'true'
         run: |
-          echo "5 image concepts created."
-          echo "Concept selection email sent."
-          echo "Waiting for exact reply: 1 / 2 / 3 / 4 / 5"
-          echo "No real images have been generated yet."
-          echo "No website or X publication occurs in this workflow."
+          echo "Exactly 3 image concepts created."
+          echo "Exactly 1 real image generated for each concept."
+          echo "Exactly 3 title ideas created."
+          echo "One email with all 3 images was sent."
+          echo "Waiting for: IMAGE_NUMBER TITLE_NUMBER"
+          echo "Examples: 1 3 / １ ３"
+          echo "NEXT 3 regenerates all 3 concept images."
+          echo "No website or X publication occurs here."
 
       - name: Notify failure by email
         if: failure()
@@ -184,7 +171,8 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          FAILURE_STAGE: Design Options - 5 concepts + 3 titles
+          FAILURE_STAGE: Design Options - 3 concepts + 3 images + 3 titles
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python scripts/send_workflow_failure_email.py
+        run: |
+          python scripts/send_workflow_failure_email.py
