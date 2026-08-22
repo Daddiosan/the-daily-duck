@@ -323,9 +323,9 @@ def generate_options(
         "title_ideas": [
             {
                 "number": 1,
-                "title": "PUNCHY ENGLISH TITLE",
+                "title": "DUCK-PUN ENGLISH TITLE",
                 "meaning_ja": (
-                    "日本語で意味・ニュアンスを簡潔に説明"
+                    "日本語の意味に加え、英語のダジャレ・言葉遊びも簡潔に説明"
                 ),
             }
             for _ in range(TITLE_IDEA_COUNT)
@@ -412,13 +412,81 @@ Illustrative visual metaphor is allowed only when it does not
 falsely present invented details as factual.
 
 ============================================================
-TASK B — EXACTLY THREE TITLE IDEAS
+TASK B — EXACTLY THREE DAILY DUCK TITLE IDEAS
 ============================================================
 
 Create EXACTLY THREE short, punchy ENGLISH publication titles.
 
-For each title, meaning_ja explains the English meaning
-and nuance naturally in Japanese.
+CRITICAL BRAND RULE:
+These must sound unmistakably like THE DAILY DUCK.
+Do NOT return ordinary newspaper headlines, neutral summaries,
+academic titles, or generic clickbait.
+
+Each title must contain a clever, natural duck-related English
+pun, wordplay, idiom twist, or duck-flavored expression whenever
+the story allows it.
+
+Useful duck-language vocabulary includes, but is NOT limited to:
+- QUACK / QUACKING
+- DUCK / DUCKING
+- WADDLE
+- BILL
+- FEATHER / FEATHERS
+- EGG / EGG-CELLENT
+- FLOCK
+- WEBBED
+- BEAK
+
+Do NOT mechanically force the same word into every title.
+Do NOT make all three titles variations of "QUACK".
+Choose wordplay that actually fits the approved story.
+
+The three title styles must be different:
+
+1. BIG PUN:
+   The strongest, funniest, most obvious Daily Duck wordplay.
+
+2. SMART WORDPLAY:
+   A clever English phrase, idiom twist, double meaning,
+   or story-specific duck pun.
+
+3. SHORT DUCK PUNCH:
+   Very short, memorable, energetic and brandable.
+
+Good tone examples:
+- WHALE, WHALE, WHALE... QUACKING GOOD NEWS!
+- DUCKING OUT OF SIGHT!
+- QUACK TO THE FUTURE!
+- EGG-CELLENT NEWS!
+- WHAT THE DUCK?!
+
+These are STYLE examples only.
+Do NOT copy them unless they genuinely fit the current story.
+
+QUALITY RULES:
+- English-speaking readers should understand the joke.
+- The title must still connect clearly to the approved story.
+- Prefer approximately 2-8 words.
+- Punchy punctuation is welcome when natural.
+- Avoid awkward or incomprehensible forced puns.
+- Avoid childish baby-talk.
+- Avoid factual claims not supported by the approved story.
+- Do not put Japanese in the English title.
+- ALL CAPS is preferred for the publication title.
+- At least TWO of the THREE titles must contain explicit
+  duck-related wordplay.
+- Ideally all three should feel duck-flavored.
+- If a direct duck pun would be genuinely unnatural for one
+  option, use a playful idiom twist instead, but it must still
+  feel like The Daily Duck rather than a normal news headline.
+
+For each title, meaning_ja must explain BOTH:
+1. the natural Japanese meaning, and
+2. the English pun/wordplay or nuance.
+
+Before returning JSON, silently check:
+"Could this title appear unchanged on an ordinary news website?"
+If YES, rewrite it to be more distinctly The Daily Duck.
 
 ============================================================
 OUTPUT RULES
