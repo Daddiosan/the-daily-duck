@@ -1,0 +1,24 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-08-22T11:42:17.092802+00:00",
+  "issue_date": "2026-08-22",
+  "x_post_id": "2091128820636004640",
+  "x_post_url": "https://x.com/i/web/status/2091128820636004640",
+  "x_media_id": "2091128818148737024",
+  "image_path": "automation_images/x/2026-08-22-x-card.png",
+  "post_text": "Scientists have converted everyday sheep’s wool into a healing material that helps regrow bone! A clever innovation for regenerative health.\n\n科学者たちが日常の羊毛を骨の再生を助ける医療素材に変換！再生医療における賢いイノベーションです。\n\nhttps://www.thedailyduck.ai/ducks/2026-08-22/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": "ja"
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2091128820636004640",
+      "text": "Scientists have converted everyday sheep’s wool into a healing material that helps regrow bone! A clever innovation for regenerative health.\n\n科学者たちが日常の羊毛を骨の再生を助ける医療素材に変換！再生医療における賢いイノベーションです。\n\nhttps://t.co/fqO761YqbD https://t.co/5rO1IiLLlz"
+    }
+  }
+}
