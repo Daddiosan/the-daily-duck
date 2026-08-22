@@ -582,10 +582,10 @@ a{{color:inherit}}
 .brand{{font-weight:900;text-decoration:none;font-size:20px}}
 .brand-official{{display:inline-flex;align-items:center;gap:10px}}
 .brand-official img{{display:block;width:40px;height:40px;object-fit:contain}}
-main{{max-width:1280px;margin:54px auto;padding:0 24px}}
-.hero{{display:grid;grid-template-columns:minmax(520px,.95fr) minmax(0,1.05fr);gap:48px;align-items:center}}
-.imagebox{{width:100%;aspect-ratio:3/2;border:1px solid #e8dfd1;border-radius:20px;background:#fff;display:grid;place-items:center;overflow:hidden}}
-.imagebox img{{width:80%;height:80%;display:block;border-radius:14px;object-fit:contain}}
+main{{max-width:1180px;margin:54px auto;padding:0 24px}}
+.hero{{display:grid;grid-template-columns:minmax(360px,510px) 1fr;gap:58px;align-items:center}}
+.imagebox{{width:100%;aspect-ratio:51/58;border:1px solid #e8dfd1;border-radius:20px;background:#fff;overflow:hidden}}
+.imagebox img{{width:100%;height:100%;display:block;border-radius:14px;object-fit:contain}}
 .badge{{display:inline-block;background:#ffc400;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900}}
 .date{{margin:18px 0 8px;color:#666;font-size:13px}}
 h1{{font-size:clamp(48px,7vw,84px);line-height:.9;margin:0 0 14px;letter-spacing:-.05em}}
@@ -602,21 +602,13 @@ h1{{font-size:clamp(48px,7vw,84px);line-height:.9;margin:0 0 14px;letter-spacing
 .jp-label{{font-size:13px;font-weight:900;letter-spacing:.04em;color:#666}}
 .jp h2{{font-size:24px;margin:10px 0 16px}}
 .jp p{{line-height:1.9}}
-@media(max-width:980px){{
-.hero{{grid-template-columns:1fr;gap:32px}}
-.imagebox{{width:min(100%,820px);aspect-ratio:3/2;margin-inline:auto}}
-.imagebox img{{width:80%;height:80%}}
+@media(max-width:760px){{
+.hero{{grid-template-columns:1fr;gap:28px}}
+.imagebox{{width:min(100%,510px);aspect-ratio:51/58;margin-inline:auto}}
+.imagebox img{{width:100%;height:100%;object-fit:contain}}
 h1{{font-size:48px}}
 .cols{{grid-template-columns:1fr}}
 .col+.col{{border-left:0;border-top:1px solid #ddd;padding-left:0}}
-}}
-@media(max-width:700px){{
-.imagebox{{width:100%;aspect-ratio:3/2}}
-.imagebox img{{width:80%;height:80%}}
-}}
-@media(max-width:430px){{
-.imagebox{{aspect-ratio:3/2}}
-.imagebox img{{width:80%;height:80%}}
 }}
 </style>
 
