@@ -49,26 +49,21 @@ jobs:
       # ======================================================
       # 4. Check current design-selection reply
       #
-      # Concept selection:
+      # Concept:
       #   1 / 2 / 3
       #   １ / ２ / ３
       #
-      # Final selection:
-      #   IMAGE_NUMBER TITLE_NUMBER
-      #
-      #   image: 1-3
-      #   title: 1-3
+      # Final:
+      #   IMAGE TITLE
       #
       # Examples:
       #   2 1
       #   ２ １
       #
-      # Regeneration:
+      # Regenerate:
       #   NEXT 3
       #   ＮＥＸＴ ３
       #
-      # Full-width normalization is handled by
-      # scripts/check_design_selection.py
       # ======================================================
 
       - name: Check current design reply
@@ -94,17 +89,18 @@ jobs:
             exit 1
           fi
 
-          ACTION=$(python -c "
+          ACTION=$(python - <<'PY'
           import json
 
           with open(
-              'automation_state/design_selection_result.json',
-              encoding='utf-8'
+              "automation_state/design_selection_result.json",
+              encoding="utf-8",
           ) as f:
               data = json.load(f)
 
-          print(data.get('action', ''))
-          ")
+          print(data.get("action", ""))
+          PY
+          )
 
           if [ -z "$ACTION" ]; then
             echo "ERROR: design selection action is empty."
@@ -112,19 +108,121 @@ jobs:
           fi
 
           echo "action=$ACTION" >> "$GITHUB_OUTPUT"
-          echo "Design action: $ACTION"
+          echo "Checker action: $ACTION"
+
+      # ======================================================
+      # 6. Recovery / resume resolver
+      #
+      # Important:
+      #
+      # check_design_selection.py correctly returns WAIT when
+      # design_options.json is already in APPROVED_IMAGE_CONCEPT.
+      #
+      # Normally that means another workflow step should act.
+      #
+      # If:
+      #
+      #   state = APPROVED_IMAGE_CONCEPT
+      #   selected concept exists
+      #   design_previews = []
+      #
+      # then image generation has not completed yet.
+      #
+      # Resume automatically without requiring the human
+      # to reply to the concept email again.
+      # ======================================================
+
+      - name: Resolve effective action
+        id: effective
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RAW_ACTION="${{ steps.result.outputs.action }}"
+
+          EFFECTIVE_ACTION=$(python - <<'PY'
+          import json
+          from pathlib import Path
+
+          raw_action = """${{ steps.result.outputs.action }}""".strip()
+
+          path = Path("automation_state/design_options.json")
+
+          if not path.exists():
+              print(raw_action)
+              raise SystemExit(0)
+
+          data = json.loads(
+              path.read_text(encoding="utf-8")
+          )
+
+          state = str(
+              data.get("state") or ""
+          ).upper()
+
+          selected = data.get(
+              "selected_image_concept"
+          )
+
+          selected_number = data.get(
+              "selected_image_concept_number"
+          )
+
+          previews = data.get(
+              "design_previews"
+          )
+
+          if not isinstance(previews, list):
+              previews = []
+
+          # --------------------------------------------------
+          # Recovery case:
+          #
+          # Human already selected a concept,
+          # but real-image generation has not completed.
+          # --------------------------------------------------
+
+          if (
+              raw_action == "WAIT"
+              and state == "APPROVED_IMAGE_CONCEPT"
+              and isinstance(selected, dict)
+              and selected_number in (1, 2, 3)
+              and len(previews) == 0
+          ):
+              print("RESUME_IMAGE_GENERATION")
+              raise SystemExit(0)
+
+          # --------------------------------------------------
+          # Existing action remains unchanged.
+          # --------------------------------------------------
+
+          print(raw_action)
+          PY
+          )
+
+          if [ -z "$EFFECTIVE_ACTION" ]; then
+            echo "ERROR: effective action is empty."
+            exit 1
+          fi
+
+          echo "action=$EFFECTIVE_ACTION" >> "$GITHUB_OUTPUT"
+
+          echo "Raw action: $RAW_ACTION"
+          echo "Effective action: $EFFECTIVE_ACTION"
 
       # ======================================================
       # STAGE A
       #
-      # Human selected ONE of the THREE image concepts.
+      # Newly selected concept.
       #
-      # Persist the selected concept before generating
-      # paid real images.
+      # Only a NEW concept selection needs this commit.
+      #
+      # A recovery run already has the selection committed,
+      # so RESUME_IMAGE_GENERATION skips this step.
       # ======================================================
 
       - name: Commit selected image concept
-        if: steps.result.outputs.action == 'APPROVED_IMAGE_CONCEPT'
+        if: steps.effective.outputs.action == 'APPROVED_IMAGE_CONCEPT'
         id: concept_commit
         shell: bash
         run: |
@@ -151,12 +249,19 @@ jobs:
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
       # ======================================================
-      # Generate exactly THREE real images
-      # from the ONE selected concept.
+      # Generate exactly THREE real images.
+      #
+      # Runs for:
+      #
+      # 1. fresh concept selection
+      # 2. recovery from APPROVED_IMAGE_CONCEPT
+      #
       # ======================================================
 
       - name: Generate exactly 3 real images from selected concept
-        if: steps.result.outputs.action == 'APPROVED_IMAGE_CONCEPT'
+        if: |
+          steps.effective.outputs.action == 'APPROVED_IMAGE_CONCEPT' ||
+          steps.effective.outputs.action == 'RESUME_IMAGE_GENERATION'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_IMAGE_MODEL: gpt-image-2
@@ -167,21 +272,13 @@ jobs:
           python scripts/generate_design_previews.py
 
       # ======================================================
-      # Send final image + title selection email
-      #
-      # Real images:
-      #   1 / 2 / 3
-      #
-      # Titles:
-      #   1 / 2 / 3
-      #
-      # Example:
-      #   2 1
-      #
+      # Send three real images + three title choices.
       # ======================================================
 
       - name: Send final image + title approval email
-        if: steps.result.outputs.action == 'APPROVED_IMAGE_CONCEPT'
+        if: |
+          steps.effective.outputs.action == 'APPROVED_IMAGE_CONCEPT' ||
+          steps.effective.outputs.action == 'RESUME_IMAGE_GENERATION'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -190,11 +287,13 @@ jobs:
           python scripts/send_design_approval_email.py
 
       # ======================================================
-      # Commit THREE-image batch
+      # Commit the THREE-image batch and updated waiting state.
       # ======================================================
 
       - name: Commit real-image batch
-        if: steps.result.outputs.action == 'APPROVED_IMAGE_CONCEPT'
+        if: |
+          steps.effective.outputs.action == 'APPROVED_IMAGE_CONCEPT' ||
+          steps.effective.outputs.action == 'RESUME_IMAGE_GENERATION'
         shell: bash
         run: |
           set -euo pipefail
@@ -205,6 +304,9 @@ jobs:
 
           git add automation_state/
           git add automation_images/design_previews/
+
+          echo "=== Git status before real-image commit ==="
+          git status --short
 
           if git diff --cached --quiet; then
             echo "No real-image batch changes to commit."
@@ -220,14 +322,13 @@ jobs:
       # ======================================================
       # STAGE B — NEXT 3
       #
-      # NEXT 3 keeps the selected concept LOCKED.
+      # Human did not like the current three images.
       #
-      # A fresh batch of exactly THREE real images is
-      # generated from the SAME selected concept.
+      # The selected concept remains LOCKED.
       # ======================================================
 
       - name: Commit NEXT 3 request
-        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
+        if: steps.effective.outputs.action == 'NEXT_3_REQUESTED'
         id: next3_commit
         shell: bash
         run: |
@@ -254,12 +355,11 @@ jobs:
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
       # ======================================================
-      # Generate NEXT THREE images
-      # from SAME locked concept.
+      # Generate fresh THREE images from same concept.
       # ======================================================
 
       - name: Generate NEXT 3 real images from same selected concept
-        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
+        if: steps.effective.outputs.action == 'NEXT_3_REQUESTED'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_IMAGE_MODEL: gpt-image-2
@@ -270,11 +370,11 @@ jobs:
           python scripts/generate_design_previews.py
 
       # ======================================================
-      # Send NEXT 3 batch email
+      # Send NEXT 3 batch.
       # ======================================================
 
       - name: Send NEXT 3 final approval email
-        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
+        if: steps.effective.outputs.action == 'NEXT_3_REQUESTED'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -283,11 +383,11 @@ jobs:
           python scripts/send_design_approval_email.py
 
       # ======================================================
-      # Commit NEXT THREE image batch
+      # Commit NEXT 3 batch.
       # ======================================================
 
       - name: Commit NEXT 3 image batch
-        if: steps.result.outputs.action == 'NEXT_3_REQUESTED'
+        if: steps.effective.outputs.action == 'NEXT_3_REQUESTED'
         shell: bash
         run: |
           set -euo pipefail
@@ -298,6 +398,9 @@ jobs:
 
           git add automation_state/
           git add automation_images/design_previews/
+
+          echo "=== Git status before NEXT 3 commit ==="
+          git status --short
 
           if git diff --cached --quiet; then
             echo "No NEXT 3 image changes to commit."
@@ -315,15 +418,19 @@ jobs:
       #
       # Human selects:
       #
-      # image 1-3
+      # IMAGE 1-3
       # +
-      # title 1-3
+      # TITLE 1-3
       #
-      # Only here may READY_TO_PUBLISH be committed.
+      # Example:
+      #
+      #   2 1
+      #   ２ １
+      #
       # ======================================================
 
       - name: Commit final image + title selection
-        if: steps.result.outputs.action == 'READY_TO_PUBLISH'
+        if: steps.effective.outputs.action == 'READY_TO_PUBLISH'
         id: selection_commit
         shell: bash
         run: |
@@ -351,12 +458,14 @@ jobs:
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
       # ======================================================
-      # Website publish only AFTER READY_TO_PUBLISH
+      # Website Publish
+      #
+      # Only after final image + title selection.
       # ======================================================
 
       - name: Trigger Website Publish automatically
         if: |
-          steps.result.outputs.action == 'READY_TO_PUBLISH' &&
+          steps.effective.outputs.action == 'READY_TO_PUBLISH' &&
           steps.selection_commit.outputs.committed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -373,37 +482,45 @@ jobs:
           echo "Website Publish triggered."
 
       # ======================================================
-      # Report current phase
+      # Report phase
       # ======================================================
 
       - name: Phase boundary
         shell: bash
         run: |
-          echo "Current result: ${{ steps.result.outputs.action }}"
+          echo "Checker result: ${{ steps.result.outputs.action }}"
+          echo "Effective result: ${{ steps.effective.outputs.action }}"
 
-          if [ "${{ steps.result.outputs.action }}" = "APPROVED_IMAGE_CONCEPT" ]; then
-            echo "One of three image concepts was selected."
-            echo "Exactly three real images were generated from that one locked concept."
+          if [ "${{ steps.effective.outputs.action }}" = "APPROVED_IMAGE_CONCEPT" ]; then
+            echo "A new image concept was selected."
+            echo "Exactly three real images were generated."
             echo "Waiting for final image + title selection."
           fi
 
-          if [ "${{ steps.result.outputs.action }}" = "NEXT_3_REQUESTED" ]; then
-            echo "NEXT 3 was requested."
-            echo "The selected concept remained locked."
-            echo "Exactly three new real images were generated."
+          if [ "${{ steps.effective.outputs.action }}" = "RESUME_IMAGE_GENERATION" ]; then
+            echo "Recovery mode activated."
+            echo "The previously selected concept remained locked."
+            echo "Exactly three real images were generated."
+            echo "Waiting for final image + title selection."
           fi
 
-          if [ "${{ steps.result.outputs.action }}" = "READY_TO_PUBLISH" ]; then
+          if [ "${{ steps.effective.outputs.action }}" = "NEXT_3_REQUESTED" ]; then
+            echo "NEXT 3 was requested."
+            echo "The selected concept remained locked."
+            echo "Exactly three fresh images were generated."
+          fi
+
+          if [ "${{ steps.effective.outputs.action }}" = "READY_TO_PUBLISH" ]; then
             echo "Final image + title selected."
             echo "Canonical image created."
             echo "READY_TO_PUBLISH created."
           fi
 
-          if [ "${{ steps.result.outputs.action }}" = "WAIT" ]; then
-            echo "No valid new design selection detected."
+          if [ "${{ steps.effective.outputs.action }}" = "WAIT" ]; then
+            echo "No new valid design action detected."
           fi
 
-          if [ "${{ steps.result.outputs.action }}" = "ALREADY_SELECTED" ]; then
+          if [ "${{ steps.effective.outputs.action }}" = "ALREADY_SELECTED" ]; then
             echo "Final design selection was already completed."
           fi
 
@@ -417,7 +534,7 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          FAILURE_STAGE: Design Selection / NEXT 3 / Final Approval
+          FAILURE_STAGE: Design Selection / Recovery / NEXT 3 / Final Approval
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
