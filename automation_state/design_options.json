@@ -634,18 +634,18 @@
   "title_ideas": [
     {
       "number": 1,
-      "title": "FLOCK TO THIS: SHEEP’S WOOL IS REGROWING BONES!",
-      "meaning_ja": "「みんなこれに大注目！羊毛が骨を再生させています！」／「Flock（群れ、集まる）」はアヒルや羊の群れを連想させると同時に「注目する・集まる」を意味するフレーズ「flock to...」に掛けたダジャレです。"
+      "title": "A WOOLLY BILL OF HEALTH!",
+      "meaning_ja": "【日本語訳】羊毛がもたらす健康のお墨付き！\n【元ネタ】慣用句「a clean bill of health（健康証明書、健康のお墨付き）」\n【言葉遊びの解説】元の慣用句の「clean」を羊毛を意味する「woolly」に変更し、「bill（証明書）」にアヒルの「くちばし（bill）」の意味を掛け合わせたダジャレです。羊毛から骨を再生する医療素材が開発されたニュースを、アヒル新聞らしくユーモラスに表現しています。"
     },
     {
       "number": 2,
-      "title": "SOFT WOOL, STRONG BONES: THE COZIEST MEDICAL MIRACLE!",
-      "meaning_ja": "「柔らかい羊毛、強い骨：最もあったかい医療の奇跡！」／「Soft（柔らかい）」と「Strong（強い）」の対比を利かせ、フワフワの羊毛（Cozy）が硬い骨を再建するという温かくスマートな発見を表現しています。"
+      "title": "BEAKING NEWS: WOOL REGROWS BONE!",
+      "meaning_ja": "【日本語訳】クチバシ速報：羊毛が骨を再生させる！\n【元ネタ】定番フレーズ「Breaking news（ニュース速報）」\n【言葉遊びの解説】ニュース速報を意味する「Breaking news」の「Breaking」を、アヒルのくちばしを意味する「BEAK」に掛け合わせた「BEAKING」に音を変化させたダジャレです。羊毛が骨の再生に役立つという驚きの発見を速報スタイルで伝えています。"
     },
     {
       "number": 3,
-      "title": "FROM FARM TO FRAME: WOOL IS REGROWING BONES!",
-      "meaning_ja": "「農場から身体の骨格へ！羊毛が骨を再生させる！」／「Farm（農場）」から「Frame（骨格・骨組み）」というリズムよく韻を踏んだ（Farm/Frame）インパクト抜群のポスターコピーです。"
+      "title": "WADDLE THEY THINK OF NEXT? WOOL REGROWS BONE!",
+      "meaning_ja": "【日本語訳】次はよちよち何を発明する？羊毛で骨が再生！\n【元ネタ】英語の決まり文句「What'll they think of next?（次は一体何を思いつくんだ？）」\n【言葉遊びの解説】驚きの科学的発明に対して使われる表現「What'll（ワドゥル）」を、アヒルのよちよち歩きを意味する「WADDLE（ワドル）」に置き換えた同音のダジャレです。羊毛を医療素材に変えるという斬新なイノベーションへの感嘆をポップに表現しています。"
     }
   ],
   "design_previews": [
@@ -722,7 +722,7 @@
     "translation_language": "ja",
     "translation_source": "english_master"
   },
-  "final_email_sent_at": "2026-08-22T11:14:20.902010+00:00",
+  "final_email_sent_at": "2026-08-22T11:19:14.369669+00:00",
   "final_selection_rule": {
     "image_numbers": [
       1,
@@ -743,22 +743,22 @@
   "previous_title_ideas": [
     {
       "number": 1,
-      "title": "QUACKING THE CODE! SHEEP’S WOOL HELPS REGROW BONES",
-      "meaning_ja": "羊毛が骨の再生を助ける！難題を解決・解明することを意味する英語の成句『Cracking the code』と、アヒルの鳴き声『Quack』を掛け合わせた『Quacking the code』で、科学者たちの素晴らしい新発見を讃える豪快なダジャレ見出しです。"
+      "title": "FLOCK TO THIS: SHEEP’S WOOL IS REGROWING BONES!",
+      "meaning_ja": "「みんなこれに大注目！羊毛が骨を再生させています！」／「Flock（群れ、集まる）」はアヒルや羊の群れを連想させると同時に「注目する・集まる」を意味するフレーズ「flock to...」に掛けたダジャレです。"
     },
     {
       "number": 2,
-      "title": "A BEAK-THROUGH IN BONE HEALING FROM SHEEP’S WOOL",
-      "meaning_ja": "羊毛を活用した骨治療における大発見！「画期的な進歩・大発見」を意味する『Breakthrough』の「Break」を、アヒルのクチバシを意味する『Beak』に変えた『Beak-through』というひねりの効いた言葉遊びです。"
+      "title": "SOFT WOOL, STRONG BONES: THE COZIEST MEDICAL MIRACLE!",
+      "meaning_ja": "「柔らかい羊毛、強い骨：最もあったかい医療の奇跡！」／「Soft（柔らかい）」と「Strong（強い）」の対比を利かせ、フワフワの羊毛（Cozy）が硬い骨を再建するという温かくスマートな発見を表現しています。"
     },
     {
       "number": 3,
-      "title": "WHAT THE DUCK? WOOL REGROWS BONES!",
-      "meaning_ja": "なんてこった（What the duck）!? 羊毛で骨が再生するなんて！驚きを表すスラング『What the f***?』のマイルドな言い換え『What the duck?』を使った、ブランド感あふれる短くパンチの効いた見出しです。"
+      "title": "FROM FARM TO FRAME: WOOL IS REGROWING BONES!",
+      "meaning_ja": "「農場から身体の骨格へ！羊毛が骨を再生させる！」／「Farm（農場）」から「Frame（骨格・骨組み）」というリズムよく韻を踏んだ（Farm/Frame）インパクト抜群のポスターコピーです。"
     }
   ],
-  "titles_regenerated_at": "2026-08-22T11:14:15.993281+00:00",
-  "title_style": "DAILY_DUCK_POSTER_COPY",
+  "titles_regenerated_at": "2026-08-22T11:19:08.085796+00:00",
+  "title_style": "DAILY_DUCK_GENUINE_PUN",
   "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-22 — Batch 1",
   "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-22 — Batch 1"
 }
