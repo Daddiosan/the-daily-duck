@@ -24,12 +24,29 @@ PREVIEW_ROOT = Path(
     "automation_images/design_previews"
 )
 
+# Number of real images generated from ONE selected concept.
+REAL_IMAGE_COUNT = 5
+
+# Number of retries when OpenAI returns byte-identical output.
 MAX_DUPLICATE_RETRIES = 2
 
 
+# ============================================================
+# Five intentionally different execution recipes.
+#
+# IMPORTANT:
+# These are NOT five concepts.
+#
+# The human selects ONE of the THREE concepts first.
+# These recipes then produce FIVE visual variations
+# from that ONE locked concept.
+# ============================================================
+
 VARIATION_RECIPES: dict[int, str] = {
+
     1: """
 VARIATION 1 — ESTABLISHING VIEW
+
 - Use a wider establishing composition.
 - Show more of the environment while keeping the duck the clear focal point.
 - Camera at approximately eye level.
@@ -39,6 +56,7 @@ VARIATION 1 — ESTABLISHING VIEW
 
     2: """
 VARIATION 2 — CLOSE HERO VIEW
+
 - Use a substantially closer hero framing than Variation 1.
 - Duck occupies much more of the frame.
 - Camera slightly lower than eye level for a confident, charming hero feel.
@@ -48,6 +66,7 @@ VARIATION 2 — CLOSE HERO VIEW
 
     3: """
 VARIATION 3 — ACTION MOMENT
+
 - Show the duck actively interacting with the key visual element of the SAME concept.
 - Use a clear sense of motion or mid-action storytelling.
 - Three-quarter camera angle.
@@ -57,6 +76,7 @@ VARIATION 3 — ACTION MOMENT
 
     4: """
 VARIATION 4 — SIDE STORYTELLING VIEW
+
 - Use a noticeably different side or three-quarter-side camera position.
 - Place the duck on the opposite side of the frame from Variation 1.
 - Emphasize the relationship between the duck and the concept's key environment/prop.
@@ -66,6 +86,7 @@ VARIATION 4 — SIDE STORYTELLING VIEW
 
     5: """
 VARIATION 5 — CINEMATIC EDITORIAL VIEW
+
 - Use the most cinematic composition of the set.
 - Distinct crop and perspective from Variations 1-4.
 - Slightly elevated or otherwise clearly different camera viewpoint.
@@ -75,22 +96,36 @@ VARIATION 5 — CINEMATIC EDITORIAL VIEW
 }
 
 
+# ============================================================
+# Helpers
+# ============================================================
+
 def first_text(
     *values: Any,
 ) -> str:
 
     for value in values:
+
         if (
-            isinstance(value, str)
+            isinstance(
+                value,
+                str,
+            )
             and value.strip()
         ):
+
             return value.strip()
 
     return ""
 
 
-def sha256_bytes(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
+def sha256_bytes(
+    data: bytes,
+) -> str:
+
+    return hashlib.sha256(
+        data
+    ).hexdigest()
 
 
 def sha256_file(
@@ -99,15 +134,27 @@ def sha256_file(
 
     h = hashlib.sha256()
 
-    with path.open("rb") as f:
+    with path.open(
+        "rb"
+    ) as f:
+
         for chunk in iter(
-            lambda: f.read(1024 * 1024),
+            lambda: f.read(
+                1024 * 1024
+            ),
             b"",
         ):
-            h.update(chunk)
+
+            h.update(
+                chunk
+            )
 
     return h.hexdigest()
 
+
+# ============================================================
+# Approved story helper
+# ============================================================
 
 def get_compact_story(
     package: dict[str, Any],
@@ -117,14 +164,22 @@ def get_compact_story(
         "approved_story_compact"
     )
 
-    if isinstance(compact, dict):
+    if isinstance(
+        compact,
+        dict,
+    ):
+
         return compact
 
     approved = package.get(
         "approved_story"
     )
 
-    if not isinstance(approved, dict):
+    if not isinstance(
+        approved,
+        dict,
+    ):
+
         raise ValueError(
             "approved_story is missing."
         )
@@ -136,13 +191,24 @@ def get_compact_story(
         "story",
         "recommended_story",
     ):
-        value = approved.get(key)
 
-        if isinstance(value, dict):
+        value = approved.get(
+            key
+        )
+
+        if isinstance(
+            value,
+            dict,
+        ):
+
             return value
 
     return approved
 
+
+# ============================================================
+# Prompt
+# ============================================================
 
 def build_prompt(
     package: dict[str, Any],
@@ -152,104 +218,196 @@ def build_prompt(
     duplicate_retry: int = 0,
 ) -> str:
 
-    story = get_compact_story(package)
+    story = get_compact_story(
+        package
+    )
 
     headline = first_text(
-        story.get("title_en"),
-        story.get("title"),
-        story.get("title_ja"),
+        story.get(
+            "title_en"
+        ),
+        story.get(
+            "title"
+        ),
+        story.get(
+            "title_ja"
+        ),
     )
 
     summary = first_text(
-        story.get("reason_en"),
-        story.get("en_copy"),
-        story.get("reason"),
-        story.get("jp_copy"),
+        story.get(
+            "reason_en"
+        ),
+        story.get(
+            "en_copy"
+        ),
+        story.get(
+            "reason"
+        ),
+        story.get(
+            "jp_copy"
+        ),
     )
 
     source = first_text(
-        story.get("source")
+        story.get(
+            "source"
+        )
     )
 
     concept_title = first_text(
-        concept.get("title_en")
+        concept.get(
+            "title_en"
+        )
     )
 
     concept_text = first_text(
-        concept.get("concept_en")
+        concept.get(
+            "concept_en"
+        )
     )
 
     composition = first_text(
-        concept.get("composition_en")
+        concept.get(
+            "composition_en"
+        )
     )
 
     generation_prompt = first_text(
-        concept.get("generation_prompt_en")
+        concept.get(
+            "generation_prompt_en"
+        )
     )
 
     if not concept_text:
+
         raise ValueError(
-            "Selected concept is missing concept_en."
+            "Selected concept is missing "
+            "concept_en."
         )
 
     if not generation_prompt:
+
         raise ValueError(
-            "Selected concept is missing generation_prompt_en."
+            "Selected concept is missing "
+            "generation_prompt_en."
         )
 
-    variation_recipe = VARIATION_RECIPES[
-        variation_number
-    ]
+    if variation_number not in (
+        1,
+        2,
+        3,
+        4,
+        5,
+    ):
+
+        raise ValueError(
+            "variation_number "
+            "must be 1-5."
+        )
+
+    variation_recipe = (
+        VARIATION_RECIPES[
+            variation_number
+        ]
+    )
 
     retry_note = ""
 
     if duplicate_retry > 0:
+
         retry_note = f"""
 DUPLICATE AVOIDANCE — RETRY {duplicate_retry}
+
 The previous output was too similar or identical.
-Make this rendition CLEARLY DIFFERENT in camera framing,
-duck pose, crop, spatial arrangement, and perspective,
+
+Make this rendition CLEARLY DIFFERENT in:
+
+- camera framing
+- duck pose
+- crop
+- spatial arrangement
+- perspective
+
 while preserving the locked concept.
 """.strip()
 
     return f"""
 Create ONE polished, publishable hero-image candidate for The Daily Duck.
 
+============================================================
 LANGUAGE POLICY
+============================================================
+
 All image-generation direction is canonical English.
+
 Do not add Japanese or any other readable text to the image.
 
+============================================================
 APPROVED STORY — LOCKED
-Headline: {headline}
-Summary: {summary}
-Source: {source}
+============================================================
 
+Headline:
+{headline}
+
+Summary:
+{summary}
+
+Source:
+{source}
+
+============================================================
 HUMAN-SELECTED IMAGE CONCEPT — LOCKED
-Concept title: {concept_title}
-Concept: {concept_text}
-Composition: {composition}
-Production direction: {generation_prompt}
+============================================================
 
-THIS IS:
+Concept title:
+{concept_title}
+
+Concept:
+{concept_text}
+
+Composition:
+{composition}
+
+Production direction:
+{generation_prompt}
+
+============================================================
+CURRENT IMAGE
+============================================================
+
+This is:
+
 - real-image batch {batch_number}
-- variation {variation_number} of 5
+- variation {variation_number} of {REAL_IMAGE_COUNT}
 
 IMPORTANT:
+
 The five images must represent the SAME selected concept,
 but they must NOT look like duplicate renders.
 
-The concept, story, setting, mascot identity and central visual idea
-are locked.
+The following remain LOCKED:
 
-The following execution recipe is MANDATORY for this image:
+- approved story
+- selected visual concept
+- setting
+- mascot identity
+- central visual idea
+
+============================================================
+MANDATORY VARIATION RECIPE
+============================================================
 
 {variation_recipe}
 
 {retry_note}
 
+============================================================
 VARIATION REQUIREMENT
+============================================================
 
-Compared with the other candidates, this image must be visibly different in
+Compared with the other candidates,
+this image must be visibly different in
 at least THREE of these execution dimensions:
 
 - camera distance
@@ -262,27 +420,41 @@ at least THREE of these execution dimensions:
 - prop placement
 - body orientation
 
-Do NOT merely make tiny facial or lighting changes.
+Do NOT merely make tiny facial,
+lighting or texture changes.
 
+============================================================
 CRITICAL CONCEPT-LOCK RULE
+============================================================
 
 Do NOT:
+
 - switch to another concept
 - reinterpret the central visual idea
 - replace the setting with a different setting
 - change the story
 - add unsupported factual details
 
+============================================================
 THE DAILY DUCK MASCOT
+============================================================
+
+Preserve the established mascot identity:
+
 - cheerful recognizable yellow duck
 - orange beak
 - large dark glossy eyes
 - small feather tuft
 - warm friendly expression
-- consistent mascot identity and proportions
+- consistent mascot identity
+- consistent mascot proportions
 
+============================================================
 STYLE
-- premium modern editorial illustration / soft 3D or photorealistic composite as appropriate
+============================================================
+
+- premium modern editorial illustration,
+  soft 3D, or photorealistic composite as appropriate
 - cheerful
 - clean
 - polished
@@ -292,7 +464,10 @@ STYLE
 - suitable as a website hero image
 - publication quality
 
+============================================================
 DO NOT INCLUDE
+============================================================
+
 - headline
 - captions
 - readable text
@@ -302,13 +477,23 @@ DO NOT INCLUDE
 - watermarks
 - final X-card header/footer
 
+============================================================
 FACTUAL RULE
-Do not invent factual, scientific, geographic, organizational,
-or biographical details beyond what is supported by the approved story.
+============================================================
 
-This output must be a distinct visual execution of the same selected concept.
+Do not invent factual, scientific,
+geographic, organizational,
+or biographical details beyond what
+is supported by the approved story.
+
+This output must be a distinct visual
+execution of the SAME selected concept.
 """.strip()
 
+
+# ============================================================
+# OpenAI image generation
+# ============================================================
 
 def generate_image_bytes(
     client: OpenAI,
@@ -317,25 +502,30 @@ def generate_image_bytes(
 ) -> bytes:
 
     print(
-        f"Generating real image {number}/5: "
+        f"Generating real image "
+        f"{number}/{REAL_IMAGE_COUNT}: "
         f"{OPENAI_IMAGE_MODEL}, "
         f"{OPENAI_IMAGE_SIZE}, "
-        f"quality={OPENAI_IMAGE_QUALITY}"
+        f"quality="
+        f"{OPENAI_IMAGE_QUALITY}"
     )
 
-    result = client.images.generate(
-        model=OPENAI_IMAGE_MODEL,
-        prompt=prompt,
-        n=1,
-        size=OPENAI_IMAGE_SIZE,
-        quality=OPENAI_IMAGE_QUALITY,
-        output_format="png",
+    result = (
+        client.images.generate(
+            model=OPENAI_IMAGE_MODEL,
+            prompt=prompt,
+            n=1,
+            size=OPENAI_IMAGE_SIZE,
+            quality=OPENAI_IMAGE_QUALITY,
+            output_format="png",
+        )
     )
 
     if (
         not result.data
         or not result.data[0].b64_json
     ):
+
         raise RuntimeError(
             "OpenAI returned no image "
             f"for candidate {number}."
@@ -346,11 +536,21 @@ def generate_image_bytes(
     )
 
 
+# ============================================================
+# Main
+# ============================================================
+
 def main() -> int:
 
+    # --------------------------------------------------------
+    # Load design state
+    # --------------------------------------------------------
+
     if not OPTIONS_PATH.exists():
+
         raise FileNotFoundError(
-            f"Missing required file: {OPTIONS_PATH}"
+            f"Missing required file: "
+            f"{OPTIONS_PATH}"
         )
 
     package = json.loads(
@@ -359,21 +559,40 @@ def main() -> int:
         )
     )
 
-    if not isinstance(package, dict):
+    if not isinstance(
+        package,
+        dict,
+    ):
+
         raise ValueError(
             "design_options.json "
             "must contain an object."
         )
 
+    # --------------------------------------------------------
+    # State validation
+    # --------------------------------------------------------
+
     state = first_text(
-        package.get("state")
+        package.get(
+            "state"
+        )
     ).upper()
 
-    if state != "APPROVED_IMAGE_CONCEPT":
+    if (
+        state
+        != "APPROVED_IMAGE_CONCEPT"
+    ):
+
         raise RuntimeError(
-            "Expected APPROVED_IMAGE_CONCEPT, "
+            "Expected "
+            "APPROVED_IMAGE_CONCEPT, "
             f"got {state!r}"
         )
+
+    # --------------------------------------------------------
+    # Selected concept
+    # --------------------------------------------------------
 
     selected_concept = package.get(
         "selected_image_concept"
@@ -383,8 +602,10 @@ def main() -> int:
         selected_concept,
         dict,
     ):
+
         raise ValueError(
-            "selected_image_concept is missing."
+            "selected_image_concept "
+            "is missing."
         )
 
     selected_number = int(
@@ -392,24 +613,48 @@ def main() -> int:
             "selected_image_concept_number",
             0,
         )
+        or 0
     )
 
+    # IMPORTANT:
+    # Current Daily Duck specification:
+    #
+    # Exactly THREE concept choices.
+    #
+    # After choosing one of these three,
+    # FIVE real images are generated.
+    # --------------------------------------------------------
+
     if selected_number not in (
-        1, 2, 3, 4, 5
+        1,
+        2,
+        3,
     ):
+
         raise ValueError(
             "selected_image_concept_number "
-            "must be 1-5."
+            "must be 1-3."
         )
 
+    # --------------------------------------------------------
+    # Issue date
+    # --------------------------------------------------------
+
     issue_date = first_text(
-        package.get("issue_date")
+        package.get(
+            "issue_date"
+        )
     )
 
     if not issue_date:
+
         raise ValueError(
             "issue_date is missing."
         )
+
+    # --------------------------------------------------------
+    # Batch number
+    # --------------------------------------------------------
 
     previous_batch = int(
         package.get(
@@ -420,7 +665,8 @@ def main() -> int:
     )
 
     batch_number = (
-        previous_batch + 1
+        previous_batch
+        + 1
     )
 
     out_dir = (
@@ -434,10 +680,24 @@ def main() -> int:
         exist_ok=True,
     )
 
+    # --------------------------------------------------------
+    # OpenAI
+    # --------------------------------------------------------
+
+    api_key = os.getenv(
+        "OPENAI_API_KEY",
+        "",
+    ).strip()
+
+    if not api_key:
+
+        raise RuntimeError(
+            "OPENAI_API_KEY "
+            "is not configured."
+        )
+
     client = OpenAI(
-        api_key=os.environ[
-            "OPENAI_API_KEY"
-        ]
+        api_key=api_key
     )
 
     previews: list[
@@ -446,30 +706,54 @@ def main() -> int:
 
     seen_hashes: set[str] = set()
 
+    # --------------------------------------------------------
+    # Generate exactly FIVE real images.
+    #
+    # IMPORTANT:
+    # Each API call generates ONE image.
+    # This prevents one returned image being
+    # accidentally reused for all five candidates.
+    # --------------------------------------------------------
+
     for variation_number in range(
         1,
-        6,
+        REAL_IMAGE_COUNT + 1,
     ):
-        chosen_bytes: bytes | None = None
+
+        chosen_bytes: (
+            bytes | None
+        ) = None
+
         chosen_prompt = ""
         chosen_hash = ""
+
+        # ----------------------------------------------------
+        # Duplicate protection
+        # ----------------------------------------------------
 
         for retry in range(
             0,
             MAX_DUPLICATE_RETRIES + 1,
         ):
+
             prompt = build_prompt(
                 package=package,
                 concept=selected_concept,
-                variation_number=variation_number,
-                batch_number=batch_number,
+                variation_number=(
+                    variation_number
+                ),
+                batch_number=(
+                    batch_number
+                ),
                 duplicate_retry=retry,
             )
 
-            image_bytes = generate_image_bytes(
-                client=client,
-                prompt=prompt,
-                number=variation_number,
+            image_bytes = (
+                generate_image_bytes(
+                    client=client,
+                    prompt=prompt,
+                    number=variation_number,
+                )
             )
 
             digest = sha256_bytes(
@@ -477,36 +761,68 @@ def main() -> int:
             )
 
             if digest not in seen_hashes:
-                chosen_bytes = image_bytes
-                chosen_prompt = prompt
-                chosen_hash = digest
+
+                chosen_bytes = (
+                    image_bytes
+                )
+
+                chosen_prompt = (
+                    prompt
+                )
+
+                chosen_hash = (
+                    digest
+                )
+
                 break
 
             print(
-                f"WARNING: candidate {variation_number} "
-                "was byte-identical to an earlier image. "
-                "Regenerating..."
+                "WARNING: candidate "
+                f"{variation_number} "
+                "was byte-identical to "
+                "an earlier image."
+            )
+
+            print(
+                "Regenerating candidate "
+                f"{variation_number}..."
             )
 
         if chosen_bytes is None:
+
             raise RuntimeError(
-                f"Could not create a unique image "
-                f"for candidate {variation_number} "
-                f"after {MAX_DUPLICATE_RETRIES + 1} attempts."
+                "Could not create a "
+                "unique image for "
+                f"candidate "
+                f"{variation_number} "
+                "after "
+                f"{MAX_DUPLICATE_RETRIES + 1} "
+                "attempts."
             )
 
         seen_hashes.add(
             chosen_hash
         )
 
+        # ----------------------------------------------------
+        # Save image
+        # ----------------------------------------------------
+
         path = (
             out_dir
-            / f"preview_{variation_number}.png"
+            / (
+                f"preview_"
+                f"{variation_number}.png"
+            )
         )
 
         path.write_bytes(
             chosen_bytes
         )
+
+        # ----------------------------------------------------
+        # Metadata
+        # ----------------------------------------------------
 
         previews.append(
             {
@@ -569,6 +885,47 @@ def main() -> int:
             }
         )
 
+    # --------------------------------------------------------
+    # Safety validation:
+    # exactly FIVE metadata entries must exist.
+    # --------------------------------------------------------
+
+    if (
+        len(previews)
+        != REAL_IMAGE_COUNT
+    ):
+
+        raise RuntimeError(
+            "Expected exactly "
+            f"{REAL_IMAGE_COUNT} "
+            "generated previews, "
+            f"got {len(previews)}."
+        )
+
+    # --------------------------------------------------------
+    # Safety validation:
+    # all five image hashes must be different.
+    # --------------------------------------------------------
+
+    unique_hashes = {
+        preview["sha256"]
+        for preview in previews
+    }
+
+    if (
+        len(unique_hashes)
+        != REAL_IMAGE_COUNT
+    ):
+
+        raise RuntimeError(
+            "Generated preview batch "
+            "contains duplicate image files."
+        )
+
+    # --------------------------------------------------------
+    # Update design state
+    # --------------------------------------------------------
+
     package[
         "design_previews"
     ] = previews
@@ -598,10 +955,15 @@ def main() -> int:
     ] = out_dir.as_posix()
 
     package[
+        "preview_candidate_count"
+    ] = REAL_IMAGE_COUNT
+
+    package[
         "preview_generation_rule"
     ] = (
-        "Exactly five visibly distinct execution-level "
-        "variations generated from the one locked "
+        "Exactly five visibly distinct "
+        "execution-level variations "
+        "generated from the one locked "
         "human-selected concept."
     )
 
@@ -619,9 +981,25 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    # --------------------------------------------------------
+    # Log
+    # --------------------------------------------------------
+
+    print()
+
     print(
-        "Exactly 5 real preview images created "
-        "from ONE selected concept."
+        "Exactly 5 real preview images "
+        "created from ONE selected concept."
+    )
+
+    print(
+        "All five were generated using "
+        "separate OpenAI image requests."
+    )
+
+    print(
+        "All five passed SHA-256 "
+        "duplicate-file validation."
     )
 
     print(
@@ -635,7 +1013,13 @@ def main() -> int:
     )
 
     print(
-        f"PREVIEW BATCH: {batch_number}"
+        f"PREVIEW BATCH: "
+        f"{batch_number}"
+    )
+
+    print(
+        f"PREVIEW PATH: "
+        f"{out_dir}"
     )
 
     print(
@@ -650,6 +1034,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+
     raise SystemExit(
         main()
     )
