@@ -15,6 +15,8 @@ from typing import Any
 
 from google import genai
 from openai import OpenAI
+from PIL import Image
+from io import BytesIO
 
 
 APPROVED_STORY_PATH = Path(
@@ -62,6 +64,16 @@ GEMINI_RETRY_BASE_SECONDS = float(
 )
 
 MAX_DUPLICATE_RETRIES = 2
+
+# Final Daily Duck source-image aspect ratio.
+# WIDTH : HEIGHT = 51 : 58 (slightly portrait).
+FINAL_ASPECT_W = 51
+FINAL_ASPECT_H = 58
+
+# Working pixel size close to the requested ratio.
+# Exact 51:58 ratio.
+FINAL_IMAGE_WIDTH = 1020
+FINAL_IMAGE_HEIGHT = 1160
 
 
 def required_env(name: str) -> str:
@@ -849,6 +861,77 @@ Do not invent unsupported facts.
 """.strip()
 
 
+
+def fit_to_51x58_without_distortion(
+    image_bytes: bytes,
+) -> bytes:
+    """
+    Convert any generated image to EXACTLY 51:58 (width:height)
+    without stretching or squashing the duck.
+
+    Strategy:
+    - preserve original pixels/aspect ratio
+    - scale proportionally
+    - center-crop only the excess dimension
+    - never distort
+    - output 1020x1160 PNG
+    """
+    with Image.open(
+        BytesIO(image_bytes)
+    ) as source:
+        source = source.convert("RGB")
+
+        sw, sh = source.size
+        target_w = FINAL_IMAGE_WIDTH
+        target_h = FINAL_IMAGE_HEIGHT
+
+        scale = max(
+            target_w / sw,
+            target_h / sh,
+        )
+
+        rw = max(
+            target_w,
+            int(round(sw * scale)),
+        )
+        rh = max(
+            target_h,
+            int(round(sh * scale)),
+        )
+
+        resized = source.resize(
+            (rw, rh),
+            Image.Resampling.LANCZOS,
+        )
+
+        left = max(
+            0,
+            (rw - target_w) // 2,
+        )
+        top = max(
+            0,
+            (rh - target_h) // 2,
+        )
+
+        cropped = resized.crop(
+            (
+                left,
+                top,
+                left + target_w,
+                top + target_h,
+            )
+        )
+
+        output = BytesIO()
+        cropped.save(
+            output,
+            format="PNG",
+            optimize=True,
+        )
+
+        return output.getvalue()
+
+
 def generate_one_image(
     client: OpenAI,
     prompt: str,
@@ -878,9 +961,20 @@ def generate_one_image(
             f"OpenAI returned no image for concept {number}."
         )
 
-    return base64.b64decode(
+    raw_bytes = base64.b64decode(
         result.data[0].b64_json
     )
+
+    final_bytes = fit_to_51x58_without_distortion(
+        raw_bytes
+    )
+
+    print(
+        "Normalized final image ratio: "
+        "51:58 (1020x1160), no stretching."
+    )
+
+    return final_bytes
 
 
 def generate_concept_images(
@@ -978,7 +1072,9 @@ def generate_concept_images(
                 "mime_type": "image/png",
                 "provider": "OpenAI",
                 "model": OPENAI_IMAGE_MODEL,
-                "size": OPENAI_IMAGE_SIZE,
+                "size": f"{FINAL_IMAGE_WIDTH}x{FINAL_IMAGE_HEIGHT}",
+                "generation_request_size": OPENAI_IMAGE_SIZE,
+                "aspect_ratio": "51:58",
                 "quality": OPENAI_IMAGE_QUALITY,
                 "sha256": chosen_hash,
                 "generation_prompt": chosen_prompt,
