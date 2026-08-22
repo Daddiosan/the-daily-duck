@@ -634,18 +634,18 @@
   "title_ideas": [
     {
       "number": 1,
-      "title": "WOOL TO BONE",
-      "meaning_ja": "身近な羊毛が骨を再生する医療素材へ生まれ変わる驚きを表現"
+      "title": "QUACKING THE CODE! SHEEP’S WOOL HELPS REGROW BONES",
+      "meaning_ja": "羊毛が骨の再生を助ける！難題を解決・解明することを意味する英語の成句『Cracking the code』と、アヒルの鳴き声『Quack』を掛け合わせた『Quacking the code』で、科学者たちの素晴らしい新発見を讃える豪快なダジャレ見出しです。"
     },
     {
       "number": 2,
-      "title": "HEALING FROM THE FLOCK",
-      "meaning_ja": "羊たちから生まれた新たな再生医療の可能性を伝えるタイトル"
+      "title": "A BEAK-THROUGH IN BONE HEALING FROM SHEEP’S WOOL",
+      "meaning_ja": "羊毛を活用した骨治療における大発見！「画期的な進歩・大発見」を意味する『Breakthrough』の「Break」を、アヒルのクチバシを意味する『Beak』に変えた『Beak-through』というひねりの効いた言葉遊びです。"
     },
     {
       "number": 3,
-      "title": "NATURE’S HEALING FIBER",
-      "meaning_ja": "骨の再生を助ける自然由来の素材イノベーションを強調"
+      "title": "WHAT THE DUCK? WOOL REGROWS BONES!",
+      "meaning_ja": "なんてこった（What the duck）!? 羊毛で骨が再生するなんて！驚きを表すスラング『What the f***?』のマイルドな言い換え『What the duck?』を使った、ブランド感あふれる短くパンチの効いた見出しです。"
     }
   ],
   "design_previews": [
@@ -722,9 +722,7 @@
     "translation_language": "ja",
     "translation_source": "english_master"
   },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-22 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-22 — Batch 1",
-  "final_email_sent_at": "2026-08-22T10:39:45.513852+00:00",
+  "final_email_sent_at": "2026-08-22T11:03:45.893175+00:00",
   "final_selection_rule": {
     "image_numbers": [
       1,
@@ -741,5 +739,26 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "previous_title_ideas": [
+    {
+      "number": 1,
+      "title": "WOOL TO BONE",
+      "meaning_ja": "身近な羊毛が骨を再生する医療素材へ生まれ変わる驚きを表現"
+    },
+    {
+      "number": 2,
+      "title": "HEALING FROM THE FLOCK",
+      "meaning_ja": "羊たちから生まれた新たな再生医療の可能性を伝えるタイトル"
+    },
+    {
+      "number": 3,
+      "title": "NATURE’S HEALING FIBER",
+      "meaning_ja": "骨の再生を助ける自然由来の素材イノベーションを強調"
+    }
+  ],
+  "titles_regenerated_at": "2026-08-22T11:03:42.999534+00:00",
+  "title_style": "DAILY_DUCK_PUN_ENGLISH",
+  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-22 — Batch 1",
+  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-22 — Batch 1"
 }
