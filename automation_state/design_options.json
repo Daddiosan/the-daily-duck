@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_CONCEPT_SELECTION",
+  "state": "APPROVED_IMAGE_CONCEPT",
   "issue_date": "2026-08-21",
   "generated_at": "2026-08-22T07:43:25.018678+00:00",
   "approved_story": {
@@ -648,8 +648,19 @@
       "meaning_ja": "10代の頃に築いた絆が、数十年という長い年月を超えて挑戦する心を支え続ける温かさを描くタイトル。"
     }
   ],
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "Early Sparks of Ambition",
+    "concept_en": "Capturing the spirit of teenage brainstorming where shared ideas and mutual encouragement in school plant the initial seeds of future business ventures.",
+    "composition_en": "A vibrant high school study room setup where the friendly yellow duck mascot sits proudly at a wooden table surrounded by colorful brainstorming pads, creative sketches, and a drawn idea map under bright, encouraging sunlight.",
+    "generation_prompt_en": "A warm and charming editorial visual in a sunlit study space. The friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft sits happily at a wooden table surrounded by colorful creative notebooks and sketchpads. Bright natural light pouring through large windows creates an optimistic, ambitious atmosphere. Clean aesthetic, single visual focus on the duck mascot, gentle blurred background, premium editorial magazine style, no text, no logos.",
+    "alt_en": "The yellow duck mascot sitting at a bright study table surrounded by colorful ideas and sketchbooks.",
+    "title_ja": "若き日に芽生えた野心とアイディア",
+    "concept_ja": "高校時代に友人たちとアイディアを語り合った情熱が、将来の起業への原動力となる様子を描いたコンセプト。",
+    "composition_ja": "太陽光が爽やかに差し込む学習スペース。アヒルのマスコットが、色とりどりのアイディアノートやスケッチに囲まれた木製テーブルに座り、未来への野心を膨らませています。",
+    "alt_ja": "光が差し込むテーブルで、ノートやスケッチに囲まれ嬉しそうに座る黄色の文脈アヒルのマスコット。"
+  },
   "design_previews": [],
   "language_policy": {
     "primary_language": "en",
@@ -691,5 +702,9 @@
   },
   "concept_email_subject": "The Daily Duck — Choose Image Concept — 2026-08-21",
   "email_subject": "The Daily Duck — Choose Image Concept — 2026-08-21",
-  "concept_email_sent_at": "2026-08-22T07:43:26.479015+00:00"
+  "concept_email_sent_at": "2026-08-22T07:43:26.479015+00:00",
+  "concept_approval_reply": "2",
+  "concept_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "concept_selected_at": "2026-08-22T07:54:16.338422+00:00",
+  "preview_batch_number": 0
 }
