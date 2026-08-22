@@ -275,7 +275,7 @@ def generate_titles(
         "title_ideas": [
             {
                 "number": 1,
-                "title": "CATCHY DAILY DUCK POSTER COPY",
+                "title": "GENUINE ENGLISH DUCK PUN TITLE",
                 "meaning_ja": (
                     "日本語の意味と、英語の言葉遊び・"
                     "リズム・ニュアンスの説明"
@@ -299,79 +299,121 @@ DO NOT change, regenerate, or discuss the existing images.
 This task is TITLES ONLY.
 
 ============================================================
-THE DAILY DUCK POSTER-COPY VOICE
+THE DAILY DUCK — GENUINE PUN REQUIRED
 ============================================================
 
-The titles should feel like POSTER COPY,
-not ordinary news headlines.
+Generate EXACTLY THREE short, catchy English titles.
 
-The tone should be:
+CRITICAL REQUIREMENT:
+ALL THREE TITLES MUST CONTAIN A REAL, EXPLAINABLE ENGLISH PUN,
+WORDPLAY DEVICE, PHONETIC TWIST, IDIOM TWIST, OR RECOGNIZABLE
+PHRASE TRANSFORMATION.
+
+Simply inserting DUCK, QUACK, WADDLE, BILL, FEATHER, EGG,
+FLOCK, WEBBED, or BEAK into an ordinary headline is NOT enough.
+
+A title is valid only if you can name the original English
+phrase / word / idiom that creates the joke.
+
+VALID examples of mechanism:
+- QUACK TO THE FUTURE! -> "Back to the Future"
+- BILL-IEVE IT OR NOT! -> "believe it or not"
+- WADDLE IT TAKE? -> "what'll it take?"
+- QUACK OF DAWN! -> "crack of dawn"
+- EGG-CELLENT NEWS! -> "excellent"
+- DUCKING OUT OF SIGHT! -> double meaning of "ducking"
+
+INVALID examples:
+- AMAZING DUCK NEWS!
+- QUACKING DISCOVERY!
+- HAPPY WADDLE DAY!
+These are duck-themed, but not genuine puns.
+
+============================================================
+CREATE THREE DIFFERENT PUN STYLES
+============================================================
+
+1. PHRASE / IDIOM TWIST
+   Transform a recognizable English phrase, idiom, proverb,
+   or familiar title-like expression.
+
+2. SOUND / DOUBLE-MEANING PUN
+   Use phonetic similarity, homophone-like play, or a true
+   double meaning involving duck vocabulary.
+
+3. BIG POSTER PUN
+   The boldest, funniest, most memorable option that still
+   accurately fits the approved story.
+
+============================================================
+POSTER-COPY STYLE
+============================================================
+
+The titles should be:
 - instantly readable
 - memorable
 - playful
 - visually punchy
 - warm rather than cynical
-- suitable for a poster, social card, or magazine cover
+- suitable for an X card, poster, or magazine cover
 
-Duck-related puns and wordplay are welcome when they fit naturally,
-but DO NOT force a duck pun into every title.
+Length:
+- usually about 4 to 9 words
+- shorter is fine when the joke lands strongly
+- slightly longer is fine if the rhythm is excellent
 
-Useful duck-language vocabulary may include:
+============================================================
+DIVERSITY
+============================================================
+
+Do NOT use QUACK in all three.
+Do NOT use the same pun mechanism three times.
+Use different duck-language vocabulary when possible.
+
+Possible vocabulary:
 QUACK, QUACKING, DUCK, DUCKING, WADDLE, BILL, FEATHER,
 FEATHERS, EGG, EGG-CELLENT, FLOCK, WEBBED, BEAK.
 
-IMPORTANT:
-The goal is NOT maximum pun density.
-The goal is a catchy poster line that sounds like The Daily Duck.
+============================================================
+QUALITY / FACTUAL RULES
+============================================================
 
-Create three DIFFERENT styles:
-
-1. DUCK PUN
-   A natural, story-relevant duck pun or playful word twist.
-
-2. SMART POSTER COPY
-   A clever, stylish, memorable line that may or may not use
-   explicit duck vocabulary.
-
-3. BIG PUNCH
-   The strongest, boldest, most poster-like line of the three.
-
-LENGTH:
-- Usually around 4 to 9 words.
-- Shorter is fine when the line is strong.
-- Slightly longer is fine when the rhythm is good.
-- Avoid long explanatory sentences.
-
-STYLE EXAMPLES ONLY:
-- QUACK TO THE FUTURE!
-- ONE SMALL WADDLE, ONE GIANT DISCOVERY!
-- WHALE, WHALE... WHAT HAVE WE HERE?
-- DUCKING INTO SOMETHING AMAZING!
-- WHAT THE DUCK?!
-
-Do NOT copy these unless they genuinely fit the approved story.
-
-QUALITY RULES:
-- English-speaking readers should understand the line immediately.
-- It must connect clearly to the approved story.
+- English-speaking readers should recognize the joke.
+- Every title must clearly connect to the approved story.
 - Do not invent unsupported facts.
-- Avoid generic newspaper-style wording.
-- Avoid dry academic phrasing.
+- Do not distort the story just to force a pun.
 - Avoid childish baby-talk.
-- Avoid awkward or incomprehensible forced puns.
-- Punchy punctuation is welcome when natural.
+- Avoid obscure or incomprehensible wordplay.
 - ALL CAPS is preferred.
-- At least ONE of the THREE titles should contain explicit
-  duck-themed wordplay when natural.
-- All three should feel unmistakably like The Daily Duck.
 
-For meaning_ja, explain:
-1. the natural Japanese meaning, and
-2. any English pun, wordplay, rhythm, or nuance.
+============================================================
+MANDATORY meaning_ja CONTENT
+============================================================
 
-Before returning JSON, silently check:
-"Does this sound like poster copy?"
-If not, rewrite it.
+For EACH title, meaning_ja must explain:
+
+1. the natural Japanese meaning,
+2. the exact original English phrase / word / idiom,
+3. how the duck-related substitution or double meaning creates the pun.
+
+If the source phrase or mechanism cannot be explained clearly,
+the title is INVALID and must be rewritten.
+
+============================================================
+SELF-CHECK BEFORE OUTPUT
+============================================================
+
+For EACH title, silently answer:
+
+A. What exact English phrase / word / idiom is this based on?
+B. What changed or gained a double meaning?
+C. Would a native English reader recognize the joke?
+D. Does it still fit the approved story?
+E. Is it short and punchy enough for poster copy?
+
+If any answer is weak, REWRITE THAT TITLE.
+
+ALL THREE must pass.
 
 Return ONLY valid JSON.
 No Markdown fences.
@@ -497,7 +539,7 @@ def main() -> int:
 
     package[
         "title_style"
-    ] = "DAILY_DUCK_POSTER_COPY"
+    ] = "DAILY_DUCK_GENUINE_PUN"
 
     # Existing concepts and images are preserved exactly.
     # Put the package back into an email-ready state.
