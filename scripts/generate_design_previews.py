@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from openai import OpenAI
+
 from model_config import (
     OPENAI_IMAGE_MODEL,
     OPENAI_IMAGE_SIZE,
@@ -24,74 +25,54 @@ PREVIEW_ROOT = Path(
     "automation_images/design_previews"
 )
 
-# Number of real images generated from ONE selected concept.
-REAL_IMAGE_COUNT = 5
+# Current Daily Duck specification:
+# ONE of THREE concepts is selected,
+# then exactly THREE real images are generated.
+REAL_IMAGE_COUNT = 3
 
-# Number of retries when OpenAI returns byte-identical output.
 MAX_DUPLICATE_RETRIES = 2
 
 
 # ============================================================
-# Five intentionally different execution recipes.
-#
-# IMPORTANT:
-# These are NOT five concepts.
-#
-# The human selects ONE of the THREE concepts first.
-# These recipes then produce FIVE visual variations
-# from that ONE locked concept.
+# Three intentionally different executions
+# of ONE locked concept.
 # ============================================================
 
-VARIATION_RECIPES: dict[int, str] = {
+VARIATION_RECIPES: dict[
+    int,
+    str,
+] = {
 
     1: """
-VARIATION 1 — ESTABLISHING VIEW
+VARIATION 1 — ESTABLISHING EDITORIAL VIEW
 
 - Use a wider establishing composition.
-- Show more of the environment while keeping the duck the clear focal point.
-- Camera at approximately eye level.
-- Duck positioned slightly off-center using editorial negative space.
-- Calm, balanced pose.
+- Show enough of the environment to communicate the selected concept clearly.
+- Keep the yellow duck as the unmistakable focal point.
+- Camera approximately at eye level.
+- Use clean editorial negative space.
+- Calm, balanced, warm composition.
 """.strip(),
 
     2: """
 VARIATION 2 — CLOSE HERO VIEW
 
-- Use a substantially closer hero framing than Variation 1.
-- Duck occupies much more of the frame.
-- Camera slightly lower than eye level for a confident, charming hero feel.
-- Strong facial expression and readable body language.
-- Background simplified and more softly separated.
+- Use a substantially closer composition than Variation 1.
+- Make the duck occupy significantly more of the frame.
+- Use a slightly lower or three-quarter camera angle.
+- Emphasize expression and body language.
+- Simplify the background and create strong subject separation.
+- Preserve the exact same selected concept.
 """.strip(),
 
     3: """
-VARIATION 3 — ACTION MOMENT
+VARIATION 3 — DYNAMIC STORY VIEW
 
-- Show the duck actively interacting with the key visual element of the SAME concept.
-- Use a clear sense of motion or mid-action storytelling.
-- Three-quarter camera angle.
-- More dynamic diagonal composition than Variations 1 and 2.
-- Keep the same setting, props, and visual concept.
-""".strip(),
-
-    4: """
-VARIATION 4 — SIDE STORYTELLING VIEW
-
-- Use a noticeably different side or three-quarter-side camera position.
-- Place the duck on the opposite side of the frame from Variation 1.
-- Emphasize the relationship between the duck and the concept's key environment/prop.
-- Use layered foreground/background depth.
-- Keep the exact same visual concept.
-""".strip(),
-
-    5: """
-VARIATION 5 — CINEMATIC EDITORIAL VIEW
-
-- Use the most cinematic composition of the set.
-- Distinct crop and perspective from Variations 1-4.
-- Slightly elevated or otherwise clearly different camera viewpoint.
-- Strong editorial lighting and depth while remaining warm and cheerful.
-- Preserve the same story, setting, mascot, and locked concept.
+- Create the most dynamic storytelling version of the same concept.
+- Use a clearly different camera position and crop.
+- Show the duck interacting naturally with the concept's key visual element.
+- Use stronger foreground/background depth or a diagonal composition.
+- Preserve the same story, setting and central visual concept.
 """.strip(),
 }
 
@@ -153,7 +134,7 @@ def sha256_file(
 
 
 # ============================================================
-# Approved story helper
+# Approved story
 # ============================================================
 
 def get_compact_story(
@@ -293,17 +274,14 @@ def build_prompt(
             "generation_prompt_en."
         )
 
-    if variation_number not in (
-        1,
-        2,
-        3,
-        4,
-        5,
+    if (
+        variation_number
+        not in VARIATION_RECIPES
     ):
 
         raise ValueError(
             "variation_number "
-            "must be 1-5."
+            "must be 1-3."
         )
 
     variation_recipe = (
@@ -319,29 +297,33 @@ def build_prompt(
         retry_note = f"""
 DUPLICATE AVOIDANCE — RETRY {duplicate_retry}
 
-The previous output was too similar or identical.
+The previous output was byte-identical
+to another candidate.
 
-Make this rendition CLEARLY DIFFERENT in:
+Make this rendition CLEARLY different in:
 
 - camera framing
+- camera angle
 - duck pose
-- crop
 - spatial arrangement
+- crop
 - perspective
 
-while preserving the locked concept.
+while preserving the SAME selected concept.
 """.strip()
 
     return f"""
-Create ONE polished, publishable hero-image candidate for The Daily Duck.
+Create ONE polished, publishable hero-image candidate
+for The Daily Duck.
 
 ============================================================
 LANGUAGE POLICY
 ============================================================
 
-All image-generation direction is canonical English.
+All generation direction is canonical English.
 
-Do not add Japanese or any other readable text to the image.
+Do not place Japanese or any other readable text
+inside the generated image.
 
 ============================================================
 APPROVED STORY — LOCKED
@@ -376,23 +358,16 @@ Production direction:
 CURRENT IMAGE
 ============================================================
 
-This is:
+Real-image batch:
+{batch_number}
 
-- real-image batch {batch_number}
-- variation {variation_number} of {REAL_IMAGE_COUNT}
+Variation:
+{variation_number} of {REAL_IMAGE_COUNT}
 
-IMPORTANT:
+The THREE images must all represent the SAME
+human-selected concept.
 
-The five images must represent the SAME selected concept,
-but they must NOT look like duplicate renders.
-
-The following remain LOCKED:
-
-- approved story
-- selected visual concept
-- setting
-- mascot identity
-- central visual idea
+They must NOT be duplicate renders.
 
 ============================================================
 MANDATORY VARIATION RECIPE
@@ -403,10 +378,10 @@ MANDATORY VARIATION RECIPE
 {retry_note}
 
 ============================================================
-VARIATION REQUIREMENT
+DISTINCTNESS REQUIREMENT
 ============================================================
 
-Compared with the other candidates,
+Compared with the other two candidates,
 this image must be visibly different in
 at least THREE of these execution dimensions:
 
@@ -420,18 +395,26 @@ at least THREE of these execution dimensions:
 - prop placement
 - body orientation
 
-Do NOT merely make tiny facial,
-lighting or texture changes.
+Do NOT merely change tiny facial details,
+textures or lighting.
 
 ============================================================
-CRITICAL CONCEPT-LOCK RULE
+CRITICAL CONCEPT LOCK
 ============================================================
+
+The following are LOCKED:
+
+- approved news story
+- selected image concept
+- central visual metaphor
+- setting
+- Daily Duck mascot identity
 
 Do NOT:
 
 - switch to another concept
-- reinterpret the central visual idea
-- replace the setting with a different setting
+- invent a new central scene
+- replace the setting
 - change the story
 - add unsupported factual details
 
@@ -439,13 +422,13 @@ Do NOT:
 THE DAILY DUCK MASCOT
 ============================================================
 
-Preserve the established mascot identity:
+Preserve:
 
-- cheerful recognizable yellow duck
+- recognizable friendly yellow duck
 - orange beak
 - large dark glossy eyes
 - small feather tuft
-- warm friendly expression
+- warm approachable expression
 - consistent mascot identity
 - consistent mascot proportions
 
@@ -453,41 +436,40 @@ Preserve the established mascot identity:
 STYLE
 ============================================================
 
-- premium modern editorial illustration,
-  soft 3D, or photorealistic composite as appropriate
-- cheerful
 - clean
-- polished
+- modern
+- charming
+- warm
+- premium editorial
 - simple rather than overly vintage
-- landscape composition
+- polished
 - strong focal point
-- suitable as a website hero image
-- publication quality
+- landscape hero composition
+- suitable for website publication
 
 ============================================================
 DO NOT INCLUDE
 ============================================================
 
-- headline
+- headlines
 - captions
 - readable text
 - numbers
 - logos
-- UI
 - watermarks
-- final X-card header/footer
+- UI
+- X card borders or overlays
 
 ============================================================
 FACTUAL RULE
 ============================================================
 
 Do not invent factual, scientific,
-geographic, organizational,
-or biographical details beyond what
-is supported by the approved story.
+geographic, organizational or biographical
+details beyond what the approved story supports.
 
-This output must be a distinct visual
-execution of the SAME selected concept.
+Generate a genuinely distinct execution
+of the SAME selected concept.
 """.strip()
 
 
@@ -506,8 +488,7 @@ def generate_image_bytes(
         f"{number}/{REAL_IMAGE_COUNT}: "
         f"{OPENAI_IMAGE_MODEL}, "
         f"{OPENAI_IMAGE_SIZE}, "
-        f"quality="
-        f"{OPENAI_IMAGE_QUALITY}"
+        f"quality={OPENAI_IMAGE_QUALITY}"
     )
 
     result = (
@@ -542,10 +523,6 @@ def generate_image_bytes(
 
 def main() -> int:
 
-    # --------------------------------------------------------
-    # Load design state
-    # --------------------------------------------------------
-
     if not OPTIONS_PATH.exists():
 
         raise FileNotFoundError(
@@ -569,10 +546,6 @@ def main() -> int:
             "must contain an object."
         )
 
-    # --------------------------------------------------------
-    # State validation
-    # --------------------------------------------------------
-
     state = first_text(
         package.get(
             "state"
@@ -589,10 +562,6 @@ def main() -> int:
             "APPROVED_IMAGE_CONCEPT, "
             f"got {state!r}"
         )
-
-    # --------------------------------------------------------
-    # Selected concept
-    # --------------------------------------------------------
 
     selected_concept = package.get(
         "selected_image_concept"
@@ -616,15 +585,6 @@ def main() -> int:
         or 0
     )
 
-    # IMPORTANT:
-    # Current Daily Duck specification:
-    #
-    # Exactly THREE concept choices.
-    #
-    # After choosing one of these three,
-    # FIVE real images are generated.
-    # --------------------------------------------------------
-
     if selected_number not in (
         1,
         2,
@@ -635,10 +595,6 @@ def main() -> int:
             "selected_image_concept_number "
             "must be 1-3."
         )
-
-    # --------------------------------------------------------
-    # Issue date
-    # --------------------------------------------------------
 
     issue_date = first_text(
         package.get(
@@ -651,10 +607,6 @@ def main() -> int:
         raise ValueError(
             "issue_date is missing."
         )
-
-    # --------------------------------------------------------
-    # Batch number
-    # --------------------------------------------------------
 
     previous_batch = int(
         package.get(
@@ -680,10 +632,6 @@ def main() -> int:
         exist_ok=True,
     )
 
-    # --------------------------------------------------------
-    # OpenAI
-    # --------------------------------------------------------
-
     api_key = os.getenv(
         "OPENAI_API_KEY",
         "",
@@ -704,16 +652,9 @@ def main() -> int:
         dict[str, Any]
     ] = []
 
-    seen_hashes: set[str] = set()
-
-    # --------------------------------------------------------
-    # Generate exactly FIVE real images.
-    #
-    # IMPORTANT:
-    # Each API call generates ONE image.
-    # This prevents one returned image being
-    # accidentally reused for all five candidates.
-    # --------------------------------------------------------
+    seen_hashes: set[
+        str
+    ] = set()
 
     for variation_number in range(
         1,
@@ -726,10 +667,6 @@ def main() -> int:
 
         chosen_prompt = ""
         chosen_hash = ""
-
-        # ----------------------------------------------------
-        # Duplicate protection
-        # ----------------------------------------------------
 
         for retry in range(
             0,
@@ -760,7 +697,10 @@ def main() -> int:
                 image_bytes
             )
 
-            if digest not in seen_hashes:
+            if (
+                digest
+                not in seen_hashes
+            ):
 
                 chosen_bytes = (
                     image_bytes
@@ -779,13 +719,12 @@ def main() -> int:
             print(
                 "WARNING: candidate "
                 f"{variation_number} "
-                "was byte-identical to "
-                "an earlier image."
+                "was byte-identical "
+                "to an earlier image."
             )
 
             print(
-                "Regenerating candidate "
-                f"{variation_number}..."
+                "Regenerating..."
             )
 
         if chosen_bytes is None:
@@ -804,10 +743,6 @@ def main() -> int:
             chosen_hash
         )
 
-        # ----------------------------------------------------
-        # Save image
-        # ----------------------------------------------------
-
         path = (
             out_dir
             / (
@@ -819,10 +754,6 @@ def main() -> int:
         path.write_bytes(
             chosen_bytes
         )
-
-        # ----------------------------------------------------
-        # Metadata
-        # ----------------------------------------------------
 
         previews.append(
             {
@@ -885,11 +816,6 @@ def main() -> int:
             }
         )
 
-    # --------------------------------------------------------
-    # Safety validation:
-    # exactly FIVE metadata entries must exist.
-    # --------------------------------------------------------
-
     if (
         len(previews)
         != REAL_IMAGE_COUNT
@@ -902,13 +828,10 @@ def main() -> int:
             f"got {len(previews)}."
         )
 
-    # --------------------------------------------------------
-    # Safety validation:
-    # all five image hashes must be different.
-    # --------------------------------------------------------
-
     unique_hashes = {
-        preview["sha256"]
+        preview[
+            "sha256"
+        ]
         for preview in previews
     }
 
@@ -921,10 +844,6 @@ def main() -> int:
             "Generated preview batch "
             "contains duplicate image files."
         )
-
-    # --------------------------------------------------------
-    # Update design state
-    # --------------------------------------------------------
 
     package[
         "design_previews"
@@ -961,9 +880,9 @@ def main() -> int:
     package[
         "preview_generation_rule"
     ] = (
-        "Exactly five visibly distinct "
-        "execution-level variations "
-        "generated from the one locked "
+        "Exactly three visibly distinct "
+        "execution-level variations generated "
+        "from the one locked "
         "human-selected concept."
     )
 
@@ -981,30 +900,21 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    # --------------------------------------------------------
-    # Log
-    # --------------------------------------------------------
-
     print()
 
     print(
-        "Exactly 5 real preview images "
+        "Exactly 3 real preview images "
         "created from ONE selected concept."
     )
 
     print(
-        "All five were generated using "
+        "All three were generated using "
         "separate OpenAI image requests."
     )
 
     print(
-        "All five passed SHA-256 "
-        "duplicate-file validation."
-    )
-
-    print(
-        "All five use explicit distinct "
-        "variation recipes."
+        "All three passed SHA-256 "
+        "duplicate validation."
     )
 
     print(
@@ -1023,11 +933,8 @@ def main() -> int:
     )
 
     print(
-        "LANGUAGE: ENGLISH-FIRST"
-    )
-
-    print(
-        "STATE: DESIGN_PREVIEWS_READY"
+        "STATE: "
+        "DESIGN_PREVIEWS_READY"
     )
 
     return 0
