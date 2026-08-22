@@ -2,8 +2,14 @@ name: The Daily Duck Automation
 
 on:
   workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Target Daily Duck date (YYYY-MM-DD). Leave blank for today JST."
+        required: false
+        type: string
 
   schedule:
+    # 07:00 JST
     - cron: "0 22 * * *"
 
 permissions:
@@ -12,6 +18,18 @@ permissions:
 jobs:
   daily-duck:
     runs-on: ubuntu-latest
+
+    env:
+      # Manual run:
+      #   Uses the date entered in Run workflow.
+      #
+      # Scheduled run:
+      #   Empty -> Python scripts should use current JST date.
+      DAILY_DUCK_TARGET_DATE: ${{ github.event_name == 'workflow_dispatch' && inputs.target_date || '' }}
+
+      # Current Daily Duck specification:
+      # exactly 3 image concepts at Gate A.
+      IMAGE_CONCEPT_COUNT: "3"
 
     steps:
       # ------------------------------------------------------------
@@ -30,11 +48,6 @@ jobs:
 
       # ------------------------------------------------------------
       # 3. Install Python dependencies
-      #
-      # send_email.py uses:
-      #   from google import genai
-      #
-      # google-genai is therefore required.
       # ------------------------------------------------------------
       - name: Install Python dependencies
         run: |
@@ -42,14 +55,29 @@ jobs:
           pip install -r requirements-phase2.txt
 
       # ------------------------------------------------------------
-      # 4. Collect news
+      # 4. Show target date
+      # ------------------------------------------------------------
+      - name: Show Daily Duck target date
+        run: |
+          echo "GitHub event: ${{ github.event_name }}"
+
+          if [ -n "$DAILY_DUCK_TARGET_DATE" ]; then
+            echo "Daily Duck target date: $DAILY_DUCK_TARGET_DATE"
+          else
+            echo "Daily Duck target date: current JST date"
+          fi
+
+          echo "Image concept count: $IMAGE_CONCEPT_COUNT"
+
+      # ------------------------------------------------------------
+      # 5. Collect news
       # ------------------------------------------------------------
       - name: Collect Daily Duck news
         run: |
           python scripts/collect_news.py
 
       # ------------------------------------------------------------
-      # 5. Rank news with Gemini
+      # 6. Rank news with Gemini
       # ------------------------------------------------------------
       - name: Rank Daily Duck news
         env:
@@ -58,19 +86,19 @@ jobs:
           python scripts/rank_news_with_ai.py
 
       # ------------------------------------------------------------
-      # 6. Send Gate A email
+      # 7. Send Gate A email
       #
-      # This now:
-      # - generates exactly five image concepts
+      # Current flow:
+      # - creates exactly 3 image concepts
       # - stores them in gate_a_package.json
       # - emails the Gate A package
       #
-      # Valid approval replies later:
+      # Valid Gate A concept selections:
+      #
       #   1 OK
       #   2 OK
       #   3 OK
-      #   4 OK
-      #   5 OK
+      #
       # ------------------------------------------------------------
       - name: Send Daily Duck email
         env:
@@ -82,7 +110,7 @@ jobs:
           python scripts/send_email.py
 
       # ------------------------------------------------------------
-      # 7. Upload Gate A results
+      # 8. Upload Gate A results
       #
       # IMPORTANT:
       # approval-check.yml downloads this exact artifact name:
@@ -102,7 +130,9 @@ jobs:
             daily_duck_email.txt
           retention-days: 7
 
-
+      # ------------------------------------------------------------
+      # 9. Failure notification
+      # ------------------------------------------------------------
       - name: Notify failure by email
         if: failure()
         env:
@@ -112,4 +142,5 @@ jobs:
           FAILURE_STAGE: Daily Duck news collection / Gate A email
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python scripts/send_workflow_failure_email.py
+        run: |
+          python scripts/send_workflow_failure_email.py
