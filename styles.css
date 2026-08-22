@@ -128,8 +128,8 @@ nav a.active::after {
 }
 
 .hero-art {
-  width: 100%;
-  aspect-ratio: 3 / 2;
+  width: min(100%, 560px);
+  aspect-ratio: 51 / 58;
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
@@ -139,12 +139,9 @@ nav a.active::after {
 }
 
 .hero-art img {
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  /* 2026-08-22 forward:
-     the hero frame matches the 3:2 generated image ratio,
-     so the artwork occupies about 80% of BOTH frame width and height. */
 }
 
 .hero-copy { min-width: 0; }
@@ -445,14 +442,14 @@ noscript {
   }
 
   .hero-art {
-    width: min(100%, 620px);
-    aspect-ratio: 3 / 2;
+    width: min(100%, 520px);
+    aspect-ratio: 51 / 58;
     margin-inline: auto;
   }
 
   .hero-art img {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
   }
 
   h1 {
@@ -493,12 +490,13 @@ noscript {
   }
 
   .hero-art {
-    aspect-ratio: 3 / 2;
+    width: min(100%, 430px);
+    aspect-ratio: 51 / 58;
   }
 
   .hero-art img {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
   }
 
   .story-grid {
@@ -552,12 +550,13 @@ noscript {
 
 @media (max-width: 430px) {
   .hero-art {
-    aspect-ratio: 3 / 2;
+    width: 100%;
+    aspect-ratio: 51 / 58;
   }
 
   .hero-art img {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
   }
 
   h1 {
@@ -649,7 +648,7 @@ noscript {
   .brand-official img { width: 36px; height: 36px; }
 }
 
-/* Version 3.9 — TRUE 80% hero sizing
-   The TODAY image frame now uses the same 3:2 aspect ratio as the generated art.
-   The image uses 80% of both frame width and frame height, with no max-width cap.
-   Archive card sizing is intentionally unchanged. */
+/* Version 3.10 — 51:58 Daily Duck source-image presentation
+   Current-day artwork uses exact width:height = 51:58.
+   No stretching; image is shown at its native aspect ratio.
+   Archive card sizing remains unchanged. */
