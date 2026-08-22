@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import mimetypes
 import os
 import smtplib
 import sys
@@ -17,6 +18,7 @@ OPTIONS_PATH = Path(
 
 EXPECTED_CONCEPT_COUNT = 3
 EXPECTED_TITLE_COUNT = 3
+EXPECTED_PREVIEW_COUNT = 3
 
 
 # ============================================================
@@ -33,6 +35,7 @@ def required_env(
     ).strip()
 
     if not value:
+
         raise RuntimeError(
             f"Missing required environment variable: {name}"
         )
@@ -45,6 +48,7 @@ def load_json(
 ) -> dict[str, Any]:
 
     if not path.exists():
+
         raise FileNotFoundError(
             f"Required file not found: {path}"
         )
@@ -59,6 +63,7 @@ def load_json(
         data,
         dict,
     ):
+
         raise ValueError(
             f"{path} must contain a JSON object."
         )
@@ -66,11 +71,27 @@ def load_json(
     return data
 
 
+def save_package(
+    package: dict[str, Any],
+) -> None:
+
+    OPTIONS_PATH.write_text(
+        json.dumps(
+            package,
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 def first_text(
     *values: Any,
 ) -> str:
 
     for value in values:
+
         if (
             isinstance(
                 value,
@@ -78,35 +99,42 @@ def first_text(
             )
             and value.strip()
         ):
+
             return value.strip()
 
     return ""
 
 
-# ============================================================
-# Validation
-# ============================================================
-
-def validate_package(
+def issue_date_from(
     package: dict[str, Any],
-) -> None:
+) -> str:
 
-    state = first_text(
-        package.get("state")
-    ).upper()
+    issue_date = first_text(
+        package.get(
+            "issue_date"
+        ),
+        package.get(
+            "date"
+        ),
+    )
 
-    # This script may be run once after generation.
-    # It may also be re-run safely while already waiting.
-    if state not in (
-        "CONCEPTS_READY",
-        "WAITING_CONCEPT_SELECTION",
-    ):
+    if not issue_date:
+
         raise ValueError(
-            "Design approval email requires "
-            "CONCEPTS_READY or "
-            "WAITING_CONCEPT_SELECTION; "
-            f"got {state!r}."
+            "design_options.json "
+            "is missing issue_date."
         )
+
+    return issue_date
+
+
+# ============================================================
+# Shared validation
+# ============================================================
+
+def validate_three_concepts(
+    package: dict[str, Any],
+) -> list[dict[str, Any]]:
 
     concepts = package.get(
         "image_concepts"
@@ -117,14 +145,59 @@ def validate_package(
             concepts,
             list,
         )
-        or len(concepts)
-        != EXPECTED_CONCEPT_COUNT
+        or len(
+            concepts
+        ) != EXPECTED_CONCEPT_COUNT
     ):
+
         raise ValueError(
             "design_options.json must contain "
             f"exactly {EXPECTED_CONCEPT_COUNT} "
             "image concepts."
         )
+
+    normalized: list[
+        dict[str, Any]
+    ] = []
+
+    for index, item in enumerate(
+        concepts,
+        start=1,
+    ):
+
+        if not isinstance(
+            item,
+            dict,
+        ):
+
+            raise ValueError(
+                f"Image concept {index} "
+                "must be an object."
+            )
+
+        if int(
+            item.get(
+                "number",
+                0,
+            )
+            or 0
+        ) != index:
+
+            raise ValueError(
+                f"Image concept {index} "
+                "has an invalid number."
+            )
+
+        normalized.append(
+            item
+        )
+
+    return normalized
+
+
+def validate_three_titles(
+    package: dict[str, Any],
+) -> list[dict[str, Any]]:
 
     titles = package.get(
         "title_ideas"
@@ -135,66 +208,136 @@ def validate_package(
             titles,
             list,
         )
-        or len(titles)
-        != EXPECTED_TITLE_COUNT
+        or len(
+            titles
+        ) != EXPECTED_TITLE_COUNT
     ):
+
         raise ValueError(
             "design_options.json must contain "
             f"exactly {EXPECTED_TITLE_COUNT} "
             "title ideas."
         )
 
-    for index, concept in enumerate(
-        concepts,
-        start=1,
-    ):
+    normalized: list[
+        dict[str, Any]
+    ] = []
 
-        if not isinstance(
-            concept,
-            dict,
-        ):
-            raise ValueError(
-                f"Image concept {index} "
-                "must be an object."
-            )
-
-        number = concept.get(
-            "number"
-        )
-
-        if number != index:
-            raise ValueError(
-                f"Image concept {index} "
-                "has an invalid number."
-            )
-
-    for index, title in enumerate(
+    for index, item in enumerate(
         titles,
         start=1,
     ):
 
         if not isinstance(
-            title,
+            item,
             dict,
         ):
+
             raise ValueError(
                 f"Title idea {index} "
                 "must be an object."
             )
 
-        number = title.get(
-            "number"
-        )
+        if int(
+            item.get(
+                "number",
+                0,
+            )
+            or 0
+        ) != index:
 
-        if number != index:
             raise ValueError(
                 f"Title idea {index} "
                 "has an invalid number."
             )
 
+        normalized.append(
+            item
+        )
+
+    return normalized
+
+
+def validate_three_previews(
+    package: dict[str, Any],
+) -> list[dict[str, Any]]:
+
+    previews = package.get(
+        "design_previews"
+    )
+
+    if (
+        not isinstance(
+            previews,
+            list,
+        )
+        or len(
+            previews
+        ) != EXPECTED_PREVIEW_COUNT
+    ):
+
+        raise ValueError(
+            "design_options.json must contain "
+            f"exactly {EXPECTED_PREVIEW_COUNT} "
+            "real image previews."
+        )
+
+    normalized: list[
+        dict[str, Any]
+    ] = []
+
+    for index, item in enumerate(
+        previews,
+        start=1,
+    ):
+
+        if not isinstance(
+            item,
+            dict,
+        ):
+
+            raise ValueError(
+                f"Preview {index} "
+                "must be an object."
+            )
+
+        if int(
+            item.get(
+                "number",
+                0,
+            )
+            or 0
+        ) != index:
+
+            raise ValueError(
+                f"Preview {index} "
+                "has an invalid number."
+            )
+
+        image_path = Path(
+            first_text(
+                item.get(
+                    "image_path"
+                )
+            )
+        )
+
+        if not image_path.exists():
+
+            raise FileNotFoundError(
+                "Preview image does not exist: "
+                f"{image_path}"
+            )
+
+        normalized.append(
+            item
+        )
+
+    return normalized
+
 
 # ============================================================
-# Formatting
+# Concept formatting
 # ============================================================
 
 def format_concept(
@@ -203,42 +346,6 @@ def format_concept(
 
     number = concept.get(
         "number"
-    )
-
-    title_en = first_text(
-        concept.get(
-            "title_en"
-        )
-    )
-
-    concept_en = first_text(
-        concept.get(
-            "concept_en"
-        )
-    )
-
-    composition_en = first_text(
-        concept.get(
-            "composition_en"
-        )
-    )
-
-    title_ja = first_text(
-        concept.get(
-            "title_ja"
-        )
-    )
-
-    concept_ja = first_text(
-        concept.get(
-            "concept_ja"
-        )
-    )
-
-    composition_ja = first_text(
-        concept.get(
-            "composition_ja"
-        )
     )
 
     return f"""
@@ -252,17 +359,17 @@ ENGLISH MASTER
 
 TITLE
 
-{title_en}
+{first_text(concept.get('title_en'))}
 
 
 CONCEPT
 
-{concept_en}
+{first_text(concept.get('concept_en'))}
 
 
 COMPOSITION
 
-{composition_en}
+{first_text(concept.get('composition_en'))}
 
 
 JAPANESE REVIEW TRANSLATION
@@ -270,17 +377,17 @@ JAPANESE REVIEW TRANSLATION
 
 コンセプト名
 
-{title_ja}
+{first_text(concept.get('title_ja'))}
 
 
 コンセプト
 
-{concept_ja}
+{first_text(concept.get('concept_ja'))}
 
 
 構図
 
-{composition_ja}
+{first_text(concept.get('composition_ja'))}
 """.strip()
 
 
@@ -292,58 +399,39 @@ def format_title(
         "number"
     )
 
-    title_text = first_text(
-        title.get(
-            "title"
-        )
-    )
-
-    meaning_ja = first_text(
-        title.get(
-            "meaning_ja"
-        )
-    )
-
     return f"""
 TITLE {number}
 
-{title_text}
+{first_text(title.get('title'))}
 
 日本語での意味・ニュアンス:
-{meaning_ja}
+{first_text(title.get('meaning_ja'))}
 """.strip()
 
 
 # ============================================================
-# Email
+# Stage 1:
+# Concept selection email
 # ============================================================
 
-def build_email(
+def build_concept_email(
     package: dict[str, Any],
-) -> tuple[str, str]:
+) -> tuple[
+    str,
+    str,
+]:
 
-    issue_date = first_text(
-        package.get(
-            "issue_date"
-        ),
-        package.get(
-            "date"
-        ),
+    issue_date = issue_date_from(
+        package
     )
 
-    if not issue_date:
-        raise ValueError(
-            "Design options package "
-            "is missing issue_date."
-        )
+    concepts = validate_three_concepts(
+        package
+    )
 
-    concepts = package[
-        "image_concepts"
-    ]
-
-    titles = package[
-        "title_ideas"
-    ]
+    titles = validate_three_titles(
+        package
+    )
 
     concept_sections = (
         "\n\n\n".join(
@@ -375,13 +463,6 @@ The Daily Duck — Design Selection
 Issue date:
 {issue_date}
 
-The story has passed Gate A.
-
-記事選択は完了しています。
-
-次に、採用する画像コンセプトを
-3案の中から1つ選んでください。
-
 
 ==================================================
 IMAGE CONCEPTS — CHOOSE ONE
@@ -396,11 +477,11 @@ TITLE IDEAS
 タイトル候補
 ==================================================
 
-以下のタイトル3案は、
-この段階では確認用です。
+タイトル候補は3案です。
 
-最終的なタイトル選択は、
-実画像5枚が生成された後に行います。
+この段階では確認用です。
+タイトルの最終選択は、
+実画像3枚を確認した後に行います。
 
 {title_sections}
 
@@ -413,17 +494,14 @@ HOW TO REPLY
 採用する画像コンセプトの番号を
 1つだけ返信してください。
 
-半角数字・全角数字の
-どちらでも受け付けます。
 
-
-有効な返信:
+有効:
 
 1
 2
 3
 
-または
+全角もOK:
 
 １
 ２
@@ -440,64 +518,229 @@ HOW TO REPLY
 
 
 ==================================================
-IMPORTANT
+NEXT
 ==================================================
 
-この段階では、
-画像コンセプトだけを選択します。
-
-タイトル番号はまだ返信しないでください。
-
-
-返信後の流れ:
-
-画像コンセプト3案
+コンセプトを1案選択
         ↓
-あなたが1案を選択
+そのコンセプトをLOCK
         ↓
-選択したその1つのコンセプトを固定
+同じコンセプトから
+実画像3枚を生成
         ↓
-同じコンセプトから実画像を5枚生成
+画像3枚をメール添付
         ↓
-実画像5枚をメール送信
-        ↓
-画像番号 1〜5
-+
-タイトル番号 1〜3
+画像1〜3 + タイトル1〜3
 を最終選択
-        ↓
-READY_TO_PUBLISH
-        ↓
-Website
-        ↓
-X
+
+この段階では、
+Webサイト/Xへの公開は行いません。
+""".strip()
+
+    return (
+        subject,
+        body,
+    )
 
 
-最終選択でも、
-半角数字・全角数字の
-どちらでも使用できます。
+# ============================================================
+# Stage 2:
+# Final image + title selection email
+# ============================================================
+
+def build_final_email(
+    package: dict[str, Any],
+) -> tuple[
+    str,
+    str,
+]:
+
+    issue_date = issue_date_from(
+        package
+    )
+
+    previews = validate_three_previews(
+        package
+    )
+
+    titles = validate_three_titles(
+        package
+    )
+
+    selected_concept_number = (
+        package.get(
+            "selected_image_concept_number"
+        )
+    )
+
+    selected_concept = package.get(
+        "selected_image_concept"
+    )
+
+    if not isinstance(
+        selected_concept,
+        dict,
+    ):
+
+        raise ValueError(
+            "selected_image_concept "
+            "is missing."
+        )
+
+    batch_number = int(
+        package.get(
+            "preview_batch_number",
+            1,
+        )
+        or 1
+    )
+
+    title_sections = (
+        "\n\n".join(
+            format_title(
+                title
+            )
+            for title in titles
+        )
+    )
+
+    image_lines = []
+
+    for preview in previews:
+
+        number = preview.get(
+            "number"
+        )
+
+        image_lines.append(
+            f"""
+IMAGE {number}
+添付画像: preview_{number}.png
+""".strip()
+        )
+
+    image_text = (
+        "\n\n".join(
+            image_lines
+        )
+    )
+
+    subject = (
+        "The Daily Duck — "
+        "Final Image & Title Selection — "
+        f"{issue_date} — "
+        f"Batch {batch_number}"
+    )
+
+    body = f"""
+The Daily Duck — Final Design Selection
+
+Issue date:
+{issue_date}
+
+Selected concept:
+{selected_concept_number}
+
+{first_text(
+    selected_concept.get("title_en"),
+    selected_concept.get("title_ja"),
+)}
+
+Preview batch:
+{batch_number}
+
+
+==================================================
+REAL IMAGES
+実画像3案
+==================================================
+
+このメールに、
+同じ選択済みコンセプトから生成した
+実画像3枚を添付しています。
+
+{image_text}
+
+
+==================================================
+TITLE OPTIONS
+タイトル3案
+==================================================
+
+{title_sections}
+
+
+==================================================
+FINAL REPLY
+最終選択
+==================================================
+
+以下の形式で返信してください。
+
+画像番号 + 半角スペース + タイトル番号
+
 
 例:
 
-4 1
-
-または
-
-４ １
+2 1
 
 
-再生成コマンド:
+全角数字でもOKです:
 
-NEXT 5
-
-または
-
-ＮＥＸＴ ５
+２ １
 
 
-No website or X publication occurs
-until the final image and title
-have been selected.
+画像番号:
+
+1
+2
+3
+
+
+タイトル番号:
+
+1
+2
+3
+
+
+==================================================
+NEED ANOTHER IMAGE BATCH?
+再生成
+==================================================
+
+画像3枚が気に入らない場合は、
+
+NEXT 3
+
+と返信してください。
+
+
+全角でもOK:
+
+ＮＥＸＴ ３
+
+
+NEXT 3では、
+
+選択済みコンセプトは変更しません。
+
+同じコンセプトをLOCKしたまま、
+新しい実画像3枚を生成します。
+
+
+==================================================
+IMPORTANT
+==================================================
+
+最終的に、
+
+画像番号 + タイトル番号
+
+が選択されるまで、
+READY_TO_PUBLISHには進みません。
+
+Webサイト/Xへの公開も行いません。
 """.strip()
 
     return (
@@ -510,18 +753,7 @@ have been selected.
 # Gmail
 # ============================================================
 
-def send_email(
-    subject: str,
-    body: str,
-) -> int:
-
-    gmail_address = required_env(
-        "GMAIL_ADDRESS"
-    )
-
-    gmail_password = required_env(
-        "GMAIL_APP_PASSWORD"
-    )
+def recipients_from_env() -> list[str]:
 
     recipients = [
         item.strip()
@@ -532,10 +764,25 @@ def send_email(
     ]
 
     if not recipients:
+
         raise RuntimeError(
             "EMAIL_TO contains "
             "no valid recipients."
         )
+
+    return recipients
+
+
+def create_message(
+    subject: str,
+    body: str,
+) -> EmailMessage:
+
+    gmail_address = required_env(
+        "GMAIL_ADDRESS"
+    )
+
+    recipients = recipients_from_env()
 
     message = EmailMessage()
 
@@ -556,6 +803,90 @@ def send_email(
     message.set_content(
         body
     )
+
+    return message
+
+
+def attach_preview_images(
+    message: EmailMessage,
+    previews: list[
+        dict[str, Any]
+    ],
+) -> None:
+
+    for preview in previews:
+
+        number = int(
+            preview.get(
+                "number",
+                0,
+            )
+            or 0
+        )
+
+        path = Path(
+            first_text(
+                preview.get(
+                    "image_path"
+                )
+            )
+        )
+
+        if not path.exists():
+
+            raise FileNotFoundError(
+                f"Preview image missing: {path}"
+            )
+
+        mime_type, _ = (
+            mimetypes.guess_type(
+                path.name
+            )
+        )
+
+        if (
+            mime_type
+            and "/" in mime_type
+        ):
+
+            maintype, subtype = (
+                mime_type.split(
+                    "/",
+                    1,
+                )
+            )
+
+        else:
+
+            maintype = "image"
+            subtype = "png"
+
+        data = path.read_bytes()
+
+        message.add_attachment(
+            data,
+            maintype=maintype,
+            subtype=subtype,
+            filename=(
+                f"DailyDuck_"
+                f"Image_{number}.png"
+            ),
+        )
+
+
+def send_message(
+    message: EmailMessage,
+) -> int:
+
+    gmail_address = required_env(
+        "GMAIL_ADDRESS"
+    )
+
+    gmail_password = required_env(
+        "GMAIL_APP_PASSWORD"
+    )
+
+    recipients = recipients_from_env()
 
     with smtplib.SMTP_SSL(
         "smtp.gmail.com",
@@ -578,17 +909,19 @@ def send_email(
 
 
 # ============================================================
-# Persist waiting state
+# State transitions
 # ============================================================
 
-def mark_waiting_for_concept_selection(
+def mark_waiting_concept(
     package: dict[str, Any],
     subject: str,
 ) -> None:
 
     package[
         "state"
-    ] = "WAITING_CONCEPT_SELECTION"
+    ] = (
+        "WAITING_CONCEPT_SELECTION"
+    )
 
     package[
         "concept_email_subject"
@@ -612,20 +945,257 @@ def mark_waiting_for_concept_selection(
             "2",
             "3",
         ],
-        "full_width_supported": True,
+        "full_width_supported":
+            True,
         "next_state":
             "APPROVED_IMAGE_CONCEPT",
     }
 
-    OPTIONS_PATH.write_text(
-        json.dumps(
-            package,
-            ensure_ascii=False,
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
+    save_package(
+        package
     )
+
+
+def mark_waiting_final(
+    package: dict[str, Any],
+    subject: str,
+) -> None:
+
+    package[
+        "state"
+    ] = (
+        "WAITING_FINAL_SELECTION"
+    )
+
+    package[
+        "final_email_subject"
+    ] = subject
+
+    package[
+        "email_subject"
+    ] = subject
+
+    package[
+        "final_email_sent_at"
+    ] = datetime.now(
+        timezone.utc
+    ).isoformat()
+
+    package[
+        "final_selection_rule"
+    ] = {
+
+        "image_numbers": [
+            1,
+            2,
+            3,
+        ],
+
+        "title_numbers": [
+            1,
+            2,
+            3,
+        ],
+
+        "format":
+            "IMAGE_NUMBER TITLE_NUMBER",
+
+        "example":
+            "2 1",
+
+        "next_3_command":
+            "NEXT 3",
+
+        "full_width_supported":
+            True,
+
+        "next_state":
+            "READY_TO_PUBLISH",
+    }
+
+    save_package(
+        package
+    )
+
+
+# ============================================================
+# Stage runners
+# ============================================================
+
+def send_concept_selection(
+    package: dict[str, Any],
+) -> int:
+
+    subject, body = (
+        build_concept_email(
+            package
+        )
+    )
+
+    message = create_message(
+        subject,
+        body,
+    )
+
+    recipient_count = send_message(
+        message
+    )
+
+    # State changes only AFTER successful email send.
+    mark_waiting_concept(
+        package,
+        subject,
+    )
+
+    print(
+        "Concept selection email sent."
+    )
+
+    print(
+        "Image concepts: 3"
+    )
+
+    print(
+        "Titles: 3"
+    )
+
+    print(
+        "Valid replies:"
+    )
+
+    print(
+        "1 / 2 / 3"
+    )
+
+    print(
+        "Full-width:"
+    )
+
+    print(
+        "１ / ２ / ３"
+    )
+
+    print(
+        f"Recipients: "
+        f"{recipient_count}"
+    )
+
+    print(
+        f"Subject: "
+        f"{subject}"
+    )
+
+    print(
+        "STATE: "
+        "WAITING_CONCEPT_SELECTION"
+    )
+
+    return 0
+
+
+def send_final_selection(
+    package: dict[str, Any],
+) -> int:
+
+    subject, body = (
+        build_final_email(
+            package
+        )
+    )
+
+    previews = validate_three_previews(
+        package
+    )
+
+    message = create_message(
+        subject,
+        body,
+    )
+
+    attach_preview_images(
+        message,
+        previews,
+    )
+
+    recipient_count = send_message(
+        message
+    )
+
+    # State changes only AFTER successful email send.
+    mark_waiting_final(
+        package,
+        subject,
+    )
+
+    print(
+        "Final image + title "
+        "selection email sent."
+    )
+
+    print(
+        "Attached real images: 3"
+    )
+
+    print(
+        "Title choices: 3"
+    )
+
+    print(
+        "Final format:"
+    )
+
+    print(
+        "IMAGE_NUMBER TITLE_NUMBER"
+    )
+
+    print(
+        "Example:"
+    )
+
+    print(
+        "2 1"
+    )
+
+    print(
+        "Full-width example:"
+    )
+
+    print(
+        "２ １"
+    )
+
+    print(
+        "Regeneration:"
+    )
+
+    print(
+        "NEXT 3"
+    )
+
+    print(
+        "Full-width regeneration:"
+    )
+
+    print(
+        "ＮＥＸＴ ３"
+    )
+
+    print(
+        f"Recipients: "
+        f"{recipient_count}"
+    )
+
+    print(
+        f"Subject: "
+        f"{subject}"
+    )
+
+    print(
+        "STATE: "
+        "WAITING_FINAL_SELECTION"
+    )
+
+    return 0
 
 
 # ============================================================
@@ -638,79 +1208,52 @@ def main() -> int:
         OPTIONS_PATH
     )
 
-    validate_package(
-        package
-    )
-
-    subject, body = build_email(
-        package
-    )
-
-    recipient_count = send_email(
-        subject,
-        body,
-    )
-
-    # IMPORTANT:
-    # Only advance the state AFTER the email was
-    # successfully sent.
-    mark_waiting_for_concept_selection(
-        package,
-        subject,
-    )
-
-    print(
-        "Design selection email sent."
-    )
-
-    print(
-        "Issue date:",
+    state = first_text(
         package.get(
-            "issue_date"
-        ),
-    )
+            "state"
+        )
+    ).upper()
 
     print(
-        "Image concepts:",
-        EXPECTED_CONCEPT_COUNT,
+        f"Current design state: "
+        f"{state}"
     )
 
-    print(
-        "Title ideas:",
-        EXPECTED_TITLE_COUNT,
-    )
+    # --------------------------------------------------------
+    # Stage 1
+    # --------------------------------------------------------
 
-    print(
-        "Valid concept replies:"
-    )
+    if state in (
+        "CONCEPTS_READY",
+        "WAITING_CONCEPT_SELECTION",
+    ):
 
-    print(
-        "1 / 2 / 3"
-    )
+        return send_concept_selection(
+            package
+        )
 
-    print(
-        "Full-width replies:"
-    )
+    # --------------------------------------------------------
+    # Stage 2
+    # --------------------------------------------------------
 
-    print(
-        "１ / ２ / ３"
-    )
+    if state in (
+        "DESIGN_PREVIEWS_READY",
+        "WAITING_FINAL_SELECTION",
+    ):
 
-    print(
-        "Recipients:",
-        recipient_count,
-    )
+        return send_final_selection(
+            package
+        )
 
-    print(
-        f"Subject: {subject}"
+    raise ValueError(
+        "send_design_approval_email.py "
+        "cannot run in state "
+        f"{state!r}. "
+        "Expected CONCEPTS_READY, "
+        "WAITING_CONCEPT_SELECTION, "
+        "DESIGN_PREVIEWS_READY, or "
+        "WAITING_FINAL_SELECTION."
     )
-
-    print(
-        "STATE: "
-        "WAITING_CONCEPT_SELECTION"
-    )
-
-    return 0
 
 
 if __name__ == "__main__":
