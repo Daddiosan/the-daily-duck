@@ -1,0 +1,222 @@
+name: Test Publish Complete Email
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-publish-complete-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ======================================================
+      # Checkout
+      # ======================================================
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # ======================================================
+      # Sync latest main
+      # ======================================================
+
+      - name: Sync latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+
+      # ======================================================
+      # Python
+      # ======================================================
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ======================================================
+      # Check required files
+      # ======================================================
+
+      - name: Check publication state files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking publication state..."
+
+          if [ ! -f automation_state/ready_to_publish.json ]; then
+            echo "ERROR: automation_state/ready_to_publish.json not found."
+            exit 1
+          fi
+
+          if [ ! -f automation_state/x_publish_result.json ]; then
+            echo "ERROR: automation_state/x_publish_result.json not found."
+            exit 1
+          fi
+
+          python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/ready_to_publish.json",
+              encoding="utf-8",
+          ) as f:
+              ready = json.load(f)
+
+          with open(
+              "automation_state/x_publish_result.json",
+              encoding="utf-8",
+          ) as f:
+              x_result = json.load(f)
+
+          issue_date = ready.get("issue_date", "")
+          x_action = x_result.get("action", "")
+
+          print("Issue date:", issue_date)
+          print("X action  :", x_action)
+
+          if not issue_date:
+              raise SystemExit("ERROR: issue_date is missing.")
+
+          if x_action != "X_POSTED":
+              raise SystemExit(
+                  f"ERROR: X is not confirmed as X_POSTED: {x_action}"
+              )
+
+          print("")
+          print("Publication state check: OK")
+          PY
+
+      # ======================================================
+      # Check Secrets
+      # ======================================================
+
+      - name: Check required secrets
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
+          OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+
+          required = [
+              "GMAIL_ADDRESS",
+              "GMAIL_APP_PASSWORD",
+              "EMAIL_TO",
+              "OPENAI_ADMIN_KEY",
+              "OPENAI_PROJECT_ID",
+          ]
+
+          missing = []
+
+          for name in required:
+              value = os.getenv(name, "").strip()
+
+              if value:
+                  print(f"{name}: OK")
+              else:
+                  print(f"{name}: MISSING")
+                  missing.append(name)
+
+          if missing:
+              print("")
+              print("ERROR: Missing required secrets:")
+              for name in missing:
+                  print(f" - {name}")
+              sys.exit(1)
+
+          print("")
+          print("All required secrets are configured.")
+          PY
+
+      # ======================================================
+      # Read issue date
+      # ======================================================
+
+      - name: Read issue date
+        id: issue
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ISSUE_DATE=$(python - <<'PY'
+          import json
+
+          with open(
+              "automation_state/ready_to_publish.json",
+              encoding="utf-8",
+          ) as f:
+              data = json.load(f)
+
+          print(data.get("issue_date", ""))
+          PY
+          )
+
+          if [ -z "$ISSUE_DATE" ]; then
+            echo "ERROR: issue_date is empty."
+            exit 1
+          fi
+
+          echo "issue_date=$ISSUE_DATE" >> "$GITHUB_OUTPUT"
+          echo "Issue date: $ISSUE_DATE"
+
+      # ======================================================
+      # Send completion email ONLY
+      #
+      # IMPORTANT:
+      # - No X post
+      # - No website publish
+      # - No OpenAI model call
+      # - Only Costs API + Gmail notification
+      # ======================================================
+
+      - name: Send publish complete email only
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+
+          OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
+          OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
+
+          ISSUE_DATE: ${{ steps.issue.outputs.issue_date }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo " Publish Complete Email TEST"
+          echo "========================================"
+          echo ""
+          echo "Issue date: $ISSUE_DATE"
+          echo ""
+          echo "X posting        : DISABLED"
+          echo "Website publish  : DISABLED"
+          echo "OpenAI generation: DISABLED"
+          echo ""
+          echo "Sending completion email..."
+          echo ""
+
+          python scripts/send_publish_complete_email.py
+
+          echo ""
+          echo "========================================"
+          echo " TEST SUCCESS"
+          echo "========================================"
+          echo ""
+          echo "Completion email sent."
+          echo "No X post was made."
+          echo "No website changes were made."
+          echo "No OpenAI model was called."
