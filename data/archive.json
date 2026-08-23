@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-23",
+    "displayDate": "August 23, 2026",
+    "slug": "brain-boost",
+    "title": "BRAIN BOOST",
+    "duckName": "Brain Boost",
+    "storyTitleEn": "Multilingual people may have brains up to 13 years younger",
+    "storyTitleJa": "Multilingual people may have brains up to 13 years younger",
+    "image": "assets/ducks/2026-08-23-brain-boost.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Brain Boost",
+    "imageAltJa": "Brain BoostをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Speaking more than one language might offer a wonderful boost for your mind. Research suggests that multilingual people may have brains up to 13 years younger, showing how learning and speaking different languages can help keep the mind vibrant and youthful.",
+    "storyJa": "複数の言語を話すことは、心に素晴らしい効果をもたらすかもしれません。研究によると、多言語を話す人は脳が最大13歳若い可能性があるとされ、異なる言語を学び話すことが脳を若々しく活発に保つのに役立つことが示されています。",
+    "duckEn": "Unlocking a youthful mind, one word at a time!",
+    "duckJa": "ことばを学ぶたび、脳は若々しく輝きます！",
+    "sourceLabel": "ScienceDaily All",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260821012226.htm",
+    "archiveSummaryEn": "Multilingual people may have brains up to 13 years younger, keeping their minds vibrant and youthful.",
+    "archiveSummaryJa": "複数の言語を話す人は、脳が最大13歳若い可能性があり、脳を若々しく活発に保つことができます。",
+    "reasonEn": "Multilingual people may have brains up to 13 years younger, keeping their minds vibrant and youthful.",
+    "reasonJa": "複数の言語を話す人は、脳が最大13歳若い可能性があり、脳を若々しく活発に保つことができます。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-22",
     "displayDate": "August 22, 2026",
     "slug": "wool-to-bone",
