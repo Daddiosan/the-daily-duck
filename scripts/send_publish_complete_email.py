@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import smtplib
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
@@ -11,6 +12,10 @@ from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
 
+
+# ============================================================
+# Paths
+# ============================================================
 
 READY_PATH = Path(
     "automation_state/ready_to_publish.json"
@@ -24,14 +29,24 @@ NOTIFY_RESULT_PATH = Path(
     "automation_state/publish_complete_notification.json"
 )
 
+
+# ============================================================
+# Timezone
+# ============================================================
+
 JST = timezone(
     timedelta(hours=9)
 )
 
 
+# ============================================================
+# Environment helpers
+# ============================================================
+
 def required_env(
     name: str,
 ) -> str:
+
     value = os.getenv(
         name,
         "",
@@ -48,15 +63,21 @@ def required_env(
 def optional_env(
     name: str,
 ) -> str:
+
     return os.getenv(
         name,
         "",
     ).strip()
 
 
+# ============================================================
+# JSON helpers
+# ============================================================
+
 def load_json(
     path: Path,
 ) -> dict[str, Any]:
+
     if not path.exists():
         return {}
 
@@ -76,6 +97,7 @@ def load_json(
 def save_result(
     payload: dict[str, Any],
 ) -> None:
+
     NOTIFY_RESULT_PATH.parent.mkdir(
         parents=True,
         exist_ok=True,
@@ -95,37 +117,50 @@ def save_result(
 def first_text(
     *values: Any,
 ) -> str:
+
     for value in values:
-        if isinstance(
-            value,
-            str,
-        ) and value.strip():
+
+        if (
+            isinstance(value, str)
+            and value.strip()
+        ):
             return value.strip()
 
     return ""
 
 
-def openai_issue_day_cost() -> tuple[
+# ============================================================
+# OpenAI Costs API
+#
+# Official endpoint:
+#
+# GET /v1/organization/costs
+#
+# Requires:
+#
+# OPENAI_ADMIN_KEY
+#
+# Optional but strongly recommended:
+#
+# OPENAI_PROJECT_ID
+#
+# ============================================================
+
+def openai_cost_range(
+    start_jst: datetime,
+    end_jst: datetime,
+) -> tuple[
     str,
     float | None,
     str,
 ]:
-    """
-    Uses the official OpenAI organization Costs endpoint.
 
-    IMPORTANT:
-    - Requires OPENAI_ADMIN_KEY, not a normal project API key.
-    - OPENAI_PROJECT_ID is strongly recommended.
-    - If the project is dedicated to The Daily Duck, the issue-day
-      project cost is a useful Daily Duck daily cost figure.
-    - The Costs API currently provides 1-day buckets, so this is not
-      a transaction-level/per-run invoice.
-    """
     admin_key = optional_env(
         "OPENAI_ADMIN_KEY"
     )
 
     if not admin_key:
+
         return (
             "UNAVAILABLE",
             None,
@@ -136,27 +171,8 @@ def openai_issue_day_cost() -> tuple[
             ),
         )
 
-    issue_date = optional_env(
-        "ISSUE_DATE"
-    )
-
-    if not issue_date:
-        issue_date = datetime.now(
-            JST
-        ).strftime(
-            "%Y-%m-%d"
-        )
-
-    issue_start_jst = datetime.strptime(
-        issue_date,
-        "%Y-%m-%d",
-    ).replace(
-        tzinfo=JST
-    )
-
-    issue_end_jst = (
-        issue_start_jst
-        + timedelta(days=1)
+    project_id = optional_env(
+        "OPENAI_PROJECT_ID"
     )
 
     params: list[
@@ -166,7 +182,7 @@ def openai_issue_day_cost() -> tuple[
             "start_time",
             str(
                 int(
-                    issue_start_jst.timestamp()
+                    start_jst.timestamp()
                 )
             ),
         ),
@@ -174,7 +190,7 @@ def openai_issue_day_cost() -> tuple[
             "end_time",
             str(
                 int(
-                    issue_end_jst.timestamp()
+                    end_jst.timestamp()
                 )
             ),
         ),
@@ -184,15 +200,12 @@ def openai_issue_day_cost() -> tuple[
         ),
         (
             "limit",
-            "2",
+            "31",
         ),
     ]
 
-    project_id = optional_env(
-        "OPENAI_PROJECT_ID"
-    )
-
     if project_id:
+
         params.append(
             (
                 "project_ids[]",
@@ -219,17 +232,42 @@ def openai_issue_day_cost() -> tuple[
     )
 
     try:
+
         with urllib.request.urlopen(
             request,
             timeout=30,
         ) as response:
+
             payload = json.loads(
                 response.read().decode(
                     "utf-8"
                 )
             )
 
+    except urllib.error.HTTPError as exc:
+
+        try:
+
+            error_body = exc.read().decode(
+                "utf-8",
+                errors="replace",
+            )
+
+        except Exception:
+
+            error_body = ""
+
+        return (
+            "ERROR",
+            None,
+            (
+                f"OpenAI Costs API HTTP {exc.code}. "
+                f"{error_body}"
+            ).strip(),
+        )
+
     except Exception as exc:
+
         return (
             "ERROR",
             None,
@@ -242,6 +280,7 @@ def openai_issue_day_cost() -> tuple[
         "data",
         [],
     ):
+
         if not isinstance(
             bucket,
             dict,
@@ -252,6 +291,7 @@ def openai_issue_day_cost() -> tuple[
             "results",
             [],
         ):
+
             if not isinstance(
                 item,
                 dict,
@@ -269,6 +309,7 @@ def openai_issue_day_cost() -> tuple[
                 continue
 
             try:
+
                 total += float(
                     amount.get(
                         "value",
@@ -276,17 +317,19 @@ def openai_issue_day_cost() -> tuple[
                     )
                     or 0
                 )
+
             except (
                 TypeError,
                 ValueError,
             ):
+
                 pass
 
     scope = (
-        "OpenAI project cost for issue day"
+        "OpenAI project cost"
         if project_id
         else
-        "OpenAI organization cost for issue day"
+        "OpenAI organization cost"
     )
 
     return (
@@ -296,12 +339,27 @@ def openai_issue_day_cost() -> tuple[
     )
 
 
+# ============================================================
+# Gmail
+# ============================================================
+
 def send_email(
     subject: str,
     body: str,
 ) -> None:
+
     gmail_address = required_env(
         "GMAIL_ADDRESS"
+    )
+
+    gmail_app_password = (
+        required_env(
+            "GMAIL_APP_PASSWORD"
+        )
+        .replace(
+            " ",
+            "",
+        )
     )
 
     recipients = [
@@ -313,6 +371,7 @@ def send_email(
     ]
 
     if not recipients:
+
         raise RuntimeError(
             "EMAIL_TO contains no recipients."
         )
@@ -342,11 +401,10 @@ def send_email(
         465,
         timeout=30,
     ) as smtp:
+
         smtp.login(
             gmail_address,
-            required_env(
-                "GMAIL_APP_PASSWORD"
-            ),
+            gmail_app_password,
         )
 
         smtp.send_message(
@@ -354,7 +412,16 @@ def send_email(
         )
 
 
+# ============================================================
+# Main
+# ============================================================
+
 def main() -> int:
+
+    # --------------------------------------------------------
+    # Load publication state
+    # --------------------------------------------------------
+
     ready = load_json(
         READY_PATH
     )
@@ -373,9 +440,16 @@ def main() -> int:
     )
 
     if not issue_date:
+
         raise ValueError(
             "issue_date is missing."
         )
+
+    # --------------------------------------------------------
+    # X safety gate
+    #
+    # Never send "Publish Complete" unless X is confirmed.
+    # --------------------------------------------------------
 
     x_action = first_text(
         x_result.get(
@@ -385,35 +459,208 @@ def main() -> int:
     )
 
     if x_action != "X_POSTED":
+
         raise RuntimeError(
             "Completion email may only be sent "
             f"after X_POSTED; got {x_action!r}."
         )
 
-    cost_status, cost_value, cost_note = (
-        openai_issue_day_cost()
+    # --------------------------------------------------------
+    # Date ranges
+    # --------------------------------------------------------
+
+    issue_start_jst = datetime.strptime(
+        issue_date,
+        "%Y-%m-%d",
+    ).replace(
+        tzinfo=JST
     )
 
-    if cost_value is None:
-        openai_cost_text = (
-            f"Unavailable ({cost_note})"
+    issue_end_jst = (
+        issue_start_jst
+        + timedelta(days=1)
+    )
+
+    month_start_jst = (
+        issue_start_jst.replace(
+            day=1
         )
-    else:
-        openai_cost_text = (
-            f"${cost_value:.6f} USD"
+    )
+
+    # --------------------------------------------------------
+    # OpenAI daily cost
+    # --------------------------------------------------------
+
+    (
+        daily_status,
+        daily_cost,
+        daily_note,
+    ) = openai_cost_range(
+        issue_start_jst,
+        issue_end_jst,
+    )
+
+    if daily_cost is None:
+
+        openai_daily_text = (
+            f"Unavailable ({daily_note})"
         )
 
-    # There is currently no documented supported endpoint in the
-    # OpenAI public API for returning the user's prepaid credit balance.
-    # Do not use legacy/private dashboard endpoints.
+    else:
+
+        openai_daily_text = (
+            f"${daily_cost:.6f} USD"
+        )
+
+    # --------------------------------------------------------
+    # OpenAI month-to-date cost
+    #
+    # Month start -> end of issue day
+    # --------------------------------------------------------
+
+    (
+        monthly_status,
+        monthly_cost,
+        monthly_note,
+    ) = openai_cost_range(
+        month_start_jst,
+        issue_end_jst,
+    )
+
+    if monthly_cost is None:
+
+        openai_monthly_text = (
+            f"Unavailable ({monthly_note})"
+        )
+
+    else:
+
+        openai_monthly_text = (
+            f"${monthly_cost:.6f} USD"
+        )
+
+    # --------------------------------------------------------
+    # Monthly budget
+    # --------------------------------------------------------
+
+    budget_raw = optional_env(
+        "OPENAI_MONTHLY_BUDGET_USD"
+    )
+
+    monthly_budget: float | None = None
+
+    if budget_raw:
+
+        try:
+
+            monthly_budget = float(
+                budget_raw
+            )
+
+        except ValueError:
+
+            monthly_budget = None
+
+    budget_percent: float | None = None
+    remaining_budget: float | None = None
+
+    if (
+        monthly_budget is not None
+        and monthly_budget > 0
+        and monthly_cost is not None
+    ):
+
+        budget_percent = (
+            monthly_cost
+            / monthly_budget
+            * 100
+        )
+
+        remaining_budget = (
+            monthly_budget
+            - monthly_cost
+        )
+
+        budget_text = (
+            f"${monthly_budget:.2f} USD"
+        )
+
+        budget_usage_text = (
+            f"{budget_percent:.1f}%"
+        )
+
+        if remaining_budget >= 0:
+
+            remaining_text = (
+                f"${remaining_budget:.2f} USD"
+            )
+
+        else:
+
+            remaining_text = (
+                f"-${abs(remaining_budget):.2f} USD"
+            )
+
+        if budget_percent >= 100:
+
+            budget_status = (
+                "CRITICAL — Monthly budget exceeded"
+            )
+
+        elif budget_percent >= 80:
+
+            budget_status = (
+                "WARNING — 80% of monthly budget reached"
+            )
+
+        elif budget_percent >= 50:
+
+            budget_status = (
+                "NOTICE — 50% of monthly budget reached"
+            )
+
+        else:
+
+            budget_status = (
+                "OK"
+            )
+
+    else:
+
+        budget_text = (
+            "Not configured"
+        )
+
+        budget_usage_text = (
+            "Unavailable"
+        )
+
+        remaining_text = (
+            "Unavailable"
+        )
+
+        budget_status = (
+            "Budget monitoring not configured"
+        )
+
+    # --------------------------------------------------------
+    # OpenAI prepaid balance
+    #
+    # Do NOT use undocumented/private endpoints.
+    # --------------------------------------------------------
+
     openai_balance_text = (
         "Unavailable via supported public API; "
         "check OpenAI Billing / Usage dashboard."
     )
 
-    # Gemini billing/credit data can be delayed and the AI Studio
-    # prepay balance is managed in AI Studio. We intentionally do not
-    # claim an exact real-time value here.
+    # --------------------------------------------------------
+    # Gemini
+    #
+    # Billing reporting can be delayed.
+    # Do not claim an exact real-time balance.
+    # --------------------------------------------------------
+
     gemini_cost_text = (
         "Not included in this automated total. "
         "Gemini billing data can be delayed; "
@@ -425,16 +672,28 @@ def main() -> int:
         "(prepay balance, if applicable)."
     )
 
+    # --------------------------------------------------------
+    # Article information
+    # --------------------------------------------------------
+
     selected_title = first_text(
         ready.get(
             "selected_title"
         )
     )
 
+    # --------------------------------------------------------
+    # Email subject
+    # --------------------------------------------------------
+
     subject = (
         "The Daily Duck — Publish Complete — "
         f"{issue_date}"
     )
+
+    # --------------------------------------------------------
+    # Email body
+    # --------------------------------------------------------
 
     body = f"""
 The Daily Duck — Publish Complete
@@ -445,44 +704,93 @@ Issue:
 Title:
 {selected_title or "(not available)"}
 
+
 STATUS
 ----------------------------------------
+
 Website: Published
+
 X: Published
 
-API COST
+
+OPENAI API COST
 ----------------------------------------
-OpenAI:
-{openai_cost_text}
+
+Today:
+{openai_daily_text}
+
+Month to date:
+{openai_monthly_text}
 
 Cost scope:
-{cost_note}
+{daily_note}
 
-Gemini:
+
+MONTHLY BUDGET
+----------------------------------------
+
+Budget:
+{budget_text}
+
+Used:
+{budget_usage_text}
+
+Remaining:
+{remaining_text}
+
+Status:
+{budget_status}
+
+
+GEMINI
+----------------------------------------
+
 {gemini_cost_text}
 
-IMPORTANT:
-The OpenAI Costs endpoint currently reports daily cost buckets.
-For a clean Daily Duck cost figure, OPENAI_PROJECT_ID should point
-to a project used only by The Daily Duck.
 
 CREDIT / BILLING BALANCE
 ----------------------------------------
+
 OpenAI:
 {openai_balance_text}
 
 Gemini:
 {gemini_balance_text}
 
+
+IMPORTANT
+----------------------------------------
+
+OpenAI Costs API reports daily cost buckets.
+
+"Today" is the cost for the Daily Duck issue date.
+
+"Month to date" is calculated from the first day of the
+month through the end of the issue date.
+
+For accurate Daily Duck accounting,
+OPENAI_PROJECT_ID should point to an OpenAI project used
+only by The Daily Duck.
+
+
 Publication completed successfully.
 """.strip()
+
+    # --------------------------------------------------------
+    # Send
+    # --------------------------------------------------------
 
     send_email(
         subject,
         body,
     )
 
+    # --------------------------------------------------------
+    # Save result
+    # --------------------------------------------------------
+
     payload = {
+
         "action":
             "PUBLISH_COMPLETE_EMAIL_SENT",
 
@@ -500,18 +808,44 @@ Publication completed successfully.
         "x":
             "X_POSTED",
 
-        "openai_cost_status":
-            cost_status,
+        # Daily
+        "openai_daily_cost_status":
+            daily_status,
 
         "openai_issue_day_cost_usd":
-            cost_value,
+            daily_cost,
 
-        "openai_cost_note":
-            cost_note,
+        "openai_daily_cost_note":
+            daily_note,
 
+        # Monthly
+        "openai_monthly_cost_status":
+            monthly_status,
+
+        "openai_month_to_date_cost_usd":
+            monthly_cost,
+
+        "openai_monthly_cost_note":
+            monthly_note,
+
+        # Budget
+        "openai_monthly_budget_usd":
+            monthly_budget,
+
+        "openai_monthly_budget_used_percent":
+            budget_percent,
+
+        "openai_monthly_budget_remaining_usd":
+            remaining_budget,
+
+        "openai_budget_status":
+            budget_status,
+
+        # Balance
         "openai_credit_balance":
             "UNAVAILABLE_VIA_SUPPORTED_PUBLIC_API",
 
+        # Gemini
         "gemini_cost":
             "NOT_REALTIME_AUTOMATED",
 
@@ -523,6 +857,10 @@ Publication completed successfully.
         payload
     )
 
+    # --------------------------------------------------------
+    # Log
+    # --------------------------------------------------------
+
     print(
         "Publish completion email sent."
     )
@@ -532,13 +870,25 @@ Publication completed successfully.
     )
 
     print(
-        f"OpenAI cost: {openai_cost_text}"
+        f"OpenAI daily cost: "
+        f"{openai_daily_text}"
+    )
+
+    print(
+        f"OpenAI month-to-date: "
+        f"{openai_monthly_text}"
+    )
+
+    print(
+        f"Budget status: "
+        f"{budget_status}"
     )
 
     return 0
 
 
 if __name__ == "__main__":
+
     raise SystemExit(
         main()
     )
