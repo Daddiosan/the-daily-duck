@@ -1,0 +1,268 @@
+name: Test Gmail SMTP
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-gmail:
+    name: Send Gmail Test Email
+    runs-on: ubuntu-latest
+
+    steps:
+      # ============================================================
+      # 1. Checkout
+      # ============================================================
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ============================================================
+      # 2. Python
+      # ============================================================
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ============================================================
+      # 3. Check required secrets
+      #
+      # IMPORTANT:
+      # Secret values themselves are NEVER printed.
+      # ============================================================
+      - name: Check Gmail secrets
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+
+          required = [
+              "GMAIL_ADDRESS",
+              "GMAIL_APP_PASSWORD",
+              "EMAIL_TO",
+          ]
+
+          missing = []
+
+          for name in required:
+              value = os.environ.get(name, "").strip()
+
+              if value:
+                  print(f"OK: {name} is configured")
+              else:
+                  print(f"ERROR: {name} is missing")
+                  missing.append(name)
+
+          if missing:
+              print("")
+              print("Missing GitHub Secrets:")
+              for name in missing:
+                  print(f" - {name}")
+              sys.exit(1)
+
+          print("")
+          print("All required Gmail secrets are configured.")
+          PY
+
+      # ============================================================
+      # 4. Gmail SMTP connection / authentication / sending test
+      #
+      # SMTP:
+      # smtp.gmail.com
+      # SSL port 465
+      #
+      # No external Python packages are required.
+      # ============================================================
+      - name: Send Gmail SMTP test email
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: |
+          python - <<'PY'
+          import os
+          import smtplib
+          import ssl
+          import sys
+          from datetime import datetime, timezone
+          from email.message import EmailMessage
+
+          gmail_address = os.environ["GMAIL_ADDRESS"].strip()
+
+          # Google displays app passwords as groups of characters.
+          # Remove accidental spaces before authentication.
+          gmail_app_password = (
+              os.environ["GMAIL_APP_PASSWORD"]
+              .strip()
+              .replace(" ", "")
+          )
+
+          email_to = os.environ["EMAIL_TO"].strip()
+
+          print("==========================================")
+          print(" Gmail SMTP Test")
+          print("==========================================")
+          print("SMTP server : smtp.gmail.com")
+          print("SMTP port   : 465 (SSL)")
+          print("From        : configured")
+          print("To          : configured")
+          print("Password    : hidden")
+          print("")
+
+          if "@" not in gmail_address:
+              print("ERROR: GMAIL_ADDRESS does not look like an email address.")
+              sys.exit(1)
+
+          if "@" not in email_to:
+              print("ERROR: EMAIL_TO does not look like an email address.")
+              sys.exit(1)
+
+          if not gmail_app_password:
+              print("ERROR: GMAIL_APP_PASSWORD is empty.")
+              sys.exit(1)
+
+          message = EmailMessage()
+
+          message["From"] = gmail_address
+          message["To"] = email_to
+          message["Subject"] = "The Daily Duck - Gmail SMTP Test SUCCESS"
+
+          now_utc = datetime.now(timezone.utc)
+
+          message.set_content(
+              f"""The Daily Duck Gmail SMTP test succeeded.
+
+GitHub Actions successfully authenticated with Gmail
+and sent this email.
+
+Test time (UTC):
+{now_utc.strftime('%Y-%m-%d %H:%M:%S UTC')}
+
+This is only a Gmail SMTP test.
+No Daily Duck article was published.
+No X post was published.
+No OpenAI API request was made.
+
+— The Daily Duck
+"""
+          )
+
+          context = ssl.create_default_context()
+
+          try:
+              print("Step 1/3: Connecting to Gmail SMTP...")
+
+              with smtplib.SMTP_SSL(
+                  "smtp.gmail.com",
+                  465,
+                  context=context,
+                  timeout=30,
+              ) as smtp:
+
+                  print("SUCCESS: Connected to Gmail SMTP.")
+                  print("")
+
+                  print("Step 2/3: Authenticating...")
+
+                  smtp.login(
+                      gmail_address,
+                      gmail_app_password,
+                  )
+
+                  print("SUCCESS: Gmail authentication succeeded.")
+                  print("")
+
+                  print("Step 3/3: Sending test email...")
+
+                  smtp.send_message(message)
+
+                  print("SUCCESS: Test email was accepted by Gmail.")
+                  print("")
+
+              print("==========================================")
+              print(" TEST SUCCESS")
+              print("==========================================")
+              print("Gmail SMTP authentication: OK")
+              print("Email sending             : OK")
+              print("")
+              print("Check the EMAIL_TO inbox.")
+
+          except smtplib.SMTPAuthenticationError as exc:
+              print("")
+              print("==========================================")
+              print(" AUTHENTICATION FAILED")
+              print("==========================================")
+              print("")
+              print("Gmail rejected the username/password.")
+              print("")
+              print("Possible causes:")
+              print("1. GMAIL_ADDRESS is incorrect.")
+              print("2. GMAIL_APP_PASSWORD is incorrect.")
+              print("3. The app password belongs to another Google account.")
+              print("4. A normal Google password was used instead of an app password.")
+              print("5. The app password was revoked.")
+              print("")
+              print(f"SMTP error code: {exc.smtp_code}")
+
+              try:
+                  print(
+                      "SMTP response:",
+                      exc.smtp_error.decode(
+                          "utf-8",
+                          errors="replace",
+                      ),
+                  )
+              except Exception:
+                  print("SMTP response:", exc.smtp_error)
+
+              sys.exit(1)
+
+          except smtplib.SMTPRecipientsRefused as exc:
+              print("")
+              print("==========================================")
+              print(" RECIPIENT REFUSED")
+              print("==========================================")
+              print("")
+              print("Gmail authentication succeeded,")
+              print("but the recipient address was refused.")
+              print("")
+              print("Check EMAIL_TO.")
+              print("")
+              print(exc)
+              sys.exit(1)
+
+          except smtplib.SMTPException as exc:
+              print("")
+              print("==========================================")
+              print(" SMTP ERROR")
+              print("==========================================")
+              print("")
+              print(type(exc).__name__)
+              print(str(exc))
+              sys.exit(1)
+
+          except TimeoutError:
+              print("")
+              print("==========================================")
+              print(" CONNECTION TIMEOUT")
+              print("==========================================")
+              print("")
+              print("Could not connect to Gmail SMTP within 30 seconds.")
+              sys.exit(1)
+
+          except Exception as exc:
+              print("")
+              print("==========================================")
+              print(" UNEXPECTED ERROR")
+              print("==========================================")
+              print("")
+              print(type(exc).__name__)
+              print(str(exc))
+              sys.exit(1)
+          PY
