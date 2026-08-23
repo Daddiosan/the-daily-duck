@@ -8,11 +8,12 @@ permissions:
 
 jobs:
   test-publish-complete-email:
+    name: Test Publish Complete Email
     runs-on: ubuntu-latest
 
     steps:
       # ======================================================
-      # Checkout
+      # 1. Checkout
       # ======================================================
 
       - name: Checkout repository
@@ -22,18 +23,24 @@ jobs:
           fetch-depth: 0
 
       # ======================================================
-      # Sync latest main
+      # 2. Sync latest main
       # ======================================================
 
       - name: Sync latest main
         shell: bash
         run: |
           set -euo pipefail
+
+          echo "Fetching latest main..."
+
           git fetch origin main
           git reset --hard origin/main
 
+          echo "Repository synchronized to:"
+          git rev-parse HEAD
+
       # ======================================================
-      # Python
+      # 3. Python
       # ======================================================
 
       - name: Set up Python
@@ -42,7 +49,10 @@ jobs:
           python-version: "3.12"
 
       # ======================================================
-      # Check required files
+      # 4. Check publication state files
+      #
+      # This test only sends a completion email for an issue
+      # that is already confirmed as X_POSTED.
       # ======================================================
 
       - name: Check publication state files
@@ -50,15 +60,21 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "Checking publication state..."
+          echo "========================================"
+          echo " Publication State Check"
+          echo "========================================"
 
           if [ ! -f automation_state/ready_to_publish.json ]; then
-            echo "ERROR: automation_state/ready_to_publish.json not found."
+            echo ""
+            echo "ERROR:"
+            echo "automation_state/ready_to_publish.json not found."
             exit 1
           fi
 
           if [ ! -f automation_state/x_publish_result.json ]; then
-            echo "ERROR: automation_state/x_publish_result.json not found."
+            echo ""
+            echo "ERROR:"
+            echo "automation_state/x_publish_result.json not found."
             exit 1
           fi
 
@@ -78,40 +94,55 @@ jobs:
               x_result = json.load(f)
 
           issue_date = ready.get("issue_date", "")
+          title = ready.get("selected_title", "")
           x_action = x_result.get("action", "")
 
-          print("Issue date:", issue_date)
-          print("X action  :", x_action)
+          print("")
+          print("Issue date :", issue_date)
+          print("Title      :", title or "(not available)")
+          print("X action   :", x_action)
+          print("")
 
           if not issue_date:
-              raise SystemExit("ERROR: issue_date is missing.")
+              raise SystemExit(
+                  "ERROR: issue_date is missing."
+              )
 
           if x_action != "X_POSTED":
               raise SystemExit(
-                  f"ERROR: X is not confirmed as X_POSTED: {x_action}"
+                  "ERROR: X is not confirmed as X_POSTED. "
+                  f"Current action: {x_action!r}"
               )
 
-          print("")
           print("Publication state check: OK")
           PY
 
       # ======================================================
-      # Check Secrets
+      # 5. Check required Secrets / Variables
+      #
+      # Secret values themselves are NEVER printed.
       # ======================================================
 
-      - name: Check required secrets
+      - name: Check required configuration
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
+
           OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
           OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
+
+          OPENAI_MONTHLY_BUDGET_USD: ${{ vars.OPENAI_MONTHLY_BUDGET_USD }}
+
+        shell: bash
         run: |
+          set -euo pipefail
+
           python - <<'PY'
           import os
           import sys
 
-          required = [
+          required_secrets = [
               "GMAIL_ADDRESS",
               "GMAIL_APP_PASSWORD",
               "EMAIL_TO",
@@ -119,9 +150,14 @@ jobs:
               "OPENAI_PROJECT_ID",
           ]
 
+          print("========================================")
+          print(" Configuration Check")
+          print("========================================")
+          print("")
+
           missing = []
 
-          for name in required:
+          for name in required_secrets:
               value = os.getenv(name, "").strip()
 
               if value:
@@ -130,19 +166,49 @@ jobs:
                   print(f"{name}: MISSING")
                   missing.append(name)
 
+          budget = os.getenv(
+              "OPENAI_MONTHLY_BUDGET_USD",
+              "",
+          ).strip()
+
+          if budget:
+              print("OPENAI_MONTHLY_BUDGET_USD: OK")
+
+              try:
+                  amount = float(budget)
+
+                  if amount <= 0:
+                      raise ValueError
+
+              except ValueError:
+                  print("")
+                  print(
+                      "ERROR: OPENAI_MONTHLY_BUDGET_USD "
+                      "must be a number greater than 0."
+                  )
+                  sys.exit(1)
+
+          else:
+              print(
+                  "OPENAI_MONTHLY_BUDGET_USD: MISSING"
+              )
+              missing.append(
+                  "OPENAI_MONTHLY_BUDGET_USD"
+              )
+
           if missing:
               print("")
-              print("ERROR: Missing required secrets:")
+              print("ERROR: Missing configuration:")
               for name in missing:
                   print(f" - {name}")
               sys.exit(1)
 
           print("")
-          print("All required secrets are configured.")
+          print("All required configuration is present.")
           PY
 
       # ======================================================
-      # Read issue date
+      # 6. Read issue date
       # ======================================================
 
       - name: Read issue date
@@ -160,7 +226,12 @@ jobs:
           ) as f:
               data = json.load(f)
 
-          print(data.get("issue_date", ""))
+          print(
+              data.get(
+                  "issue_date",
+                  "",
+              )
+          )
           PY
           )
 
@@ -170,16 +241,23 @@ jobs:
           fi
 
           echo "issue_date=$ISSUE_DATE" >> "$GITHUB_OUTPUT"
+
           echo "Issue date: $ISSUE_DATE"
 
       # ======================================================
-      # Send completion email ONLY
+      # 7. Send completion email ONLY
       #
       # IMPORTANT:
-      # - No X post
-      # - No website publish
-      # - No OpenAI model call
-      # - Only Costs API + Gmail notification
+      #
+      # - NO X post
+      # - NO website publish
+      # - NO OpenAI model generation
+      #
+      # This step only:
+      #
+      # 1. Reads existing publication state
+      # 2. Calls official OpenAI Costs API
+      # 3. Sends the completion email through Gmail
       # ======================================================
 
       - name: Send publish complete email only
@@ -191,7 +269,10 @@ jobs:
           OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
           OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
 
+          OPENAI_MONTHLY_BUDGET_USD: ${{ vars.OPENAI_MONTHLY_BUDGET_USD }}
+
           ISSUE_DATE: ${{ steps.issue.outputs.issue_date }}
+
         shell: bash
         run: |
           set -euo pipefail
@@ -200,11 +281,15 @@ jobs:
           echo " Publish Complete Email TEST"
           echo "========================================"
           echo ""
-          echo "Issue date: $ISSUE_DATE"
-          echo ""
+          echo "Issue date       : $ISSUE_DATE"
           echo "X posting        : DISABLED"
           echo "Website publish  : DISABLED"
           echo "OpenAI generation: DISABLED"
+          echo ""
+          echo "The following ARE enabled:"
+          echo "- OpenAI Costs API"
+          echo "- Monthly budget calculation"
+          echo "- Gmail completion email"
           echo ""
           echo "Sending completion email..."
           echo ""
@@ -216,7 +301,131 @@ jobs:
           echo " TEST SUCCESS"
           echo "========================================"
           echo ""
-          echo "Completion email sent."
+          echo "Completion email sent successfully."
+          echo ""
           echo "No X post was made."
           echo "No website changes were made."
           echo "No OpenAI model was called."
+
+      # ======================================================
+      # 8. Show generated notification state
+      #
+      # Safe fields only.
+      # ======================================================
+
+      - name: Report billing result
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f automation_state/publish_complete_notification.json ]; then
+            echo "Notification state file was not created."
+            exit 1
+          fi
+
+          python - <<'PY'
+          import json
+
+          path = (
+              "automation_state/"
+              "publish_complete_notification.json"
+          )
+
+          with open(
+              path,
+              encoding="utf-8",
+          ) as f:
+              data = json.load(f)
+
+          print("")
+          print("========================================")
+          print(" Billing / Notification Result")
+          print("========================================")
+          print("")
+
+          print(
+              "Issue date:",
+              data.get(
+                  "issue_date",
+                  "",
+              ),
+          )
+
+          print(
+              "Daily OpenAI cost:",
+              data.get(
+                  "openai_issue_day_cost_usd",
+                  "",
+              ),
+          )
+
+          print(
+              "Month-to-date OpenAI cost:",
+              data.get(
+                  "openai_month_to_date_cost_usd",
+                  "",
+              ),
+          )
+
+          print(
+              "Monthly budget:",
+              data.get(
+                  "openai_monthly_budget_usd",
+                  "",
+              ),
+          )
+
+          print(
+              "Budget used %:",
+              data.get(
+                  "openai_monthly_budget_used_percent",
+                  "",
+              ),
+          )
+
+          print(
+              "Budget remaining:",
+              data.get(
+                  "openai_monthly_budget_remaining_usd",
+                  "",
+              ),
+          )
+
+          print(
+              "Budget status:",
+              data.get(
+                  "openai_budget_status",
+                  "",
+              ),
+          )
+
+          print("")
+          print(
+              "Notification action:",
+              data.get(
+                  "action",
+                  "",
+              ),
+          )
+          PY
+
+      # ======================================================
+      # 9. Final report
+      # ======================================================
+
+      - name: Final report
+        if: success()
+        run: |
+          echo "========================================"
+          echo " FINAL RESULT"
+          echo "========================================"
+          echo ""
+          echo "Website publication : untouched"
+          echo "X publication       : untouched"
+          echo "OpenAI model usage  : none"
+          echo "Costs API           : tested"
+          echo "Monthly budget      : tested"
+          echo "Completion email    : sent"
+          echo ""
+          echo "STATE: TEST_COMPLETE"
