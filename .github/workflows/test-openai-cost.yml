@@ -1,0 +1,271 @@
+name: Test OpenAI Cost API
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-openai-cost:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ======================================================
+      # Python
+      # ======================================================
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ======================================================
+      # Check Secrets
+      # ======================================================
+
+      - name: Check required secrets
+        env:
+          OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
+          OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+
+          admin_key = os.getenv("OPENAI_ADMIN_KEY", "").strip()
+          project_id = os.getenv("OPENAI_PROJECT_ID", "").strip()
+
+          print("========================================")
+          print(" OpenAI Costs API Secret Check")
+          print("========================================")
+
+          if admin_key:
+              print("OPENAI_ADMIN_KEY : OK")
+          else:
+              print("OPENAI_ADMIN_KEY : MISSING")
+
+          if project_id:
+              print("OPENAI_PROJECT_ID: OK")
+          else:
+              print("OPENAI_PROJECT_ID: MISSING")
+
+          if not admin_key or not project_id:
+              print("")
+              print("ERROR: Required secret is missing.")
+              sys.exit(1)
+
+          print("")
+          print("Required secrets are configured.")
+          PY
+
+      # ======================================================
+      # Test official OpenAI Costs API
+      #
+      # Uses:
+      #   GET /v1/organization/costs
+      #
+      # Test range:
+      #   Today in JST
+      #
+      # No OpenAI generation request is made.
+      # No X post is made.
+      # No website publication is made.
+      # ======================================================
+
+      - name: Test OpenAI Costs API
+        env:
+          OPENAI_ADMIN_KEY: ${{ secrets.OPENAI_ADMIN_KEY }}
+          OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.parse
+          import urllib.request
+          import urllib.error
+          from datetime import datetime, timedelta, timezone
+
+          JST = timezone(timedelta(hours=9))
+
+          admin_key = os.environ["OPENAI_ADMIN_KEY"].strip()
+          project_id = os.environ["OPENAI_PROJECT_ID"].strip()
+
+          now_jst = datetime.now(JST)
+
+          start_jst = now_jst.replace(
+              hour=0,
+              minute=0,
+              second=0,
+              microsecond=0,
+          )
+
+          end_jst = start_jst + timedelta(days=1)
+
+          params = [
+              ("start_time", str(int(start_jst.timestamp()))),
+              ("end_time", str(int(end_jst.timestamp()))),
+              ("bucket_width", "1d"),
+              ("limit", "2"),
+              ("project_ids[]", project_id),
+          ]
+
+          url = (
+              "https://api.openai.com/v1/organization/costs?"
+              + urllib.parse.urlencode(params)
+          )
+
+          request = urllib.request.Request(
+              url,
+              headers={
+                  "Authorization": f"Bearer {admin_key}",
+                  "Content-Type": "application/json",
+              },
+          )
+
+          print("========================================")
+          print(" OpenAI Costs API Test")
+          print("========================================")
+          print("")
+          print("Date (JST):", start_jst.strftime("%Y-%m-%d"))
+          print("Project ID : configured")
+          print("Admin key  : hidden")
+          print("")
+          print("Calling OpenAI Costs API...")
+
+          try:
+              with urllib.request.urlopen(
+                  request,
+                  timeout=30,
+              ) as response:
+
+                  status_code = response.status
+
+                  raw = response.read().decode("utf-8")
+
+                  payload = json.loads(raw)
+
+          except urllib.error.HTTPError as exc:
+              print("")
+              print("========================================")
+              print(" OPENAI API HTTP ERROR")
+              print("========================================")
+              print("")
+              print("HTTP status:", exc.code)
+
+              try:
+                  body = exc.read().decode(
+                      "utf-8",
+                      errors="replace",
+                  )
+                  print("Response:")
+                  print(body)
+              except Exception:
+                  pass
+
+              if exc.code == 401:
+                  print("")
+                  print("Possible cause:")
+                  print("- OPENAI_ADMIN_KEY is invalid or expired.")
+
+              elif exc.code == 403:
+                  print("")
+                  print("Possible cause:")
+                  print("- Admin key does not have permission.")
+                  print("- Try an Admin key with Read only permission.")
+                  print("- Organization permissions may be insufficient.")
+
+              sys.exit(1)
+
+          except urllib.error.URLError as exc:
+              print("")
+              print("========================================")
+              print(" CONNECTION ERROR")
+              print("========================================")
+              print("")
+              print(str(exc))
+              sys.exit(1)
+
+          except Exception as exc:
+              print("")
+              print("========================================")
+              print(" UNEXPECTED ERROR")
+              print("========================================")
+              print("")
+              print(type(exc).__name__)
+              print(str(exc))
+              sys.exit(1)
+
+          print("")
+          print("HTTP status:", status_code)
+          print("OpenAI Costs API connection: SUCCESS")
+          print("")
+
+          total = 0.0
+          result_count = 0
+
+          for bucket in payload.get("data", []):
+
+              if not isinstance(bucket, dict):
+                  continue
+
+              for item in bucket.get("results", []):
+
+                  if not isinstance(item, dict):
+                      continue
+
+                  amount = item.get("amount")
+
+                  if not isinstance(amount, dict):
+                      continue
+
+                  try:
+                      value = float(
+                          amount.get("value", 0) or 0
+                      )
+                  except (TypeError, ValueError):
+                      continue
+
+                  total += value
+                  result_count += 1
+
+          print("========================================")
+          print(" RESULT")
+          print("========================================")
+          print("")
+          print(
+              "OpenAI cost today (JST): "
+              f"${total:.6f} USD"
+          )
+          print("")
+          print(
+              "Cost records returned:",
+              result_count,
+          )
+
+          if result_count == 0:
+              print("")
+              print(
+                  "NOTE: API connection succeeded, "
+                  "but no cost records were returned."
+              )
+              print(
+                  "This can happen if there has been no "
+                  "billable usage yet or usage data has not "
+                  "appeared in the cost bucket yet."
+              )
+
+          print("")
+          print("========================================")
+          print(" TEST SUCCESS")
+          print("========================================")
+          print("")
+          print("Admin API authentication : OK")
+          print("Project filter            : OK")
+          print("Costs API request         : OK")
+          print("")
+          print("No X post was made.")
+          print("No website was changed.")
+          print("No OpenAI model was called.")
+          PY
