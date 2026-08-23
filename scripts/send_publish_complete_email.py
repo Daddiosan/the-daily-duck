@@ -13,10 +13,6 @@ from pathlib import Path
 from typing import Any
 
 
-# ============================================================
-# Paths
-# ============================================================
-
 READY_PATH = Path(
     "automation_state/ready_to_publish.json"
 )
@@ -29,24 +25,14 @@ NOTIFY_RESULT_PATH = Path(
     "automation_state/publish_complete_notification.json"
 )
 
-
-# ============================================================
-# Timezone
-# ============================================================
-
 JST = timezone(
     timedelta(hours=9)
 )
 
 
-# ============================================================
-# Environment helpers
-# ============================================================
-
 def required_env(
     name: str,
 ) -> str:
-
     value = os.getenv(
         name,
         "",
@@ -63,21 +49,15 @@ def required_env(
 def optional_env(
     name: str,
 ) -> str:
-
     return os.getenv(
         name,
         "",
     ).strip()
 
 
-# ============================================================
-# JSON helpers
-# ============================================================
-
 def load_json(
     path: Path,
 ) -> dict[str, Any]:
-
     if not path.exists():
         return {}
 
@@ -97,7 +77,6 @@ def load_json(
 def save_result(
     payload: dict[str, Any],
 ) -> None:
-
     NOTIFY_RESULT_PATH.parent.mkdir(
         parents=True,
         exist_ok=True,
@@ -117,9 +96,7 @@ def save_result(
 def first_text(
     *values: Any,
 ) -> str:
-
     for value in values:
-
         if (
             isinstance(value, str)
             and value.strip()
@@ -129,23 +106,6 @@ def first_text(
     return ""
 
 
-# ============================================================
-# OpenAI Costs API
-#
-# Official endpoint:
-#
-# GET /v1/organization/costs
-#
-# Requires:
-#
-# OPENAI_ADMIN_KEY
-#
-# Optional but strongly recommended:
-#
-# OPENAI_PROJECT_ID
-#
-# ============================================================
-
 def openai_cost_range(
     start_jst: datetime,
     end_jst: datetime,
@@ -154,13 +114,11 @@ def openai_cost_range(
     float | None,
     str,
 ]:
-
     admin_key = optional_env(
         "OPENAI_ADMIN_KEY"
     )
 
     if not admin_key:
-
         return (
             "UNAVAILABLE",
             None,
@@ -205,7 +163,6 @@ def openai_cost_range(
     ]
 
     if project_id:
-
         params.append(
             (
                 "project_ids[]",
@@ -225,19 +182,16 @@ def openai_cost_range(
         headers={
             "Authorization":
                 f"Bearer {admin_key}",
-
             "Content-Type":
                 "application/json",
         },
     )
 
     try:
-
         with urllib.request.urlopen(
             request,
             timeout=30,
         ) as response:
-
             payload = json.loads(
                 response.read().decode(
                     "utf-8"
@@ -245,16 +199,12 @@ def openai_cost_range(
             )
 
     except urllib.error.HTTPError as exc:
-
         try:
-
             error_body = exc.read().decode(
                 "utf-8",
                 errors="replace",
             )
-
         except Exception:
-
             error_body = ""
 
         return (
@@ -267,7 +217,6 @@ def openai_cost_range(
         )
 
     except Exception as exc:
-
         return (
             "ERROR",
             None,
@@ -280,7 +229,6 @@ def openai_cost_range(
         "data",
         [],
     ):
-
         if not isinstance(
             bucket,
             dict,
@@ -291,7 +239,6 @@ def openai_cost_range(
             "results",
             [],
         ):
-
             if not isinstance(
                 item,
                 dict,
@@ -309,7 +256,6 @@ def openai_cost_range(
                 continue
 
             try:
-
                 total += float(
                     amount.get(
                         "value",
@@ -322,7 +268,6 @@ def openai_cost_range(
                 TypeError,
                 ValueError,
             ):
-
                 pass
 
     scope = (
@@ -339,15 +284,10 @@ def openai_cost_range(
     )
 
 
-# ============================================================
-# Gmail
-# ============================================================
-
 def send_email(
     subject: str,
     body: str,
 ) -> None:
-
     gmail_address = required_env(
         "GMAIL_ADDRESS"
     )
@@ -371,7 +311,6 @@ def send_email(
     ]
 
     if not recipients:
-
         raise RuntimeError(
             "EMAIL_TO contains no recipients."
         )
@@ -396,32 +335,44 @@ def send_email(
         body
     )
 
+    print(
+        "Connecting to Gmail SMTP..."
+    )
+
     with smtplib.SMTP_SSL(
         "smtp.gmail.com",
         465,
         timeout=30,
     ) as smtp:
 
+        print(
+            "Gmail SMTP connected."
+        )
+
         smtp.login(
             gmail_address,
             gmail_app_password,
         )
 
-        smtp.send_message(
+        print(
+            "Gmail authentication succeeded."
+        )
+
+        refused = smtp.send_message(
             message
         )
 
+        if refused:
+            raise RuntimeError(
+                f"Gmail refused recipients: {refused}"
+            )
 
-# ============================================================
-# Main
-# ============================================================
+        print(
+            "Gmail accepted the message for delivery."
+        )
+
 
 def main() -> int:
-
-    # --------------------------------------------------------
-    # Load publication state
-    # --------------------------------------------------------
-
     ready = load_json(
         READY_PATH
     )
@@ -440,16 +391,9 @@ def main() -> int:
     )
 
     if not issue_date:
-
         raise ValueError(
             "issue_date is missing."
         )
-
-    # --------------------------------------------------------
-    # X safety gate
-    #
-    # Never send "Publish Complete" unless X is confirmed.
-    # --------------------------------------------------------
 
     x_action = first_text(
         x_result.get(
@@ -459,15 +403,10 @@ def main() -> int:
     )
 
     if x_action != "X_POSTED":
-
         raise RuntimeError(
             "Completion email may only be sent "
             f"after X_POSTED; got {x_action!r}."
         )
-
-    # --------------------------------------------------------
-    # Date ranges
-    # --------------------------------------------------------
 
     issue_start_jst = datetime.strptime(
         issue_date,
@@ -487,10 +426,6 @@ def main() -> int:
         )
     )
 
-    # --------------------------------------------------------
-    # OpenAI daily cost
-    # --------------------------------------------------------
-
     (
         daily_status,
         daily_cost,
@@ -501,22 +436,13 @@ def main() -> int:
     )
 
     if daily_cost is None:
-
         openai_daily_text = (
             f"Unavailable ({daily_note})"
         )
-
     else:
-
         openai_daily_text = (
             f"${daily_cost:.6f} USD"
         )
-
-    # --------------------------------------------------------
-    # OpenAI month-to-date cost
-    #
-    # Month start -> end of issue day
-    # --------------------------------------------------------
 
     (
         monthly_status,
@@ -528,20 +454,13 @@ def main() -> int:
     )
 
     if monthly_cost is None:
-
         openai_monthly_text = (
             f"Unavailable ({monthly_note})"
         )
-
     else:
-
         openai_monthly_text = (
             f"${monthly_cost:.6f} USD"
         )
-
-    # --------------------------------------------------------
-    # Monthly budget
-    # --------------------------------------------------------
 
     budget_raw = optional_env(
         "OPENAI_MONTHLY_BUDGET_USD"
@@ -550,15 +469,11 @@ def main() -> int:
     monthly_budget: float | None = None
 
     if budget_raw:
-
         try:
-
             monthly_budget = float(
                 budget_raw
             )
-
         except ValueError:
-
             monthly_budget = None
 
     budget_percent: float | None = None
@@ -569,7 +484,6 @@ def main() -> int:
         and monthly_budget > 0
         and monthly_cost is not None
     ):
-
         budget_percent = (
             monthly_cost
             / monthly_budget
@@ -590,43 +504,35 @@ def main() -> int:
         )
 
         if remaining_budget >= 0:
-
             remaining_text = (
                 f"${remaining_budget:.2f} USD"
             )
-
         else:
-
             remaining_text = (
                 f"-${abs(remaining_budget):.2f} USD"
             )
 
         if budget_percent >= 100:
-
             budget_status = (
                 "CRITICAL — Monthly budget exceeded"
             )
 
         elif budget_percent >= 80:
-
             budget_status = (
                 "WARNING — 80% of monthly budget reached"
             )
 
         elif budget_percent >= 50:
-
             budget_status = (
                 "NOTICE — 50% of monthly budget reached"
             )
 
         else:
-
             budget_status = (
                 "OK"
             )
 
     else:
-
         budget_text = (
             "Not configured"
         )
@@ -643,23 +549,10 @@ def main() -> int:
             "Budget monitoring not configured"
         )
 
-    # --------------------------------------------------------
-    # OpenAI prepaid balance
-    #
-    # Do NOT use undocumented/private endpoints.
-    # --------------------------------------------------------
-
     openai_balance_text = (
         "Unavailable via supported public API; "
         "check OpenAI Billing / Usage dashboard."
     )
-
-    # --------------------------------------------------------
-    # Gemini
-    #
-    # Billing reporting can be delayed.
-    # Do not claim an exact real-time balance.
-    # --------------------------------------------------------
 
     gemini_cost_text = (
         "Not included in this automated total. "
@@ -672,28 +565,25 @@ def main() -> int:
         "(prepay balance, if applicable)."
     )
 
-    # --------------------------------------------------------
-    # Article information
-    # --------------------------------------------------------
-
     selected_title = first_text(
         ready.get(
             "selected_title"
         )
     )
 
-    # --------------------------------------------------------
-    # Email subject
-    # --------------------------------------------------------
+    subject_suffix = optional_env(
+        "EMAIL_SUBJECT_SUFFIX"
+    )
 
     subject = (
         "The Daily Duck — Publish Complete — "
         f"{issue_date}"
     )
 
-    # --------------------------------------------------------
-    # Email body
-    # --------------------------------------------------------
+    if subject_suffix:
+        subject += (
+            f" — {subject_suffix}"
+        )
 
     body = f"""
 The Daily Duck — Publish Complete
@@ -776,21 +666,20 @@ only by The Daily Duck.
 Publication completed successfully.
 """.strip()
 
-    # --------------------------------------------------------
-    # Send
-    # --------------------------------------------------------
+    print(
+        "Email subject:"
+    )
+
+    print(
+        subject
+    )
 
     send_email(
         subject,
         body,
     )
 
-    # --------------------------------------------------------
-    # Save result
-    # --------------------------------------------------------
-
     payload = {
-
         "action":
             "PUBLISH_COMPLETE_EMAIL_SENT",
 
@@ -802,13 +691,15 @@ Publication completed successfully.
                 timezone.utc
             ).isoformat(),
 
+        "email_subject":
+            subject,
+
         "website":
             "PUBLISHED",
 
         "x":
             "X_POSTED",
 
-        # Daily
         "openai_daily_cost_status":
             daily_status,
 
@@ -818,7 +709,6 @@ Publication completed successfully.
         "openai_daily_cost_note":
             daily_note,
 
-        # Monthly
         "openai_monthly_cost_status":
             monthly_status,
 
@@ -828,7 +718,6 @@ Publication completed successfully.
         "openai_monthly_cost_note":
             monthly_note,
 
-        # Budget
         "openai_monthly_budget_usd":
             monthly_budget,
 
@@ -841,11 +730,9 @@ Publication completed successfully.
         "openai_budget_status":
             budget_status,
 
-        # Balance
         "openai_credit_balance":
             "UNAVAILABLE_VIA_SUPPORTED_PUBLIC_API",
 
-        # Gemini
         "gemini_cost":
             "NOT_REALTIME_AUTOMATED",
 
@@ -856,10 +743,6 @@ Publication completed successfully.
     save_result(
         payload
     )
-
-    # --------------------------------------------------------
-    # Log
-    # --------------------------------------------------------
 
     print(
         "Publish completion email sent."
@@ -884,11 +767,15 @@ Publication completed successfully.
         f"{budget_status}"
     )
 
+    print(
+        f"Email subject: "
+        f"{subject}"
+    )
+
     return 0
 
 
 if __name__ == "__main__":
-
     raise SystemExit(
         main()
     )
