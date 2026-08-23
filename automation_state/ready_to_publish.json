@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-23",
-  "generated_at": "2026-08-23T14:01:12.534824+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-23T14:12:15.975373+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-23",
     "issue_date": "2026-08-23",
     "phase": 2,
@@ -561,40 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-22T22:53:09.309502+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 49,
-    "title": "Multilingual people may have brains up to 13 years younger",
-    "source": "ScienceDaily All",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260821012226.htm",
-    "category": "people",
-    "happiness": 9,
-    "hope": 9,
-    "general_interest": 9,
-    "surprise": 8,
-    "duck_visual": 7,
-    "source_quality": 9,
-    "freshness": 10,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 89,
-    "reason": "An inspiring and positive discovery that speaking multiple languages helps keep the brain vibrant and youthful.",
-    "candidate_number": 2,
-    "title_en": "Speaking Multiple Languages May Keep Brains Up to 13 Years Younger",
-    "reason_en": "An inspiring and positive discovery that speaking multiple languages helps keep the brain vibrant and youthful.",
-    "en_copy": "Speaking more than one language might offer a wonderful boost for your mind. Research suggests that multilingual people may have brains up to 13 years younger, showing how learning and speaking different languages can help keep the mind vibrant and youthful.",
-    "duck_name": "Brain Boost",
-    "duck_en": "Unlocking a youthful mind, one word at a time!",
-    "x_en": "Multilingual people may have brains up to 13 years younger, keeping their minds vibrant and youthful.",
-    "title_ja": "複数の言語を話す人は、脳が最大13歳若い可能性",
-    "reason_ja": "複数の言語を話すことが、脳を若々しく活発に保つことに役立つという、前向きで励みになる発見。",
-    "jp_copy": "複数の言語を話すことは、心に素晴らしい効果をもたらすかもしれません。研究によると、多言語を話す人は脳が最大13歳若い可能性があるとされ、異なる言語を学び話すことが脳を若々しく活発に保つのに役立つことが示されています。",
-    "duck_jp": "ことばを学ぶたび、脳は若々しく輝きます！",
-    "x_jp": "複数の言語を話す人は、脳が最大13歳若い可能性があり、脳を若々しく活発に保つことができます。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "The Multilingual Cozy Library",
       "concept_en": "A cheerful yellow duck sitting in a sunlit home library surrounded by colorful stacked books, holding an open illuminated book that projects soft golden light, symbolizing mental vitality and youthfulness.",
@@ -606,107 +575,9 @@
       "composition_ja": "横長構図。光が差し込む清潔感のある近代的な書斎で、オレンジのくちばし、つぶらな黒い瞳、小さな毛束を持つ黄色いダックのキャラクターが木製デスクに座っています。開かれた本からやわらかな金色の光があふれ、背景の棚にはカラフルな本が整然と並んでいます。",
       "alt_ja": "温かみのある書斎のデスクで、光る本を前に笑顔を浮かべる黄色いダックのキャラクター。"
     },
-    {
-      "number": 2,
-      "title_en": "Rewinding the Mind Clock",
-      "concept_en": "A charming visual metaphor where the yellow duck mascot stands beside an elegant wooden desk clock whose hands gently glow, surrounded by handcrafted wooden letter blocks representing multiple languages.",
-      "composition_en": "Wide landscape shot. The yellow duck mascot stands on a bright tabletop beside a beautifully designed wooden clock. Cheerful wooden alphabet blocks featuring symbols from various language scripts are neatly arranged around it. Warm morning sunlight filters through a window, casting long, soft shadows and illuminating the scene with a feeling of timeless energy and renewal.",
-      "generation_prompt_en": "A sleek, modern hero landscape photograph featuring a friendly yellow duck mascot standing on a bright wooden desk. The yellow duck has a bright orange beak, large glossy black eyes, and a distinct feather tuft, looking pleased and curious. Next to the duck is a beautifully crafted wooden analog clock with soft glowing hands. Around the base of the clock are wooden toy blocks carved with various international alphabet characters. Soft side lighting from a window creates a clean, warm editorial atmosphere. Visual metaphor for turning back age, high quality, no readable text, no logos, no watermarks, clear focal point.",
-      "alt_en": "A friendly yellow duck mascot next to an elegant wooden desk clock and wooden letter blocks, symbolizing turning back the mental clock.",
-      "title_ja": "脳の時計を巻き戻す",
-      "concept_ja": "多言語学習が脳の年齢を若返らせる効果を、エレガントな置時計と多様な言語の文字ブロックに寄り添うダックの姿で象徴的に描いたコンセプト。",
-      "composition_ja": "横長構図。明るい木製デスクの上に、オレンジのくちばしとつぶらな瞳を持った黄色いダックが立ち、隣にはあたたかい光を放つ木製の置時計が置かれています。周囲には様々な言語の文字が刻まれた木製ブロックが並び、差し込む自然光が爽やかな空間を演出します。",
-      "alt_ja": "木の置時計と言語ブロックの隣に立ち、脳の若返りを表現する黄色いダックのキャラクター。"
-    },
-    {
-      "number": 3,
-      "title_en": "The Mind Garden of Languages",
-      "concept_en": "An uplifting scene set in a modern, sunlit greenhouse studio where the yellow duck mascot waters small glowing botanical sprouts shaped like colorful thought bubbles, representing flourishing cognitive health.",
-      "composition_en": "Wide landscape editorial composition. Inside a brightly lit, contemporary glass greenhouse, the yellow duck mascot holds a small watering can over a ceramic pot. Vibrant, stylized glowing green sprouts bloom in soft pastel light. Clean background with lush greenery and soft bokeh, conveying freshness, vitality, and growth.",
-      "generation_prompt_en": "A clean and charming hero landscape photo set inside a bright glass garden studio. A recognizable yellow duck mascot with an orange beak, dark shiny eyes, and a small feather tuft stands near small ceramic planters. The duck holds a tiny watering can, nurturing small glowing sprouts shaped like gentle speech bubbles. Lush green plants and soft morning light fill the background, creating a fresh, premium editorial look. Visual metaphor for brain vitality and growth through learning, high detail, vibrant colors, no text, no logos, no watermarks.",
-      "alt_en": "A friendly yellow duck mascot in a bright glass greenhouse, watering small glowing plant sprouts that symbolize growing brain vitality.",
-      "title_ja": "ことばが育む脳のガーデン",
-      "concept_ja": "新しい言語を学ぶことで脳が瑞々しく成長する様子を、ダックが芽吹く光の植物を育てる温室の情景として描いたコンセプト。",
-      "composition_ja": "横長構図。光があふれるモダンなガラス温室で、黄色いダックが小さなじょうろを持ち、光を放つ若芽に水を与えています。背景には豊かな緑がやわらかくボケて広がり、フレッシュで活力に満ちた雰囲気を生み出しています。",
-      "alt_ja": "ガラス温室の中で、光る芽に水をあげて脳の活性化を表現する黄色いダックのキャラクター。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "GOING BILL-INGUAL KEEPS YOUR BRAIN YOUNG!",
-      "meaning_ja": "【ダック駄洒落】日本語訳：「多言語（BILL-INGUAL）を話せば、脳は若いまま！」。元の英語表現は「Going bilingual（バイリンガル／多言語を話すようになること）」。アヒルの嘴（bill）を使った「BILL-INGUAL」という言葉遊び（ phonetic substitution ）で、多言語を話すことが脳の若返りにつながるというニュースを陽気に表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "MIND YOUR LANGUAGES, REWIND YOUR AGE!",
-      "meaning_ja": "【スマートな言葉遊び】日本語訳：「言葉を意識して学べば、脳の年齢も巻き戻る！」。「Mind your...（〜を意識する／大切にする）」という表現と、脳・心を表す「Mind」の重複意味（ダブルミーニング）を活用し、「Mind / Rewind」の心地よい押韻（ライム）とリズムで、言葉を学ぶことが脳の若返りに直結することをスマートに表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "UNLOCK YOUTH WITH EVERY NEW WORD YOU SPEAK!",
-      "meaning_ja": "【ポスターコピー】日本語訳：「新しい言葉を話すたび、若々しさが解き放たれる！」。ダジャレに頼らず、雑誌のカバーラインやポスターのように力強く直感的なコピー。「新しい言語を学ぶことで13歳も脳が若返る」というポジティブな発見を、読者に直接響く魅力的なメッセージとして構成しています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Multilingual Cozy Library",
-      "concept_title_ja": "多言語の書斎と光る本",
-      "image_path": "automation_images/design_previews/2026-08-23/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "b09816ef2c7bae1ced05071c0a3df577b4e78e9c89334df038feacec6ec561a1",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Speaking Multiple Languages May Keep Brains Up to 13 Years Younger\nSummary: An inspiring and positive discovery that speaking multiple languages helps keep the brain vibrant and youthful.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Multilingual Cozy Library\n\nCONCEPT:\nA cheerful yellow duck sitting in a sunlit home library surrounded by colorful stacked books, holding an open illuminated book that projects soft golden light, symbolizing mental vitality and youthfulness.\n\nCOMPOSITION:\nWide landscape hero composition. In a warm, clean studio library setting, a friendly yellow duck with an orange beak, large dark glossy eyes, and a small feather tuft sits comfortably at a polished wood desk. Stacks of vibrant books line the background soft-focus shelves. The duck gazes warmly forward as soft golden light radiates from the open book. Soft, natural lighting creates a cozy, premium editorial atmosphere.\n\nPRODUCTION DIRECTION:\nA clean, modern hero landscape photograph of a friendly yellow duck mascot sitting at a wooden desk in a bright, cozy modern library. The yellow duck has a vibrant orange beak, big glossy dark eyes, and a cute feather tuft on top of its head, smiling warmly. On the desk are neat stacks of colorful books. An open book in front of the duck radiates a soft, golden warm glow. The background features softly blurred bookshelves filled with vibrant book spines under warm natural light. Clean composition, editorial photography style, visual metaphor for a youthful mind and reading, high quality, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck mascot sitting at a desk in a warm library, looking happy with a glowing open book in front of it.",
-      "alt_ja": "温かみのある書斎のデスクで、光る本を前に笑顔を浮かべる黄色いダックのキャラクター。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Rewinding the Mind Clock",
-      "concept_title_ja": "脳の時計を巻き戻す",
-      "image_path": "automation_images/design_previews/2026-08-23/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "833c6467f3085c589e7ba1062229c79c4291e25f28297b5a929386221d1fffd0",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Speaking Multiple Languages May Keep Brains Up to 13 Years Younger\nSummary: An inspiring and positive discovery that speaking multiple languages helps keep the brain vibrant and youthful.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nRewinding the Mind Clock\n\nCONCEPT:\nA charming visual metaphor where the yellow duck mascot stands beside an elegant wooden desk clock whose hands gently glow, surrounded by handcrafted wooden letter blocks representing multiple languages.\n\nCOMPOSITION:\nWide landscape shot. The yellow duck mascot stands on a bright tabletop beside a beautifully designed wooden clock. Cheerful wooden alphabet blocks featuring symbols from various language scripts are neatly arranged around it. Warm morning sunlight filters through a window, casting long, soft shadows and illuminating the scene with a feeling of timeless energy and renewal.\n\nPRODUCTION DIRECTION:\nA sleek, modern hero landscape photograph featuring a friendly yellow duck mascot standing on a bright wooden desk. The yellow duck has a bright orange beak, large glossy black eyes, and a distinct feather tuft, looking pleased and curious. Next to the duck is a beautifully crafted wooden analog clock with soft glowing hands. Around the base of the clock are wooden toy blocks carved with various international alphabet characters. Soft side lighting from a window creates a clean, warm editorial atmosphere. Visual metaphor for turning back age, high quality, no readable text, no logos, no watermarks, clear focal point.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck mascot next to an elegant wooden desk clock and wooden letter blocks, symbolizing turning back the mental clock.",
-      "alt_ja": "木の置時計と言語ブロックの隣に立ち、脳の若返りを表現する黄色いダックのキャラクター。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Mind Garden of Languages",
-      "concept_title_ja": "ことばが育む脳のガーデン",
-      "image_path": "automation_images/design_previews/2026-08-23/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "0585eafc62a42f7b704ad29061d6017a48adaa0946b567ce03dd68ea62de9f95",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Speaking Multiple Languages May Keep Brains Up to 13 Years Younger\nSummary: An inspiring and positive discovery that speaking multiple languages helps keep the brain vibrant and youthful.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Mind Garden of Languages\n\nCONCEPT:\nAn uplifting scene set in a modern, sunlit greenhouse studio where the yellow duck mascot waters small glowing botanical sprouts shaped like colorful thought bubbles, representing flourishing cognitive health.\n\nCOMPOSITION:\nWide landscape editorial composition. Inside a brightly lit, contemporary glass greenhouse, the yellow duck mascot holds a small watering can over a ceramic pot. Vibrant, stylized glowing green sprouts bloom in soft pastel light. Clean background with lush greenery and soft bokeh, conveying freshness, vitality, and growth.\n\nPRODUCTION DIRECTION:\nA clean and charming hero landscape photo set inside a bright glass garden studio. A recognizable yellow duck mascot with an orange beak, dark shiny eyes, and a small feather tuft stands near small ceramic planters. The duck holds a tiny watering can, nurturing small glowing sprouts shaped like gentle speech bubbles. Lush green plants and soft morning light fill the background, creating a fresh, premium editorial look. Visual metaphor for brain vitality and growth through learning, high detail, vibrant colors, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck mascot in a bright glass greenhouse, watering small glowing plant sprouts that symbolize growing brain vitality.",
-      "alt_ja": "ガラス温室の中で、光る芽に水をあげて脳の活性化を表現する黄色いダックのキャラクター。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-23/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "GOING BILL-INGUAL KEEPS YOUR BRAIN YOUNG!"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "GOING BILL-INGUAL KEEPS YOUR BRAIN YOUNG!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "GOING BILL-INGUAL KEEPS YOUR BRAIN YOUNG!",
+    "meaning_ja": "【ダック駄洒落】日本語訳：「多言語（BILL-INGUAL）を話せば、脳は若いまま！」。元の英語表現は「Going bilingual（バイリンガル／多言語を話すようになること）」。アヒルの嘴（bill）を使った「BILL-INGUAL」という言葉遊び（ phonetic substitution ）で、多言語を話すことが脳の若返りにつながるというニュースを陽気に表現しています。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "The Multilingual Cozy Library",
+    "concept_title_ja": "多言語の書斎と光る本",
+    "image_path": "automation_images/design_previews/2026-08-23/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "b09816ef2c7bae1ced05071c0a3df577b4e78e9c89334df038feacec6ec561a1",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Speaking Multiple Languages May Keep Brains Up to 13 Years Younger\nSummary: An inspiring and positive discovery that speaking multiple languages helps keep the brain vibrant and youthful.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Multilingual Cozy Library\n\nCONCEPT:\nA cheerful yellow duck sitting in a sunlit home library surrounded by colorful stacked books, holding an open illuminated book that projects soft golden light, symbolizing mental vitality and youthfulness.\n\nCOMPOSITION:\nWide landscape hero composition. In a warm, clean studio library setting, a friendly yellow duck with an orange beak, large dark glossy eyes, and a small feather tuft sits comfortably at a polished wood desk. Stacks of vibrant books line the background soft-focus shelves. The duck gazes warmly forward as soft golden light radiates from the open book. Soft, natural lighting creates a cozy, premium editorial atmosphere.\n\nPRODUCTION DIRECTION:\nA clean, modern hero landscape photograph of a friendly yellow duck mascot sitting at a wooden desk in a bright, cozy modern library. The yellow duck has a vibrant orange beak, big glossy dark eyes, and a cute feather tuft on top of its head, smiling warmly. On the desk are neat stacks of colorful books. An open book in front of the duck radiates a soft, golden warm glow. The background features softly blurred bookshelves filled with vibrant book spines under warm natural light. Clean composition, editorial photography style, visual metaphor for a youthful mind and reading, high quality, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A friendly yellow duck mascot sitting at a desk in a warm library, looking happy with a glowing open book in front of it.",
+    "alt_ja": "温かみのある書斎のデスクで、光る本を前に笑顔を浮かべる黄色いダックのキャラクター。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-23.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-23 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-23 — Batch 1",
-  "final_email_sent_at": "2026-08-23T14:01:16.449172+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "GOING BILL-INGUAL KEEPS YOUR BRAIN YOUNG!",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-23T14:12:15.976268+00:00"
+    "translation_language": "ja"
+  }
 }
