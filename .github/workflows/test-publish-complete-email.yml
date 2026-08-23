@@ -31,8 +31,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "Fetching latest main..."
-
           git fetch origin main
           git reset --hard origin/main
 
@@ -49,10 +47,7 @@ jobs:
           python-version: "3.12"
 
       # ======================================================
-      # 4. Check publication state files
-      #
-      # This test only sends a completion email for an issue
-      # that is already confirmed as X_POSTED.
+      # 4. Check publication state
       # ======================================================
 
       - name: Check publication state files
@@ -60,21 +55,13 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "========================================"
-          echo " Publication State Check"
-          echo "========================================"
-
           if [ ! -f automation_state/ready_to_publish.json ]; then
-            echo ""
-            echo "ERROR:"
-            echo "automation_state/ready_to_publish.json not found."
+            echo "ERROR: ready_to_publish.json not found."
             exit 1
           fi
 
           if [ ! -f automation_state/x_publish_result.json ]; then
-            echo ""
-            echo "ERROR:"
-            echo "automation_state/x_publish_result.json not found."
+            echo "ERROR: x_publish_result.json not found."
             exit 1
           fi
 
@@ -93,15 +80,18 @@ jobs:
           ) as f:
               x_result = json.load(f)
 
-          issue_date = ready.get("issue_date", "")
-          title = ready.get("selected_title", "")
-          x_action = x_result.get("action", "")
+          issue_date = ready.get(
+              "issue_date",
+              "",
+          )
 
-          print("")
-          print("Issue date :", issue_date)
-          print("Title      :", title or "(not available)")
-          print("X action   :", x_action)
-          print("")
+          x_action = x_result.get(
+              "action",
+              "",
+          )
+
+          print("Issue date:", issue_date)
+          print("X action  :", x_action)
 
           if not issue_date:
               raise SystemExit(
@@ -114,13 +104,12 @@ jobs:
                   f"Current action: {x_action!r}"
               )
 
+          print("")
           print("Publication state check: OK")
           PY
 
       # ======================================================
-      # 5. Check required Secrets / Variables
-      #
-      # Secret values themselves are NEVER printed.
+      # 5. Check configuration
       # ======================================================
 
       - name: Check required configuration
@@ -142,23 +131,22 @@ jobs:
           import os
           import sys
 
-          required_secrets = [
+          required = [
               "GMAIL_ADDRESS",
               "GMAIL_APP_PASSWORD",
               "EMAIL_TO",
               "OPENAI_ADMIN_KEY",
               "OPENAI_PROJECT_ID",
+              "OPENAI_MONTHLY_BUDGET_USD",
           ]
-
-          print("========================================")
-          print(" Configuration Check")
-          print("========================================")
-          print("")
 
           missing = []
 
-          for name in required_secrets:
-              value = os.getenv(name, "").strip()
+          for name in required:
+              value = os.getenv(
+                  name,
+                  "",
+              ).strip()
 
               if value:
                   print(f"{name}: OK")
@@ -166,45 +154,29 @@ jobs:
                   print(f"{name}: MISSING")
                   missing.append(name)
 
-          budget = os.getenv(
-              "OPENAI_MONTHLY_BUDGET_USD",
-              "",
-          ).strip()
-
-          if budget:
-              print("OPENAI_MONTHLY_BUDGET_USD: OK")
-
-              try:
-                  amount = float(budget)
-
-                  if amount <= 0:
-                      raise ValueError
-
-              except ValueError:
-                  print("")
-                  print(
-                      "ERROR: OPENAI_MONTHLY_BUDGET_USD "
-                      "must be a number greater than 0."
-                  )
-                  sys.exit(1)
-
-          else:
-              print(
-                  "OPENAI_MONTHLY_BUDGET_USD: MISSING"
-              )
-              missing.append(
-                  "OPENAI_MONTHLY_BUDGET_USD"
-              )
-
           if missing:
               print("")
-              print("ERROR: Missing configuration:")
+              print("Missing configuration:")
+
               for name in missing:
                   print(f" - {name}")
+
               sys.exit(1)
 
+          budget = float(
+              os.environ[
+                  "OPENAI_MONTHLY_BUDGET_USD"
+              ]
+          )
+
+          if budget <= 0:
+              raise SystemExit(
+                  "OPENAI_MONTHLY_BUDGET_USD "
+                  "must be greater than zero."
+              )
+
           print("")
-          print("All required configuration is present.")
+          print("All required configuration is valid.")
           PY
 
       # ======================================================
@@ -245,19 +217,16 @@ jobs:
           echo "Issue date: $ISSUE_DATE"
 
       # ======================================================
-      # 7. Send completion email ONLY
+      # 7. Send UNIQUE test completion email
       #
-      # IMPORTANT:
+      # EMAIL_SUBJECT_SUFFIX uses GitHub run ID.
       #
-      # - NO X post
-      # - NO website publish
-      # - NO OpenAI model generation
+      # Example:
       #
-      # This step only:
+      # The Daily Duck — Publish Complete — 2026-08-23
+      # — TEST-123456789
       #
-      # 1. Reads existing publication state
-      # 2. Calls official OpenAI Costs API
-      # 3. Sends the completion email through Gmail
+      # Every test therefore has a unique subject.
       # ======================================================
 
       - name: Send publish complete email only
@@ -273,25 +242,37 @@ jobs:
 
           ISSUE_DATE: ${{ steps.issue.outputs.issue_date }}
 
+          EMAIL_SUBJECT_SUFFIX: TEST-${{ github.run_id }}
+
         shell: bash
         run: |
           set -euo pipefail
 
           echo "========================================"
-          echo " Publish Complete Email TEST"
+          echo " Publish Complete Email Test"
           echo "========================================"
           echo ""
-          echo "Issue date       : $ISSUE_DATE"
+
+          echo "Issue date:"
+          echo "$ISSUE_DATE"
+
+          echo ""
+          echo "Unique test ID:"
+          echo "TEST-${{ github.run_id }}"
+
+          echo ""
           echo "X posting        : DISABLED"
           echo "Website publish  : DISABLED"
           echo "OpenAI generation: DISABLED"
+
           echo ""
-          echo "The following ARE enabled:"
+          echo "Enabled:"
           echo "- OpenAI Costs API"
           echo "- Monthly budget calculation"
-          echo "- Gmail completion email"
+          echo "- Gmail email sending"
+
           echo ""
-          echo "Sending completion email..."
+          echo "Sending unique test email..."
           echo ""
 
           python scripts/send_publish_complete_email.py
@@ -300,17 +281,18 @@ jobs:
           echo "========================================"
           echo " TEST SUCCESS"
           echo "========================================"
+
           echo ""
-          echo "Completion email sent successfully."
+          echo "Expected email subject suffix:"
+          echo "TEST-${{ github.run_id }}"
+
           echo ""
           echo "No X post was made."
           echo "No website changes were made."
           echo "No OpenAI model was called."
 
       # ======================================================
-      # 8. Show generated notification state
-      #
-      # Safe fields only.
+      # 8. Report result
       # ======================================================
 
       - name: Report billing result
@@ -320,7 +302,7 @@ jobs:
           set -euo pipefail
 
           if [ ! -f automation_state/publish_complete_notification.json ]; then
-            echo "Notification state file was not created."
+            echo "ERROR: notification state file not created."
             exit 1
           fi
 
@@ -340,14 +322,14 @@ jobs:
 
           print("")
           print("========================================")
-          print(" Billing / Notification Result")
+          print(" Billing / Email Result")
           print("========================================")
           print("")
 
           print(
-              "Issue date:",
+              "Email subject:",
               data.get(
-                  "issue_date",
+                  "email_subject",
                   "",
               ),
           )
@@ -361,7 +343,7 @@ jobs:
           )
 
           print(
-              "Month-to-date OpenAI cost:",
+              "Month-to-date:",
               data.get(
                   "openai_month_to_date_cost_usd",
                   "",
@@ -400,9 +382,8 @@ jobs:
               ),
           )
 
-          print("")
           print(
-              "Notification action:",
+              "Action:",
               data.get(
                   "action",
                   "",
@@ -411,7 +392,7 @@ jobs:
           PY
 
       # ======================================================
-      # 9. Final report
+      # 9. Final result
       # ======================================================
 
       - name: Final report
@@ -421,11 +402,13 @@ jobs:
           echo " FINAL RESULT"
           echo "========================================"
           echo ""
-          echo "Website publication : untouched"
-          echo "X publication       : untouched"
-          echo "OpenAI model usage  : none"
-          echo "Costs API           : tested"
-          echo "Monthly budget      : tested"
-          echo "Completion email    : sent"
+
+          echo "Workflow run ID:"
+          echo "${{ github.run_id }}"
+
+          echo ""
+          echo "Expected Gmail subject contains:"
+          echo "TEST-${{ github.run_id }}"
+
           echo ""
           echo "STATE: TEST_COMPLETE"
