@@ -318,7 +318,6 @@ def create_post(
                     media_id
                 ]
             },
-           -- "made_with_ai": True,
         },
         timeout=60,
     )
