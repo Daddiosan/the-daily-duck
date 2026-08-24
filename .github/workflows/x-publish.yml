@@ -78,7 +78,7 @@ jobs:
               print("Size:", im.size)
               print("Format:", im.format)
 
-              expected = (1200, 960)
+              expected = (1500, 1200)
 
               if im.size != expected:
                   raise SystemExit(
@@ -98,7 +98,7 @@ jobs:
           size_mb = size_bytes / (1024 * 1024)
 
           print(f"File size: {size_mb:.2f} MiB")
-          print("X CARD VALID: 1200x960, exact 5:4")
+          print("X CARD VALID: 1500x1200, exact 5:4")
           PY
 
       - name: Upload X card artifact
@@ -114,7 +114,7 @@ jobs:
         if: ${{ inputs.test_only == true }}
         run: |
           echo "TEST ONLY MODE"
-          echo "X card was generated at 1200x960 and uploaded as an artifact."
+          echo "X card was generated at 1500x1200 and uploaded as an artifact."
           echo "No X post was attempted."
 
       - name: Publish to X
@@ -177,7 +177,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "publish: Daily Duck 1200x960 card to X"
+          git commit -m "publish: Daily Duck 1500x1200 card to X"
           git pull --rebase --autostash origin main
           git push origin HEAD:main
 
@@ -220,7 +220,7 @@ jobs:
 
           if [ "${{ inputs.test_only }}" = "true" ]; then
             echo "Mode: TEST ONLY"
-            echo "Result: 1200x960 X card generated; no X post attempted."
+            echo "Result: 1500x1200 X card generated; no X post attempted."
           else
             echo "Mode: LIVE PUBLISH"
             echo "Result: ${{ steps.xpublish.outputs.action }}"
