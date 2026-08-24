@@ -2,7 +2,7 @@
 """
 The Daily Duck - X social card builder
 
-Creates the branded Daily Duck 5:4 X card (1500x1200).
+Creates the branded Daily Duck 5:4 X card (1200x960).
 
 Policy:
 - Issues before 2026-08-22 keep the legacy card behavior.
@@ -33,7 +33,7 @@ from PIL import Image, ImageDraw, ImageFont
 READY_PATH = Path("automation_state/ready_to_publish.json")
 OUT_DIR = Path("automation_images/x")
 
-W, H = 1500, 1200
+W, H = 1200, 960
 
 NEW_LAYOUT_FROM = date(2026, 8, 22)
 
@@ -43,6 +43,19 @@ CREAM = "#FFF9ED"
 WHITE = "#FFFFFF"
 MUTED = "#334155"
 BORDER = "#D8D2C7"
+
+BASE_W = 1500
+BASE_H = 1200
+
+def sx(value: int | float) -> int:
+    return int(round(value * W / BASE_W))
+
+def sy(value: int | float) -> int:
+    return int(round(value * H / BASE_H))
+
+def ss(value: int | float) -> int:
+    return int(round(value * min(W / BASE_W, H / BASE_H)))
+
 
 
 def first_text(*values: Any) -> str:
@@ -123,7 +136,7 @@ def font(
 ) -> ImageFont.FreeTypeFont:
     return ImageFont.truetype(
         find_font(bold),
-        size=size,
+        size=max(8, ss(size)),
     )
 
 
@@ -403,32 +416,32 @@ def draw_logo_and_header(
             Image.open(logo_path)
             .convert("RGBA")
             .resize(
-                (76, 76),
+                (ss(76), ss(76)),
                 Image.Resampling.LANCZOS,
             )
         )
 
         card.paste(
             logo,
-            (52, 32),
+            (sx(52), sy(32)),
             logo,
         )
 
-        brand_x = 144
+        brand_x = sx(144)
 
     else:
         # Brand-safe simple marker fallback.
         draw.ellipse(
-            (56, 43, 104, 91),
+            (sx(56), sy(43), sx(104), sy(91)),
             fill=YELLOW,
             outline=NAVY,
             width=4,
         )
         draw.ellipse(
-            (69, 54, 91, 76),
+            (sx(69), sy(54), sx(91), sy(76)),
             fill=NAVY,
         )
-        brand_x = 122
+        brand_x = sx(122)
 
     brand_font = font(
         48,
@@ -436,7 +449,7 @@ def draw_logo_and_header(
     )
 
     draw.text(
-        (brand_x, 47),
+        (brand_x, sy(47)),
         "THE DAILY DUCK",
         font=brand_font,
         fill=NAVY,
@@ -461,7 +474,7 @@ def draw_logo_and_header(
 
     draw.text(
         (
-            W - 58 - tagline_w,
+            W - sx(58) - tagline_w,
             58,
         ),
         tagline,
@@ -477,7 +490,7 @@ def draw_logo_and_header(
             132,
         ),
         fill=NAVY,
-        width=3,
+        width=max(1, ss(3)),
     )
 
 
@@ -487,8 +500,8 @@ def draw_navy_footer(
     """
     Navy footer bar from the approved reference.
     """
-    footer_y1 = H - 88
-    footer_y2 = H - 24
+    footer_y1 = H - sy(88)
+    footer_y2 = H - sy(24)
 
     draw.rounded_rectangle(
         (
@@ -497,7 +510,7 @@ def draw_navy_footer(
             W - 46,
             footer_y2,
         ),
-        radius=18,
+        radius=ss(18),
         fill=NAVY,
     )
 
@@ -615,17 +628,17 @@ def render_legacy_card(
             W - 8,
             H - 8,
         ),
-        radius=38,
+        radius=ss(38),
         outline=BORDER,
-        width=3,
+        width=max(1, ss(3)),
         fill=CREAM,
     )
 
     # Legacy image geometry.
-    hero_x = 600
-    hero_y = 140
-    hero_w = W - hero_x - 16
-    hero_h = H - hero_y - 92
+    hero_x = sx(600)
+    hero_y = sy(140)
+    hero_w = W - hero_x - sx(16)
+    hero_h = H - hero_y - sy(92)
 
     source_hero = Image.open(
         hero_path
@@ -669,8 +682,8 @@ def render_legacy_card(
         draw,
     )
 
-    left = 58
-    panel_w = 505
+    left = sx(58)
+    panel_w = sx(505)
 
     pill_font = font(
         28,
@@ -698,9 +711,9 @@ def render_legacy_card(
             left,
             190,
             left + pill_w,
-            244,
+            sy(244),
         ),
-        radius=18,
+        radius=ss(18),
         fill=YELLOW,
     )
 
@@ -746,14 +759,14 @@ def render_legacy_card(
         (
             left,
             y + 8,
-            left + 160,
+            left + sx(160),
             y + 20,
         ),
         radius=6,
         fill=YELLOW,
     )
 
-    y += 52
+    y += sy(52)
 
     try:
         legacy_date = (
@@ -788,7 +801,7 @@ def render_legacy_card(
         fill=NAVY,
     )
 
-    y += 58
+    y += sy(58)
 
     teaser_font = font(
         29,
@@ -865,7 +878,7 @@ def render_english_first_card(
     - selected final title is used
     - story teaser is English
     - no Japanese copy appears in the X card body
-    - card remains fixed 1500x1200 (5:4)
+    - card remains fixed 1200x960 (5:4)
     """
     approved_root = ready.get(
         "gate_a_approved_story"
@@ -981,9 +994,9 @@ def render_english_first_card(
             W - 8,
             H - 8,
         ),
-        radius=38,
+        radius=ss(38),
         outline=BORDER,
-        width=3,
+        width=max(1, ss(3)),
         fill=CREAM,
     )
 
@@ -1001,10 +1014,10 @@ def render_english_first_card(
     # rounded-frame height after edge padding.
     # ========================================================
 
-    hero_x = 610
-    hero_y = 166
-    hero_w = W - hero_x - 42
-    hero_h = 930
+    hero_x = sx(610)
+    hero_y = sy(166)
+    hero_w = W - hero_x - sx(42)
+    hero_h = sy(930)
 
     hero = fit_cover(
         Image.open(
@@ -1044,7 +1057,7 @@ def render_english_first_card(
             hero.width,
             hero.height,
         ),
-        radius=28,
+        radius=ss(28),
         fill=255,
     )
 
@@ -1061,8 +1074,8 @@ def render_english_first_card(
     # LEFT COPY PANEL
     # ========================================================
 
-    left = 54
-    panel_w = 500
+    left = sx(54)
+    panel_w = sx(500)
 
     pill_text = (
         "DUCK OF THE DAY"
@@ -1090,9 +1103,9 @@ def render_english_first_card(
             left,
             184,
             left + pill_w,
-            238,
+            sy(238),
         ),
-        radius=18,
+        radius=ss(18),
         fill=YELLOW,
     )
 
@@ -1170,13 +1183,13 @@ def render_english_first_card(
     )
 
     # Yellow accent line aligned below title.
-    accent_y = y + 12
+    accent_y = y + sy(12)
 
     draw.rounded_rectangle(
         (
             left,
             accent_y,
-            left + 155,
+            left + sx(155),
             accent_y + 10,
         ),
         radius=5,
@@ -1187,7 +1200,7 @@ def render_english_first_card(
     # English date.
     # --------------------------------------------------------
 
-    y = accent_y + 43
+    y = accent_y + sy(43)
 
     draw.text(
         (
@@ -1209,7 +1222,7 @@ def render_english_first_card(
     # This replaces the previous Japanese red-box area.
     # --------------------------------------------------------
 
-    y += 64
+    y += sy(64)
 
     teaser_font_size = 29
     teaser_font = font(
@@ -1374,7 +1387,7 @@ def main() -> int:
     ready[
         "x_card_hero_height_px"
     ] = (
-        930
+        sy(930)
         if layout_version
         == "english-first-80pct-photo-v1"
         else None
