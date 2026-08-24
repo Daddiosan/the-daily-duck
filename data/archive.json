@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-24",
+    "displayDate": "August 24, 2026",
+    "slug": "potato-power-duck",
+    "title": "POTATO POWER DUCK",
+    "duckName": "Potato Power Duck",
+    "storyTitleEn": "Potatoes may have given Indigenous Andeans a digestive superpower",
+    "storyTitleJa": "Potatoes may have given Indigenous Andeans a digestive superpower",
+    "image": "assets/ducks/2026-08-24-potato-power-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Potato Power Duck",
+    "imageAltJa": "Potato Power DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Food history is full of fascinating surprises. Research suggests that potatoes may have helped ancient Indigenous Andean people develop a unique digestive superpower for processing starch. This fascinating connection highlights how regional diets can shape human biology over generations.",
+    "storyJa": "食の歴史には魅力的で思いがけない発見が満載です。研究によると、ジャガイモは古代アンデス先住民がでんぷんを消化するためのユニークなスーパーパワーを発達させるのに役立った可能性があります。地域の食生活が何世代にもわたって人類の生物学的な特徴にどのような影響を与えたかを示す興味深いエピソードです。",
+    "duckEn": "Quack! Who knew potatoes could unlock a true digestive superpower?",
+    "duckJa": "クワッ！ジャガイモが消化のスーパーパワーを引き出していたなんて驚きだね！",
+    "sourceLabel": "ScienceDaily Society",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260808235005.htm",
+    "archiveSummaryEn": "Potatoes might have given ancient Andean people a starch-digesting superpower! A fun look into how food shaped human history.",
+    "archiveSummaryJa": "ジャガイモが古代アンデス先住民に「でんぷん消化のスーパーパワー」を与えていたかもしれません！食が人類の歴史をどう形作ったかを示す楽しい話題です。",
+    "reasonEn": "Potatoes might have given ancient Andean people a starch-digesting superpower! A fun look into how food shaped human history.",
+    "reasonJa": "ジャガイモが古代アンデス先住民に「でんぷん消化のスーパーパワー」を与えていたかもしれません！食が人類の歴史をどう形作ったかを示す楽しい話題です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-23",
     "displayDate": "August 23, 2026",
     "slug": "brain-boost",
