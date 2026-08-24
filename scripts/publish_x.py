@@ -3,15 +3,18 @@
 The Daily Duck - X publisher
 
 English-first policy:
-- English is the canonical/master X copy.
-- Japanese is a secondary translation shown after English.
+- English is the ONLY language posted to X.
+- Japanese remains available on the website/email review flow, but is NOT
+  included in the X post body.
 - Uses ONLY canonical_x_image_path for X, so the website hero image can remain
   separate from the branded 5:4 X card.
+- X post text is automatically kept within the standard 280-character limit.
 """
 from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,6 +31,10 @@ X_RESULT_PATH = STATE_DIR / "x_publish_result.json"
 MEDIA_UPLOAD_URL = "https://api.x.com/2/media/upload"
 CREATE_POST_URL = "https://api.x.com/2/tweets"
 ME_URL = "https://api.x.com/2/users/me"
+
+X_MAX_WEIGHTED_LENGTH = 280
+X_TCO_URL_WEIGHT = 23
+X_SAFETY_MARGIN = 4
 
 
 def required_env(name: str) -> str:
@@ -76,60 +83,187 @@ def first_text(*values: Any) -> str:
     return ""
 
 
+def x_weighted_length(text: str) -> int:
+    """
+    Conservative X weighted-length estimate.
+
+    URLs count as 23 characters. ASCII/common Latin counts as 1.
+    CJK/full-width characters count as 2.
+    """
+
+    url_re = re.compile(r"https?://\S+")
+
+    def char_weight(ch: str) -> int:
+        code = ord(ch)
+
+        if (
+            0x1100 <= code <= 0x11FF
+            or 0x2E80 <= code <= 0x9FFF
+            or 0xAC00 <= code <= 0xD7AF
+            or 0xF900 <= code <= 0xFAFF
+            or 0xFF01 <= code <= 0xFF60
+            or 0xFFE0 <= code <= 0xFFE6
+        ):
+            return 2
+
+        return 1
+
+    total = 0
+    position = 0
+
+    for match in url_re.finditer(text):
+        before = text[position:match.start()]
+
+        total += sum(
+            char_weight(ch)
+            for ch in before
+        )
+
+        total += X_TCO_URL_WEIGHT
+        position = match.end()
+
+    total += sum(
+        char_weight(ch)
+        for ch in text[position:]
+    )
+
+    return total
+
+
+def trim_english_for_x(
+    english_text: str,
+    page_url: str,
+) -> str:
+    """
+    Keep the article URL and shorten only the English body if necessary.
+    """
+
+    english_text = " ".join(
+        english_text.split()
+    ).strip()
+
+    separator = "\n\n"
+
+    safe_limit = (
+        X_MAX_WEIGHTED_LENGTH
+        - X_SAFETY_MARGIN
+    )
+
+    candidate = (
+        f"{english_text}"
+        f"{separator}"
+        f"{page_url}"
+    )
+
+    if x_weighted_length(candidate) <= safe_limit:
+        return candidate
+
+    ellipsis = "…"
+    words = english_text.split()
+    kept: list[str] = []
+
+    for word in words:
+        trial_body = " ".join(
+            kept + [word]
+        ).strip()
+
+        trial = (
+            f"{trial_body}{ellipsis}"
+            f"{separator}"
+            f"{page_url}"
+        )
+
+        if x_weighted_length(trial) > safe_limit:
+            break
+
+        kept.append(word)
+
+    if not kept:
+        raise ValueError(
+            "x_en cannot be shortened enough "
+            "to fit the X post limit."
+        )
+
+    result = (
+        f"{' '.join(kept).rstrip(' ,;:-')}{ellipsis}"
+        f"{separator}"
+        f"{page_url}"
+    )
+
+    if x_weighted_length(result) > safe_limit:
+        raise ValueError(
+            "Internal error: trimmed X post still exceeds safe limit."
+        )
+
+    return result
+
+
 def build_post_text(ready: dict[str, Any]) -> str:
     """
-    Build the X post using the English-first language policy.
-
-    Canonical order:
+    Build the final X post as:
         English master
-        Japanese translation
         Daily Duck article URL
 
-    x_en is mandatory.
-    x_jp is kept mandatory during the migration period so that the
-    bilingual experience remains intact while English is primary.
+    Japanese is intentionally excluded from X.
     """
 
     approved = ready.get("gate_a_approved_story")
+
     if not isinstance(approved, dict):
-        raise ValueError("gate_a_approved_story is missing.")
+        raise ValueError(
+            "gate_a_approved_story is missing."
+        )
 
     issue_date = first_text(
         ready.get("issue_date"),
         approved.get("issue_date"),
         approved.get("date"),
     )
-    if not issue_date:
-        raise ValueError("issue_date is missing.")
 
-    en = first_text(approved.get("x_en"))
-    jp = first_text(approved.get("x_jp"))
+    if not issue_date:
+        raise ValueError(
+            "issue_date is missing."
+        )
+
+    en = first_text(
+        approved.get("x_en")
+    )
 
     if not en:
         raise ValueError(
-            "x_en is missing from approved story. "
-            "English is the canonical X copy."
+            "x_en is missing from approved story."
         )
 
-    if not jp:
+    page_url = (
+        "https://www.thedailyduck.ai/"
+        f"ducks/{issue_date}/"
+    )
+
+    post_text = trim_english_for_x(
+        en,
+        page_url,
+    )
+
+    weighted = x_weighted_length(
+        post_text
+    )
+
+    if weighted > X_MAX_WEIGHTED_LENGTH:
         raise ValueError(
-            "x_jp is missing from approved story. "
-            "Japanese translation is required during the English-first migration."
+            "Generated X post exceeds "
+            f"{X_MAX_WEIGHTED_LENGTH} weighted characters: "
+            f"{weighted}"
         )
 
-    page_url = f"https://www.thedailyduck.ai/ducks/{issue_date}/"
-
-    # English MUST appear first.
-    post_text = f"{en}\n\n{jp}\n\n{page_url}"
-
-    if len(post_text) > 1000:
-        raise ValueError(
-            "Generated X post is unexpectedly long "
-            f"({len(post_text)} characters)."
-        )
+    print("X post policy: ENGLISH ONLY")
+    print(
+        f"X weighted length: "
+        f"{weighted}/{X_MAX_WEIGHTED_LENGTH}"
+    )
+    print("X post text:")
+    print(post_text)
 
     return post_text
-
 
 def resolve_image_path(ready: dict[str, Any]) -> Path:
     x_image = first_text(
@@ -535,7 +669,7 @@ def main() -> int:
         "state"
     ] = "X_POSTED"
 
-    # Record language policy in the publish state.
+    # Record X-specific language and length policy.
     ready[
         "x_language_policy"
     ] = {
@@ -544,13 +678,16 @@ def main() -> int:
         "canonical_language":
             "en",
         "secondary_language":
-            "ja",
+            None,
         "post_order":
             [
                 "en",
-                "ja",
                 "url",
             ],
+        "max_weighted_length":
+            X_MAX_WEIGHTED_LENGTH,
+        "weighted_length":
+            x_weighted_length(post_text),
     }
 
     write_json(
@@ -572,7 +709,16 @@ def main() -> int:
             "canonical_language":
                 "en",
             "secondary_language":
-                "ja",
+                None,
+            "post_order":
+                [
+                    "en",
+                    "url",
+                ],
+            "max_weighted_length":
+                X_MAX_WEIGHTED_LENGTH,
+            "weighted_length":
+                x_weighted_length(post_text),
         },
         response=response_payload,
     )
@@ -587,7 +733,13 @@ def main() -> int:
 
     print(
         "LANGUAGE: "
-        "ENGLISH-FIRST"
+        "ENGLISH ONLY"
+    )
+
+    print(
+        "WEIGHTED LENGTH: "
+        f"{x_weighted_length(post_text)}/"
+        f"{X_MAX_WEIGHTED_LENGTH}"
     )
 
     print(
