@@ -1,6 +1,30 @@
 {
-  "action": "WEBSITE_STATE_NOT_PUBLISHED_BLOCKED",
-  "at": "2026-08-24T12:36:22.734592+00:00",
+  "action": "X_POSTED",
+  "at": "2026-08-24T12:46:37.977398+00:00",
   "issue_date": "2026-08-24",
-  "ready_state": "X_POSTED"
+  "x_post_id": "2091869790117691567",
+  "x_post_url": "https://x.com/i/web/status/2091869790117691567",
+  "x_media_id": "2091869788112818176",
+  "image_path": "automation_images/x/2026-08-24-x-card.png",
+  "post_text": "Potatoes might have given ancient Andean people a starch-digesting superpower! A fun look into how food shaped human history.\n\nhttps://www.thedailyduck.ai/ducks/2026-08-24/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 150
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2091869790117691567",
+      "text": "Potatoes might have given ancient Andean people a starch-digesting superpower! A fun look into how food shaped human history.\n\nhttps://t.co/1JTUnhaPE0 https://t.co/F5dV3T6lxi"
+    }
+  }
 }

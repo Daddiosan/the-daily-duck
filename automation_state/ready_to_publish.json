@@ -1,5 +1,5 @@
 {
-  "state": "PUBLISHED",
+  "state": "X_POSTED",
   "issue_date": "2026-08-24",
   "ready_at": "2026-08-24T03:32:57.548181+00:00",
   "gate_a_approved_story": {
@@ -642,5 +642,21 @@
   "x_image_format": "PNG",
   "x_card_layout_version": "english-first-80pct-photo-v1",
   "x_card_language": "en",
-  "x_card_hero_height_px": 744
+  "x_card_hero_height_px": 744,
+  "x_posted": true,
+  "x_posted_at": "2026-08-24T12:46:37.976125+00:00",
+  "x_post_id": "2091869790117691567",
+  "x_post_url": "https://x.com/i/web/status/2091869790117691567",
+  "x_media_id": "2091869788112818176",
+  "x_language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 150
+  }
 }
