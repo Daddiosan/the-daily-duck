@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-24",
-  "generated_at": "2026-08-23T23:48:00.727544+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-24T03:32:57.548181+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-24",
     "issue_date": "2026-08-24",
     "phase": 2,
@@ -561,40 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-23T22:52:05.456662+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 36,
-    "title": "Potatoes may have given Indigenous Andeans a digestive superpower",
-    "source": "ScienceDaily Society",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260808235005.htm",
-    "category": "food",
-    "happiness": 8,
-    "hope": 7,
-    "general_interest": 9,
-    "surprise": 9,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 8,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 85,
-    "reason": "A delightfully quirky look at food history showing how potatoes gave ancient Andean people a unique starch-digesting superpower.",
-    "candidate_number": 2,
-    "title_en": "How Potatoes May Have Given Ancient Andean People a Starch-Digesting Superpower",
-    "reason_en": "A delightfully quirky look at food history showing how potatoes may have helped ancient Indigenous Andean people develop a unique starch-digesting superpower.",
-    "en_copy": "Food history is full of fascinating surprises. Research suggests that potatoes may have helped ancient Indigenous Andean people develop a unique digestive superpower for processing starch. This fascinating connection highlights how regional diets can shape human biology over generations.",
-    "duck_name": "Potato Power Duck",
-    "duck_en": "Quack! Who knew potatoes could unlock a true digestive superpower?",
-    "x_en": "Potatoes might have given ancient Andean people a starch-digesting superpower! A fun look into how food shaped human history.",
-    "title_ja": "ジャガイモが古代アンデス先住民にでんぷん消化の「スーパーパワー」を与えた可能性",
-    "reason_ja": "ジャガイモが古代アンデス先住民にでんぷんを消化する独自のスーパーパワーを与えた可能性を示す、食の歴史に関する愉快で興味深い物語です。",
-    "jp_copy": "食の歴史には魅力的で思いがけない発見が満載です。研究によると、ジャガイモは古代アンデス先住民がでんぷんを消化するためのユニークなスーパーパワーを発達させるのに役立った可能性があります。地域の食生活が何世代にもわたって人類の生物学的な特徴にどのような影響を与えたかを示す興味深いエピソードです。",
-    "duck_jp": "クワッ！ジャガイモが消化のスーパーパワーを引き出していたなんて驚きだね！",
-    "x_jp": "ジャガイモが古代アンデス先住民に「でんぷん消化のスーパーパワー」を与えていたかもしれません！食が人類の歴史をどう形作ったかを示す楽しい話題です。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "The Andean Potato Superhero",
       "concept_en": "A heroic and playful visual metaphor where The Daily Duck mascot stands as a cute superhero overlooking majestic Andean terraced fields, holding up a golden potato that glows with warm energy.",
@@ -606,107 +575,9 @@
       "composition_ja": "横長ヒーロー構図のミディアムワイドショット。オレンジ色のくちばし、黒くつややかな目、小さな冠羽を持つ黄色いアヒルのマスコットが、古代の石造りの山岳テラスに誇らしげに立っています。首には小さな赤色のマントを羽織り、両翼で柔らかく光る完璧な黄金のジャガイモを掲げています。背景には清々しい青空と緑豊かなアンデスの段々畑が広がり、温かい太陽光が差し込んでいます。",
       "alt_ja": "赤色のマントを羽織ったデイリー・ダックのマスコットが、アンデスの山岳テラスで光る黄金のジャガイモを誇らしげに掲げている様子。"
     },
-    {
-      "number": 2,
-      "title_en": "The Heritage Potato Harvest",
-      "concept_en": "A warm, rustic editorial scenes showing The Daily Duck celebrating the rich variety of ancient potatoes beside a woven basket in a sunlit Andean agricultural setting.",
-      "composition_en": "Landscape hero image, warm medium shot. The friendly yellow duck mascot sits beside a beautifully woven rustic basket overflowing with colorful native Andean potatoes in shades of purple, dark red, and deep yellow. The duck gently cradles a small round potato with a delighted, curious expression. The scene is set on a rustic wooden tabletop outdoors, with warm golden morning sunlight illuminating dust motes in the air and soft blurred green mountains in the background.",
-      "generation_prompt_en": "A warm editorial photograph, landscape view. The recognizable friendly yellow duck mascot with orange beak, shiny dark eyes, and a small feather tuft, sitting cheerfully beside a large handwoven wicker basket filled with colorful ancient Andean potatoes in purple, red, and yellow hues. Set on a rustic wooden outdoor table with soft golden morning sunlight. Out-of-focus green mountain scenery in the background. High detail, clean studio lighting, charming aesthetic, no text, no watermarks, no UI.",
-      "alt_en": "The Daily Duck mascot sitting beside a woven basket filled with colorful native Andean potatoes under warm morning sunlight.",
-      "title_ja": "伝統のジャガイモ収穫",
-      "concept_ja": "陽光が差し込むアンデスの農風景の中、デイリー・ダックが編みかごの横で古代から受け継がれる多様なジャガイモの収穫を祝う、温かみのある田園的コンセプト。",
-      "composition_ja": "横長ヒーロー構図の温かいミディアムショット。黄色いアヒルのマスコットが、紫、深紅、濃い黄色といったカラフルなアンデス在来種のジャガイモがあふれる手編みの素朴なかごの横に座っています。アヒルは嬉しそうで好奇心に満ちた表情で小さな丸いジャガイモを優しく抱えています。陽光の差し込む屋外の木製テーブルの上で撮影され、背景には柔らかくボケた緑の山並みが広がっています。",
-      "alt_ja": "温かい朝光のもと、カラフルなアンデス特有のジャガイモが入った編みかごの隣に座るデイリー・ダックのマスコット。"
-    },
-    {
-      "number": 3,
-      "title_en": "The Starch Discovery Lab",
-      "concept_en": "A modern and charming research laboratory visual metaphor where The Daily Duck examines a sliced potato emitting subtle scientific sparkles that represent starch digestion power.",
-      "composition_en": "Landscape hero image, clean editorial medium close-up. The iconic yellow duck mascot wears tiny round glasses perched near its orange beak, leaning curiously over a sleek wooden laboratory desk. On the desk lies a freshly sliced golden potato, with microscopic-looking sparkling starch crystals floating softly around it like floating magic dust. A classical brass magnifying glass rests next to the potato. The background is a clean, bright, modern research studio with soft pastel warm tones.",
-      "generation_prompt_en": "A clean modern editorial picture, landscape composition. A cute yellow duck mascot with orange beak, large dark glossy eyes, small feather tuft, wearing tiny round spectacles. The duck leans over a smooth wooden table examining a cut golden potato. Tiny sparkling golden starch particles hover softly over the potato slice. A sleek magnifying glass sits nearby on the desk. Bright studio lighting, warm professional environment, ultra clean style, no text, no UI, no watermarks.",
-      "alt_en": "The Daily Duck wearing tiny glasses and using a magnifying glass to examine a glowing sliced potato on a wooden lab desk.",
-      "title_ja": "でんぷん解明ラボ",
-      "concept_ja": "デイリー・ダックがでんぷん消化の能力を表現する繊細な光の粒子を放つカットジャガイモを観察する、モダンで愛らしい研究室風の視覚的メタファー。",
-      "composition_ja": "横長ヒーロー構図のクリーンなミディアムクローズアップ。黄色いアヒルのマスコットがオレンジ色のくちばしの根元に小さな丸眼鏡をかけ、木製の研究デスクに身を乗り出しています。デスクの上にはスライスされたばかりの黄金色のジャガイモがあり、周囲には浮遊する輝くでんぷんの微粒子が繊細に漂っています。ジャガイモの横にはクラシックな真鍮製の虫眼鏡が置かれ、背景は明るく清潔で温かみのある研究スタジオとなっています。",
-      "alt_ja": "小さな眼鏡をかけたデイリー・ダックが、木製デスクの上の光るスライスジャガイモを虫眼鏡で観察している様子。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACKING THE CODE ON ANCIENT POTATOES!",
-      "meaning_ja": "【ダックダジャレ枠】自然な意味：「古代ジャガイモのコード（謎）をクワッと解明！」。元の英語表現：慣用句「Cracking the code（暗号・謎を解明する）」。「Cracking」をアヒルの鳴き声「QUACKING」に置き換えたダジャレで、古代アンデスでジャガイモが進化させた消化能力の謎を科学が解き明かしたニュースをキャッチーに表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "MASHING THE LIMITS OF HUMAN BIOLOGY!",
-      "meaning_ja": "【スマートな言葉遊び枠】自然な意味：「人類の生物学的限界をマッシュ（粉砕）せよ！」。言葉遊びの仕組み：限界を打破・粉砕する表現「Smashing the limits」と、ジャガイモを潰す「Mashing potatoes」を掛け合わせたダブルミーニング。地域特有の食生活が人間の生物学的な限界を押し広げたというストーリーの内容をユーモラスに表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "THE SUPERPOWER HIDDEN IN ANCIENT POTATOES",
-      "meaning_ja": "【ポスターコピー枠】自然な意味：「古代のジャガイモに隠されたスーパーパワー」。コピーとしての効果：ダジャレに頼らず、映画のポスターや雑誌の表紙のような力強いインパクトを与えるコピー。「身近な食材であるジャガイモが人間に消化のスーパーパワーを与えた」というニュースの驚きと魅力を直感的に伝えます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Andean Potato Superhero",
-      "concept_title_ja": "アンデスのジャガイモ・ヒーロー",
-      "image_path": "automation_images/design_previews/2026-08-24/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "d1611e3b1371a4dc9cc98ffa5463b13ef8b0530944893d48311c70c37264065a",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Potatoes May Have Given Ancient Andean People a Starch-Digesting Superpower\nSummary: A delightfully quirky look at food history showing how potatoes may have helped ancient Indigenous Andean people develop a unique starch-digesting superpower.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Andean Potato Superhero\n\nCONCEPT:\nA heroic and playful visual metaphor where The Daily Duck mascot stands as a cute superhero overlooking majestic Andean terraced fields, holding up a golden potato that glows with warm energy.\n\nCOMPOSITION:\nLandscape hero image, medium-wide shot. The iconic friendly yellow duck with orange beak, large glossy eyes, and a small feather tuft stands proudly on an ancient stone mountain terrace. The duck wears a small, vibrant red fabric cape fluttering gently in the breeze. The duck holds a flawless golden potato in both wings, emitting a soft warm light. In the background are stunning green Andean terraced mountains under a clear blue sky with soft sunlight.\n\nPRODUCTION DIRECTION:\nA clean visual editorial hero image, landscape composition. A friendly cute yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft on top, standing heroically on an ancient stone terrace in the Andes mountains. The duck wears a small red cape and proudly holds up a golden glowing potato with both wings. Green mountain terraces and sunny blue sky in the background. Soft warm sunlight, cinematic lighting, modern charm, high editorial quality, no text, no watermarks, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot wearing a cute red cape on an Andean mountain terrace, proudly holding up a golden glowing potato.",
-      "alt_ja": "赤色のマントを羽織ったデイリー・ダックのマスコットが、アンデスの山岳テラスで光る黄金のジャガイモを誇らしげに掲げている様子。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Heritage Potato Harvest",
-      "concept_title_ja": "伝統のジャガイモ収穫",
-      "image_path": "automation_images/design_previews/2026-08-24/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "d966b241b7046fb955bae75f7117b013b87b3063576e7dae317a50aa61524870",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Potatoes May Have Given Ancient Andean People a Starch-Digesting Superpower\nSummary: A delightfully quirky look at food history showing how potatoes may have helped ancient Indigenous Andean people develop a unique starch-digesting superpower.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Heritage Potato Harvest\n\nCONCEPT:\nA warm, rustic editorial scenes showing The Daily Duck celebrating the rich variety of ancient potatoes beside a woven basket in a sunlit Andean agricultural setting.\n\nCOMPOSITION:\nLandscape hero image, warm medium shot. The friendly yellow duck mascot sits beside a beautifully woven rustic basket overflowing with colorful native Andean potatoes in shades of purple, dark red, and deep yellow. The duck gently cradles a small round potato with a delighted, curious expression. The scene is set on a rustic wooden tabletop outdoors, with warm golden morning sunlight illuminating dust motes in the air and soft blurred green mountains in the background.\n\nPRODUCTION DIRECTION:\nA warm editorial photograph, landscape view. The recognizable friendly yellow duck mascot with orange beak, shiny dark eyes, and a small feather tuft, sitting cheerfully beside a large handwoven wicker basket filled with colorful ancient Andean potatoes in purple, red, and yellow hues. Set on a rustic wooden outdoor table with soft golden morning sunlight. Out-of-focus green mountain scenery in the background. High detail, clean studio lighting, charming aesthetic, no text, no watermarks, no UI.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot sitting beside a woven basket filled with colorful native Andean potatoes under warm morning sunlight.",
-      "alt_ja": "温かい朝光のもと、カラフルなアンデス特有のジャガイモが入った編みかごの隣に座るデイリー・ダックのマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Starch Discovery Lab",
-      "concept_title_ja": "でんぷん解明ラボ",
-      "image_path": "automation_images/design_previews/2026-08-24/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "8f5ffb4a7095f2704a439b91fc23ce048ccae82a3f2615bb5606e0ec78153b3e",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Potatoes May Have Given Ancient Andean People a Starch-Digesting Superpower\nSummary: A delightfully quirky look at food history showing how potatoes may have helped ancient Indigenous Andean people develop a unique starch-digesting superpower.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Starch Discovery Lab\n\nCONCEPT:\nA modern and charming research laboratory visual metaphor where The Daily Duck examines a sliced potato emitting subtle scientific sparkles that represent starch digestion power.\n\nCOMPOSITION:\nLandscape hero image, clean editorial medium close-up. The iconic yellow duck mascot wears tiny round glasses perched near its orange beak, leaning curiously over a sleek wooden laboratory desk. On the desk lies a freshly sliced golden potato, with microscopic-looking sparkling starch crystals floating softly around it like floating magic dust. A classical brass magnifying glass rests next to the potato. The background is a clean, bright, modern research studio with soft pastel warm tones.\n\nPRODUCTION DIRECTION:\nA clean modern editorial picture, landscape composition. A cute yellow duck mascot with orange beak, large dark glossy eyes, small feather tuft, wearing tiny round spectacles. The duck leans over a smooth wooden table examining a cut golden potato. Tiny sparkling golden starch particles hover softly over the potato slice. A sleek magnifying glass sits nearby on the desk. Bright studio lighting, warm professional environment, ultra clean style, no text, no UI, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck wearing tiny glasses and using a magnifying glass to examine a glowing sliced potato on a wooden lab desk.",
-      "alt_ja": "小さな眼鏡をかけたデイリー・ダックが、木製デスクの上の光るスライスジャガイモを虫眼鏡で観察している様子。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-24/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "THE SUPERPOWER HIDDEN IN ANCIENT POTATOES"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE SUPERPOWER HIDDEN IN ANCIENT POTATOES",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "THE SUPERPOWER HIDDEN IN ANCIENT POTATOES",
+    "meaning_ja": "【ポスターコピー枠】自然な意味：「古代のジャガイモに隠されたスーパーパワー」。コピーとしての効果：ダジャレに頼らず、映画のポスターや雑誌の表紙のような力強いインパクトを与えるコピー。「身近な食材であるジャガイモが人間に消化のスーパーパワーを与えた」というニュースの驚きと魅力を直感的に伝えます。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "The Andean Potato Superhero",
+    "concept_title_ja": "アンデスのジャガイモ・ヒーロー",
+    "image_path": "automation_images/design_previews/2026-08-24/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "d1611e3b1371a4dc9cc98ffa5463b13ef8b0530944893d48311c70c37264065a",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Potatoes May Have Given Ancient Andean People a Starch-Digesting Superpower\nSummary: A delightfully quirky look at food history showing how potatoes may have helped ancient Indigenous Andean people develop a unique starch-digesting superpower.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Andean Potato Superhero\n\nCONCEPT:\nA heroic and playful visual metaphor where The Daily Duck mascot stands as a cute superhero overlooking majestic Andean terraced fields, holding up a golden potato that glows with warm energy.\n\nCOMPOSITION:\nLandscape hero image, medium-wide shot. The iconic friendly yellow duck with orange beak, large glossy eyes, and a small feather tuft stands proudly on an ancient stone mountain terrace. The duck wears a small, vibrant red fabric cape fluttering gently in the breeze. The duck holds a flawless golden potato in both wings, emitting a soft warm light. In the background are stunning green Andean terraced mountains under a clear blue sky with soft sunlight.\n\nPRODUCTION DIRECTION:\nA clean visual editorial hero image, landscape composition. A friendly cute yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft on top, standing heroically on an ancient stone terrace in the Andes mountains. The duck wears a small red cape and proudly holds up a golden glowing potato with both wings. Green mountain terraces and sunny blue sky in the background. Soft warm sunlight, cinematic lighting, modern charm, high editorial quality, no text, no watermarks, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck mascot wearing a cute red cape on an Andean mountain terrace, proudly holding up a golden glowing potato.",
+    "alt_ja": "赤色のマントを羽織ったデイリー・ダックのマスコットが、アンデスの山岳テラスで光る黄金のジャガイモを誇らしげに掲げている様子。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-24.png",
+  "design_approval_reply": "1 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-24 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-24 — Batch 1",
-  "final_email_sent_at": "2026-08-23T23:48:04.769953+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE SUPERPOWER HIDDEN IN ANCIENT POTATOES",
-  "final_selection_reply": "1 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-24T03:32:57.549233+00:00"
+    "translation_language": "ja"
+  }
 }

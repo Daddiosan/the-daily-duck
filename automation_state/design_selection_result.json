@@ -1,0 +1,10 @@
+{
+  "action": "READY_TO_PUBLISH",
+  "checked_at": "2026-08-24T03:32:57.550539+00:00",
+  "issue_date": "2026-08-24",
+  "image_number": 1,
+  "concept_number": 1,
+  "title_number": 3,
+  "canonical_image_path": "automation_images/canonical/2026-08-24.png",
+  "normalized_reply": "1 3"
+}
