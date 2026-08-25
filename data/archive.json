@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-25",
+    "displayDate": "August 25, 2026",
+    "slug": "field-of-orchids",
+    "title": "FIELD OF ORCHIDS",
+    "duckName": "Field of Orchids",
+    "storyTitleEn": "Scientists left this farm field alone. Thousands of orchids appeared",
+    "storyTitleJa": "Scientists left this farm field alone. Thousands of orchids appeared",
+    "image": "assets/ducks/2026-08-25-field-of-orchids.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Field of Orchids",
+    "imageAltJa": "Field of OrchidsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "When scientists decided to leave a farm field alone, nature responded with a wonderful surprise. Thousands of orchids appeared across the land, showcasing how beautifully nature can restore itself when given space and quiet.",
+    "storyJa": "科学者たちが農地をそのまま触れずにそっとしておいたところ、自然は素晴らしいサプライズで応えてくれました。一面に千ものランの花が現れ、静かな時間と場所が与えられたときに自然がいかに美しく再生するかを見せてくれています。",
+    "duckEn": "Quack! Nature knows how to put on a stunning flower show!",
+    "duckJa": "クワッ！自然は見事な花ショーの開き方を知っているね！",
+    "sourceLabel": "ScienceDaily Environment",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260822015208.htm",
+    "archiveSummaryEn": "Scientists left a farm field alone, and thousands of orchids appeared! Nature truly knows how to surprise us.",
+    "archiveSummaryJa": "農地をそのままそっとしておいたところ、千ものランの花が現れました！自然の力強さには本当に驚かされます。",
+    "reasonEn": "Scientists left a farm field alone, and thousands of orchids appeared! Nature truly knows how to surprise us.",
+    "reasonJa": "農地をそのままそっとしておいたところ、千ものランの花が現れました！自然の力強さには本当に驚かされます。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-24",
     "displayDate": "August 24, 2026",
     "slug": "potato-power-duck",
