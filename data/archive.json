@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-26",
+    "displayDate": "August 26, 2026",
+    "slug": "golden-dragon-duck",
+    "title": "GOLDEN DRAGON DUCK",
+    "duckName": "Golden Dragon Duck",
+    "storyTitleEn": "Scientists discover a real-life “dragon” and name it after Syrax",
+    "storyTitleJa": "Scientists discover a real-life “dragon” and name it after Syrax",
+    "image": "assets/ducks/2026-08-26-golden-dragon-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Golden Dragon Duck",
+    "imageAltJa": "Golden Dragon DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Scientists have discovered a cute golden mountain lizard and decided to name the real-life dragon after Syrax, a famous dragon. This delightful discovery brings a cheerful touch of fantasy to the natural world.",
+    "storyJa": "科学者たちが可愛らしい黄金色の山棲みトカゲを発見し、この本物のドラゴンに有名なドラゴンであるシラックスの名を冠することにしました。この微笑ましい発見は、自然界に陽気なファンタジーの要素を添えてくれます。",
+    "duckEn": "A tiny golden dragon living high in the mountains! Quack!",
+    "duckJa": "山奥深くに暮らす小さな黄金のドラゴンだアック！",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260823015005.htm",
+    "archiveSummaryEn": "Scientists have discovered a cute golden mountain lizard and named it after the famous dragon Syrax!",
+    "archiveSummaryJa": "科学者たちが可愛らしい黄金色の山棲みトカゲを発見し、有名なドラゴン「シラックス」にちなんで命名しました！",
+    "reasonEn": "Scientists have discovered a cute golden mountain lizard and named it after the famous dragon Syrax!",
+    "reasonJa": "科学者たちが可愛らしい黄金色の山棲みトカゲを発見し、有名なドラゴン「シラックス」にちなんで命名しました！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-25",
     "displayDate": "August 25, 2026",
     "slug": "field-of-orchids",
