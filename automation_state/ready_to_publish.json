@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-25",
-  "generated_at": "2026-08-25T03:19:35.488052+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-25T05:18:17.588994+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-25",
     "issue_date": "2026-08-25",
     "phase": 2,
@@ -561,52 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-24T22:59:01.448398+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 7,
-    "title": "Scientists left this farm field alone. Thousands of orchids appeared",
-    "source": "ScienceDaily Environment",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260822015208.htm",
-    "category": "nature",
-    "happiness": 10,
-    "hope": 10,
-    "general_interest": 9,
-    "surprise": 9,
-    "duck_visual": 10,
-    "source_quality": 9,
-    "freshness": 9,
-    "broad_appeal": 10,
-    "novelty_vs_archive": 10,
-    "total_score": 96,
-    "reason": "An uplifting, beautiful, and simple story demonstrating the magical resilience of nature when given a little quiet time.",
-    "candidate_number": 1,
-    "title_en": "Thousands of Orchids Bloom After Scientists Leave Farm Field Alone",
-    "reason_en": "An uplifting story showing the remarkable resilience of nature when given time and quiet.",
-    "en_copy": "When scientists decided to leave a farm field alone, nature responded with a wonderful surprise. Thousands of orchids appeared across the land, showcasing how beautifully nature can restore itself when given space and quiet.",
-    "duck_name": "Field of Orchids",
-    "duck_en": "Quack! Nature knows how to put on a stunning flower show!",
-    "x_en": "Scientists left a farm field alone, and thousands of orchids appeared! Nature truly knows how to surprise us.",
-    "title_ja": "農地をそのままにしたところ、千ものランの花が咲き誇る",
-    "reason_ja": "静かな時間を与えることで自然の素晴らしい生命力を示した、心温まる物語。",
-    "jp_copy": "科学者たちが農地をそのまま触れずにそっとしておいたところ、自然は素晴らしいサプライズで応えてくれました。一面に千ものランの花が現れ、静かな時間と場所が与えられたときに自然がいかに美しく再生するかを見せてくれています。",
-    "duck_jp": "クワッ！自然は見事な花ショーの開き方を知っているね！",
-    "x_jp": "農地をそのままそっとしておいたところ、千ものランの花が現れました！自然の力強さには本当に驚かされます。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "Meadow Stroll Among Orchids",
-      "concept_en": "The friendly yellow duck mascot waddles along a sun-drenched pathway winding through a sprawling field restored with thousands of blooming wild orchids.",
-      "composition_en": "Eye-level landscape hero shot. The yellow duck mascot is positioned off-center in the foreground, gazing happily along a narrow path flanked by thousands of vibrant pink and purple wild orchids stretching to a soft green horizon under warm sunlight.",
-      "generation_prompt_en": "A clean, vibrant editorial photography hero shot featuring a friendly cute yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft. The duck is walking along a rustic farm path surrounded by a breathtaking expanse of thousands of blooming wild orchids in shades of magenta, pink, and soft white. Clear morning light, lush green foliage, warm inviting atmospheric lighting, shallow depth of field, high-end editorial lifestyle magazine style, landscape orientation, no text, no logos, no visual artifacts.",
-      "alt_en": "The yellow duck mascot walking along a sunny path through a vast farm field covered in thousands of blooming wild orchids.",
-      "title_ja": "ランの咲く小道の散策",
-      "concept_ja": "黄色いアヒルのマスコットが、一面に咲き誇る千もの野生のランの花畑の中に続く日当たりの良い小道を機嫌よく歩くビジュアル概念。",
-      "composition_ja": "アヒルのマスコットを前方の少し脇に配置し、横長ヒーロー構図で奥行きのある花畑と光に満ちた空を描くアイレベルの構図。",
-      "alt_ja": "千ものランの花が咲き誇る農地の中の小道を歩く黄色いアヒルのマスコット。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "Botanical Discovery Close-Up",
       "concept_en": "The yellow duck mascot thoughtfully examines a delicate wild orchid up close using a simple wooden magnifying glass, celebrating nature's return.",
@@ -618,95 +575,9 @@
       "composition_ja": "左側にアヒルを配し、右側のランの花に焦点を当てたミディアム近接撮影構図。背景の花畑は柔らかくボケて温かい光をまとう。",
       "alt_ja": "虫眼鏡で野生のランの花をじっくり観察する黄色いアヒルのマスコット。"
     },
-    {
-      "number": 3,
-      "title_en": "Panoramic Bloom Sunrise",
-      "concept_en": "The yellow duck mascot stands at a gentle vantage point gazing across an expansive valley completely covered in wild orchids, bathed in sunrise light.",
-      "composition_en": "High-angle panoramic view. The duck stands on a grassy knoll in the bottom-left corner, admiring a dramatic broad vista of thousands of pink and purple orchids covering a former farm field under soft morning mist and rays of sunlight.",
-      "generation_prompt_en": "A panoramic cinematic landscape editorial photograph featuring a cute friendly yellow duck mascot with an orange beak and soft glossy eyes standing on a grassy green hill in the lower foreground. Below lies a magnificent countryside valley filled with thousands of blooming wild orchids in lavender and deep magenta, glowing under early sunrise sunbeams through light morning mist, inspiring and hopeful tone, high visual grandeur, 16:9 hero aspect ratio, warm modern colors, clean visual composition, no text, no watermarks.",
-      "alt_en": "A wide panoramic view of the yellow duck mascot overlooking a glowing valley of thousands of wild orchids at sunrise.",
-      "title_ja": "朝日とランのパノラマ大景観",
-      "concept_ja": "アヒルのマスコットが高台から谷一面に広がる千ものランの絶景を見渡し、自然の生命力と静かな時間に感銘を受けるパノラマ概念。",
-      "composition_ja": "左下にアヒルの後ろ姿・横顔を配し、画面的に大きく広がるランの花畑の全景と朝日の光差し込む空線を捉えた俯瞰構図。",
-      "alt_ja": "朝日に照らされて千ものランが咲き乱れる広大な谷を見渡す黄色いアヒルのマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "WADDLE YOU LOOK AT THAT!",
-      "meaning_ja": "「これを見てよ！」という驚きと感嘆を表す定番の英語フレーズ「Would you look at that!」の「Would you」を、アヒルの歩き方を意味する「Waddle」に置き換えたダックダジャレ。そっと残された農地に千ものランが一斉に咲き誇った驚きと美しさを親しみやすく表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "LEAVE IT TO NATURE!",
-      "meaning_ja": "「〜にお任せ」を意味する慣用表現「Leave it to...」と、科学者たちが土地を「そのまま放置した（leave it alone）」というニュースの事実を重ねたスマートな言葉遊び。人間が手を引くことで自然が見事に本来の美しさを取り戻したストーリーを表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "THE FIELD THAT REMEMBERED HOW TO BLOOM",
-      "meaning_ja": "「咲く術を思い出した土地」という、言葉遊びに頼らない叙情的でインスピレーション豊かなポスターコピー。静かな時間を与えられたことで、土の下に眠っていた生命力が解き放たれて満開になった感動的なニュアンスを力強く伝えています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Meadow Stroll Among Orchids",
-      "concept_title_ja": "ランの咲く小道の散策",
-      "image_path": "automation_images/design_previews/2026-08-25/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "7a0813e79d02c1b7a1b4943adabec662eee194e66e306ff6eb9e0d890d7a38b2",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Thousands of Orchids Bloom After Scientists Leave Farm Field Alone\nSummary: An uplifting story showing the remarkable resilience of nature when given time and quiet.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nMeadow Stroll Among Orchids\n\nCONCEPT:\nThe friendly yellow duck mascot waddles along a sun-drenched pathway winding through a sprawling field restored with thousands of blooming wild orchids.\n\nCOMPOSITION:\nEye-level landscape hero shot. The yellow duck mascot is positioned off-center in the foreground, gazing happily along a narrow path flanked by thousands of vibrant pink and purple wild orchids stretching to a soft green horizon under warm sunlight.\n\nPRODUCTION DIRECTION:\nA clean, vibrant editorial photography hero shot featuring a friendly cute yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft. The duck is walking along a rustic farm path surrounded by a breathtaking expanse of thousands of blooming wild orchids in shades of magenta, pink, and soft white. Clear morning light, lush green foliage, warm inviting atmospheric lighting, shallow depth of field, high-end editorial lifestyle magazine style, landscape orientation, no text, no logos, no visual artifacts.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot walking along a sunny path through a vast farm field covered in thousands of blooming wild orchids.",
-      "alt_ja": "千ものランの花が咲き誇る農地の中の小道を歩く黄色いアヒルのマスコット。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Botanical Discovery Close-Up",
-      "concept_title_ja": "小さな発見とランの観察",
-      "image_path": "automation_images/design_previews/2026-08-25/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "2c578b107748e5058bf3c509ec0e43ee7ae09c28aa711ae204e8be3e8d643d68",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Thousands of Orchids Bloom After Scientists Leave Farm Field Alone\nSummary: An uplifting story showing the remarkable resilience of nature when given time and quiet.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nBotanical Discovery Close-Up\n\nCONCEPT:\nThe yellow duck mascot thoughtfully examines a delicate wild orchid up close using a simple wooden magnifying glass, celebrating nature's return.\n\nCOMPOSITION:\nMedium close-up shot, landscape framing. The duck sits cozy on a soft mossy stone on the left, holding a wooden magnifying glass up to a single exquisitely detailed wild orchid flower on the right, with thousands of blurred orchid blossoms glowing gently in the soft-focus background.\n\nPRODUCTION DIRECTION:\nA charming premium editorial photograph of a friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft. The duck sits comfortably on a moss-covered stone, peering with curiosity through a vintage wooden magnifying glass at a vivid wild orchid bloom. In the background, an entire field of soft purple and magenta wild orchids is blurred in creamy bokeh under warm golden hour sunlight, macro detail, warm atmospheric lighting, high quality visual layout, no text, no UI.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot using a magnifying glass to inspect a wild orchid blooming in an undisturbed field.",
-      "alt_ja": "虫眼鏡で野生のランの花をじっくり観察する黄色いアヒルのマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Panoramic Bloom Sunrise",
-      "concept_title_ja": "朝日とランのパノラマ大景観",
-      "image_path": "automation_images/design_previews/2026-08-25/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "51039e93c0886fee7ca16d5e2da2aa06a7b0c65758e5377d4583f4a9ccda6063",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Thousands of Orchids Bloom After Scientists Leave Farm Field Alone\nSummary: An uplifting story showing the remarkable resilience of nature when given time and quiet.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nPanoramic Bloom Sunrise\n\nCONCEPT:\nThe yellow duck mascot stands at a gentle vantage point gazing across an expansive valley completely covered in wild orchids, bathed in sunrise light.\n\nCOMPOSITION:\nHigh-angle panoramic view. The duck stands on a grassy knoll in the bottom-left corner, admiring a dramatic broad vista of thousands of pink and purple orchids covering a former farm field under soft morning mist and rays of sunlight.\n\nPRODUCTION DIRECTION:\nA panoramic cinematic landscape editorial photograph featuring a cute friendly yellow duck mascot with an orange beak and soft glossy eyes standing on a grassy green hill in the lower foreground. Below lies a magnificent countryside valley filled with thousands of blooming wild orchids in lavender and deep magenta, glowing under early sunrise sunbeams through light morning mist, inspiring and hopeful tone, high visual grandeur, 16:9 hero aspect ratio, warm modern colors, clean visual composition, no text, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A wide panoramic view of the yellow duck mascot overlooking a glowing valley of thousands of wild orchids at sunrise.",
-      "alt_ja": "朝日に照らされて千ものランが咲き乱れる広大な谷を見渡す黄色いアヒルのマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-25/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "WADDLE YOU LOOK AT THAT!"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "WADDLE YOU LOOK AT THAT!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "WADDLE YOU LOOK AT THAT!",
+    "meaning_ja": "「これを見てよ！」という驚きと感嘆を表す定番の英語フレーズ「Would you look at that!」の「Would you」を、アヒルの歩き方を意味する「Waddle」に置き換えたダックダジャレ。そっと残された農地に千ものランが一斉に咲き誇った驚きと美しさを親しみやすく表現しています。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "Botanical Discovery Close-Up",
+    "concept_title_ja": "小さな発見とランの観察",
+    "image_path": "automation_images/design_previews/2026-08-25/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "2c578b107748e5058bf3c509ec0e43ee7ae09c28aa711ae204e8be3e8d643d68",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Thousands of Orchids Bloom After Scientists Leave Farm Field Alone\nSummary: An uplifting story showing the remarkable resilience of nature when given time and quiet.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nBotanical Discovery Close-Up\n\nCONCEPT:\nThe yellow duck mascot thoughtfully examines a delicate wild orchid up close using a simple wooden magnifying glass, celebrating nature's return.\n\nCOMPOSITION:\nMedium close-up shot, landscape framing. The duck sits cozy on a soft mossy stone on the left, holding a wooden magnifying glass up to a single exquisitely detailed wild orchid flower on the right, with thousands of blurred orchid blossoms glowing gently in the soft-focus background.\n\nPRODUCTION DIRECTION:\nA charming premium editorial photograph of a friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft. The duck sits comfortably on a moss-covered stone, peering with curiosity through a vintage wooden magnifying glass at a vivid wild orchid bloom. In the background, an entire field of soft purple and magenta wild orchids is blurred in creamy bokeh under warm golden hour sunlight, macro detail, warm atmospheric lighting, high quality visual layout, no text, no UI.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The yellow duck mascot using a magnifying glass to inspect a wild orchid blooming in an undisturbed field.",
+    "alt_ja": "虫眼鏡で野生のランの花をじっくり観察する黄色いアヒルのマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-25.png",
+  "design_approval_reply": "2 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-25 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-25 — Batch 1",
-  "final_email_sent_at": "2026-08-25T03:19:39.795678+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "WADDLE YOU LOOK AT THAT!",
-  "final_selection_reply": "2 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-25T05:18:17.589942+00:00"
+    "translation_language": "ja"
+  }
 }
