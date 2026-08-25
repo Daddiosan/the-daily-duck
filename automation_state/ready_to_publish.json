@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-26",
-  "generated_at": "2026-08-25T23:05:22.467445+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-25T23:59:00.399894+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-26",
     "issue_date": "2026-08-26",
     "phase": 2,
@@ -561,64 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-25T23:01:02.055647+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 3,
-    "title": "Scientists discover a real-life “dragon” and name it after Syrax",
-    "source": "ScienceDaily Offbeat",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260823015005.htm",
-    "category": "animals",
-    "happiness": 9,
-    "hope": 8,
-    "general_interest": 9,
-    "surprise": 9,
-    "duck_visual": 10,
-    "source_quality": 9,
-    "freshness": 9,
-    "broad_appeal": 10,
-    "novelty_vs_archive": 9,
-    "total_score": 92,
-    "reason": "Finding a cute golden mountain lizard named after a famous dragon is full of warmth, pop culture fun, and fantastic visual appeal.",
-    "candidate_number": 1,
-    "title_en": "Scientists Discover a Real-Life “Dragon” and Name It After Syrax",
-    "reason_en": "Finding a cute golden mountain lizard named after a famous dragon brings warmth, pop culture fun, and wonder to the natural world.",
-    "en_copy": "Scientists have discovered a cute golden mountain lizard and decided to name the real-life dragon after Syrax, a famous dragon. This delightful discovery brings a cheerful touch of fantasy to the natural world.",
-    "duck_name": "Golden Dragon Duck",
-    "duck_en": "A tiny golden dragon living high in the mountains! Quack!",
-    "x_en": "Scientists have discovered a cute golden mountain lizard and named it after the famous dragon Syrax!",
-    "title_ja": "科学者が本物の「ドラゴン」を発見、シラックスにちなんで命名",
-    "reason_ja": "有名なドラゴンにちなんで名付けられた可愛らしい黄金色のトカゲの発見は、自然界に温かさとポップカルチャーの楽しさ、そして驚きをもたらします。",
-    "jp_copy": "科学者たちが可愛らしい黄金色の山棲みトカゲを発見し、この本物のドラゴンに有名なドラゴンであるシラックスの名を冠することにしました。この微笑ましい発見は、自然界に陽気なファンタジーの要素を添えてくれます。",
-    "duck_jp": "山奥深くに暮らす小さな黄金のドラゴンだアック！",
-    "x_jp": "科学者たちが可愛らしい黄金色の山棲みトカゲを発見し、有名なドラゴン「シラックス」にちなんで命名しました！"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "Explorer Duck and the Golden Dragon",
-      "concept_en": "The friendly yellow duck mascot playing the role of a warm mountain researcher high up on a sunlit alpine ridge, examining a tiny golden mountain lizard with a magnifying glass.",
-      "composition_en": "Landscape hero visual. The yellow duck mascot stands on a rocky mountain slope with vibrant greenery in the background under soft daylight. The duck wears a light expedition vest and holds a magnifying glass focused gently on a small, radiant golden lizard perched on a mossy stone. Clean modern editorial aesthetic with warm lighting.",
-      "generation_prompt_en": "A clean modern editorial landscape photograph featuring a friendly cute yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft. The duck wears a simple beige field researcher vest and holds a magnifying glass, looking down warmly at a tiny golden lizard perched on a mossy mountain stone. Set on a lush alpine mountain ridge under soft bright daylight. Bright vibrant colors, warm charming mood, photorealistic editorial style, high focus, no text, no watermarks.",
-      "alt_en": "The yellow duck mascot in an explorer vest admiring a tiny golden lizard on a mountain rock through a magnifying glass.",
-      "title_ja": "探検家ダックと黄金のドラゴン",
-      "concept_ja": "陽光が差し込む山の尾根で、温かい研究者姿の黄色いダックマスコットが虫眼鏡を使って小さな黄金のトカゲを観察する構図。",
-      "composition_ja": "横長ヒーロー構図。背景には柔らかい光に包まれた緑豊かなアルプスの山々。ベージュのフィールドベストを着たダックマスコットが、苔の生えた岩の上にちょこんと座る小さな輝く黄金のトカゲを虫眼鏡で優しく覗き込んでいます。",
-      "alt_ja": "探検家ベストを着た黄色いダックマスコットが、山の岩の上にいる小さな黄金のトカゲを虫眼鏡で微笑ましく観察している様子。"
-    },
-    {
-      "number": 2,
-      "title_en": "The Mythical Shadow Play",
-      "concept_en": "A whimsical and charming visual metaphor where the tiny golden mountain lizard sits beside the yellow duck mascot on a sunlit rock, casting a grand dragon-shaped shadow on the mountain cliff face.",
-      "composition_en": "Wide landscape composition. The adorable yellow duck mascot and the tiny golden mountain lizard sit side-by-side on a sunlit granite boulder. Warm morning sunlight casts a gentle silhouette onto a smooth stone mountain wall behind them, subtly shaping the shadow into a majestic fantasy dragon. Modern, charming, and cinematic visual story.",
-      "generation_prompt_en": "A high-end editorial landscape photograph of a friendly bright yellow duck mascot sitting next to a tiny glittering golden lizard on a smooth mountain boulder. Warm directional sunlight creates a clean shadow on the rock wall behind them that magically resembles a grand, elegant fantasy dragon silhouette. Mountain peak scenery, vivid colors, warm inviting lighting, ultra-clean composition, cinematic, no text, no watermarks, no logos.",
-      "alt_en": "The yellow duck mascot and a small golden lizard sitting on a boulder while their shadow forms the outline of a majestic dragon on the cliff behind them.",
-      "title_ja": "神話的な影遊び",
-      "concept_ja": "太陽の光を浴びる岩の上に小さな黄金のトカゲとダックマスコットが並んで座り、背後の崖に幻想的なドラゴンの影が浮かび上がる視覚的メタファー。",
-      "composition_ja": "横長構図。光り輝く花崗岩の岩の上に並ぶ愛らしい黄色いダックマスコットと小さな黄金のトカゲ。暖かい朝日が差し込み、背後の滑らかな岩壁にファンタジーに登場するような優雅なドラゴンのシルエットの影を映し出しています。",
-      "alt_ja": "岩の上に座るダックマスコットと小さな黄金のトカゲ、そして背後の崖に映し出されたドラゴンの形をした影。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "The Miniature Dragon King",
       "concept_en": "An intimate, charming close-up encounter where the duck mascot sitting in alpine wildflowers presents a tiny botanical leaf crown to the golden mountain lizard.",
@@ -629,84 +574,10 @@
       "concept_ja": "高山植物の花畑の中で、ダックマスコットが小さな葉っぱの王冠をかぶった黄金のトカゲと心温まる交流を交わす接写ショット。",
       "composition_ja": "マクロ感のある横長構図。色鮮やかな高山植物の花の中に優しくたたずむ黄色いダックマスコット。その前で、小さな緑の葉で作られた王冠を戴いた輝く黄金のトカゲが小枝の上に誇らしげに座り、まるで可愛らしい王者のような雰囲気を醸し出しています。",
       "alt_ja": "高山植物の花畑で、小さな葉の王冠をかぶった黄金のトカゲを微笑ましく見つめる黄色いダックマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IN DRAGONS!",
-      "meaning_ja": "「ドラゴンを信じよう！」という意味。「Believe（信じる）」という言葉を、アヒルのクチバシを意味する「BILL」に置き換えたダック駄洒落（BILL-ieve）。本物の「ドラゴン（黄金のトカゲ）」が発見されたという夢のあるニュースにぴったりな、The Daily Duckのブランド性を象徴するダジャレタイトルです。"
     },
-    {
-      "number": 2,
-      "title": "MEET THE SCALED-DOWN DRAGON!",
-      "meaning_ja": "「小さくなったドラゴンにご対面！」という意味。「scaled-down（サイズを縮小した・小型化した）」という熟語と、トカゲの体の「scale（鱗）」という英単語を掛け合わせたダブルミーニングのスマートな言葉遊び。巨大な伝説のドラゴンが、小さなトカゲとして実在していた驚きを表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "THE LEGEND IS REAL AND IT’S TINY!",
-      "meaning_ja": "「伝説は実在した、しかも超ちっちゃい！」という意味。ダジャレを使わず、雑誌の表紙やポスターコピーのような強いインパクトとワクワク感を持たせたキャッチコピー。ドラゴンという伝説の名を戴く可愛らしいトカゲの発見というニュースの魅力を、ダイレクトかつポップに伝えます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Explorer Duck and the Golden Dragon",
-      "concept_title_ja": "探検家ダックと黄金のドラゴン",
-      "image_path": "automation_images/design_previews/2026-08-26/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "168182ec9998758b5d8f5d1479e071d0690742be20563eb470c466d512a6fdcd",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Discover a Real-Life “Dragon” and Name It After Syrax\nSummary: Finding a cute golden mountain lizard named after a famous dragon brings warmth, pop culture fun, and wonder to the natural world.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nExplorer Duck and the Golden Dragon\n\nCONCEPT:\nThe friendly yellow duck mascot playing the role of a warm mountain researcher high up on a sunlit alpine ridge, examining a tiny golden mountain lizard with a magnifying glass.\n\nCOMPOSITION:\nLandscape hero visual. The yellow duck mascot stands on a rocky mountain slope with vibrant greenery in the background under soft daylight. The duck wears a light expedition vest and holds a magnifying glass focused gently on a small, radiant golden lizard perched on a mossy stone. Clean modern editorial aesthetic with warm lighting.\n\nPRODUCTION DIRECTION:\nA clean modern editorial landscape photograph featuring a friendly cute yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft. The duck wears a simple beige field researcher vest and holds a magnifying glass, looking down warmly at a tiny golden lizard perched on a mossy mountain stone. Set on a lush alpine mountain ridge under soft bright daylight. Bright vibrant colors, warm charming mood, photorealistic editorial style, high focus, no text, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot in an explorer vest admiring a tiny golden lizard on a mountain rock through a magnifying glass.",
-      "alt_ja": "探検家ベストを着た黄色いダックマスコットが、山の岩の上にいる小さな黄金のトカゲを虫眼鏡で微笑ましく観察している様子。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Mythical Shadow Play",
-      "concept_title_ja": "神話的な影遊び",
-      "image_path": "automation_images/design_previews/2026-08-26/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "737e64ec1e7b6b3dc78bcc032720a85dc80b1b14319455c3eeb358fcfe17ea02",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Discover a Real-Life “Dragon” and Name It After Syrax\nSummary: Finding a cute golden mountain lizard named after a famous dragon brings warmth, pop culture fun, and wonder to the natural world.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Mythical Shadow Play\n\nCONCEPT:\nA whimsical and charming visual metaphor where the tiny golden mountain lizard sits beside the yellow duck mascot on a sunlit rock, casting a grand dragon-shaped shadow on the mountain cliff face.\n\nCOMPOSITION:\nWide landscape composition. The adorable yellow duck mascot and the tiny golden mountain lizard sit side-by-side on a sunlit granite boulder. Warm morning sunlight casts a gentle silhouette onto a smooth stone mountain wall behind them, subtly shaping the shadow into a majestic fantasy dragon. Modern, charming, and cinematic visual story.\n\nPRODUCTION DIRECTION:\nA high-end editorial landscape photograph of a friendly bright yellow duck mascot sitting next to a tiny glittering golden lizard on a smooth mountain boulder. Warm directional sunlight creates a clean shadow on the rock wall behind them that magically resembles a grand, elegant fantasy dragon silhouette. Mountain peak scenery, vivid colors, warm inviting lighting, ultra-clean composition, cinematic, no text, no watermarks, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot and a small golden lizard sitting on a boulder while their shadow forms the outline of a majestic dragon on the cliff behind them.",
-      "alt_ja": "岩の上に座るダックマスコットと小さな黄金のトカゲ、そして背後の崖に映し出されたドラゴンの形をした影。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Miniature Dragon King",
-      "concept_title_ja": "小さなドラゴンキング",
-      "image_path": "automation_images/design_previews/2026-08-26/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "78826e9827889cd0c1b717aec8be1cef793b293989bee18b2bdf05e989054b9f",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Discover a Real-Life “Dragon” and Name It After Syrax\nSummary: Finding a cute golden mountain lizard named after a famous dragon brings warmth, pop culture fun, and wonder to the natural world.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Miniature Dragon King\n\nCONCEPT:\nAn intimate, charming close-up encounter where the duck mascot sitting in alpine wildflowers presents a tiny botanical leaf crown to the golden mountain lizard.\n\nCOMPOSITION:\nClose-up macro landscape composition. The yellow duck mascot rests gently among vibrant mountain wildflowers, looking with wide glossy eyes at the tiny golden mountain lizard. The lizard is perched proudly on a small twig, adorned with a tiny crown made of green alpine leaves, giving it the playful regal aura of a real-life dragon. Soft glowing atmosphere and rich natural textures.\n\nPRODUCTION DIRECTION:\nPremium macro editorial portrait in landscape ratio. A friendly cute yellow duck mascot with glossy dark eyes and orange beak is sitting among colorful mountain wildflowers. In front of the duck, a tiny bright golden lizard sits proudly on a small wooden branch, wearing a miniature crown made of tiny green leaves. Soft warm bokeh background, detailed scales, joyful magical vibe, crisp detail, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot in a field of mountain flowers smiling at a small golden lizard wearing a miniature leaf crown.",
-      "alt_ja": "高山植物の花畑で、小さな葉の王冠をかぶった黄金のトカゲを微笑ましく見つめる黄色いダックマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-26/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "THE LEGEND IS REAL AND IT’S TINY!"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE LEGEND IS REAL AND IT’S TINY!",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "THE LEGEND IS REAL AND IT’S TINY!",
+    "meaning_ja": "「伝説は実在した、しかも超ちっちゃい！」という意味。ダジャレを使わず、雑誌の表紙やポスターコピーのような強いインパクトとワクワク感を持たせたキャッチコピー。ドラゴンという伝説の名を戴く可愛らしいトカゲの発見というニュースの魅力を、ダイレクトかつポップに伝えます。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "The Miniature Dragon King",
+    "concept_title_ja": "小さなドラゴンキング",
+    "image_path": "automation_images/design_previews/2026-08-26/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "78826e9827889cd0c1b717aec8be1cef793b293989bee18b2bdf05e989054b9f",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Discover a Real-Life “Dragon” and Name It After Syrax\nSummary: Finding a cute golden mountain lizard named after a famous dragon brings warmth, pop culture fun, and wonder to the natural world.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Miniature Dragon King\n\nCONCEPT:\nAn intimate, charming close-up encounter where the duck mascot sitting in alpine wildflowers presents a tiny botanical leaf crown to the golden mountain lizard.\n\nCOMPOSITION:\nClose-up macro landscape composition. The yellow duck mascot rests gently among vibrant mountain wildflowers, looking with wide glossy eyes at the tiny golden mountain lizard. The lizard is perched proudly on a small twig, adorned with a tiny crown made of green alpine leaves, giving it the playful regal aura of a real-life dragon. Soft glowing atmosphere and rich natural textures.\n\nPRODUCTION DIRECTION:\nPremium macro editorial portrait in landscape ratio. A friendly cute yellow duck mascot with glossy dark eyes and orange beak is sitting among colorful mountain wildflowers. In front of the duck, a tiny bright golden lizard sits proudly on a small wooden branch, wearing a miniature crown made of tiny green leaves. Soft warm bokeh background, detailed scales, joyful magical vibe, crisp detail, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The yellow duck mascot in a field of mountain flowers smiling at a small golden lizard wearing a miniature leaf crown.",
+    "alt_ja": "高山植物の花畑で、小さな葉の王冠をかぶった黄金のトカゲを微笑ましく見つめる黄色いダックマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-26.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-26 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-26 — Batch 1",
-  "final_email_sent_at": "2026-08-25T23:05:29.078250+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE LEGEND IS REAL AND IT’S TINY!",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-25T23:59:00.400750+00:00"
+    "translation_language": "ja"
+  }
 }
