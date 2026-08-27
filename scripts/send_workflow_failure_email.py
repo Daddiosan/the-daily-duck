@@ -8,8 +8,12 @@ from email.message import EmailMessage
 
 def required(name: str) -> str:
     value = os.getenv(name, "").strip()
+
     if not value:
-        raise RuntimeError(f"Missing environment variable: {name}")
+        raise RuntimeError(
+            f"Missing environment variable: {name}"
+        )
+
     return value
 
 
@@ -41,7 +45,8 @@ def main() -> int:
     ]
 
     subject = (
-        f"The Daily Duck — Automation alert — {stage}"
+        "The Daily Duck — Automation alert — "
+        f"{stage}"
     )
 
     body = f"""The Daily Duck automation monitor detected a problem.
@@ -52,42 +57,61 @@ Stage:
 Repository:
 {repository}
 
-GitHub Actions run:
-{run_url}
 """
 
     if audit_details:
-        body += f"""
-Detected problem:
+        body += f"""Detected problem:
+
 {audit_details}
+
 """
 
-    body += """
+    body += f"""GitHub Actions run:
+{run_url}
+
 No later publication step should be assumed to have completed.
 
-Please open the GitHub Actions run above and check the failed or missing scheduled workflow.
+Please check the failed or missing scheduled workflow.
 """
 
     msg = EmailMessage()
-    msg["From"] = required("GMAIL_ADDRESS")
-    msg["To"] = ", ".join(recipients)
+
+    msg["From"] = required(
+        "GMAIL_ADDRESS"
+    )
+
+    msg["To"] = ", ".join(
+        recipients
+    )
+
     msg["Subject"] = subject
-    msg.set_content(body)
+
+    msg.set_content(
+        body
+    )
 
     with smtplib.SMTP_SSL(
         "smtp.gmail.com",
         465,
     ) as smtp:
+
         smtp.login(
             required("GMAIL_ADDRESS"),
             required("GMAIL_APP_PASSWORD"),
         )
 
-        smtp.send_message(msg)
+        smtp.send_message(
+            msg
+        )
 
-    print("Automation alert email sent.")
+    print(
+        "Automation alert email sent."
+    )
+
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(
+        main()
+    )
