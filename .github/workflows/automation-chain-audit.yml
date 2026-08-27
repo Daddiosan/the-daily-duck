@@ -3,16 +3,64 @@ name: The Daily Duck - Automation Chain Audit
 on:
   workflow_dispatch:
 
+  schedule:
+    # JST 08:20 / 12:20 / 18:20 / 22:20
+    # UTC 23:20 / 03:20 / 09:20 / 13:20
+    #
+    # GitHub Actions congestion around :00 is avoided.
+    - cron: "20 23 * * *"
+    - cron: "20 3 * * *"
+    - cron: "20 9 * * *"
+    - cron: "20 13 * * *"
+
 permissions:
   contents: read
+  actions: read
 
 jobs:
   audit:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      # ------------------------------------------------------------
+      # 1. Checkout repository
+      # ------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------------
+      # 2. Set up Python
+      # ------------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # ------------------------------------------------------------
+      # 3. Run automation chain audit
+      # ------------------------------------------------------------
       - name: Audit automatic + manual chain
-        run: python scripts/automation_chain_audit.py
+        id: chain_audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/automation_chain_audit.py
+
+      # ------------------------------------------------------------
+      # 4. Send email only when audit detects a problem
+      # ------------------------------------------------------------
+      - name: Send automation chain alert
+        if: failure()
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+
+          FAILURE_STAGE: The Daily Duck automation chain audit
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+        run: |
+          python scripts/send_workflow_failure_email.py
