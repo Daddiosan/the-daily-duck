@@ -10,7 +10,7 @@ on:
 
   schedule:
     # 07:00 JST
-    - cron: "0 22 * * *"
+    - cron: "7 22 * * *"
 
 permissions:
   contents: read
