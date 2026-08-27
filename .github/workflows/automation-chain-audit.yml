@@ -28,4 +28,8 @@ jobs:
           python-version: "3.12"
 
       - name: Audit automatic + manual chain
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python scripts/automation_chain_audit.py
