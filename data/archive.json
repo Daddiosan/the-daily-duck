@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-27",
+    "displayDate": "August 27, 2026",
+    "slug": "history-duck",
+    "title": "HISTORY DUCK",
+    "duckName": "History Duck",
+    "storyTitleEn": "The secret hidden in these ancient manuscripts isn’t written in ink",
+    "storyTitleJa": "The secret hidden in these ancient manuscripts isn’t written in ink",
+    "image": "assets/ducks/2026-08-27-history-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for History Duck",
+    "imageAltJa": "History DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "The secrets of ancient manuscripts extend far beyond the words written in ink. Through non-destructive DNA sampling of historic parchment, researchers are uncovering hidden layers of history that were never recorded in writing.",
+    "storyJa": "古代の写本に隠された秘密は、インクで書かれた文字だけに留まりません。歴史的な羊皮紙から非破壊でDNAを採取することで、文字として記録されなかった歴史の隠された一面が解き明かされています。",
+    "duckEn": "Unlocking stories hidden deep inside historical parchment!",
+    "duckJa": "羊皮紙の奥深くに隠された歴史を解き明かすんだな！",
+    "sourceLabel": "ScienceDaily Society",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260810015723.htm",
+    "archiveSummaryEn": "Ancient parchment manuscripts hold secrets beyond written ink—non-destructive DNA sampling is uncovering hidden history saved in the parchment itself.",
+    "archiveSummaryJa": "古代の羊皮紙写本にはインク以外の秘密が眠っています。非破壊的なDNA採取により、文字で残されなかった歴史が明らかにされつつあります。",
+    "reasonEn": "Ancient parchment manuscripts hold secrets beyond written ink—non-destructive DNA sampling is uncovering hidden history saved in the parchment itself.",
+    "reasonJa": "古代の羊皮紙写本にはインク以外の秘密が眠っています。非破壊的なDNA採取により、文字で残されなかった歴史が明らかにされつつあります。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-26",
     "displayDate": "August 26, 2026",
     "slug": "golden-dragon-duck",
