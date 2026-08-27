@@ -14,9 +14,25 @@ def required(name: str) -> str:
 
 
 def main() -> int:
-    stage = os.getenv("FAILURE_STAGE", "The Daily Duck automation").strip()
-    run_url = os.getenv("GITHUB_RUN_URL", "").strip()
-    repository = os.getenv("GITHUB_REPOSITORY", "").strip()
+    stage = os.getenv(
+        "FAILURE_STAGE",
+        "The Daily Duck automation",
+    ).strip()
+
+    run_url = os.getenv(
+        "GITHUB_RUN_URL",
+        "",
+    ).strip()
+
+    repository = os.getenv(
+        "GITHUB_REPOSITORY",
+        "",
+    ).strip()
+
+    audit_details = os.getenv(
+        "AUDIT_DETAILS",
+        "",
+    ).strip()
 
     recipients = [
         x.strip()
@@ -24,8 +40,11 @@ def main() -> int:
         if x.strip()
     ]
 
-    subject = f"The Daily Duck — Automation stopped — {stage}"
-    body = f"""The Daily Duck automation stopped because a workflow step failed.
+    subject = (
+        f"The Daily Duck — Automation alert — {stage}"
+    )
+
+    body = f"""The Daily Duck automation monitor detected a problem.
 
 Stage:
 {stage}
@@ -35,9 +54,18 @@ Repository:
 
 GitHub Actions run:
 {run_url}
+"""
 
+    if audit_details:
+        body += f"""
+Detected problem:
+{audit_details}
+"""
+
+    body += """
 No later publication step should be assumed to have completed.
-Open the Actions run above and check the failed step.
+
+Please open the GitHub Actions run above and check the failed or missing scheduled workflow.
 """
 
     msg = EmailMessage()
@@ -46,14 +74,18 @@ Open the Actions run above and check the failed step.
     msg["Subject"] = subject
     msg.set_content(body)
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com",
+        465,
+    ) as smtp:
         smtp.login(
             required("GMAIL_ADDRESS"),
             required("GMAIL_APP_PASSWORD"),
         )
+
         smtp.send_message(msg)
 
-    print("Failure notification email sent.")
+    print("Automation alert email sent.")
     return 0
 
 
