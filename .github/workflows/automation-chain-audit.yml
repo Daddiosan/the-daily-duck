@@ -19,17 +19,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ------------------------------------------------------------
+      # 1. Checkout repository
+      # ------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ------------------------------------------------------------
+      # 2. Set up Python
+      # ------------------------------------------------------------
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # ------------------------------------------------------------
+      # 3. Run automation chain audit
+      # ------------------------------------------------------------
       - name: Audit automatic + manual chain
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python scripts/automation_chain_audit.py
+
+      # ------------------------------------------------------------
+      # 4. Send alert email only when audit fails
+      # ------------------------------------------------------------
+      - name: Send automation chain alert
+        if: failure()
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+
+          FAILURE_STAGE: Scheduled workflow health check
+
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+        run: python scripts/send_workflow_failure_email.py
