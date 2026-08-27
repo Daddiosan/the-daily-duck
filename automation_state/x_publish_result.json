@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-08-27T11:59:36.185246+00:00",
+  "issue_date": "2026-08-27",
+  "x_post_id": "2092945118005256453",
+  "x_post_url": "https://x.com/i/web/status/2092945118005256453",
+  "x_media_id": "2092945115375357952",
+  "image_path": "automation_images/x/2026-08-27-x-card.png",
+  "post_text": "Ancient parchment manuscripts hold secrets beyond written ink—non-destructive DNA sampling is uncovering hidden history saved in the parchment itself.\n\nhttps://www.thedailyduck.ai/ducks/2026-08-27/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 175
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2092945118005256453",
+      "text": "Ancient parchment manuscripts hold secrets beyond written ink—non-destructive DNA sampling is uncovering hidden history saved in the parchment itself.\n\nhttps://t.co/xIRvO3XqBd https://t.co/32wSRguC5F"
+    }
+  }
+}
