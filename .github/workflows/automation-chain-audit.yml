@@ -19,33 +19,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ------------------------------------------------------------
-      # 1. Checkout repository
-      # ------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ------------------------------------------------------------
-      # 2. Set up Python
-      # ------------------------------------------------------------
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      # ------------------------------------------------------------
-      # 3. Run automation chain audit
-      # ------------------------------------------------------------
-      - name: Audit automatic + manual chain
+      - name: Run automation chain audit
+        id: chain_audit
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python scripts/automation_chain_audit.py
+        shell: bash
+        run: |
+          set +e
 
-      # ------------------------------------------------------------
-      # 4. Send alert email only when audit fails
-      # ------------------------------------------------------------
+          python scripts/automation_chain_audit.py \
+            > audit_output.txt 2>&1
+
+          EXIT_CODE=$?
+
+          echo "============================================================"
+          echo "AUTOMATION CHAIN AUDIT OUTPUT"
+          echo "============================================================"
+
+          cat audit_output.txt
+
+          echo "============================================================"
+          echo "AUDIT EXIT CODE: $EXIT_CODE"
+          echo "============================================================"
+
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+
+          exit "$EXIT_CODE"
+
       - name: Send automation chain alert
         if: failure()
         env:
@@ -59,4 +69,21 @@ jobs:
 
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-        run: python scripts/send_workflow_failure_email.py
+        shell: bash
+        run: |
+          if [ -f audit_output.txt ]; then
+            {
+              echo 'AUDIT_DETAILS<<EOF'
+              cat audit_output.txt
+              echo 'EOF'
+            } >> "$GITHUB_ENV"
+          else
+            {
+              echo 'AUDIT_DETAILS<<EOF'
+              echo "The automation audit failed before an audit report could be created."
+              echo "Open the GitHub Actions run and inspect the failed step."
+              echo 'EOF'
+            } >> "$GITHUB_ENV"
+          fi
+
+          python scripts/send_workflow_failure_email.py
