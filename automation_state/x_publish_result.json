@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-08-28T21:51:45.501377+00:00",
+  "issue_date": "2026-08-28",
+  "x_post_id": "2093456526283358371",
+  "x_post_url": "https://x.com/i/web/status/2093456526283358371",
+  "x_media_id": "2093456523703791616",
+  "image_path": "automation_images/x/2026-08-28-x-card.png",
+  "post_text": "For 15,000 years, humans and dogs have been changing each other! A heartwarming look at our long-standing bond with dogs.\n\nhttps://www.thedailyduck.ai/ducks/2026-08-28/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 146
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2093456526283358371",
+      "text": "For 15,000 years, humans and dogs have been changing each other! A heartwarming look at our long-standing bond with dogs.\n\nhttps://t.co/vZTy9Nwuif https://t.co/KQJ9OlIks0"
+    }
+  }
+}
