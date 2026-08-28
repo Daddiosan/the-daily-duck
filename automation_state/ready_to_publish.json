@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-28",
-  "generated_at": "2026-08-28T14:08:23.779029+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-28T21:50:37.453797+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-28",
     "issue_date": "2026-08-28",
     "phase": 2,
@@ -561,40 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-28T11:17:16.109394+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 30,
-    "title": "For 15,000 years, humans and dogs have been changing each other",
-    "source": "ScienceDaily Society",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260810015700.htm",
-    "category": "people",
-    "happiness": 9,
-    "hope": 8,
-    "general_interest": 9,
-    "surprise": 6,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 7,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 8,
-    "total_score": 82,
-    "reason": "A heartwarming look at the deep, ancient partnership between people and dogs that resonates with dog lovers everywhere.",
-    "candidate_number": 4,
-    "title_en": "How Humans and Dogs Have Been Shaping Each Other for 15,000 Years",
-    "reason_en": "A heartwarming look at the deep, ancient partnership between people and dogs that resonates with dog lovers everywhere.",
-    "en_copy": "For 15,000 years, humans and dogs have shared a deep and ancient partnership, continuously influencing and changing each other. This heartwarming bond highlights how our lives and histories have grown together over thousands of years.",
-    "duck_name": "Canine Companion Duck",
-    "duck_en": "Quack! 15,000 years of best friendship is truly something to celebrate!",
-    "x_en": "For 15,000 years, humans and dogs have been changing each other! A heartwarming look at our long-standing bond with dogs.",
-    "title_ja": "1万5000年にわたり人間と犬がお互いに影響を与え合ってきた歴史",
-    "reason_ja": "犬を愛するすべての人々の心に響く、人間と犬の深い古代からの絆を描いた心温まるストーリーであるため。",
-    "jp_copy": "1万5000年もの間、人間と犬は深く古代からのパートナーシップを共有し、互いに影響を与え合い変化してきました。この心温まる絆は、私たちの生活と歴史が何千年にもわたって共に育まれてきたことを物語っています。",
-    "duck_jp": "クワッ！1万5000年もの最高の友情なんて、本当に素晴らしいね！",
-    "x_jp": "1万5000年間にわたり、人間と犬はお互いを変え合ってきました！愛犬との長い絆を描いた心温まる話題です。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "The Sunlit Park Stroll",
       "concept_en": "The Daily Duck taking a heartwarming stroll side-by-side with a friendly Golden Retriever along a sunlit park path, celebrating thousands of years of companionship.",
@@ -606,107 +575,9 @@
       "composition_ja": "横長ランドスケープ構図。黄色い体、オレンジのクチバシ、黒くツヤのある大きな目、小さな頭の羽毛を持つDaily Duckが左側を歩き、右側の大きなゴールデン・レトリバーを優しく見上げています。緑豊かな木々から柔らかな夕光が差し込む小道を描きます。",
       "alt_ja": "夕光が差し込む公園の小道を、楽しそうに並んで歩くDaily Duckとゴールデン・レトリバー。"
     },
-    {
-      "number": 2,
-      "title_en": "Hearthside Companions",
-      "concept_en": "A cozy interior visual showing the duck and a fluffy companion dog resting comfortably together in a modern, light-filled living room.",
-      "composition_en": "Medium-wide horizontal shot in a stylish modern living room. The yellow duck rests relaxed on a warm neutral rug beside a big fluffy border collie who lies comfortably with its head near its paws. Gentle morning sunlight streams through a large window, creating a serene and premium atmosphere.",
-      "generation_prompt_en": "A warm and high-end editorial lifestyle photograph showing a friendly cute yellow duck with an orange beak and large glossy dark eyes sitting comfortably next to a big fluffy border collie on a plush carpet in a bright modern living room. Soft natural morning light streaming through large window, cozy luxury home atmosphere, clean modern visual style, warm color palette, horizontal landscape framing, no logos, no text.",
-      "alt_en": "The Daily Duck resting cozy next to a fluffy border collie on a rug in a sunlit modern living room.",
-      "title_ja": "日差しが差し込む部屋の相棒",
-      "concept_ja": "明るくモダンなリビングルームで、クッションラグの上に並んで心地よくくつろぐDaily Duckとふんわりとした毛並みの犬を描く、居心地の良い屋内ビジュアル。",
-      "composition_ja": "モダンな室内をとらえた横長ショット。柔らかいラグの上で、黄色いアヒルが大きなボーダー・コリーの隣にリラックスして座り、窓から差し込む優しい朝光が温かく穏やかな空気感を演出します。",
-      "alt_ja": "明るいリビングのラグの上で、ボーダー・コリーの隣でリラックスして過ごすDaily Duck。"
-    },
-    {
-      "number": 3,
-      "title_en": "The Scenic Horizon Journey",
-      "concept_en": "An inspiring landscape visual of the duck and an adventurous companion dog gazing together over a panoramic mountain valley at sunset, symbolizing a long shared history.",
-      "composition_en": "Wide hero landscape composition. The yellow duck and a happy mixed-breed dog sit together on a grassy hill in the foreground, facing towards a wide, breathtaking mountain vista swept with vibrant orange and gold sunset clouds.",
-      "generation_prompt_en": "A majestic editorial landscape image featuring a friendly yellow duck with an orange beak, large glossy dark eyes, and a small feather tuft sitting on a scenic grassy hilltop beside a happy friendly mixed-breed dog. They are looking out together over a breathtaking mountain valley illuminated by a warm golden sunset. Clean cinematic lighting, inspiring and heartwarming tone, high quality editorial visual, wide horizontal hero shot, no text.",
-      "alt_en": "The Daily Duck and a friendly dog sitting on a grassy hill looking over a mountain valley at golden sunset.",
-      "title_ja": "夕映えの丘で見渡す旅路",
-      "concept_ja": "夕暮れ時の広大な山並みを背景に、Daily Duckと冒険好きな犬が並んで丘の上に座り、長い歴史を振り返るような感動的な屋外ビジュアル。",
-      "composition_ja": "ワイドなパノラマ構図。手前の草の丘にDaily Duckと犬が並んで座り、黄金色の夕焼け空と眼下に広がる壮大な谷を見つめています。インスピレーションに満ちた洗練されたトーンです。",
-      "alt_ja": "黄金色の夕焼けが広がる山谷を、丘の上から一緒に眺めるDaily Duckと愛犬。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "WADDLE WE DO WITHOUT DOGS!",
-      "meaning_ja": "「犬なしで僕たちはどうすればいいんだ！」という意味のタイトル。「What'll we do...（僕たちはどうしよう）」という定番の英語表現の「What'll」を、アヒルの歩き方を表す「WADDLE（よちよち歩く）」にかけ合わせた音声置換のダジャレ（Duck Pun）です。15,000年にわたる犬と人間の深い絆を、Daily Duckブランドらしいユーモアと親しみやすさで祝福しています。"
-    },
-    {
-      "number": 2,
-      "title": "15,000 YEARS OF BARKING UP THE RIGHT TREE",
-      "meaning_ja": "「15,000年間、大正解の選択をし続けてきた」という意味のスマートな言葉遊び（Smart Wordplay）。「Barking up the wrong tree（間違ったお門違いの努力をする）」という有名な英語の慣用句を、犬の「Bark（ほえる）」に掛けて「RIGHT tree（正しい木＝大正解）」へと反転させています。人間が犬をパートナーに選んだ歴史が最高の選択だったことを表現した鮮やかなひねりです。"
-    },
-    {
-      "number": 3,
-      "title": "TWO SPECIES. ONE UNSTOPPABLE BOND.",
-      "meaning_ja": "「2つの種族。1つの揺るぎない絆。」という力強いポスターコピー（Poster Copy）。ダジャレに頼らず、映画ポスターや雑誌のカバーラインのような洗練されたインパクトを追求しています。1万5000年にわたり互いに影響を与え合ってきた人と犬の壮大な歴史と確固たるパートナーシップを、短く印象的なフレーズで伝えます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Sunlit Park Stroll",
-      "concept_title_ja": "木漏れ日の公園散歩",
-      "image_path": "automation_images/design_previews/2026-08-28/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "034adaaacd0cfb99466f7c4e340a588ef61ff9e80882f15297012eba741ded72",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Humans and Dogs Have Been Shaping Each Other for 15,000 Years\nSummary: A heartwarming look at the deep, ancient partnership between people and dogs that resonates with dog lovers everywhere.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Sunlit Park Stroll\n\nCONCEPT:\nThe Daily Duck taking a heartwarming stroll side-by-side with a friendly Golden Retriever along a sunlit park path, celebrating thousands of years of companionship.\n\nCOMPOSITION:\nHorizontal landscape framing. The recognizable yellow duck with an orange beak, glossy dark eyes, and small feather tuft walks happily on the left, looking up warmly at a large, gentle Golden Retriever. A winding gravel path extends through a park illuminated by soft golden hour light filtering through green trees.\n\nPRODUCTION DIRECTION:\nA charming landscape editorial photograph featuring a friendly cute yellow duck with an orange beak, large glossy dark eyes, and a small feather tuft walking happily alongside a friendly golden retriever on a sunlit winding park path. Soft warm sunlight filtering through green trees, golden hour rim light, clean modern editorial visual, beautiful depth of field, warm and joyful mood, no text, horizontal landscape hero composition.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck walking beside a happy golden retriever along a sunlit park trail during golden hour.",
-      "alt_ja": "夕光が差し込む公園の小道を、楽しそうに並んで歩くDaily Duckとゴールデン・レトリバー。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Hearthside Companions",
-      "concept_title_ja": "日差しが差し込む部屋の相棒",
-      "image_path": "automation_images/design_previews/2026-08-28/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "3dac38de10f5e111b0afe0e382bb3679c56ba3d60683c7df6e0defac866bce2b",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Humans and Dogs Have Been Shaping Each Other for 15,000 Years\nSummary: A heartwarming look at the deep, ancient partnership between people and dogs that resonates with dog lovers everywhere.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nHearthside Companions\n\nCONCEPT:\nA cozy interior visual showing the duck and a fluffy companion dog resting comfortably together in a modern, light-filled living room.\n\nCOMPOSITION:\nMedium-wide horizontal shot in a stylish modern living room. The yellow duck rests relaxed on a warm neutral rug beside a big fluffy border collie who lies comfortably with its head near its paws. Gentle morning sunlight streams through a large window, creating a serene and premium atmosphere.\n\nPRODUCTION DIRECTION:\nA warm and high-end editorial lifestyle photograph showing a friendly cute yellow duck with an orange beak and large glossy dark eyes sitting comfortably next to a big fluffy border collie on a plush carpet in a bright modern living room. Soft natural morning light streaming through large window, cozy luxury home atmosphere, clean modern visual style, warm color palette, horizontal landscape framing, no logos, no text.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck resting cozy next to a fluffy border collie on a rug in a sunlit modern living room.",
-      "alt_ja": "明るいリビングのラグの上で、ボーダー・コリーの隣でリラックスして過ごすDaily Duck。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Scenic Horizon Journey",
-      "concept_title_ja": "夕映えの丘で見渡す旅路",
-      "image_path": "automation_images/design_previews/2026-08-28/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "e475f479ebfb37e09b0f3ac53984693f37b58cfc7e42e25d79b91a5d4821feef",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Humans and Dogs Have Been Shaping Each Other for 15,000 Years\nSummary: A heartwarming look at the deep, ancient partnership between people and dogs that resonates with dog lovers everywhere.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Scenic Horizon Journey\n\nCONCEPT:\nAn inspiring landscape visual of the duck and an adventurous companion dog gazing together over a panoramic mountain valley at sunset, symbolizing a long shared history.\n\nCOMPOSITION:\nWide hero landscape composition. The yellow duck and a happy mixed-breed dog sit together on a grassy hill in the foreground, facing towards a wide, breathtaking mountain vista swept with vibrant orange and gold sunset clouds.\n\nPRODUCTION DIRECTION:\nA majestic editorial landscape image featuring a friendly yellow duck with an orange beak, large glossy dark eyes, and a small feather tuft sitting on a scenic grassy hilltop beside a happy friendly mixed-breed dog. They are looking out together over a breathtaking mountain valley illuminated by a warm golden sunset. Clean cinematic lighting, inspiring and heartwarming tone, high quality editorial visual, wide horizontal hero shot, no text.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck and a friendly dog sitting on a grassy hill looking over a mountain valley at golden sunset.",
-      "alt_ja": "黄金色の夕焼けが広がる山谷を、丘の上から一緒に眺めるDaily Duckと愛犬。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-28/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "WADDLE WE DO WITHOUT DOGS!"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "WADDLE WE DO WITHOUT DOGS!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "WADDLE WE DO WITHOUT DOGS!",
+    "meaning_ja": "「犬なしで僕たちはどうすればいいんだ！」という意味のタイトル。「What'll we do...（僕たちはどうしよう）」という定番の英語表現の「What'll」を、アヒルの歩き方を表す「WADDLE（よちよち歩く）」にかけ合わせた音声置換のダジャレ（Duck Pun）です。15,000年にわたる犬と人間の深い絆を、Daily Duckブランドらしいユーモアと親しみやすさで祝福しています。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "The Sunlit Park Stroll",
+    "concept_title_ja": "木漏れ日の公園散歩",
+    "image_path": "automation_images/design_previews/2026-08-28/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "034adaaacd0cfb99466f7c4e340a588ef61ff9e80882f15297012eba741ded72",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Humans and Dogs Have Been Shaping Each Other for 15,000 Years\nSummary: A heartwarming look at the deep, ancient partnership between people and dogs that resonates with dog lovers everywhere.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Sunlit Park Stroll\n\nCONCEPT:\nThe Daily Duck taking a heartwarming stroll side-by-side with a friendly Golden Retriever along a sunlit park path, celebrating thousands of years of companionship.\n\nCOMPOSITION:\nHorizontal landscape framing. The recognizable yellow duck with an orange beak, glossy dark eyes, and small feather tuft walks happily on the left, looking up warmly at a large, gentle Golden Retriever. A winding gravel path extends through a park illuminated by soft golden hour light filtering through green trees.\n\nPRODUCTION DIRECTION:\nA charming landscape editorial photograph featuring a friendly cute yellow duck with an orange beak, large glossy dark eyes, and a small feather tuft walking happily alongside a friendly golden retriever on a sunlit winding park path. Soft warm sunlight filtering through green trees, golden hour rim light, clean modern editorial visual, beautiful depth of field, warm and joyful mood, no text, horizontal landscape hero composition.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck walking beside a happy golden retriever along a sunlit park trail during golden hour.",
+    "alt_ja": "夕光が差し込む公園の小道を、楽しそうに並んで歩くDaily Duckとゴールデン・レトリバー。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-28.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-28 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-28 — Batch 1",
-  "final_email_sent_at": "2026-08-28T14:08:29.533772+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "WADDLE WE DO WITHOUT DOGS!",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-28T21:50:37.454532+00:00"
+    "translation_language": "ja"
+  }
 }
