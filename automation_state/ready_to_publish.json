@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-29",
-  "generated_at": "2026-08-28T23:10:47.706114+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-29T00:47:56.808122+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-29",
     "issue_date": "2026-08-29",
     "phase": 2,
@@ -561,64 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-28T22:09:53.980208+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 59,
-    "title": "Chimpanzees have been hurling rocks at the same trees for more than a decade",
-    "source": "ScienceDaily Offbeat",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260826055506.htm",
-    "category": "animals",
-    "happiness": 8,
-    "hope": 7,
-    "general_interest": 9,
-    "surprise": 8,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 85,
-    "reason": "A captivating and quirky animal behavior story exploring why West African chimps repeatedly throw stones at specific trees, building mysterious rock piles.",
-    "candidate_number": 3,
-    "title_en": "Chimpanzees Have Been Hurling Rocks at the Same Trees for Over a Decade",
-    "reason_en": "A fascinating look at quirky animal behavior in West Africa, where chimpanzees repeatedly throw stones at designated trees to form mysterious rock piles.",
-    "en_copy": "Researchers studying West African chimpanzees have uncovered a fascinating ritual: the primates have been hurling stones at the exact same trees for more than ten years. Over time, these repeated actions have created mysterious piles of rocks near the trees. While scientists continue to study the purpose behind this intriguing behavior, it offers a captivating glimpse into animal traditions and curiosity.",
-    "duck_name": "Rock-Throwing Chimp Duck",
-    "duck_en": "Quack! A ten-year rock-throwing tradition? Chimps certainly know how to make an impression!",
-    "x_en": "West African chimpanzees have been throwing rocks at the exact same trees for over ten years, creating mysterious rock piles! A fascinating look into animal behavior.",
-    "title_ja": "チンパンジーが10年以上も同じ木に向かって石を投げ続けていることが判明",
-    "reason_ja": "西アフリカのチンパンジーが特定の木に石を投げ続けて謎の石の山を築いているという、不思議で興味深い動物行動のニュース。",
-    "jp_copy": "西アフリカのチンパンジーを研究している研究者たちが、非常に興味深い行動を発見しました。チンパンジーたちが10年以上にわたり、まったく同じ木に向かって石を投げ続けているのです。時間の経過とともに、それらの木の近くには謎めいた石の山が築かれました。科学者たちがこの不思議な行動の理由を解明しようと調査を続けるなか、動物たちの伝統や好奇心の深さをうかがわせる魅力的な話題となっています。",
-    "duck_jp": "クワッ！10年も石を投げ続ける伝統？チンパンジーたちもなかなかやるね！",
-    "x_jp": "西アフリカのチンパンジーが10年以上も同じ木に石を投げ続け、謎の石の山を作っていることが明らかに！動物の不思議な行動にワクワクします。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Jungle Field Expedition",
-      "concept_en": "The Daily Duck mascot acting as a curious field researcher in a West African jungle, inspecting a mysterious pile of accumulated rocks next to a massive rainforest tree.",
-      "composition_en": "Wide landscape view in a sun-dappled West African rainforest clearing. The recognizable yellow duck mascot wearing a tiny explorer's hat stands in the foreground, looking warm and inquisitive as it examines a neat mound of smooth river stones piled against the base of a giant, moss-covered ancient tree trunk. Soft dappled sunlight beams through the high jungle canopy, casting a golden glow over the scene.",
-      "generation_prompt_en": "A clean, modern photographic editorial image in 16:9 landscape aspect ratio. In a sun-dappled West African jungle clearing, the iconic Daily Duck mascot—a friendly cute yellow duckling with an orange beak, glossy dark eyes, and a small feather tuft—stands near a large pile of smooth stones stacked at the base of a thick mossy tree trunk. The duck wears a small vintage beige explorer hat and looks at the rock pile with warm curiosity. Cinematic natural sunlight filtering through lush green leaves, high detail, charming editorial style, no text, no logos.",
-      "alt_en": "The Daily Duck mascot wearing a small explorer hat in a jungle clearing, curiously inspecting a pile of rocks stacked against a massive tree trunk.",
-      "title_ja": "ジャングル探検隊と謎の石の山",
-      "concept_ja": "西アフリカのジャングルで探検家に扮したデイリー・ダックが、大木の根元に築かれた謎めいた石の山を興味津々に観察するコンセプト。",
-      "composition_ja": "木漏れ日が差し込む西アフリカの熱帯雨林の開けた場所を描いた横長構図。手前には小さな探検帽をかぶった黄色いアヒルのマスコットが立ち、巨大で苔むした古木の根元に積み上げられた滑らかな川石の山を温かい眼差しで調査しています。",
-      "alt_ja": "大きな木の根元に積まれた石の山を、小さな探検帽をかぶって興味深く観察するデイリー・ダックのマスコット。"
-    },
-    {
-      "number": 2,
-      "title_en": "The Ritual in Motion",
-      "concept_en": "A playful storytelling perspective showing the duck mascot watching a chimpanzee in the background mid-action, gently casting a stone toward a designated tree trunk.",
-      "composition_en": "Medium-wide landscape framing. In the foreground off to the side, the yellow duck mascot peeks out from behind large tropical monstera leaves with a delightedly surprised expression. In the mid-ground, a friendly, stylized wild chimpanzee is captured in a graceful motion, gently tossing a smooth gray stone toward a marked tree trunk. Vibrant green jungle foliage surrounds them with warm, optimistic morning light.",
-      "generation_prompt_en": "A charming storytelling scene in 16:9 landscape composition, stylized realistic 3D render. In a warm green West African forest, the Daily Duck mascot—a recognizable yellow duck with an orange beak, glossy black eyes, and a feather tuft—peeks out cheerfully from behind bright green jungle leaves on the right foreground. In the background, a friendly wild chimpanzee gently tosses a rounded stone toward a sturdy rainforest tree trunk. Warm golden hour lighting, clean studio-grade textures, rich editorial mood, no text, no visual clutter.",
-      "alt_en": "The Daily Duck mascot peeking behind foliage while watching a wild chimpanzee toss a stone toward a rainforest tree.",
-      "title_ja": "儀式の瞬間を目撃",
-      "concept_ja": "アヒルのマスコットが葉のかげから覗き込み、背後のチンパンジーが指定の木に向かって石を投げる感動的な瞬間を目撃するストーリー性豊かなコンセプト。",
-      "composition_ja": "中景〜遠景の横長構図。手前右側では、大きな熱帯植物の葉から黄色いアヒルが楽しそうに顔を出しています。中央奥では、毛並みの美しいチンパンジーが丸い石を大木に向かって投げようとしており、あたたかな朝の光が森全体を包み込んでいます。",
-      "alt_ja": "ジャングルの葉のかげから、チンパンジーが木に向かって石を投げる様子を楽しそうに見守るデイリー・ダック。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "The Ten-Year Rock Cairn Monument",
       "concept_en": "A hero close-up portrait focusing on the artful stone cairn built over a decade, with the duck mascot resting proudly on top of the rock structure.",
@@ -630,84 +575,10 @@
       "concept_composition_en": "Low-angle visual centered on the rock cairn and tree trunk, emphasizing depth and texture with warm lighting.",
       "composition_ja": "ローアングルからの横長構図。石が美しく積み上げられた塔が、打痕の残る木の幹の横に立っています。その一番上の石の上に黄色いアヒルのマスコットが誇らしげに座り、背景の鮮やかな緑が美しくボケて主役を引き立てます。",
       "alt_ja": "積み上げられた石の塔の一番上に誇らしげに座る、デイリー・ダックのイエローアヒルマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "SOLID AS A QUACK!",
-      "meaning_ja": "「岩のように固い／確固たる（Solid as a rock）」という英語の有名な慣用句の「rock（岩）」を、アヒルの鳴き声「quack」に置き換えたダジャレ。チンパンジーたちが10年間積み重ねて作ってきた頑丈な石の山と、ブランドアイデンティティを完璧に掛け合わせたタイトルです。"
     },
-    {
-      "number": 2,
-      "title": "TREE-MENDOUS TRADITION!",
-      "meaning_ja": "「素晴らしい」を意味する「tremendous」と、ニュースのテーマである「tree（木）」を掛け合わせたスマートな言葉遊び。特定の木を対象に10年以上も石を投げ続けてきたチンパンジーたちの不思議で素晴らしい伝統をフレッシュに表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "TEN YEARS OF ROCK AND REPEAT",
-      "meaning_ja": "「10年間の石投げと反復」を意味する、リズミカルで力強いポスターコピー。「Rock and roll」の語感を彷彿とさせつつ、長年繰り返されてきたジャングルの謎めいた習慣をキャッチーでスタイリッシュに打ち出しています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Jungle Field Expedition",
-      "concept_title_ja": "ジャングル探検隊と謎の石の山",
-      "image_path": "automation_images/design_previews/2026-08-29/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "d514090a5ccb47b4e7c44e4c3aa087db09371f34f31580dcd888204817b0165d",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Chimpanzees Have Been Hurling Rocks at the Same Trees for Over a Decade\nSummary: A fascinating look at quirky animal behavior in West Africa, where chimpanzees repeatedly throw stones at designated trees to form mysterious rock piles.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Jungle Field Expedition\n\nCONCEPT:\nThe Daily Duck mascot acting as a curious field researcher in a West African jungle, inspecting a mysterious pile of accumulated rocks next to a massive rainforest tree.\n\nCOMPOSITION:\nWide landscape view in a sun-dappled West African rainforest clearing. The recognizable yellow duck mascot wearing a tiny explorer's hat stands in the foreground, looking warm and inquisitive as it examines a neat mound of smooth river stones piled against the base of a giant, moss-covered ancient tree trunk. Soft dappled sunlight beams through the high jungle canopy, casting a golden glow over the scene.\n\nPRODUCTION DIRECTION:\nA clean, modern photographic editorial image in 16:9 landscape aspect ratio. In a sun-dappled West African jungle clearing, the iconic Daily Duck mascot—a friendly cute yellow duckling with an orange beak, glossy dark eyes, and a small feather tuft—stands near a large pile of smooth stones stacked at the base of a thick mossy tree trunk. The duck wears a small vintage beige explorer hat and looks at the rock pile with warm curiosity. Cinematic natural sunlight filtering through lush green leaves, high detail, charming editorial style, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot wearing a small explorer hat in a jungle clearing, curiously inspecting a pile of rocks stacked against a massive tree trunk.",
-      "alt_ja": "大きな木の根元に積まれた石の山を、小さな探検帽をかぶって興味深く観察するデイリー・ダックのマスコット。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Ritual in Motion",
-      "concept_title_ja": "儀式の瞬間を目撃",
-      "image_path": "automation_images/design_previews/2026-08-29/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "6f17294902d7d28069eeaeac74407c55192a4b671b69b64c4a98f21d0b98b9c0",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Chimpanzees Have Been Hurling Rocks at the Same Trees for Over a Decade\nSummary: A fascinating look at quirky animal behavior in West Africa, where chimpanzees repeatedly throw stones at designated trees to form mysterious rock piles.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Ritual in Motion\n\nCONCEPT:\nA playful storytelling perspective showing the duck mascot watching a chimpanzee in the background mid-action, gently casting a stone toward a designated tree trunk.\n\nCOMPOSITION:\nMedium-wide landscape framing. In the foreground off to the side, the yellow duck mascot peeks out from behind large tropical monstera leaves with a delightedly surprised expression. In the mid-ground, a friendly, stylized wild chimpanzee is captured in a graceful motion, gently tossing a smooth gray stone toward a marked tree trunk. Vibrant green jungle foliage surrounds them with warm, optimistic morning light.\n\nPRODUCTION DIRECTION:\nA charming storytelling scene in 16:9 landscape composition, stylized realistic 3D render. In a warm green West African forest, the Daily Duck mascot—a recognizable yellow duck with an orange beak, glossy black eyes, and a feather tuft—peeks out cheerfully from behind bright green jungle leaves on the right foreground. In the background, a friendly wild chimpanzee gently tosses a rounded stone toward a sturdy rainforest tree trunk. Warm golden hour lighting, clean studio-grade textures, rich editorial mood, no text, no visual clutter.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot peeking behind foliage while watching a wild chimpanzee toss a stone toward a rainforest tree.",
-      "alt_ja": "ジャングルの葉のかげから、チンパンジーが木に向かって石を投げる様子を楽しそうに見守るデイリー・ダック。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Ten-Year Rock Cairn Monument",
-      "concept_title_ja": "10年の歳月が築いた石の塔",
-      "image_path": "automation_images/design_previews/2026-08-29/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "abdd264ac6cd8310b2a6ac2b6f0006c95baa92dbed3f753d51116775b7ec9450",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Chimpanzees Have Been Hurling Rocks at the Same Trees for Over a Decade\nSummary: A fascinating look at quirky animal behavior in West Africa, where chimpanzees repeatedly throw stones at designated trees to form mysterious rock piles.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Ten-Year Rock Cairn Monument\n\nCONCEPT:\nA hero close-up portrait focusing on the artful stone cairn built over a decade, with the duck mascot resting proudly on top of the rock structure.\n\nCOMPOSITION:\nLow-angle hero landscape shot. A tall, beautifully balanced rock cairn stands prominently against a textured tree trunk with smooth impact marks. The yellow duck mascot perches happily on top of the highest stone, resting one wing on its hip with a friendly, triumphant smile. Beautiful shallow depth of field with soft out-of-focus tropical greenery in the background.\n\nPRODUCTION DIRECTION:\nA visually striking hero shot in 16:9 landscape framing. A carefully stacked pile of smooth natural river rocks stands like a monument next to a weathered jungle tree trunk. On top of the rock stack, the cute yellow Daily Duck mascot—with glossy dark eyes, orange beak, and a small feather tuft—sits proudly with a joyful warm expression. Cinematic soft lighting, deep bokeh green rainforest background, clean visual storytelling, premium publication visual quality, no text, no watermark.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot sitting proudly atop a tall stack of smooth stones next to a weathered jungle tree trunk.",
-      "alt_ja": "積み上げられた石の塔の一番上に誇らしげに座る、デイリー・ダックのイエローアヒルマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-29/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "TEN YEARS OF ROCK AND REPEAT"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -724,45 +595,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "TEN YEARS OF ROCK AND REPEAT",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "TEN YEARS OF ROCK AND REPEAT",
+    "meaning_ja": "「10年間の石投げと反復」を意味する、リズミカルで力強いポスターコピー。「Rock and roll」の語感を彷彿とさせつつ、長年繰り返されてきたジャングルの謎めいた習慣をキャッチーでスタイリッシュに打ち出しています。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "The Ten-Year Rock Cairn Monument",
+    "concept_title_ja": "10年の歳月が築いた石の塔",
+    "image_path": "automation_images/design_previews/2026-08-29/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "abdd264ac6cd8310b2a6ac2b6f0006c95baa92dbed3f753d51116775b7ec9450",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Chimpanzees Have Been Hurling Rocks at the Same Trees for Over a Decade\nSummary: A fascinating look at quirky animal behavior in West Africa, where chimpanzees repeatedly throw stones at designated trees to form mysterious rock piles.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Ten-Year Rock Cairn Monument\n\nCONCEPT:\nA hero close-up portrait focusing on the artful stone cairn built over a decade, with the duck mascot resting proudly on top of the rock structure.\n\nCOMPOSITION:\nLow-angle hero landscape shot. A tall, beautifully balanced rock cairn stands prominently against a textured tree trunk with smooth impact marks. The yellow duck mascot perches happily on top of the highest stone, resting one wing on its hip with a friendly, triumphant smile. Beautiful shallow depth of field with soft out-of-focus tropical greenery in the background.\n\nPRODUCTION DIRECTION:\nA visually striking hero shot in 16:9 landscape framing. A carefully stacked pile of smooth natural river rocks stands like a monument next to a weathered jungle tree trunk. On top of the rock stack, the cute yellow Daily Duck mascot—with glossy dark eyes, orange beak, and a small feather tuft—sits proudly with a joyful warm expression. Cinematic soft lighting, deep bokeh green rainforest background, clean visual storytelling, premium publication visual quality, no text, no watermark.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck mascot sitting proudly atop a tall stack of smooth stones next to a weathered jungle tree trunk.",
+    "alt_ja": "積み上げられた石の塔の一番上に誇らしげに座る、デイリー・ダックのイエローアヒルマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-29.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-29 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-29 — Batch 1",
-  "final_email_sent_at": "2026-08-28T23:10:54.205825+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "TEN YEARS OF ROCK AND REPEAT",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-29T00:47:56.809164+00:00"
+    "translation_language": "ja"
+  }
 }
