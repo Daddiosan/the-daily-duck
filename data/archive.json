@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-31",
+    "displayDate": "August 31, 2026",
+    "slug": "hidden-diamond-frogs",
+    "title": "HIDDEN DIAMOND FROGS",
+    "duckName": "Hidden Diamond Frogs",
+    "storyTitleEn": "Seven new frog species were hiding beneath Madagascar’s forest floor",
+    "storyTitleJa": "Seven new frog species were hiding beneath Madagascar’s forest floor",
+    "image": "assets/ducks/2026-08-31-hidden-diamond-frogs.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Hidden Diamond Frogs",
+    "imageAltJa": "Hidden Diamond FrogsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Researchers have discovered seven new species of tiny diamond frogs hiding beneath Madagascar's forest floor. This charming discovery highlights the amazing hidden diversity of nature and brings a wonderful sense of delight and wonder to animal lovers everywhere.",
+    "storyJa": "研究者たちが、マダガスカルの森の地下に隠れていた7種の新しい小さなダイヤモンドガエルを発見しました。この魅力的な発見は、自然の奥深くに隠された生物の多様性を物語り、動物を愛する人々に素晴らしい驚きと喜びを届けています。",
+    "duckEn": "Tiny frogs hiding big wonders under the forest floor!",
+    "duckJa": "森の地下に隠れた小さなカエルたちが、大きな驚きを見せてくれました！",
+    "sourceLabel": "ScienceDaily Environment",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260828082347.htm",
+    "archiveSummaryEn": "Seven new species of tiny diamond frogs were found hiding beneath Madagascar’s forest floor, bringing animal wonder to all!",
+    "archiveSummaryJa": "マダガスカルの森の地下に隠れていた7種の小さなダイヤモンドガエルが発見され、みんなにワクワクを届けています！",
+    "reasonEn": "Seven new species of tiny diamond frogs were found hiding beneath Madagascar’s forest floor, bringing animal wonder to all!",
+    "reasonJa": "マダガスカルの森の地下に隠れていた7種の小さなダイヤモンドガエルが発見され、みんなにワクワクを届けています！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-30",
     "displayDate": "August 30, 2026",
     "slug": "solar-soaring-duck",
