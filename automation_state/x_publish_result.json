@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-08-30T01:49:28.365328+00:00",
+  "issue_date": "2026-08-30",
+  "x_post_id": "2093878737473286154",
+  "x_post_url": "https://x.com/i/web/status/2093878737473286154",
+  "x_media_id": "2093878734885367808",
+  "image_path": "automation_images/x/2026-08-30-x-card.png",
+  "post_text": "Miniature solar-powered GPS tags are mapping eagle migration routes in unprecedented detail, revealing a never-before-seen look at their journeys!\n\nhttps://www.thedailyduck.ai/ducks/2026-08-30/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 171
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2093878737473286154",
+      "text": "Miniature solar-powered GPS tags are mapping eagle migration routes in unprecedented detail, revealing a never-before-seen look at their journeys!\n\nhttps://t.co/58QvNYZIlN https://t.co/3R5megP3ZR"
+    }
+  }
+}
