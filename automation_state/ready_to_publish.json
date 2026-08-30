@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-30",
-  "generated_at": "2026-08-30T01:25:33.803548+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-30T01:48:24.504851+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-30",
     "issue_date": "2026-08-30",
     "phase": 2,
@@ -561,40 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-29T22:10:28.459676+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 23,
-    "title": "A never-before-seen picture of eagle migrations",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-08-picture-eagle-migrations.html",
-    "category": "nature",
-    "happiness": 8,
-    "hope": 8,
-    "general_interest": 8,
-    "surprise": 8,
-    "duck_visual": 9,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 8,
-    "total_score": 84,
-    "reason": "Miniature solar-powered GPS tags are mapping the full, awe-inspiring migratory journeys of eagles in unprecedented detail.",
-    "candidate_number": 4,
-    "title_en": "Miniature Solar GPS Tags Reveal Never-Before-Seen Eagle Migrations",
-    "reason_en": "An exciting look at how tiny, solar-powered GPS tags are providing unprecedented detail on the majestic migratory journeys of eagles.",
-    "en_copy": "Researchers are gaining a brand-new perspective on eagle migrations thanks to miniature, solar-powered GPS tags. By mapping these awe-inspiring journeys in unprecedented detail, scientists are uncovering a never-before-seen picture of how these magnificent birds travel across the sky.",
-    "duck_name": "Solar Soaring Duck",
-    "duck_en": "Tiny solar tags helping us follow magnificent eagles across the sky!",
-    "x_en": "Miniature solar-powered GPS tags are mapping eagle migration routes in unprecedented detail, revealing a never-before-seen look at their journeys!",
-    "title_ja": "超小型ソーラーGPSで解明された、見たこともないワシの大渡り",
-    "reason_ja": "超小型のソーラー充電式GPSタグを使うことで、ワシたちの雄大な渡りのルートがこれまでにないほど詳細に解明されたという最新ニュースです。",
-    "jp_copy": "超小型のソーラー充電式GPSタグにより、ワシの渡りの全貌がこれまでにないほど鮮明に捉えられるようになりました。雄大な渡りのルートが細部まで記録されたことで、空を旅するワシたちの未だかつて見られなかった姿が明らかになっています。",
-    "duck_jp": "小さなソーラータグが、大空を飛ぶワシたちの壮大な旅を教えてくれるんですね！",
-    "x_jp": "超小型のソーラー充電式GPSタグを使って、ワシの渡りルートをかつてないほど詳細に記録！これまでにない壮大な旅の姿が明らかになりました。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "Skyline Navigators Above the Peaks",
       "concept_en": "The Daily Duck mascot and a majestic eagle soar high above majestic mountain peaks illuminated by warm golden sunlight. Gentle, glowing golden flight paths weave through the sky, visually illustrating the solar GPS migration route.",
@@ -606,107 +575,9 @@
       "composition_ja": "横長のヒーロー構図。手前の山頂にたたずむアヒルのマスコットが、頭上を優雅に舞うワシを感動的に見上げています。背景の大空にはソーラー追跡の軌跡を示す優しい光のラインが描かれています。",
       "alt_ja": "太陽光の追跡ルートが描かれた大空を見上げる、アヒルのマスコットと雄大なワシ。"
     },
-    {
-      "number": 2,
-      "title_en": "The Solar Eagle Route Command Center",
-      "concept_en": "Inside a sleek, minimalist wildlife observatory, The Daily Duck inspects a glowing 3D holographic globe displaying real-time eagle migration paths mapped across continents.",
-      "composition_en": "Medium-wide interior view. A cheerful yellow duck mascot stands at a polished wooden research table, admiring a bright, glowing glass globe that projects subtle golden migration routes. Large floor-to-ceiling windows show a warm sunny mountain landscape outside.",
-      "generation_prompt_en": "A clean visual of a friendly yellow duck mascot with a cute tuft of feathers and orange beak, standing inside a warm, modern wildlife research studio. On a sleek wooden desk, a luminous translucent globe displays elegant glowing solar tracking paths of bird migrations. Sunlight streams in through large windows overlooking green mountain peaks. Sophisticated editorial aesthetic, rich colors, soft studio photography, zero text, no UI, no watermarks.",
-      "alt_en": "The Daily Duck mascot inside a bright research studio examining a glowing holographic globe displaying golden eagle migration paths.",
-      "title_ja": "ソーラー移動ルートの研究スタジオ",
-      "concept_ja": "洗練された明るい観測用スタジオで、アヒルのマスコットが輝く地球儀を見つめ、超小型ソーラータグによって解明されたワシの壮大な渡りルートを確認している様子。",
-      "composition_ja": "中景の室内構図。磨かれた木製デスクの前にアヒルのマスコットが立ち、金色の渡りルートが浮かび上がる透き通った球体をうっとりと眺めています。背景の大きな窓からは爽やかな山々の風景が広がっています。",
-      "alt_ja": "明るい研究室で、ワシの渡りルートを示す輝く地球儀を見つめるアヒルのマスコット。"
-    },
-    {
-      "number": 3,
-      "title_en": "The Tiny Solar Tag Marvel",
-      "concept_en": "A charming close-up focusing on a tiny, sleek solar GPS tag sitting on a natural stone pedestal, bathed in sunlight, with The Daily Duck looking at it admiringly while eagles fly in the sunny background.",
-      "composition_en": "Eye-level macro photography composition. On a sunlit wooden bench or stone outcrop in the foreground, a miniature golden-tinged solar tag glimmers. The friendly yellow duck mascot leans in with a look of warm curiosity. In the soft-focused background sky, two eagles soar past high clouds.",
-      "generation_prompt_en": "A charming high-end editorial photo showing a friendly yellow duck mascot with dark glossy eyes and a tiny feather tuft leaning forward to admiringly look at a microscopic, sleek solar GPS sensor tag sitting on a clean stone surface. Bright morning sunlight highlights the tiny technology device. Softly blurred in the bright sky behind, a eagle glides over peaceful mountain clouds. Warm cinematic lighting, highly detailed, clean focus, no logos, no text.",
-      "alt_en": "The Daily Duck mascot looking admiringly at a tiny solar GPS tag with eagles soaring in the softly blurred background sky.",
-      "title_ja": "小さなソーラータグの奇跡",
-      "concept_ja": "手のひらサイズの超小型ソーラーGPSタグにスポットを当て、アヒルのマスコットがその技術の技術美と神秘性に優しく見とれている近接ビジュアル。",
-      "composition_ja": "アイレベルの近接構図。陽光が差し込む手前の台座に置かれた超小型ソーラータグを、アヒルのマスコットが興味深く覗き込んでいます。背景のボケた空にはワシたちが羽ばたいています。",
-      "alt_ja": "超小型ソーラーGPSタグを愛おしそうに見つめるアヒルのマスコットと、遠くの大空を舞うワシ。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACKING THE MIGRATION CODE!",
-      "meaning_ja": "【ダックダジャレ】英語の定番フレーズ『Cracking the code（暗号や謎を解読する）』の『Cracking』を『Quacking（アヒルの鳴き声）』に変えた駄洒落です。超小型ソーラーGPSによって、今まで謎に包まれていたワシの大渡りルートが見事に解明（解読）されたことを表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "CHARTING HIGH FLYERS WITH FLYING COLORS!",
-      "meaning_ja": "【スマート言葉遊び】慣用句『With flying colors（大成功で／見事に）』と、実際に空高く飛ぶワシ（High flyers）の『Fly（飛ぶ）』を掛け合わせた巧みな言葉遊びです。ソーラーGPS技術が見事に空の旅人たちのルートを描き出した成功を祝福しています。"
-    },
-    {
-      "number": 3,
-      "title": "UNCOVERING THE SECRET HIGHWAYS OF THE SKY",
-      "meaning_ja": "【ポスターコピー】ダジャレを使わず、映画のポスターや雑誌のカバーラインのようなキャッチーさで魅せるコピー。「大空に隠された秘密の高速道路を解き明かす」というロマンあふれる視点で、ワシたちの雄大な旅路線を描き出しています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Skyline Navigators Above the Peaks",
-      "concept_title_ja": "山頂から見上げる大空の航路",
-      "image_path": "automation_images/design_previews/2026-08-30/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "fe8bb5e33252291aa45c243152bff5d919526e621cc7207391ba6778db0c1b7f",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Miniature Solar GPS Tags Reveal Never-Before-Seen Eagle Migrations\nSummary: An exciting look at how tiny, solar-powered GPS tags are providing unprecedented detail on the majestic migratory journeys of eagles.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nSkyline Navigators Above the Peaks\n\nCONCEPT:\nThe Daily Duck mascot and a majestic eagle soar high above majestic mountain peaks illuminated by warm golden sunlight. Gentle, glowing golden flight paths weave through the sky, visually illustrating the solar GPS migration route.\n\nCOMPOSITION:\nLandscape hero layout. In the foreground on a dramatic mountain overlook, the friendly yellow duck mascot gazes upward in wonder at a soaring eagle gliding gracefully overhead. Subtle light trails sweep softly across the vast blue and golden sky behind them. Clean, modern, warm editorial lighting.\n\nPRODUCTION DIRECTION:\nA wide editorial landscape photograph featuring a friendly cute bright yellow duck mascot with an orange beak and a soft tuft of head feathers, standing on a sunlit mountain ridge. In the bright blue sky above, a majestic eagle soars gracefully. Soft glowing golden trajectory lines curve gently through the atmosphere to represent solar GPS flight tracking. Warm sunlight, cinematic atmosphere, clean modern visual design, no text, no watermarks, high detail.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot on a sunlit mountain peak gazing up at a soaring eagle with soft golden solar tracking lines traversing the sky.",
-      "alt_ja": "太陽光の追跡ルートが描かれた大空を見上げる、アヒルのマスコットと雄大なワシ。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Solar Eagle Route Command Center",
-      "concept_title_ja": "ソーラー移動ルートの研究スタジオ",
-      "image_path": "automation_images/design_previews/2026-08-30/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "45dfea26b4e90988a1d74edd6a0a3d4e480ec7a2215345e10f6cdbcceabc1a65",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Miniature Solar GPS Tags Reveal Never-Before-Seen Eagle Migrations\nSummary: An exciting look at how tiny, solar-powered GPS tags are providing unprecedented detail on the majestic migratory journeys of eagles.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Solar Eagle Route Command Center\n\nCONCEPT:\nInside a sleek, minimalist wildlife observatory, The Daily Duck inspects a glowing 3D holographic globe displaying real-time eagle migration paths mapped across continents.\n\nCOMPOSITION:\nMedium-wide interior view. A cheerful yellow duck mascot stands at a polished wooden research table, admiring a bright, glowing glass globe that projects subtle golden migration routes. Large floor-to-ceiling windows show a warm sunny mountain landscape outside.\n\nPRODUCTION DIRECTION:\nA clean visual of a friendly yellow duck mascot with a cute tuft of feathers and orange beak, standing inside a warm, modern wildlife research studio. On a sleek wooden desk, a luminous translucent globe displays elegant glowing solar tracking paths of bird migrations. Sunlight streams in through large windows overlooking green mountain peaks. Sophisticated editorial aesthetic, rich colors, soft studio photography, zero text, no UI, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot inside a bright research studio examining a glowing holographic globe displaying golden eagle migration paths.",
-      "alt_ja": "明るい研究室で、ワシの渡りルートを示す輝く地球儀を見つめるアヒルのマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Tiny Solar Tag Marvel",
-      "concept_title_ja": "小さなソーラータグの奇跡",
-      "image_path": "automation_images/design_previews/2026-08-30/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "0bdcabd284d190993e9c23a177457f354f1bb7f58cd667b6d178bd23bb98e8fb",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Miniature Solar GPS Tags Reveal Never-Before-Seen Eagle Migrations\nSummary: An exciting look at how tiny, solar-powered GPS tags are providing unprecedented detail on the majestic migratory journeys of eagles.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Tiny Solar Tag Marvel\n\nCONCEPT:\nA charming close-up focusing on a tiny, sleek solar GPS tag sitting on a natural stone pedestal, bathed in sunlight, with The Daily Duck looking at it admiringly while eagles fly in the sunny background.\n\nCOMPOSITION:\nEye-level macro photography composition. On a sunlit wooden bench or stone outcrop in the foreground, a miniature golden-tinged solar tag glimmers. The friendly yellow duck mascot leans in with a look of warm curiosity. In the soft-focused background sky, two eagles soar past high clouds.\n\nPRODUCTION DIRECTION:\nA charming high-end editorial photo showing a friendly yellow duck mascot with dark glossy eyes and a tiny feather tuft leaning forward to admiringly look at a microscopic, sleek solar GPS sensor tag sitting on a clean stone surface. Bright morning sunlight highlights the tiny technology device. Softly blurred in the bright sky behind, a eagle glides over peaceful mountain clouds. Warm cinematic lighting, highly detailed, clean focus, no logos, no text.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot looking admiringly at a tiny solar GPS tag with eagles soaring in the softly blurred background sky.",
-      "alt_ja": "超小型ソーラーGPSタグを愛おしそうに見つめるアヒルのマスコットと、遠くの大空を舞うワシ。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-30/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "QUACKING THE MIGRATION CODE!"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "QUACKING THE MIGRATION CODE!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "QUACKING THE MIGRATION CODE!",
+    "meaning_ja": "【ダックダジャレ】英語の定番フレーズ『Cracking the code（暗号や謎を解読する）』の『Cracking』を『Quacking（アヒルの鳴き声）』に変えた駄洒落です。超小型ソーラーGPSによって、今まで謎に包まれていたワシの大渡りルートが見事に解明（解読）されたことを表現しています。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "Skyline Navigators Above the Peaks",
+    "concept_title_ja": "山頂から見上げる大空の航路",
+    "image_path": "automation_images/design_previews/2026-08-30/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "fe8bb5e33252291aa45c243152bff5d919526e621cc7207391ba6778db0c1b7f",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Miniature Solar GPS Tags Reveal Never-Before-Seen Eagle Migrations\nSummary: An exciting look at how tiny, solar-powered GPS tags are providing unprecedented detail on the majestic migratory journeys of eagles.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nSkyline Navigators Above the Peaks\n\nCONCEPT:\nThe Daily Duck mascot and a majestic eagle soar high above majestic mountain peaks illuminated by warm golden sunlight. Gentle, glowing golden flight paths weave through the sky, visually illustrating the solar GPS migration route.\n\nCOMPOSITION:\nLandscape hero layout. In the foreground on a dramatic mountain overlook, the friendly yellow duck mascot gazes upward in wonder at a soaring eagle gliding gracefully overhead. Subtle light trails sweep softly across the vast blue and golden sky behind them. Clean, modern, warm editorial lighting.\n\nPRODUCTION DIRECTION:\nA wide editorial landscape photograph featuring a friendly cute bright yellow duck mascot with an orange beak and a soft tuft of head feathers, standing on a sunlit mountain ridge. In the bright blue sky above, a majestic eagle soars gracefully. Soft glowing golden trajectory lines curve gently through the atmosphere to represent solar GPS flight tracking. Warm sunlight, cinematic atmosphere, clean modern visual design, no text, no watermarks, high detail.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck mascot on a sunlit mountain peak gazing up at a soaring eagle with soft golden solar tracking lines traversing the sky.",
+    "alt_ja": "太陽光の追跡ルートが描かれた大空を見上げる、アヒルのマスコットと雄大なワシ。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-30.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-30 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-30 — Batch 1",
-  "final_email_sent_at": "2026-08-30T01:25:41.324438+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "QUACKING THE MIGRATION CODE!",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-30T01:48:24.505866+00:00"
+    "translation_language": "ja"
+  }
 }
