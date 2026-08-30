@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-08-30T22:48:45.491795+00:00",
+  "issue_date": "2026-08-31",
+  "x_post_id": "2094195647092040164",
+  "x_post_url": "https://x.com/i/web/status/2094195647092040164",
+  "x_media_id": "2094195644512473088",
+  "image_path": "automation_images/x/2026-08-31-x-card.png",
+  "post_text": "Seven new species of tiny diamond frogs were found hiding beneath Madagascar’s forest floor, bringing animal wonder to all!\n\nhttps://www.thedailyduck.ai/ducks/2026-08-31/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 148
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2094195647092040164",
+      "text": "Seven new species of tiny diamond frogs were found hiding beneath Madagascar’s forest floor, bringing animal wonder to all!\n\nhttps://t.co/rCkcpGiSDj https://t.co/FC50Fusv41"
+    }
+  }
+}
