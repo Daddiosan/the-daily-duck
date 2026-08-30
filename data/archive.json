@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-08-30",
+    "displayDate": "August 30, 2026",
+    "slug": "solar-soaring-duck",
+    "title": "SOLAR SOARING DUCK",
+    "duckName": "Solar Soaring Duck",
+    "storyTitleEn": "A never-before-seen picture of eagle migrations",
+    "storyTitleJa": "A never-before-seen picture of eagle migrations",
+    "image": "assets/ducks/2026-08-30-solar-soaring-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Solar Soaring Duck",
+    "imageAltJa": "Solar Soaring DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Researchers are gaining a brand-new perspective on eagle migrations thanks to miniature, solar-powered GPS tags. By mapping these awe-inspiring journeys in unprecedented detail, scientists are uncovering a never-before-seen picture of how these magnificent birds travel across the sky.",
+    "storyJa": "超小型のソーラー充電式GPSタグにより、ワシの渡りの全貌がこれまでにないほど鮮明に捉えられるようになりました。雄大な渡りのルートが細部まで記録されたことで、空を旅するワシたちの未だかつて見られなかった姿が明らかになっています。",
+    "duckEn": "Tiny solar tags helping us follow magnificent eagles across the sky!",
+    "duckJa": "小さなソーラータグが、大空を飛ぶワシたちの壮大な旅を教えてくれるんですね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-08-picture-eagle-migrations.html",
+    "archiveSummaryEn": "Miniature solar-powered GPS tags are mapping eagle migration routes in unprecedented detail, revealing a never-before-seen look at their journeys!",
+    "archiveSummaryJa": "超小型のソーラー充電式GPSタグを使って、ワシの渡りルートをかつてないほど詳細に記録！これまでにない壮大な旅の姿が明らかになりました。",
+    "reasonEn": "Miniature solar-powered GPS tags are mapping eagle migration routes in unprecedented detail, revealing a never-before-seen look at their journeys!",
+    "reasonJa": "超小型のソーラー充電式GPSタグを使って、ワシの渡りルートをかつてないほど詳細に記録！これまでにない壮大な旅の姿が明らかになりました。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-29",
     "displayDate": "August 29, 2026",
     "slug": "rock-throwing-chimp-duck",
