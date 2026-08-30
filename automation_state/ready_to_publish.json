@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-08-31",
-  "generated_at": "2026-08-30T22:41:05.827427+00:00",
-  "approved_story": {
+  "ready_at": "2026-08-30T22:48:00.851669+00:00",
+  "gate_a_approved_story": {
     "date": "2026-08-31",
     "issue_date": "2026-08-31",
     "phase": 2,
@@ -561,52 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-30T22:10:38.975477+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 2,
-    "title": "Seven new frog species were hiding beneath Madagascar’s forest floor",
-    "source": "ScienceDaily Environment",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260828082347.htm",
-    "category": "animals",
-    "happiness": 8,
-    "hope": 8,
-    "general_interest": 8,
-    "surprise": 7,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 9,
-    "total_score": 83,
-    "reason": "Charming discovery of tiny diamond frogs hiding in Madagascar that brings delightful animal wonder to readers.",
-    "candidate_number": 2,
-    "title_en": "Seven New Frog Species Found Beneath Madagascar's Forest Floor",
-    "reason_en": "A charming discovery of tiny diamond frogs hiding in Madagascar that brings delightful animal wonder to readers.",
-    "en_copy": "Researchers have discovered seven new species of tiny diamond frogs hiding beneath Madagascar's forest floor. This charming discovery highlights the amazing hidden diversity of nature and brings a wonderful sense of delight and wonder to animal lovers everywhere.",
-    "duck_name": "Hidden Diamond Frogs",
-    "duck_en": "Tiny frogs hiding big wonders under the forest floor!",
-    "x_en": "Seven new species of tiny diamond frogs were found hiding beneath Madagascar’s forest floor, bringing animal wonder to all!",
-    "title_ja": "マダガスカルの森の地下に隠れていた7種の新しいカエルを発見",
-    "reason_ja": "マダガスカルに隠れていた小さなダイヤモンドガエルの発見が、読者に生きものへのワクワク感を届けます。",
-    "jp_copy": "研究者たちが、マダガスカルの森の地下に隠れていた7種の新しい小さなダイヤモンドガエルを発見しました。この魅力的な発見は、自然の奥深くに隠された生物の多様性を物語り、動物を愛する人々に素晴らしい驚きと喜びを届けています。",
-    "duck_jp": "森の地下に隠れた小さなカエルたちが、大きな驚きを見せてくれました！",
-    "x_jp": "マダガスカルの森の地下に隠れていた7種の小さなダイヤモンドガエルが発見され、みんなにワクワクを届けています！"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Jungle Field Researcher",
-      "concept_en": "The yellow duck mascot acts as a gentle field researcher in a sun-dappled Madagascar rainforest, admiring tiny glistening frogs on mossy foliage with a magnifying glass.",
-      "composition_en": "A wide landscape hero view set in a sunlit Madagascar rainforest. The iconic yellow duck mascot, featuring its bright yellow feathers, orange beak, glossy dark eyes, and small tuft, wears a light khaki explorer vest. Kneeling on a mossy forest floor, the duck peers through a magnifying glass at tiny, sparkling frogs sitting gracefully on a broad leaf. Soft rays of morning light stream through the tropical foliage in the background.",
-      "generation_prompt_en": "A clean, modern editorial landscape illustration of the iconic friendly yellow duck mascot with a bright orange beak, glossy dark eyes, and a small feather tuft on top, wearing a tiny khaki field vest. The duck is sitting in a sun-dappled Madagascar rainforest, holding a magnifying glass and smiling warmly at tiny, glistening diamond frogs perched on mossy soil and tropical green leaves. Soft golden sunlight filtering through forest canopy, shallow depth of field, warm approachable tone, high resolution, crisp details, no readable text, no logos, no watermarks.",
-      "alt_en": "The Daily Duck mascot dressed as an explorer admiring tiny glowing frogs on a mossy leaf in a Madagascar rainforest.",
-      "title_ja": "ジャングルのフィールド研究員",
-      "concept_ja": "イエローダックがマダガスカルの木漏れ日差し込む熱帯雨林でフィールド研究員となり、虫眼鏡を使って苔の上の小さなカエルたちを優しく観察する視覚コンセプト。",
-      "composition_ja": "太陽の光が差し込むマダガスカルの森を舞台にした横長ヒーロー構図。オレンジのクチバシとつぶらな瞳、小さなトサカ羽を持つお馴染みの黄色のダックが探検ベストを着用し、苔むした地面に腰を下ろして、葉っぱの上にちょこんと乗ったキラキラ光る小さなカエルたちを拡大鏡でのぞき込んでいます。",
-      "alt_ja": "マダガスカルの熱帯雨林で探検家の姿をしたアヒルのマスコットが葉の上の小さなカエルを観察する様子。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "The Subterranean Cutaway",
       "concept_en": "A whimsical cross-section view showing the sunny forest floor above and a subterranean lair below, where tiny sparkling frogs gather under fallen leaves.",
@@ -618,95 +575,9 @@
       "composition_ja": "横長の断面図構図。地表の上には暖かい日差しを浴びるシダや熱帯植物が茂り、地表の下には豊かな土と落ち葉に囲まれた明るい地下空間が広がっています。そこには宝石のように小さく輝くカエルたちが集まっており、黄色のダックが上の地面からひょっこりと顔を出して楽しそうに覗き込んでいます。",
       "alt_ja": "森の地面の断面図。地下に隠れた小さなカエルたちを上から覗き込む黄色のダックマスコット。"
     },
-    {
-      "number": 3,
-      "title_en": "The Botanical Research Desk",
-      "concept_en": "A warm, premium editorial study scene showcasing miniature terrarium dishes on a wooden researcher desk alongside field notes and the mascot.",
-      "composition_en": "A warm indoor studio setup on a polished mahogany desk. A brass desk lamp casts a cozy glow over a magnifying glass, neat field notebook pages, and small glass terrarium bowls containing lush green moss and tiny sparkling frogs. The yellow duck mascot stands proudly next to the terrarium display, looking warmly toward the viewer with an inviting, charming smile.",
-      "generation_prompt_en": "A high-end modern editorial landscape render of a cozy botanical laboratory desk. A warm brass desk lamp illuminates field notebooks, a magnifying glass, and small glass terrarium saucers filled with vibrant green moss and tiny glistening diamond frogs. Beside the terrariums, the iconic yellow duck mascot with an orange beak, black glossy eyes, and a tiny head feather stands proudly with a friendly welcoming expression. Cinematic warm lighting, rich textures, sophisticated editorial design, realistic studio ambiance, zero text, no watermarks, no logos.",
-      "alt_en": "The yellow duck mascot standing next to tiny moss terrarium bowls on a warm researcher desk.",
-      "title_ja": "植物研究者のデスク",
-      "concept_ja": "マホガニーのデスクの上に置かれた小さな苔テラリウムやフィールドノートとともに、発見の喜びを伝える温もりある書斎風の視覚コンセプト。",
-      "composition_ja": "温かい屋内の研究室シーン。磨かれた木製デスクの上で真鍮ランプが優しく照らし、観察ノートや拡大鏡、そして小さな苔と微小なカエルが入ったミニガラス容器が飾られています。その横でお馴染みの黄色のダックが誇らしげに立ち、微笑みながらこちらを見つめています。",
-      "alt_ja": "温かな研究デスクで、小さな苔テラリウムと新種のカエルたちの横に立つアヒルのマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "UN-BILL-IEVABLE HIDDEN TREASURES!",
-      "meaning_ja": "自然な日本語訳：「信じられないほどの隠れた財宝！」\n元の英語表現：「Unbelievable hidden treasures!」\n言葉遊びの解説：「Unbelievable（信じられない）」の「belie」部分をアヒルのクチバシを意味する「BILL」に掛け合わせた「UN-BILL-IEVABLE」という定番のダジャレ。マダガスカルの森の地下で見つかった7種の新種カエルという驚きとワクワク感を表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "DIAMONDS UNDERCOVER!",
-      "meaning_ja": "自然な日本語訳：「潜入中のダイヤモンドたち！」（森の土の下に隠れたダイヤモンドガエル）\n言葉遊びの解説：「Undercover（秘密裏に、潜入して）」という単語の二重意味（ダブル・エントリー）を活用。新種のカエルたちが謎に包まれていた秘密の存在であることと、物理的に森の地面の土や落ち葉のカバリング（Cover）の下に隠れていたことの両方を掛け合わせたスマートな言葉遊びです。"
-    },
-    {
-      "number": 3,
-      "title": "SECRET WORLDS BENEATH OUR FEET",
-      "meaning_ja": "自然な日本語訳：「私たちの足元に広がる、秘密の世界」\nコピーの魅力：映画のポスターやネイチャー誌のカバーラインのような、冒険心をくすぐるキャッチコピー。駄ジャレを使わず、足元の土の下に未知の美しい生命が存在する驚きと感動をダイレクトかつ洗練されたトーンで伝えます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Jungle Field Researcher",
-      "concept_title_ja": "ジャングルのフィールド研究員",
-      "image_path": "automation_images/design_previews/2026-08-31/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "c2beb4d909c5226bd9548673d262337787dd6dd883439d648b541d91cc64ad6b",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Seven New Frog Species Found Beneath Madagascar's Forest Floor\nSummary: A charming discovery of tiny diamond frogs hiding in Madagascar that brings delightful animal wonder to readers.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Jungle Field Researcher\n\nCONCEPT:\nThe yellow duck mascot acts as a gentle field researcher in a sun-dappled Madagascar rainforest, admiring tiny glistening frogs on mossy foliage with a magnifying glass.\n\nCOMPOSITION:\nA wide landscape hero view set in a sunlit Madagascar rainforest. The iconic yellow duck mascot, featuring its bright yellow feathers, orange beak, glossy dark eyes, and small tuft, wears a light khaki explorer vest. Kneeling on a mossy forest floor, the duck peers through a magnifying glass at tiny, sparkling frogs sitting gracefully on a broad leaf. Soft rays of morning light stream through the tropical foliage in the background.\n\nPRODUCTION DIRECTION:\nA clean, modern editorial landscape illustration of the iconic friendly yellow duck mascot with a bright orange beak, glossy dark eyes, and a small feather tuft on top, wearing a tiny khaki field vest. The duck is sitting in a sun-dappled Madagascar rainforest, holding a magnifying glass and smiling warmly at tiny, glistening diamond frogs perched on mossy soil and tropical green leaves. Soft golden sunlight filtering through forest canopy, shallow depth of field, warm approachable tone, high resolution, crisp details, no readable text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot dressed as an explorer admiring tiny glowing frogs on a mossy leaf in a Madagascar rainforest.",
-      "alt_ja": "マダガスカルの熱帯雨林で探検家の姿をしたアヒルのマスコットが葉の上の小さなカエルを観察する様子。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Subterranean Cutaway",
-      "concept_title_ja": "地底世界の断面図",
-      "image_path": "automation_images/design_previews/2026-08-31/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "261a5ebd6c420e878b1c76df174a786f8a2c592ee532d36ffbb3c59336cbdd0a",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Seven New Frog Species Found Beneath Madagascar's Forest Floor\nSummary: A charming discovery of tiny diamond frogs hiding in Madagascar that brings delightful animal wonder to readers.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Subterranean Cutaway\n\nCONCEPT:\nA whimsical cross-section view showing the sunny forest floor above and a subterranean lair below, where tiny sparkling frogs gather under fallen leaves.\n\nCOMPOSITION:\nA landscape cross-section illustration. Above the soil line, green ferns and tropical plants flourish under warm sunlight. Below the surface line, a detailed cross-section reveals an underground pocket within rich dark soil where tiny, gem-like frogs sit comfortably. The friendly yellow duck mascot lies playfully along the top ridge, leaning over to peek curiously down into the hidden subterranean world.\n\nPRODUCTION DIRECTION:\nA sleek modern editorial cross-section visual depicting a tropical forest floor. Above ground level, vibrant green ferns grow in soft warm sunlight. Below the dark earthy ground line, an illuminated subterranean soil pocket shows tiny sparkling frogs resting among tiny roots and fallen foliage. The recognizable yellow duck mascot with an orange beak, dark glossy eyes, and feather tuft leans playfully over the top soil edge, peering warmly into the underground space. Warm color palette, clear focal point, premium digital art style, no text, no UI elements, no graphics.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A cross-section illustration of the forest floor showing tiny frogs tucked underground while the yellow duck peeks down from above.",
-      "alt_ja": "森の地面の断面図。地下に隠れた小さなカエルたちを上から覗き込む黄色のダックマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Botanical Research Desk",
-      "concept_title_ja": "植物研究者のデスク",
-      "image_path": "automation_images/design_previews/2026-08-31/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "309dd35820ee998b1fbaf41c28313e4d1657a12be8372ed087cf34ad5c4d49bd",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Seven New Frog Species Found Beneath Madagascar's Forest Floor\nSummary: A charming discovery of tiny diamond frogs hiding in Madagascar that brings delightful animal wonder to readers.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Botanical Research Desk\n\nCONCEPT:\nA warm, premium editorial study scene showcasing miniature terrarium dishes on a wooden researcher desk alongside field notes and the mascot.\n\nCOMPOSITION:\nA warm indoor studio setup on a polished mahogany desk. A brass desk lamp casts a cozy glow over a magnifying glass, neat field notebook pages, and small glass terrarium bowls containing lush green moss and tiny sparkling frogs. The yellow duck mascot stands proudly next to the terrarium display, looking warmly toward the viewer with an inviting, charming smile.\n\nPRODUCTION DIRECTION:\nA high-end modern editorial landscape render of a cozy botanical laboratory desk. A warm brass desk lamp illuminates field notebooks, a magnifying glass, and small glass terrarium saucers filled with vibrant green moss and tiny glistening diamond frogs. Beside the terrariums, the iconic yellow duck mascot with an orange beak, black glossy eyes, and a tiny head feather stands proudly with a friendly welcoming expression. Cinematic warm lighting, rich textures, sophisticated editorial design, realistic studio ambiance, zero text, no watermarks, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot standing next to tiny moss terrarium bowls on a warm researcher desk.",
-      "alt_ja": "温かな研究デスクで、小さな苔テラリウムと新種のカエルたちの横に立つアヒルのマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-08-31/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "DIAMONDS UNDERCOVER!"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "DIAMONDS UNDERCOVER!",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "DIAMONDS UNDERCOVER!",
+    "meaning_ja": "自然な日本語訳：「潜入中のダイヤモンドたち！」（森の土の下に隠れたダイヤモンドガエル）\n言葉遊びの解説：「Undercover（秘密裏に、潜入して）」という単語の二重意味（ダブル・エントリー）を活用。新種のカエルたちが謎に包まれていた秘密の存在であることと、物理的に森の地面の土や落ち葉のカバリング（Cover）の下に隠れていたことの両方を掛け合わせたスマートな言葉遊びです。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "The Subterranean Cutaway",
+    "concept_title_ja": "地底世界の断面図",
+    "image_path": "automation_images/design_previews/2026-08-31/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "261a5ebd6c420e878b1c76df174a786f8a2c592ee532d36ffbb3c59336cbdd0a",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Seven New Frog Species Found Beneath Madagascar's Forest Floor\nSummary: A charming discovery of tiny diamond frogs hiding in Madagascar that brings delightful animal wonder to readers.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Subterranean Cutaway\n\nCONCEPT:\nA whimsical cross-section view showing the sunny forest floor above and a subterranean lair below, where tiny sparkling frogs gather under fallen leaves.\n\nCOMPOSITION:\nA landscape cross-section illustration. Above the soil line, green ferns and tropical plants flourish under warm sunlight. Below the surface line, a detailed cross-section reveals an underground pocket within rich dark soil where tiny, gem-like frogs sit comfortably. The friendly yellow duck mascot lies playfully along the top ridge, leaning over to peek curiously down into the hidden subterranean world.\n\nPRODUCTION DIRECTION:\nA sleek modern editorial cross-section visual depicting a tropical forest floor. Above ground level, vibrant green ferns grow in soft warm sunlight. Below the dark earthy ground line, an illuminated subterranean soil pocket shows tiny sparkling frogs resting among tiny roots and fallen foliage. The recognizable yellow duck mascot with an orange beak, dark glossy eyes, and feather tuft leans playfully over the top soil edge, peering warmly into the underground space. Warm color palette, clear focal point, premium digital art style, no text, no UI elements, no graphics.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A cross-section illustration of the forest floor showing tiny frogs tucked underground while the yellow duck peeks down from above.",
+    "alt_ja": "森の地面の断面図。地下に隠れた小さなカエルたちを上から覗き込む黄色のダックマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-08-31.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-08-31 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-08-31 — Batch 1",
-  "final_email_sent_at": "2026-08-30T22:41:12.489294+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "DIAMONDS UNDERCOVER!",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-08-30T22:48:00.852481+00:00"
+    "translation_language": "ja"
+  }
 }
