@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-01",
+    "displayDate": "September 1, 2026",
+    "slug": "season-duck",
+    "title": "SEASON DUCK",
+    "duckName": "Season Duck",
+    "storyTitleEn": "No smartphone, no problem: Plants have their own built-in 'Season-Meter'",
+    "storyTitleJa": "No smartphone, no problem: Plants have their own built-in 'Season-Meter'",
+    "image": "assets/ducks/2026-09-01-season-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Season Duck",
+    "imageAltJa": "Season DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Wild plants do not need smart devices to keep track of the weather. Instead, they rely on their own built-in 'Season-Meter' and natural biological timing to sense and track the changing seasons.",
+    "storyJa": "野生の植物は天気を追跡するためにスマート機器を必要としません。その代わりに、自らに備わった「シーズンメーター」と自然な生物学的タイミングを利用して、季節の移り変わりを感じ取り、追跡しています。",
+    "duckEn": "Nature always keeps perfect track of time!",
+    "duckJa": "自然はいつも時間を完璧に把握しているんだね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-08-smartphone-problem-built-season-meter.html",
+    "archiveSummaryEn": "No smartphone needed! Wild plants use their own built-in 'Season-Meter' to track the changing seasons.",
+    "archiveSummaryJa": "スマートフォンは不要！野生の植物は体内の「シーズンメーター」で季節の移り変わりを追跡しています。",
+    "reasonEn": "No smartphone needed! Wild plants use their own built-in 'Season-Meter' to track the changing seasons.",
+    "reasonJa": "スマートフォンは不要！野生の植物は体内の「シーズンメーター」で季節の移り変わりを追跡しています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-08-31",
     "displayDate": "August 31, 2026",
     "slug": "hidden-diamond-frogs",
