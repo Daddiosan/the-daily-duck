@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-01",
-  "generated_at": "2026-08-31T23:55:38.183714+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-01T00:07:58.896637+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-01",
     "issue_date": "2026-09-01",
     "phase": 2,
@@ -561,40 +561,9 @@
       },
       "gate_a_package_created_at": "2026-08-31T22:10:32.038858+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 46,
-    "title": "No smartphone, no problem: Plants have their own built-in 'Season-Meter'",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-08-smartphone-problem-built-season-meter.html",
-    "category": "nature",
-    "happiness": 8,
-    "hope": 8,
-    "general_interest": 8,
-    "surprise": 8,
-    "duck_visual": 7,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 8,
-    "total_score": 82,
-    "reason": "Charming concept explaining how wild plants keep track of changing seasons using their own biological timing.",
-    "candidate_number": 2,
-    "title_en": "Plants Have a Built-in 'Season-Meter' to Track Changing Seasons",
-    "reason_en": "A charming story explaining how wild plants track changing seasons using their natural biological timing.",
-    "en_copy": "Wild plants do not need smart devices to keep track of the weather. Instead, they rely on their own built-in 'Season-Meter' and natural biological timing to sense and track the changing seasons.",
-    "duck_name": "Season Duck",
-    "duck_en": "Nature always keeps perfect track of time!",
-    "x_en": "No smartphone needed! Wild plants use their own built-in 'Season-Meter' to track the changing seasons.",
-    "title_ja": "植物には季節の変化を追跡する独自の「シーズンメーター」が備わっている",
-    "reason_ja": "野生の植物が自らの生物学的なタイミングを使って季節の変化を追跡していることを説明する、魅力的な話題です。",
-    "jp_copy": "野生の植物は天気を追跡するためにスマート機器を必要としません。その代わりに、自らに備わった「シーズンメーター」と自然な生物学的タイミングを利用して、季節の移り変わりを感じ取り、追跡しています。",
-    "duck_jp": "自然はいつも時間を完璧に把握しているんだね！",
-    "x_jp": "スマートフォンは不要！野生の植物は体内の「シーズンメーター」で季節の移り変わりを追跡しています。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "Nature's Four-Season Tree Clock",
       "concept_en": "The Daily Duck inspecting a magical tree canopy that visually transitions through all four seasons, demonstrating nature's internal clock.",
@@ -606,107 +575,9 @@
       "composition_ja": "横長のヒーロー構図。手前の苔むした小丘にデイリー・ダックが座り、春の桜色、夏の緑、秋の金、冬の樹氷へと枝ごとに移り変わる美しい木を見上げています。木漏れ日が差し込む暖かく清潔感のある編集ビジュアルです。",
       "alt_ja": "日当たりの良い丘に座り、春・夏・秋・冬の葉がひとつに広がる大きな木を見上げるデイリー・ダック。"
     },
-    {
-      "number": 2,
-      "title_en": "Sprout with a Sun-Clock Aura",
-      "concept_en": "The Daily Duck examining a young seedling in a garden that radiates a natural solar clock aura, contrasting biological timing with digital devices.",
-      "composition_en": "Landscape framing with a clean focal point. The Daily Duck leans forward in a sunny garden bed, holding a small wooden magnifying glass toward a fresh green plant shoot. Surrounding the shoot is a subtle, glowing aura shaped like a solar dial. A tiny smartphone lies tucked away in the soft grass, ignored.",
-      "generation_prompt_en": "A modern editorial landscape image of a friendly yellow duck mascot with an orange beak, dark glossy eyes, and a cute feather tuft. The duck is bending down cheerfully in a vibrant sunlit garden to inspect a vibrant green plant sprout. The sprout has a subtle, warm glowing sun-clock outline around its leaves. Soft depth of field, bright crisp colors, clean composition, warm atmosphere, no text, no logos, no watermark.",
-      "alt_en": "The Daily Duck in a sunny garden inspecting a green plant seedling that has a glowing sun-clock aura around its leaves.",
-      "title_ja": "太陽時計を纏う新芽",
-      "concept_ja": "庭で光る太陽時計のようなオーラを纏った新芽を観察するデイリー・ダック。自然の生物学的タイミングを印象的に描写します。",
-      "composition_ja": "明確なフォーカルポイントを持つ横長構図。日当たりの良い花壇でデイリー・ダックが身を乗り出し、葉のまわりに優しい光の時計のオーラを纏った緑の新芽を観察しています。背景には明るい庭園が広がります。",
-      "alt_ja": "日差しが降り注ぐ庭で、光る太陽時計のオーラをまとった緑の新芽を嬉しそうに眺めるデイリー・ダック。"
-    },
-    {
-      "number": 3,
-      "title_en": "The Seasonal Greenhouse Inspector",
-      "concept_en": "The Daily Duck caring for seasonal plants inside a bright, modern glass greenhouse, illustrating biological season-tracking in action.",
-      "composition_en": "Wide horizontal greenhouse interior. The Daily Duck wears a tiny green botanical apron and uses a small silver watering can to nurture potted sprouts arranged by season. Warm morning light pours through tall glass panels onto wooden potting benches loaded with healthy greenery.",
-      "generation_prompt_en": "A charming landscape editorial visual set inside a bright modern glass greenhouse bathed in golden sunlight. A friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft wears a tiny green apron and waters potted green seedlings with a small watering can. Neat wooden benches hold plants at different stages of seasonal growth. High-end magazine style, clean, warm, photorealistic visual quality, no text, no logos, no watermark.",
-      "alt_en": "The Daily Duck wearing a tiny apron watering potted plants on a wooden table inside a bright, sunlit glass greenhouse.",
-      "title_ja": "季節の温室インスペクター",
-      "concept_ja": "明るく現代的な温室の中で、季節ごとの植物の世話をしながら生物学的タイミングを確かめるデイリー・ダック。",
-      "composition_ja": "広々とした温室内部の横長構図。小さな緑のエプロンをつけたデイリー・ダックが、木製の作業台に並んだ鉢植えの新芽にジョウロで水を注いでいます。高いガラス窓から差し込む暖かな光が空間全体を包みます。",
-      "alt_ja": "明るい温室の中で、小さなエプロンをつけて鉢植えの植物にジョウロで水をあげるデイリー・ダック。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACK-TOCK! NATURE'S BUILT-IN SEASON CLOCK",
-      "meaning_ja": "【日本語訳】クアック・タック！自然に備わった季節の時計\n【元の英語表現】時計の針の音「Tick-tock」（チクタク）\n【ダジャレの仕組み】時計の音「Tick」をアヒルの鳴き声「QUACK」に入れ替えた定番のブランド・ダジャレ。スマート機器がなくても植物が体内の「シーズンメーター」でカチッカチッと季節の時を刻んでいる様子を、アヒルらしい軽快なリズムで表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "LEAF IT TO NATURE TO TELL TIME!",
-      "meaning_ja": "【日本語訳】時間を知るなら自然（葉っぱ）におまかせ！\n【言葉遊びの仕組み】「〜におまかせ」を意味するおなじみの英語フレーズ「Leave it to...」の「Leave」を、植物の「葉」を意味する「LEAF」（同音の掛詞）に置き換えたスマートな言葉遊び。スマホを使わずに植物自身の力で季節を追跡する自然の凄さを、ユーモアたっぷりに伝えています。"
-    },
-    {
-      "number": 3,
-      "title": "NO APPS NEEDED: THE FORESTS ALREADY KNOW",
-      "meaning_ja": "【日本語訳】アプリは不要：森はすでに知っている\n【ポスターコピーのニュアンス】ダジャレを使わず、映画のポスターや雑誌の表紙のように短く力強く言い切るポスターコピー。「スマートフォンのアプリに頼らなくても、自然界の植物は完璧に季節の移り変わりを把握している」というニュースの魅力を、洗練された現代的なトーンで力強く表現しています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Nature's Four-Season Tree Clock",
-      "concept_title_ja": "自然の四季ツリークロック",
-      "image_path": "automation_images/design_previews/2026-09-01/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "52f1228e8c51b45dd0ce298cbefc00b8872c1388218a4cb419ee452b8a87f23a",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Plants Have a Built-in 'Season-Meter' to Track Changing Seasons\nSummary: A charming story explaining how wild plants track changing seasons using their natural biological timing.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nNature's Four-Season Tree Clock\n\nCONCEPT:\nThe Daily Duck inspecting a magical tree canopy that visually transitions through all four seasons, demonstrating nature's internal clock.\n\nCOMPOSITION:\nLandscape hero framing. The Daily Duck sits on a soft mossy knoll in the foreground, gazing up at a lush tree whose leaves seamlessly shift from spring cherry blossoms to summer green, autumn gold, and soft winter frost across its branches. Golden sunlight streams through the canopy, creating a clean, warm, editorial atmosphere.\n\nPRODUCTION DIRECTION:\nA premium landscape editorial illustration featuring a friendly bright yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft on its head. The duck sits comfortably on a sunlit grassy hill, admiring a majestic oak tree whose leaves gradually shift through four distinct seasonal colors across its branches: pale pink spring blossoms, rich summer greens, warm golden autumn leaves, and frosted winter tips. Clean, modern, charming design with warm lighting, high detail, no text, no logos, no watermark.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck sitting on a sunny grassy hill looking up at a tree canopy that displays spring blossoms, summer greens, autumn foliage, and winter frost.",
-      "alt_ja": "日当たりの良い丘に座り、春・夏・秋・冬の葉がひとつに広がる大きな木を見上げるデイリー・ダック。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Sprout with a Sun-Clock Aura",
-      "concept_title_ja": "太陽時計を纏う新芽",
-      "image_path": "automation_images/design_previews/2026-09-01/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "7a68c25692edac0f9f532bf9ca0e68b900c19b3e269e15e5f26d9ffcb278ab12",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Plants Have a Built-in 'Season-Meter' to Track Changing Seasons\nSummary: A charming story explaining how wild plants track changing seasons using their natural biological timing.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nSprout with a Sun-Clock Aura\n\nCONCEPT:\nThe Daily Duck examining a young seedling in a garden that radiates a natural solar clock aura, contrasting biological timing with digital devices.\n\nCOMPOSITION:\nLandscape framing with a clean focal point. The Daily Duck leans forward in a sunny garden bed, holding a small wooden magnifying glass toward a fresh green plant shoot. Surrounding the shoot is a subtle, glowing aura shaped like a solar dial. A tiny smartphone lies tucked away in the soft grass, ignored.\n\nPRODUCTION DIRECTION:\nA modern editorial landscape image of a friendly yellow duck mascot with an orange beak, dark glossy eyes, and a cute feather tuft. The duck is bending down cheerfully in a vibrant sunlit garden to inspect a vibrant green plant sprout. The sprout has a subtle, warm glowing sun-clock outline around its leaves. Soft depth of field, bright crisp colors, clean composition, warm atmosphere, no text, no logos, no watermark.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck in a sunny garden inspecting a green plant seedling that has a glowing sun-clock aura around its leaves.",
-      "alt_ja": "日差しが降り注ぐ庭で、光る太陽時計のオーラをまとった緑の新芽を嬉しそうに眺めるデイリー・ダック。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Seasonal Greenhouse Inspector",
-      "concept_title_ja": "季節の温室インスペクター",
-      "image_path": "automation_images/design_previews/2026-09-01/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "bac26893acaffc9e558d5ab0ba8f5833db902473ee6c8360a43bf3ec233e6567",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Plants Have a Built-in 'Season-Meter' to Track Changing Seasons\nSummary: A charming story explaining how wild plants track changing seasons using their natural biological timing.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Seasonal Greenhouse Inspector\n\nCONCEPT:\nThe Daily Duck caring for seasonal plants inside a bright, modern glass greenhouse, illustrating biological season-tracking in action.\n\nCOMPOSITION:\nWide horizontal greenhouse interior. The Daily Duck wears a tiny green botanical apron and uses a small silver watering can to nurture potted sprouts arranged by season. Warm morning light pours through tall glass panels onto wooden potting benches loaded with healthy greenery.\n\nPRODUCTION DIRECTION:\nA charming landscape editorial visual set inside a bright modern glass greenhouse bathed in golden sunlight. A friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft wears a tiny green apron and waters potted green seedlings with a small watering can. Neat wooden benches hold plants at different stages of seasonal growth. High-end magazine style, clean, warm, photorealistic visual quality, no text, no logos, no watermark.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck wearing a tiny apron watering potted plants on a wooden table inside a bright, sunlit glass greenhouse.",
-      "alt_ja": "明るい温室の中で、小さなエプロンをつけて鉢植えの植物にジョウロで水をあげるデイリー・ダック。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-01/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "QUACK-TOCK! NATURE'S BUILT-IN SEASON CLOCK"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "QUACK-TOCK! NATURE'S BUILT-IN SEASON CLOCK",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "QUACK-TOCK! NATURE'S BUILT-IN SEASON CLOCK",
+    "meaning_ja": "【日本語訳】クアック・タック！自然に備わった季節の時計\n【元の英語表現】時計の針の音「Tick-tock」（チクタク）\n【ダジャレの仕組み】時計の音「Tick」をアヒルの鳴き声「QUACK」に入れ替えた定番のブランド・ダジャレ。スマート機器がなくても植物が体内の「シーズンメーター」でカチッカチッと季節の時を刻んでいる様子を、アヒルらしい軽快なリズムで表現しています。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "Nature's Four-Season Tree Clock",
+    "concept_title_ja": "自然の四季ツリークロック",
+    "image_path": "automation_images/design_previews/2026-09-01/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "52f1228e8c51b45dd0ce298cbefc00b8872c1388218a4cb419ee452b8a87f23a",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Plants Have a Built-in 'Season-Meter' to Track Changing Seasons\nSummary: A charming story explaining how wild plants track changing seasons using their natural biological timing.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nNature's Four-Season Tree Clock\n\nCONCEPT:\nThe Daily Duck inspecting a magical tree canopy that visually transitions through all four seasons, demonstrating nature's internal clock.\n\nCOMPOSITION:\nLandscape hero framing. The Daily Duck sits on a soft mossy knoll in the foreground, gazing up at a lush tree whose leaves seamlessly shift from spring cherry blossoms to summer green, autumn gold, and soft winter frost across its branches. Golden sunlight streams through the canopy, creating a clean, warm, editorial atmosphere.\n\nPRODUCTION DIRECTION:\nA premium landscape editorial illustration featuring a friendly bright yellow duck mascot with an orange beak, large glossy dark eyes, and a small feather tuft on its head. The duck sits comfortably on a sunlit grassy hill, admiring a majestic oak tree whose leaves gradually shift through four distinct seasonal colors across its branches: pale pink spring blossoms, rich summer greens, warm golden autumn leaves, and frosted winter tips. Clean, modern, charming design with warm lighting, high detail, no text, no logos, no watermark.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck sitting on a sunny grassy hill looking up at a tree canopy that displays spring blossoms, summer greens, autumn foliage, and winter frost.",
+    "alt_ja": "日当たりの良い丘に座り、春・夏・秋・冬の葉がひとつに広がる大きな木を見上げるデイリー・ダック。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-01.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-01 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-01 — Batch 1",
-  "final_email_sent_at": "2026-08-31T23:55:42.797734+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "QUACK-TOCK! NATURE'S BUILT-IN SEASON CLOCK",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-01T00:07:58.897594+00:00"
+    "translation_language": "ja"
+  }
 }
