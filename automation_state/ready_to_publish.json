@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-02",
-  "generated_at": "2026-09-02T00:59:07.146700+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-02T03:40:54.024715+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-02",
     "issue_date": "2026-09-02",
     "phase": 2,
@@ -561,64 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-01T22:16:11.482365+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 3,
-    "title": "Researchers followed 400,000 kids for 20 years and found a lasting pre-K advantage",
-    "source": "ScienceDaily Society",
-    "url": "https://www.sciencedaily.com/releases/2026/08/260828005213.htm",
-    "category": "children",
-    "happiness": 8,
-    "hope": 9,
-    "general_interest": 8,
-    "surprise": 7,
-    "duck_visual": 7,
-    "source_quality": 9,
-    "freshness": 8,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 84,
-    "reason": "An encouraging, long-term look at how early childhood care builds lasting success for kids.",
-    "candidate_number": 3,
-    "title_en": "20-Year Study of 400,000 Children Reveals Lasting Pre-K Advantage",
-    "reason_en": "An encouraging look at how early childhood education builds long-term success.",
-    "en_copy": "Researchers followed 400,000 children over 20 years and found that early childhood education provides a lasting advantage. The study highlights how early care supports long-term success as kids grow up.",
-    "duck_name": "Pre-K Champion",
-    "duck_en": "A strong start for a bright future!",
-    "x_en": "A 20-year study following 400,000 kids shows the lasting benefits of pre-K education!",
-    "title_ja": "40万人を20年間追跡調査：幼児教育の持続的なメリットを解明",
-    "reason_ja": "幼児教育が子供たちの長期的な成功につながることを示す、心強い長期研究。",
-    "jp_copy": "研究者たちが40万人の子供たちを20年間にわたって追跡調査した結果、幼児教育が持続的なメリットをもたらすことが分かりました。この研究は、幼少期のケアが成長後の長期的成功を支えることを示しています。",
-    "duck_jp": "明るい未来のための力強いスタート！",
-    "x_jp": "40万人の子供たちを20年間追跡！ 幼児教育がもたらす持続的な効果とは？"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "Building Blocks for the Future",
-      "concept_en": "The Daily Duck mascot sits happily at a low wooden play table in a bright, modern pre-K classroom, carefully building a tall, soaring tower out of vibrant wooden blocks.",
-      "composition_en": "A wide landscape hero image set in a sunny, contemporary preschool room. In the main focal point, the iconic yellow duck mascot—featuring an orange beak, large dark glossy eyes, and a small feather tuft—smiles warmly as it places a bright block on top of a colorful wooden block tower. Sunlight filters through large floor-to-ceiling windows onto clean pastel decor and light wood textures, conveying solid early foundations and long-term potential.",
-      "generation_prompt_en": "A clean, modern visual editorial hero photo in wide landscape orientation. A cheerful yellow duck mascot with a bright orange beak, large glossy dark eyes, and a small tuft of feathers sitting at a child-sized wooden table in a sunlit modern preschool classroom. The duck is carefully balancing colorful wooden building blocks into a neat tall tower. Soft warm sunlight streaming through big windows, soft pastel background blur, warm approachable lighting, premium magazine aesthetic, no text, no logos, no watermarks.",
-      "alt_en": "The Daily Duck mascot enthusiastically stacking colorful wooden building blocks in a bright, modern preschool classroom.",
-      "title_ja": "未来への積み木",
-      "concept_ja": "明るくモダンな幼児教室で、Daily Duckマスコットが小さな木製テーブルに座り、カラフルな積み木で高いタワーを楽しそうに組み立てています。",
-      "composition_ja": "陽光が差し込む現代的なプレスクールを舞台にした横長ヒーロー構図。オレンジのくちばし、大きな黒い瞳、小さな毛束を持つ黄色いアヒルのマスコットが中央で微笑みながら、積み木の塔のてっぺんにブロックを置く姿を捉えています。明るい木目とパステル調のインテリアが、幼児教育によるしっかりとした基礎作りを象徴します。",
-      "alt_ja": "明るい幼児教室でカラフルな積み木を嬉しそうに積み上げるDaily Duckマスコット。"
-    },
-    {
-      "number": 2,
-      "title_en": "The 20-Year Growth Chart",
-      "concept_en": "The Daily Duck mascot stands proudly beside a charming, colorful growth chart painted on a warm classroom wall, symbolizing long-term progress over time.",
-      "composition_en": "A clean landscape editorial scene in a welcoming learning environment. The friendly yellow duck mascot stands in profile/three-quarter view next to a stylized wooden growth wall chart adorned with playful year markers and star icons. The duck points towards a golden star near the top with an encouraging smile. Soft bokeh in the background reveals bookshelf nooks and soft cushions under gentle studio lighting.",
-      "generation_prompt_en": "A bright landscape visual editorial photograph. The friendly yellow duck mascot with an orange beak, large dark glossy eyes, and a distinct small feather tuft standing next to a charming wooden growth chart mounted on a warm classroom wall. The growth chart features subtle star milestones. Soft daylight, clean interior design, cozy preschool environment, crisp focal point on the proud mascot, warm studio lighting, highly detailed editorial style, no readable text, no logos, no watermarks.",
-      "alt_en": "The Daily Duck mascot pointing with pride to a wooden milestone growth chart on a classroom wall.",
-      "title_ja": "20年の成長チャート",
-      "concept_ja": "温かみのある教室の壁に掛けられたカラフルな成長記録チャートの横にDaily Duckマスコットが誇らしげに立ち、長年の持続的な成長を象徴しています。",
-      "composition_ja": "温かみのある学習環境を描いたクリーンな横長構図。オレンジのくちばし、つぶらな黒い瞳、頭の毛束が特徴の黄色いアヒルマスコットが、星のマークや目盛りが刻まれた木製の成長チャートの隣に立ち、上方のゴールを誇らしげに指し示しています。背景には絵本棚が優しくボケて写り、成長と未来への希望を表現します。",
-      "alt_ja": "教室の壁にある成長チャートの横で誇らしげにポーズをとるDaily Duckマスコット。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "Nurturing the Young Seedling",
       "concept_en": "The Daily Duck mascot gently waters a small, vibrant green plant sprout growing in a ceramic pot inside a cozy reading nook, representing the lasting benefits of early care.",
@@ -629,84 +574,10 @@
       "concept_ja": "読書コーナーのひだまりの中で、Daily Duckマスコットが小さな鉢植えの新芽に優しく水を与えており、幼少期のケアが大きな成長へとつながることを表現しています。",
       "composition_ja": "温もりあふれる横長ビジュアル・メタファー。黄色いアヒルのマスコットが小さなパステルカラーの水差しを手に、日当たりの良い窓辺で元気に育つ緑の新芽に水を与えています。周りには柔らかいクッションや絵本が並び、光に包まれた新芽とマスコットの優しい表情が、幼少期の教育（Pre-K）がもたらす持続的な効果を象徴します。",
       "alt_ja": "日当たりの良い教室で小さな新芽に優しく水を与えるDaily Duckマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "A WADDLE BIT GOES A LONG WAY!",
-      "meaning_ja": "定番の英語フレーズ「A little bit goes a long way（ほんの少しのことが大きな効果を生む）」の「little」を、アヒル歩きを意味する「waddle」に置き換えた駄ジャレ。「幼少期のわずかな教育（Pre-K）が20年後の大きな成果につながる」という研究結果を表現しています。"
     },
-    {
-      "number": 2,
-      "title": "SMALL STEPS, GIANT STRIDES",
-      "meaning_ja": "「小さな一歩（Small steps）」と「飛躍的な進歩（Giant strides）」という対照的な表現を用いたスマートな言葉遊び。幼児期の小さな学びの一歩が、人生における20年間の大きな成長と持続的メリットをもたらすことを表しています。"
-    },
-    {
-      "number": 3,
-      "title": "400,000 KIDS PROVE THE POWER OF PRE-K",
-      "meaning_ja": "40万人の子供たちを20年間追跡したという大仕掛けな研究事実をストレートに届けるポスターコピー。雑誌の表紙やSNSカードのように、一目でニュースのスケール感と幼児教育の重要性を印象づけます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Building Blocks for the Future",
-      "concept_title_ja": "未来への積み木",
-      "image_path": "automation_images/design_previews/2026-09-02/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "214dfa3a1c2b323465797a44351c1ce89f44eff8cb8f919ae0c1dbefbd20ee91",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: 20-Year Study of 400,000 Children Reveals Lasting Pre-K Advantage\nSummary: An encouraging look at how early childhood education builds long-term success.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nBuilding Blocks for the Future\n\nCONCEPT:\nThe Daily Duck mascot sits happily at a low wooden play table in a bright, modern pre-K classroom, carefully building a tall, soaring tower out of vibrant wooden blocks.\n\nCOMPOSITION:\nA wide landscape hero image set in a sunny, contemporary preschool room. In the main focal point, the iconic yellow duck mascot—featuring an orange beak, large dark glossy eyes, and a small feather tuft—smiles warmly as it places a bright block on top of a colorful wooden block tower. Sunlight filters through large floor-to-ceiling windows onto clean pastel decor and light wood textures, conveying solid early foundations and long-term potential.\n\nPRODUCTION DIRECTION:\nA clean, modern visual editorial hero photo in wide landscape orientation. A cheerful yellow duck mascot with a bright orange beak, large glossy dark eyes, and a small tuft of feathers sitting at a child-sized wooden table in a sunlit modern preschool classroom. The duck is carefully balancing colorful wooden building blocks into a neat tall tower. Soft warm sunlight streaming through big windows, soft pastel background blur, warm approachable lighting, premium magazine aesthetic, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot enthusiastically stacking colorful wooden building blocks in a bright, modern preschool classroom.",
-      "alt_ja": "明るい幼児教室でカラフルな積み木を嬉しそうに積み上げるDaily Duckマスコット。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The 20-Year Growth Chart",
-      "concept_title_ja": "20年の成長チャート",
-      "image_path": "automation_images/design_previews/2026-09-02/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "a63ea15a9b6e1ab131d10127c1fb23a60e1f8d2ee8c339a4e393ac0eb3472616",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: 20-Year Study of 400,000 Children Reveals Lasting Pre-K Advantage\nSummary: An encouraging look at how early childhood education builds long-term success.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe 20-Year Growth Chart\n\nCONCEPT:\nThe Daily Duck mascot stands proudly beside a charming, colorful growth chart painted on a warm classroom wall, symbolizing long-term progress over time.\n\nCOMPOSITION:\nA clean landscape editorial scene in a welcoming learning environment. The friendly yellow duck mascot stands in profile/three-quarter view next to a stylized wooden growth wall chart adorned with playful year markers and star icons. The duck points towards a golden star near the top with an encouraging smile. Soft bokeh in the background reveals bookshelf nooks and soft cushions under gentle studio lighting.\n\nPRODUCTION DIRECTION:\nA bright landscape visual editorial photograph. The friendly yellow duck mascot with an orange beak, large dark glossy eyes, and a distinct small feather tuft standing next to a charming wooden growth chart mounted on a warm classroom wall. The growth chart features subtle star milestones. Soft daylight, clean interior design, cozy preschool environment, crisp focal point on the proud mascot, warm studio lighting, highly detailed editorial style, no readable text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot pointing with pride to a wooden milestone growth chart on a classroom wall.",
-      "alt_ja": "教室の壁にある成長チャートの横で誇らしげにポーズをとるDaily Duckマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Nurturing the Young Seedling",
-      "concept_title_ja": "若葉を育む時間",
-      "image_path": "automation_images/design_previews/2026-09-02/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "d4a6fb7d1e1183bd6ac680450e949d0682d8c93445d220d68ebc9b7afe7e0a64",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: 20-Year Study of 400,000 Children Reveals Lasting Pre-K Advantage\nSummary: An encouraging look at how early childhood education builds long-term success.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nNurturing the Young Seedling\n\nCONCEPT:\nThe Daily Duck mascot gently waters a small, vibrant green plant sprout growing in a ceramic pot inside a cozy reading nook, representing the lasting benefits of early care.\n\nCOMPOSITION:\nA warm and charming landscape visual metaphor. The yellow duck mascot holds a tiny pastel watering can, tenderly watering a bright green seedling flourishing in a sunlit windowsill or library corner. Surrounded by miniature books and warm ambient sunshine, the shot focuses on the glowing green sprout and the duck's caring expression, visually illustrating how early nurture yields strong, lasting growth.\n\nPRODUCTION DIRECTION:\nA charming landscape editorial image featuring a recognizable yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft. The duck is sitting in a sunny preschool library corner, gently tilting a tiny pastel watering can over a small green sprout in a clay pot. Warm golden sunlight streaming through the window, cozy ambient atmosphere, soft visual depth, photorealistic render style, highly warm and hopeful mood, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot tenderly watering a small green sprout in a sunny classroom reading nook.",
-      "alt_ja": "日当たりの良い教室で小さな新芽に優しく水を与えるDaily Duckマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-02/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "400,000 KIDS PROVE THE POWER OF PRE-K"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "400,000 KIDS PROVE THE POWER OF PRE-K",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "400,000 KIDS PROVE THE POWER OF PRE-K",
+    "meaning_ja": "40万人の子供たちを20年間追跡したという大仕掛けな研究事実をストレートに届けるポスターコピー。雑誌の表紙やSNSカードのように、一目でニュースのスケール感と幼児教育の重要性を印象づけます。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "Nurturing the Young Seedling",
+    "concept_title_ja": "若葉を育む時間",
+    "image_path": "automation_images/design_previews/2026-09-02/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "d4a6fb7d1e1183bd6ac680450e949d0682d8c93445d220d68ebc9b7afe7e0a64",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: 20-Year Study of 400,000 Children Reveals Lasting Pre-K Advantage\nSummary: An encouraging look at how early childhood education builds long-term success.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nNurturing the Young Seedling\n\nCONCEPT:\nThe Daily Duck mascot gently waters a small, vibrant green plant sprout growing in a ceramic pot inside a cozy reading nook, representing the lasting benefits of early care.\n\nCOMPOSITION:\nA warm and charming landscape visual metaphor. The yellow duck mascot holds a tiny pastel watering can, tenderly watering a bright green seedling flourishing in a sunlit windowsill or library corner. Surrounded by miniature books and warm ambient sunshine, the shot focuses on the glowing green sprout and the duck's caring expression, visually illustrating how early nurture yields strong, lasting growth.\n\nPRODUCTION DIRECTION:\nA charming landscape editorial image featuring a recognizable yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft. The duck is sitting in a sunny preschool library corner, gently tilting a tiny pastel watering can over a small green sprout in a clay pot. Warm golden sunlight streaming through the window, cozy ambient atmosphere, soft visual depth, photorealistic render style, highly warm and hopeful mood, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck mascot tenderly watering a small green sprout in a sunny classroom reading nook.",
+    "alt_ja": "日当たりの良い教室で小さな新芽に優しく水を与えるDaily Duckマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-02.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-02 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-02 — Batch 1",
-  "final_email_sent_at": "2026-09-02T00:59:12.681666+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "400,000 KIDS PROVE THE POWER OF PRE-K",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-02T03:40:54.025679+00:00"
+    "translation_language": "ja"
+  }
 }
