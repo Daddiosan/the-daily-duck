@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-02",
+    "displayDate": "September 2, 2026",
+    "slug": "pre-k-champion",
+    "title": "PRE-K CHAMPION",
+    "duckName": "Pre-K Champion",
+    "storyTitleEn": "Researchers followed 400,000 kids for 20 years and found a lasting pre-K advantage",
+    "storyTitleJa": "Researchers followed 400,000 kids for 20 years and found a lasting pre-K advantage",
+    "image": "assets/ducks/2026-09-02-pre-k-champion.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Pre-K Champion",
+    "imageAltJa": "Pre-K ChampionをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Researchers followed 400,000 children over 20 years and found that early childhood education provides a lasting advantage. The study highlights how early care supports long-term success as kids grow up.",
+    "storyJa": "研究者たちが40万人の子供たちを20年間にわたって追跡調査した結果、幼児教育が持続的なメリットをもたらすことが分かりました。この研究は、幼少期のケアが成長後の長期的成功を支えることを示しています。",
+    "duckEn": "A strong start for a bright future!",
+    "duckJa": "明るい未来のための力強いスタート！",
+    "sourceLabel": "ScienceDaily Society",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/08/260828005213.htm",
+    "archiveSummaryEn": "A 20-year study following 400,000 kids shows the lasting benefits of pre-K education!",
+    "archiveSummaryJa": "40万人の子供たちを20年間追跡！ 幼児教育がもたらす持続的な効果とは？",
+    "reasonEn": "A 20-year study following 400,000 kids shows the lasting benefits of pre-K education!",
+    "reasonJa": "40万人の子供たちを20年間追跡！ 幼児教育がもたらす持続的な効果とは？",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-01",
     "displayDate": "September 1, 2026",
     "slug": "season-duck",
