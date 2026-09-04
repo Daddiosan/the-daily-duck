@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-04",
+    "displayDate": "September 4, 2026",
+    "slug": "sweet-scent-duck",
+    "title": "SWEET SCENT DUCK",
+    "duckName": "Sweet Scent Duck",
+    "storyTitleEn": "Ig Nobel Prize winners reveal why babies smell better than teenagers",
+    "storyTitleJa": "Ig Nobel Prize winners reveal why babies smell better than teenagers",
+    "image": "assets/ducks/2026-09-04-sweet-scent-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Sweet Scent Duck",
+    "imageAltJa": "Sweet Scent DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "An Ig Nobel Prize-winning study has revealed why babies smell better than teenagers. The research offers a lighthearted and humorous explanation for a universal observation shared by parents.",
+    "storyJa": "イグノーベル賞を受賞した研究により、赤ちゃんがティーンエイジャーよりも良い香りがする理由が明かされました。この研究は、多くの親が感じている身近な疑問をユーモアたっぷりに解明しています。",
+    "duckEn": "Science finally confirms what parents have noticed all along!",
+    "duckJa": "親たちがずっと気づいていたことを、科学がついに証明してくれたね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-ig-nobel-prize-winners-reveal.html",
+    "archiveSummaryEn": "Ig Nobel Prize winners have revealed why babies smell better than teenagers in a lighthearted new study!",
+    "archiveSummaryJa": "赤ちゃんがティーンエイジャーより良い香りがする理由を明かした、ユーモアあふれるイグノーベル賞受賞研究です！",
+    "reasonEn": "Ig Nobel Prize winners have revealed why babies smell better than teenagers in a lighthearted new study!",
+    "reasonJa": "赤ちゃんがティーンエイジャーより良い香りがする理由を明かした、ユーモアあふれるイグノーベル賞受賞研究です！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-03",
     "displayDate": "September 3, 2026",
     "slug": "archer-princess-duck",
