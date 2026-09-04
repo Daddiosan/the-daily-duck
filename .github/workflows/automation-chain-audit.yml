@@ -14,6 +14,10 @@ permissions:
   contents: read
   actions: read
 
+concurrency:
+  group: daily-duck-automation-chain-audit
+  cancel-in-progress: false
+
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -32,6 +36,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Restore delivered-alert keys
+        uses: actions/cache/restore@v4
+        with:
+          path: monitor_state/seen_alerts.json
+          key: daily-duck-alert-state-${{ github.run_id }}
+          restore-keys: |
+            daily-duck-alert-state-
 
       # ------------------------------------------------------------
       # 3. Run audit
@@ -75,9 +87,17 @@ jobs:
       # GITHUB_ENV becomes available to the NEXT step.
       # ------------------------------------------------------------
       - name: Prepare automation alert details
+        id: alert_details
         if: steps.chain_audit.outcome == 'failure'
         shell: bash
         run: |
+          PENDING_COUNT=$(python -c "import json; print(len(json.load(open('monitor_state/pending_alerts.json', encoding='utf-8')).get('alerts', [])))")
+          echo "pending_count=$PENDING_COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$PENDING_COUNT" -gt 0 ]; then
+            echo "should_alert=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_alert=false" >> "$GITHUB_OUTPUT"
+          fi
           {
             echo 'AUDIT_DETAILS<<EOF'
 
@@ -94,7 +114,7 @@ jobs:
       # 5. Send alert email
       # ------------------------------------------------------------
       - name: Send automation chain alert
-        if: steps.chain_audit.outcome == 'failure'
+        if: steps.chain_audit.outcome == 'failure' && steps.alert_details.outputs.should_alert == 'true'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -106,7 +126,20 @@ jobs:
 
           GITHUB_REPOSITORY: ${{ github.repository }}
 
+          AUTOMATION_ALERTS_FILE: monitor_state/pending_alerts.json
+
         run: python scripts/send_workflow_failure_email.py
+
+      - name: Record delivered-alert keys
+        if: steps.chain_audit.outcome == 'failure' && steps.alert_details.outputs.should_alert == 'true'
+        run: python scripts/merge_automation_alert_state.py
+
+      - name: Save delivered-alert keys
+        if: steps.chain_audit.outcome == 'failure' && steps.alert_details.outputs.should_alert == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: monitor_state/seen_alerts.json
+          key: daily-duck-alert-state-${{ github.run_id }}
 
       # ------------------------------------------------------------
       # 6. Mark workflow failed after alert has been sent
