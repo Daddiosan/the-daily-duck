@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-04",
-  "generated_at": "2026-09-04T11:30:42.938436+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-04T11:49:17.880766+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-04",
     "issue_date": "2026-09-04",
     "phase": 2,
@@ -561,52 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-03T22:17:53.582053+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 19,
-    "title": "Ig Nobel Prize winners reveal why babies smell better than teenagers",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-09-ig-nobel-prize-winners-reveal.html",
-    "category": "people",
-    "happiness": 9,
-    "hope": 7,
-    "general_interest": 9,
-    "surprise": 9,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 87,
-    "reason": "An Ig Nobel prize-winning study answering a universal parent observation with lighthearted humor and relatable warmth.",
-    "candidate_number": 2,
-    "title_en": "Ig Nobel Prize Winners Explain Why Babies Smell Better Than Teenagers",
-    "reason_en": "An Ig Nobel Prize-winning study that addresses a common parental observation with lighthearted humor and warmth.",
-    "en_copy": "An Ig Nobel Prize-winning study has revealed why babies smell better than teenagers. The research offers a lighthearted and humorous explanation for a universal observation shared by parents.",
-    "duck_name": "Sweet Scent Duck",
-    "duck_en": "Science finally confirms what parents have noticed all along!",
-    "x_en": "Ig Nobel Prize winners have revealed why babies smell better than teenagers in a lighthearted new study!",
-    "title_ja": "イグノーベル賞受賞者が明かす、赤ちゃんがティーンエイジャーより良い香りがする理由",
-    "reason_ja": "保護者たちの身近な気づきを、ユーモアと温かみをもって解き明かしたイグノーベル賞受賞の研究です。",
-    "jp_copy": "イグノーベル賞を受賞した研究により、赤ちゃんがティーンエイジャーよりも良い香りがする理由が明かされました。この研究は、多くの親が感じている身近な疑問をユーモアたっぷりに解明しています。",
-    "duck_jp": "親たちがずっと気づいていたことを、科学がついに証明してくれたね！",
-    "x_jp": "赤ちゃんがティーンエイジャーより良い香りがする理由を明かした、ユーモアあふれるイグノーベル賞受賞研究です！"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Aroma Laboratory",
-      "concept_en": "A cheerful laboratory scene where the yellow duck mascot investigates floating aroma bubbles.",
-      "composition_en": "Landscape ratio wide shot. The friendly yellow duck mascot stands at a sleek wooden lab desk in a bright studio. On the desk are crystal glass laboratory flasks, with one emitting glowing pastel pink and gold scent bubbles floating into the air.",
-      "generation_prompt_en": "A premium editorial landscape photograph of a friendly yellow duck mascot with a bright orange beak, large dark glossy eyes, and a small feather tuft. The duck sits at a clean, modern white studio desk with aesthetic glass laboratory flasks. One glass flask releases glowing pastel pink and soft gold scent bubbles into the air, creating a warm and charming atmosphere. Soft focus pastel background, modern magazine quality, bright ambient lighting, no text, no logos.",
-      "alt_en": "A friendly yellow duck mascot sitting in a bright modern lab setting with aesthetic glass flasks emitting glowing pastel aroma bubbles.",
-      "title_ja": "アロマ・ラボラトリー",
-      "concept_ja": "黄色いアヒルのマスコットが、浮かび上がる香りのシャボン玉を楽しく研究する現代的なラボの風景。",
-      "composition_ja": "横長のワイドアングル。明るいスタジオ風の実験室で、黄色いアヒルのマスコットが洗練されたデスクに立っています。デスク上の透明なガラスフラスコから、光り輝くパステルカラーの香りの泡が空中に浮かび上がっています。",
-      "alt_ja": "明るい現代的なラボで、優しい光を放つパステルカラーの香りの泡が出るガラスフラスコを眺める黄色いアヒルのマスコット。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "The Cozy Nursery Sniff Test",
       "concept_en": "A warm and wholesome room scene contrasting soft baby blankets with sunlit comfort.",
@@ -618,95 +575,9 @@
       "composition_ja": "横長のヒーロー構図。光が差し込む上質な部屋のコーナーで、オーク材の床の上に黄色いアヒルのマスコットが座り、隣には折りたたまれた柔らかいパステルカラーのベビーブランケットが置かれています。",
       "alt_ja": "陽の光が差し込む部屋で、柔らかいパステルカラーのベビーブランケットの隣に座るアヒルのマスコット。"
     },
-    {
-      "number": 3,
-      "title_en": "The Golden Scent Trophy",
-      "concept_en": "A playful Ig Nobel award celebration showcasing the scientific discovery of sweet scents.",
-      "composition_en": "Landscape hero layout. The yellow duck mascot stands proudly on a polished wooden award podium next to a glowing crystal perfume bottle trophy atop a velvet pedestal under soft spotlighting.",
-      "generation_prompt_en": "A stylish studio photograph of a friendly yellow duck mascot with an orange beak and feather tuft standing proudly on a polished dark wood podium. Next to the duck is an elegant crystal perfume atomizer trophy glowing with golden light, symbolizing a celebratory science award. Warm bokeh background lights, high-end editorial spotlighting, subtle floating sparkles, landscape orientation, clean modern visual style, no text, no logos.",
-      "alt_en": "A yellow duck mascot standing on a wooden award podium beside an elegant glowing perfume bottle trophy.",
-      "title_ja": "黄金のアロマトロフィー",
-      "concept_ja": "甘い香りの科学的発見を祝う、イグノーベル賞授賞式をイメージした華やかなステージ。",
-      "composition_ja": "横長のヒーローレイアウト。磨き上げられたダークウッドの表彰台の上に黄色いアヒルのマスコットが誇らしげに立ち、隣には金色の光を放つエレガントな水晶の香水瓶型トロフィーが飾られています。",
-      "alt_ja": "木製の表彰台の上で、光り輝くエレガントな香水瓶型トロフィーの隣に立つ黄色いアヒルのマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACKING THE SCENT CODE!",
-      "meaning_ja": "英語の決まり文句「Cracking the code（暗号を解読する／謎を解き明かす）」の「Cracking」を、アヒルの鳴き声「QUACKING」に置き換えたダジャレ。「赤ちゃんが良い香りがする理由という謎を科学が解き明かした」というニュースに完璧に一致するブランドアンカー・タイトルです。"
-    },
-    {
-      "number": 2,
-      "title": "THE SWEET SMELL OF SCIENCE!",
-      "meaning_ja": "有名ないいまわし「The sweet smell of success（成功の甘い香り）」をもじったスマートな言葉遊び。「成功」を「科学（SCIENCE）」に付け替えることで、赤ちゃんが良い香りを持つという科学的発見の微笑ましさと知的なユーモアを表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "WHY BABIES WIN THE SNIFF TEST",
-      "meaning_ja": "「なぜ赤ちゃんは匂いテストで大勝利するのか」という意味の、ポスターコピーらしい直接的でインパクトのあるタイトル。「Sniff test（匂いチェック）」という日常的な言葉を使い、読者の好奇心を一瞬で引きつけるキャッチーなコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Aroma Laboratory",
-      "concept_title_ja": "アロマ・ラボラトリー",
-      "image_path": "automation_images/design_previews/2026-09-04/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "65ea0a573c1ba07b8c2f4961050ef97c2e69b0032313b6ad3648bd0e350dbe24",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Ig Nobel Prize Winners Explain Why Babies Smell Better Than Teenagers\nSummary: An Ig Nobel Prize-winning study that addresses a common parental observation with lighthearted humor and warmth.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Aroma Laboratory\n\nCONCEPT:\nA cheerful laboratory scene where the yellow duck mascot investigates floating aroma bubbles.\n\nCOMPOSITION:\nLandscape ratio wide shot. The friendly yellow duck mascot stands at a sleek wooden lab desk in a bright studio. On the desk are crystal glass laboratory flasks, with one emitting glowing pastel pink and gold scent bubbles floating into the air.\n\nPRODUCTION DIRECTION:\nA premium editorial landscape photograph of a friendly yellow duck mascot with a bright orange beak, large dark glossy eyes, and a small feather tuft. The duck sits at a clean, modern white studio desk with aesthetic glass laboratory flasks. One glass flask releases glowing pastel pink and soft gold scent bubbles into the air, creating a warm and charming atmosphere. Soft focus pastel background, modern magazine quality, bright ambient lighting, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck mascot sitting in a bright modern lab setting with aesthetic glass flasks emitting glowing pastel aroma bubbles.",
-      "alt_ja": "明るい現代的なラボで、優しい光を放つパステルカラーの香りの泡が出るガラスフラスコを眺める黄色いアヒルのマスコット。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Cozy Nursery Sniff Test",
-      "concept_title_ja": "陽だまりのベビーシート",
-      "image_path": "automation_images/design_previews/2026-09-04/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "c3b7b31945f35db5d1bd55e6dac7794dd48302b74cd04286251fcdff5af8379e",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Ig Nobel Prize Winners Explain Why Babies Smell Better Than Teenagers\nSummary: An Ig Nobel Prize-winning study that addresses a common parental observation with lighthearted humor and warmth.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Cozy Nursery Sniff Test\n\nCONCEPT:\nA warm and wholesome room scene contrasting soft baby blankets with sunlit comfort.\n\nCOMPOSITION:\nLandscape hero framing. Set in a sunlit, elegant nursery corner. The yellow duck sits on a clean wooden floor beside a plush pastel knit baby blanket, illuminated by warm sunlight pouring through sheer curtains.\n\nPRODUCTION DIRECTION:\nA warm visual editorial photograph of a friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft sitting on a light oak floor in a sunlit cozy nursery. Beside the duck is a neatly folded, soft pastel blue and white baby blanket with glowing warm morning light beam effects floating nearby. Warm cinematic daylight pouring through a window, simple aesthetic composition, ultra-clean photojournalistic style, landscape ratio, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck mascot sitting on a light oak floor next to a cozy pastel baby blanket in a sunlit room.",
-      "alt_ja": "陽の光が差し込む部屋で、柔らかいパステルカラーのベビーブランケットの隣に座るアヒルのマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Golden Scent Trophy",
-      "concept_title_ja": "黄金のアロマトロフィー",
-      "image_path": "automation_images/design_previews/2026-09-04/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "a787ded6c61014c2ec5b210c84957d1e2578449f01338c10f24112316fcc536e",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Ig Nobel Prize Winners Explain Why Babies Smell Better Than Teenagers\nSummary: An Ig Nobel Prize-winning study that addresses a common parental observation with lighthearted humor and warmth.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Golden Scent Trophy\n\nCONCEPT:\nA playful Ig Nobel award celebration showcasing the scientific discovery of sweet scents.\n\nCOMPOSITION:\nLandscape hero layout. The yellow duck mascot stands proudly on a polished wooden award podium next to a glowing crystal perfume bottle trophy atop a velvet pedestal under soft spotlighting.\n\nPRODUCTION DIRECTION:\nA stylish studio photograph of a friendly yellow duck mascot with an orange beak and feather tuft standing proudly on a polished dark wood podium. Next to the duck is an elegant crystal perfume atomizer trophy glowing with golden light, symbolizing a celebratory science award. Warm bokeh background lights, high-end editorial spotlighting, subtle floating sparkles, landscape orientation, clean modern visual style, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck mascot standing on a wooden award podium beside an elegant glowing perfume bottle trophy.",
-      "alt_ja": "木製の表彰台の上で、光り輝くエレガントな香水瓶型トロフィーの隣に立つ黄色いアヒルのマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-04/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "THE SWEET SMELL OF SCIENCE!"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE SWEET SMELL OF SCIENCE!",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "THE SWEET SMELL OF SCIENCE!",
+    "meaning_ja": "有名ないいまわし「The sweet smell of success（成功の甘い香り）」をもじったスマートな言葉遊び。「成功」を「科学（SCIENCE）」に付け替えることで、赤ちゃんが良い香りを持つという科学的発見の微笑ましさと知的なユーモアを表現しています。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "The Cozy Nursery Sniff Test",
+    "concept_title_ja": "陽だまりのベビーシート",
+    "image_path": "automation_images/design_previews/2026-09-04/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "c3b7b31945f35db5d1bd55e6dac7794dd48302b74cd04286251fcdff5af8379e",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Ig Nobel Prize Winners Explain Why Babies Smell Better Than Teenagers\nSummary: An Ig Nobel Prize-winning study that addresses a common parental observation with lighthearted humor and warmth.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Cozy Nursery Sniff Test\n\nCONCEPT:\nA warm and wholesome room scene contrasting soft baby blankets with sunlit comfort.\n\nCOMPOSITION:\nLandscape hero framing. Set in a sunlit, elegant nursery corner. The yellow duck sits on a clean wooden floor beside a plush pastel knit baby blanket, illuminated by warm sunlight pouring through sheer curtains.\n\nPRODUCTION DIRECTION:\nA warm visual editorial photograph of a friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft sitting on a light oak floor in a sunlit cozy nursery. Beside the duck is a neatly folded, soft pastel blue and white baby blanket with glowing warm morning light beam effects floating nearby. Warm cinematic daylight pouring through a window, simple aesthetic composition, ultra-clean photojournalistic style, landscape ratio, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A friendly yellow duck mascot sitting on a light oak floor next to a cozy pastel baby blanket in a sunlit room.",
+    "alt_ja": "陽の光が差し込む部屋で、柔らかいパステルカラーのベビーブランケットの隣に座るアヒルのマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-04.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-04 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-04 — Batch 1",
-  "final_email_sent_at": "2026-09-04T11:30:47.594447+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE SWEET SMELL OF SCIENCE!",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-04T11:49:17.881708+00:00"
+    "translation_language": "ja"
+  }
 }
