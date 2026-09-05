@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-05",
+    "displayDate": "September 5, 2026",
+    "slug": "time-traveler-duck",
+    "title": "TIME TRAVELER DUCK",
+    "duckName": "Time Traveler Duck",
+    "storyTitleEn": "Step Inside Ancient Parties: AI Recreates the Music and Feasts of Etruscan Tombs",
+    "storyTitleJa": "Step Inside Ancient Parties: AI Recreates the Music and Feasts of Etruscan Tombs",
+    "image": "assets/ducks/2026-09-05-time-traveler-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Time Traveler Duck",
+    "imageAltJa": "Time Traveler DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Artificial intelligence is bringing ancient celebrations back to life by recreating the music and feasts depicted in Etruscan tombs. This creative technology allows people to step inside history and experience the vivid sounds and banquets of ancient gatherings.",
+    "storyJa": "人工知能を活用して、古代エトルリアの墓に描かれた音楽や宴を再現する取り組みが行われています。この創造的な技術により、当時の賑やかな集まりの音や雰囲気を体感し、まるで古代のお祝いの場に足を踏み入れたかのような感覚を味わうことができます。",
+    "duckEn": "Quack! Party like it's ancient times with AI-recreated music and feasts!",
+    "duckJa": "クワッ！AIが再現した音楽と宴で、古代のパーティーを楽しもう！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-ai-reveal-immersive-sensory-ancient.html",
+    "archiveSummaryEn": "AI is recreating the music and banquets of ancient Etruscan tombs, letting us experience historic celebrations firsthand.",
+    "archiveSummaryJa": "AIが古代エトルリアの墓に描かれた音楽や宴を再現し、当時の賑やかなお祝いの雰囲気を体感できるようになりました。",
+    "reasonEn": "AI is recreating the music and banquets of ancient Etruscan tombs, letting us experience historic celebrations firsthand.",
+    "reasonJa": "AIが古代エトルリアの墓に描かれた音楽や宴を再現し、当時の賑やかなお祝いの雰囲気を体感できるようになりました。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-04",
     "displayDate": "September 4, 2026",
     "slug": "sweet-scent-duck",
