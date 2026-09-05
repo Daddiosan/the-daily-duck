@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-05",
-  "generated_at": "2026-09-04T23:41:24.265730+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-05T02:40:27.866636+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-05",
     "issue_date": "2026-09-05",
     "phase": 2,
@@ -561,64 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-04T22:16:55.136994+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 9,
-    "title": "Step Inside Ancient Parties: AI Recreates the Music and Feasts of Etruscan Tombs",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-09-ai-reveal-immersive-sensory-ancient.html",
-    "category": "culture",
-    "happiness": 7,
-    "hope": 7,
-    "general_interest": 8,
-    "surprise": 8,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 9,
-    "total_score": 82,
-    "reason": "Brings ancient celebrations, banquets, and music back to life in a vivid sensory journey that sparks wonder.",
-    "candidate_number": 4,
-    "title_en": "AI Recreates the Music and Banquets of Ancient Etruscan Tombs",
-    "reason_en": "An inspiring look at how artificial intelligence brings ancient celebrations, music, and banquets back to life in a rich sensory experience.",
-    "en_copy": "Artificial intelligence is bringing ancient celebrations back to life by recreating the music and feasts depicted in Etruscan tombs. This creative technology allows people to step inside history and experience the vivid sounds and banquets of ancient gatherings.",
-    "duck_name": "Time Traveler Duck",
-    "duck_en": "Quack! Party like it's ancient times with AI-recreated music and feasts!",
-    "x_en": "AI is recreating the music and banquets of ancient Etruscan tombs, letting us experience historic celebrations firsthand.",
-    "title_ja": "AIが古代エトルリアの墓に描かれた音楽や宴を再現",
-    "reason_ja": "AI技術を活用して古代のお祝いや音楽、宴を蘇らせ、歴史への好奇心を刺激する夢のあるストーリーです。",
-    "jp_copy": "人工知能を活用して、古代エトルリアの墓に描かれた音楽や宴を再現する取り組みが行われています。この創造的な技術により、当時の賑やかな集まりの音や雰囲気を体感し、まるで古代のお祝いの場に足を踏み入れたかのような感覚を味わうことができます。",
-    "duck_jp": "クワッ！AIが再現した音楽と宴で、古代のパーティーを楽しもう！",
-    "x_jp": "AIが古代エトルリアの墓に描かれた音楽や宴を再現し、当時の賑やかなお祝いの雰囲気を体感できるようになりました。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "Modern Studio Audio Discovery",
-      "concept_en": "A friendly yellow duck wearing sleek studio headphones sitting in a modern warm-lit audio laboratory, watching vibrant golden holographic music notes floating above an acoustic soundboard.",
-      "composition_en": "Landscape hero view. Medium close-up on the cheerful yellow duck sitting at a warm wooden studio console. Floating illuminated golden waveforms and musical notes hover in the air around the duck. Soft ambient studio lighting with shallow depth of field.",
-      "generation_prompt_en": "A high quality visual editorial photo of a cute friendly yellow duck with an orange beak and small feather tuft, wearing sleek modern studio headphones while sitting at a warm wooden desk. Glowing golden holographic audio waveforms and musical symbols float gracefully in the air around the duck. Warm ambient studio lighting, shallow depth of field, professional landscape editorial photography, clean visual composition, high detail, no text, no logos, no watermarks.",
-      "alt_en": "A yellow duck wearing studio headphones at a modern desk with floating golden illuminated music notes and sound waves.",
-      "title_ja": "現代のサウンドスタジオでの発見",
-      "concept_ja": "ヘッドホンを着用したアヒルが、モダンで温かみのあるオーディオラボで、音響コンソールの上に浮かぶ幻想的な光の音符を嬉しそうに眺めているコンセプト。",
-      "composition_ja": "横長のヒーロー構図。木製のデスクに座る黄色いアヒルのミディアムショット。周囲には黄金色に光る音波や音符が浮かび、背景は温かいスタジオ照明でソフトにボカされています。",
-      "alt_ja": "ヘッドホンをつけ、浮かび上がる黄金の音符や音波を眺める黄色いアヒルのイラスト"
-    },
-    {
-      "number": 2,
-      "title_en": "Ancient Etruscan Banqueting Hall",
-      "concept_en": "The cheerful yellow duck sitting at a historic Etruscan banquet table surrounded by terracotta urns, fresh grapes, and ancient lyres under warm torchlight.",
-      "composition_en": "Wide landscape hero shot. The yellow duck is happily positioned at a low ancient wooden banquet table in a warm stone hall decorated with colourful mural frescoes of ancient musicians. Warm torchlight and glowing light particles blend history with modern magic.",
-      "generation_prompt_en": "A warm editorial photograph of a friendly cute yellow duck with an orange beak sitting happily at an ancient Etruscan banquet table. On the table are terracotta jars, decorative grapes, and an ancient wooden lyre instrument. The stone room features classical fresco wall paintings lit by warm torchlight with subtle golden glowing light particles floating in the air. High detail, landscape aspect ratio, cinematic lighting, warm cozy mood, no text, no logos, no watermarks.",
-      "alt_en": "A yellow duck sitting at an ancient feast table decorated with grapes, terracotta jars, and a lyre, surrounded by wall frescoes.",
-      "title_ja": "古代エトルリアの絢爛な宴",
-      "concept_ja": "温かい松明の光に包まれた石造りのホールで、古代エトルリアの宴会テーブルにつき、ブドウやテラコッタの水差し、ライラ（竪琴）に囲まれて楽しむアヒルのコンセプト。",
-      "composition_ja": "広角の横長構図。壁面に古代の壁画が描かれた部屋で、低い宴台に座る黄色いアヒルを中心に配置。暖色の照明と繊細な光の粒子が、歴史と現代の融合を演出します。",
-      "alt_ja": "壁画が描かれた石造りの部屋で、ブドウや水差し、竪琴が並ぶ古代の宴台に座る黄色いアヒルのイラスト"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "Interactive Time Portal Mural",
       "concept_en": "The cute yellow duck standing inside a sleek modern museum space in front of a glowing ancient mural fresco that comes to life with light and digital acoustic streams.",
@@ -629,84 +574,10 @@
       "concept_ja": "洗練されたギャラリーで、古代の演奏家や踊り子が描かれた壁画が黄金の光とデジタル音波で神秘的に浮かび上がり、それを見上げるアヒルのコンセプト。",
       "composition_ja": "横長のサイドプロフィール構図。磨かれたダークウッドの床に立つアヒルが、正面に浮かび上がる大きな光る壁画を感嘆の表情で見上げる、ハイコントラストでドラマチックなギャラリー照明。",
       "alt_ja": "ギャラリーで光り輝く古代の音楽壁画を見上げる黄色いアヒルのイラスト"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACK FROM THE PAST!",
-      "meaning_ja": "【日本語訳】過去からのクワッと驚きの再来！ / 【元の英語表現】\"Blast from the past\"（懐かしい・驚きの過去からの再来） / 【言葉遊びの仕組み】\"Blast\"をアヒルの鳴き声\"Quack\"に置き換えたダジャレ。AIによって数千年前の古代エトルリアの音楽や宴が現代に蘇ったニュースを鮮やかに表現しています。"
     },
-    {
-      "number": 2,
-      "title": "TUNING INTO THE TOMBS!",
-      "meaning_ja": "【日本語訳】古代の墓のメロディーにチャンネルを合わせよう！ / 【言葉遊びの仕組み】\"Tune in\"（ラジオや音楽に耳を傾ける・チャンネルを合わせる）という音楽表現と、遺跡の「墓（tombs）」を組み合わせたダブルミーニング。さらに「Tuning」と「Tombs」で頭韻（T）を踏み、リズム感良く仕立てています。"
-    },
-    {
-      "number": 3,
-      "title": "THE ANCIENT WORLD IS PLAYING OUR SONG!",
-      "meaning_ja": "【日本語訳】太古の世界が、私たちの歌を奏でている！ / 【ポスターコピーとしての魅力】映画のポスターや雑誌の表紙のようなロマン溢れるコピー。「They're playing our song（私たちの思い出の曲が流れている）」という馴染み深いフレーズを捻り、AIが何千年前の音楽を再現して現代の私たちが楽しめる感動を表現しています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Modern Studio Audio Discovery",
-      "concept_title_ja": "現代のサウンドスタジオでの発見",
-      "image_path": "automation_images/design_previews/2026-09-05/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "c4b1119da4fd7d254fccd4a730b22c93b5898540e2114e6131f0cc76c2278626",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Recreates the Music and Banquets of Ancient Etruscan Tombs\nSummary: An inspiring look at how artificial intelligence brings ancient celebrations, music, and banquets back to life in a rich sensory experience.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nModern Studio Audio Discovery\n\nCONCEPT:\nA friendly yellow duck wearing sleek studio headphones sitting in a modern warm-lit audio laboratory, watching vibrant golden holographic music notes floating above an acoustic soundboard.\n\nCOMPOSITION:\nLandscape hero view. Medium close-up on the cheerful yellow duck sitting at a warm wooden studio console. Floating illuminated golden waveforms and musical notes hover in the air around the duck. Soft ambient studio lighting with shallow depth of field.\n\nPRODUCTION DIRECTION:\nA high quality visual editorial photo of a cute friendly yellow duck with an orange beak and small feather tuft, wearing sleek modern studio headphones while sitting at a warm wooden desk. Glowing golden holographic audio waveforms and musical symbols float gracefully in the air around the duck. Warm ambient studio lighting, shallow depth of field, professional landscape editorial photography, clean visual composition, high detail, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck wearing studio headphones at a modern desk with floating golden illuminated music notes and sound waves.",
-      "alt_ja": "ヘッドホンをつけ、浮かび上がる黄金の音符や音波を眺める黄色いアヒルのイラスト"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Ancient Etruscan Banqueting Hall",
-      "concept_title_ja": "古代エトルリアの絢爛な宴",
-      "image_path": "automation_images/design_previews/2026-09-05/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "ddc3a7b14aafa3fb70acd0cd4b93a7080ea5ccf7cd4562ec13797d37f95933c7",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Recreates the Music and Banquets of Ancient Etruscan Tombs\nSummary: An inspiring look at how artificial intelligence brings ancient celebrations, music, and banquets back to life in a rich sensory experience.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nAncient Etruscan Banqueting Hall\n\nCONCEPT:\nThe cheerful yellow duck sitting at a historic Etruscan banquet table surrounded by terracotta urns, fresh grapes, and ancient lyres under warm torchlight.\n\nCOMPOSITION:\nWide landscape hero shot. The yellow duck is happily positioned at a low ancient wooden banquet table in a warm stone hall decorated with colourful mural frescoes of ancient musicians. Warm torchlight and glowing light particles blend history with modern magic.\n\nPRODUCTION DIRECTION:\nA warm editorial photograph of a friendly cute yellow duck with an orange beak sitting happily at an ancient Etruscan banquet table. On the table are terracotta jars, decorative grapes, and an ancient wooden lyre instrument. The stone room features classical fresco wall paintings lit by warm torchlight with subtle golden glowing light particles floating in the air. High detail, landscape aspect ratio, cinematic lighting, warm cozy mood, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck sitting at an ancient feast table decorated with grapes, terracotta jars, and a lyre, surrounded by wall frescoes.",
-      "alt_ja": "壁画が描かれた石造りの部屋で、ブドウや水差し、竪琴が並ぶ古代の宴台に座る黄色いアヒルのイラスト"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Interactive Time Portal Mural",
-      "concept_title_ja": "光り輝くタイムポータル壁画",
-      "image_path": "automation_images/design_previews/2026-09-05/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "37ca3b5ae9ce44378bc3a6155fcfd829a5d465cb01ab187c67a172f7b18a18b4",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Recreates the Music and Banquets of Ancient Etruscan Tombs\nSummary: An inspiring look at how artificial intelligence brings ancient celebrations, music, and banquets back to life in a rich sensory experience.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nInteractive Time Portal Mural\n\nCONCEPT:\nThe cute yellow duck standing inside a sleek modern museum space in front of a glowing ancient mural fresco that comes to life with light and digital acoustic streams.\n\nCOMPOSITION:\nSide-profile landscape shot. The yellow duck stands on a dark polished wooden gallery floor, looking up in awe at a large backlit wall painting depicting ancient musicians and dancers, illuminated with golden stream lines.\n\nPRODUCTION DIRECTION:\nA captivating editorial visual scene featuring a friendly yellow duck with an orange beak standing on a sleek polished wooden floor in a gallery. In front of the duck is a large, beautifully illuminated wall mural inspired by ancient Etruscan fresco paintings, glowing with golden light strands and subtle digital acoustic lines. Deep contrast, dramatic soft gallery spotlights, landscape composition, highly detailed, clean modern editorial style, no text, no UI, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck in a museum looking up at a glowing ancient wall fresco depicting musicians and dancers.",
-      "alt_ja": "ギャラリーで光り輝く古代の音楽壁画を見上げる黄色いアヒルのイラスト"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-05/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "THE ANCIENT WORLD IS PLAYING OUR SONG!"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE ANCIENT WORLD IS PLAYING OUR SONG!",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "THE ANCIENT WORLD IS PLAYING OUR SONG!",
+    "meaning_ja": "【日本語訳】太古の世界が、私たちの歌を奏でている！ / 【ポスターコピーとしての魅力】映画のポスターや雑誌の表紙のようなロマン溢れるコピー。「They're playing our song（私たちの思い出の曲が流れている）」という馴染み深いフレーズを捻り、AIが何千年前の音楽を再現して現代の私たちが楽しめる感動を表現しています。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "Interactive Time Portal Mural",
+    "concept_title_ja": "光り輝くタイムポータル壁画",
+    "image_path": "automation_images/design_previews/2026-09-05/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "37ca3b5ae9ce44378bc3a6155fcfd829a5d465cb01ab187c67a172f7b18a18b4",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Recreates the Music and Banquets of Ancient Etruscan Tombs\nSummary: An inspiring look at how artificial intelligence brings ancient celebrations, music, and banquets back to life in a rich sensory experience.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nInteractive Time Portal Mural\n\nCONCEPT:\nThe cute yellow duck standing inside a sleek modern museum space in front of a glowing ancient mural fresco that comes to life with light and digital acoustic streams.\n\nCOMPOSITION:\nSide-profile landscape shot. The yellow duck stands on a dark polished wooden gallery floor, looking up in awe at a large backlit wall painting depicting ancient musicians and dancers, illuminated with golden stream lines.\n\nPRODUCTION DIRECTION:\nA captivating editorial visual scene featuring a friendly yellow duck with an orange beak standing on a sleek polished wooden floor in a gallery. In front of the duck is a large, beautifully illuminated wall mural inspired by ancient Etruscan fresco paintings, glowing with golden light strands and subtle digital acoustic lines. Deep contrast, dramatic soft gallery spotlights, landscape composition, highly detailed, clean modern editorial style, no text, no UI, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A yellow duck in a museum looking up at a glowing ancient wall fresco depicting musicians and dancers.",
+    "alt_ja": "ギャラリーで光り輝く古代の音楽壁画を見上げる黄色いアヒルのイラスト"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-05.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-05 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-05 — Batch 1",
-  "final_email_sent_at": "2026-09-04T23:41:29.182649+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE ANCIENT WORLD IS PLAYING OUR SONG!",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-05T02:40:27.867381+00:00"
+    "translation_language": "ja"
+  }
 }
