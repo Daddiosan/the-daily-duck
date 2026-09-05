@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-09-05T02:45:41.695220+00:00",
+  "issue_date": "2026-09-05",
+  "x_post_id": "2096067213606420756",
+  "x_post_url": "https://x.com/i/web/status/2096067213606420756",
+  "x_media_id": "2096067211635101696",
+  "image_path": "automation_images/x/2026-09-05-x-card.png",
+  "post_text": "AI is recreating the music and banquets of ancient Etruscan tombs, letting us experience historic celebrations firsthand.\n\nhttps://www.thedailyduck.ai/ducks/2026-09-05/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 146
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2096067213606420756",
+      "text": "AI is recreating the music and banquets of ancient Etruscan tombs, letting us experience historic celebrations firsthand.\n\nhttps://t.co/7UiUL2Hrz2 https://t.co/gKF7tWO5En"
+    }
+  }
+}
