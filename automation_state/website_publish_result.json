@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-09-06T00:38:53.651928+00:00",
+  "issue_date": "2026-09-06",
+  "image": "assets/ducks/2026-09-06-sea-unicorn.png",
+  "page": "ducks/2026-09-06/index.html",
+  "title": "Scientists discover how narwhals grow nature's only straight tusk",
+  "duck_name": "Sea Unicorn",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
