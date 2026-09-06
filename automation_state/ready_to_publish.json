@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-06",
-  "generated_at": "2026-09-05T23:56:20.499892+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-06T00:38:34.782763+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-06",
     "issue_date": "2026-09-06",
     "phase": 2,
@@ -561,52 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-05T22:16:34.005038+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 35,
-    "title": "Scientists discover how narwhals grow nature's only straight tusk",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-08-scientists-narwhals-nature-straight-tusk.html",
-    "category": "animals",
-    "happiness": 8,
-    "hope": 7,
-    "general_interest": 9,
-    "surprise": 8,
-    "duck_visual": 10,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 87,
-    "reason": "Unlocks the biological secret of nature's real-life unicorns with brilliant visual appeal and broad charm.",
-    "candidate_number": 1,
-    "title_en": "How Narwhals Grow Nature's Only Straight Tusk",
-    "reason_en": "Scientists have uncovered the biological process behind the narwhal's straight tusk, revealing a fascinating secret about one of the ocean's most iconic creatures.",
-    "en_copy": "Scientists have discovered how narwhals grow nature's only straight tusk, shedding light on the biological secret behind these iconic ocean creatures. Often called real-life unicorns, narwhals have long fascinated observers with their unique tusks. This new insight offers a delightful look at how natural design operates in the deep sea.",
-    "duck_name": "Sea Unicorn",
-    "duck_en": "Swimming straight ahead with nature's neatest tusk!",
-    "x_en": "Scientists have uncovered how narwhals grow nature's only straight tusk, unraveling a fascinating secret of the ocean's real-life unicorns!",
-    "title_ja": "ナールワールが自然界で唯一のまっすぐな角（キバ）を伸ばす仕組みが解明される",
-    "reason_ja": "ナールワール（イッカク）のまっすぐな角の背後にある生物学的プロセスの解明により、海の最も象徴的な生物の魅力的な秘密が明らかになりました。",
-    "jp_copy": "科学者たちは、ナールワールが自然界で唯一のまっすぐな角（キバ）をどのように成長させるかを解明し、この象徴的な海の生き物の生物学的な秘密を明らかにしました。現実のユニコーンとも呼ばれるナールワールは、そのユニークな角で長年にわたり人々を魅了してきました。この新たな発見は、深海における自然のデザインがどのように機能しているかについての微笑ましい視点を提供してくれます。",
-    "duck_jp": "自然界で最もまっすぐな角を持って、まっすぐ泳いでいきます！",
-    "x_jp": "科学者たちがナールワールが自然界で唯一のまっすぐな角を伸ばす仕組みを解明！海のユニコーンの不思議な秘密が明らかになりました。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "Deep-Sea Scuba Discovery",
-      "concept_en": "The Daily Duck mascot wears a tiny underwater scuba mask and swims alongside a friendly narwhal through crystal-clear blue Arctic waters.",
-      "composition_en": "Landscape 16:9 hero composition. Sunbeams penetrate bright turquoise Arctic ocean water. On the left, the cheerful yellow duck mascot with dark glossy eyes and orange beak paddles smoothly with a clear miniature scuba visor. Beside it swims a majestic narwhal displaying its long, perfectly straight spiraled tusk. Bubbles float around them in a clean, modern editorial style.",
-      "generation_prompt_en": "A high-end editorial 16:9 hero image featuring the iconic friendly yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft on its head, wearing a cute transparent underwater scuba mask. The duck swims underwater in crystal clear turquoise ocean water next to a friendly narwhal showing a long, perfectly straight spiraled tusk. Golden sunbeams beam through the surface of the water, soft bubbles floating, bright warm atmospheric lighting, clean visual focus, no text, no logos, no UI.",
-      "alt_en": "The Daily Duck mascot wearing scuba gear swims through sunny blue ocean water next to a friendly narwhal with a straight spiraled tusk.",
-      "title_ja": "深海ダイビングの発見",
-      "concept_ja": "デイリー・ダックのマスコットが水中ゴーグルをつけ、陽の光が差し込む澄んだ北極海でイッカクと一緒に泳いでいるデザイン。",
-      "composition_ja": "横長16:9の構図。エメラルドブルーの透き通った海中に差し込む太陽の光。手前左側に水中ゴーグルをつけた黄色いアヒルのマスコットが楽しそうに泳ぎ、その隣をまっすぐな螺旋状の角（キバ）を持ったイッカクが優雅に並走。温かみのある明るいタッチ。",
-      "alt_ja": "スキューバ装備を着けたデイリー・ダックのマスコットが、まっすぐな角を持つイッカクと一緒に澄んだ海中を泳ぐイラスト。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "Arctic Ice Sheet Laboratory",
       "concept_en": "On a sunny Arctic ice floe, the yellow duck mascot wearing a cozy winter parka uses a wooden ruler to measure a narwhal's straight tusk emerging from the sea.",
@@ -618,95 +575,9 @@
       "composition_ja": "横長16:9の構図。快晴の北極の雪景色と青い海。氷の上に立つアヒルのマスコットが木製の直角定規を掲げ、水面からまっすぐな角を伸ばすイッカクをワクワクしながら観察している。明るい光と科学探究の楽しさを伝えるスタイル。",
       "alt_ja": "防寒着を着た黄色いアヒルが氷の上から定規を構え、水面からまっすぐな角を出すイッカクと向き合っているイラスト。"
     },
-    {
-      "number": 3,
-      "title_en": "Twilight Aurora Ocean Cruise",
-      "concept_en": "Under a magical green northern lights sky, the yellow duck mascot holds a warm lantern in a small boat while a narwhal glides past with its glowing straight tusk.",
-      "composition_en": "Landscape 16:9 twilight scene in the Arctic. Emerald green aurora borealis curves sweep across the dark starry night sky and reflect on still dark waters. On the left, the yellow duck mascot sits in a small cozy wooden rowboat holding a warm glowing lantern. Beside the boat, a narwhal swims peacefully, its straight spiraled tusk catching the golden lantern light.",
-      "generation_prompt_en": "A breathtaking 16:9 visual narrative showing the recognizable yellow duck mascot with dark glossy eyes and orange beak sitting in a small wooden rowboat on calm ocean water, holding a warm golden glowing lantern. Overhead, brilliant green aurora borealis lights dance in the night sky. Gliding alongside the boat is a gentle narwhal with a long, elegant straight tusk illuminated by the lantern. Warm, magical glow, premium storytelling feel, no text, no logos.",
-      "alt_en": "The yellow duck mascot holding a lantern in a small boat under green aurora borealis as a narwhal swims past with a glowing straight tusk.",
-      "title_ja": "オーロラが輝くトワイライト・クルーズ",
-      "concept_ja": "幻想的な緑色のオーロラが広がる夜の海で、木製ボートに乗ってランタンを掲げるアヒルのマスコットと、その傍らを優雅に泳ぐイッカクを描いた幻想的なデザイン。",
-      "composition_ja": "横長16:9の構図。夜空に揺らめく美しい緑のオーロラと穏やかな海面への反射。左側の木製小舟に乗った黄色いアヒルが温かいランタンを灯し、ボートのすぐ横をまっすぐな角を輝かせながらイッカクが優雅に泳ぎ去っていく。魔法のようで心温まる雰囲気。",
-      "alt_ja": "オーロラの下、ランタンを持つアヒルが乗った小舟の横を、まっすぐな角を持ったイッカクが泳ぐ幻想的なイラスト。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACKING THE CODE ON NATURE'S STRAIGHTEST TUSK!",
-      "meaning_ja": "「Quacking the code on nature's straightest tusk!」（自然界で最もまっすぐな角の謎をクワッと解明！）。元になった慣用句は「Cracking the code」（暗号や謎を解き明かす）。アヒルの鳴き声「Quack」と「Crack」を掛け合わせた音のダジャレで、イッカクの角の成長メカニズムが解明されたニュースをブランドらしく表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "GETTING STRAIGHT TO THE POINT!",
-      "meaning_ja": "「Getting straight to the point!」（要点に直行！／まっすぐな角の秘密へ！）。英語の有名な慣用句「get straight to the point」（要点に入る・ズバリ本題に入る）と、イッカクの「まっすぐに伸びた鋭い角（point）」という物理的な特徴を重ね合わせたスマートなダブルミーニングです。"
-    },
-    {
-      "number": 3,
-      "title": "THE SECRET OF NATURE'S REAL-LIFE UNICORN",
-      "meaning_ja": "「The secret of nature's real-life unicorn」（自然界に実在するユニコーンの秘密）。ダジャレを使わず、「海のユニコーン」と呼ばれるイッカクの神秘性と発見のワクワク感をストレートに伝える、ポスターや雑誌のカバーラインのような力強いキャッチコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Deep-Sea Scuba Discovery",
-      "concept_title_ja": "深海ダイビングの発見",
-      "image_path": "automation_images/design_previews/2026-09-06/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "bf4ff4e7084cc9441b387b2b098b46b3723c1a22e55f2071c75f67ff07e76b89",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Narwhals Grow Nature's Only Straight Tusk\nSummary: Scientists have uncovered the biological process behind the narwhal's straight tusk, revealing a fascinating secret about one of the ocean's most iconic creatures.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nDeep-Sea Scuba Discovery\n\nCONCEPT:\nThe Daily Duck mascot wears a tiny underwater scuba mask and swims alongside a friendly narwhal through crystal-clear blue Arctic waters.\n\nCOMPOSITION:\nLandscape 16:9 hero composition. Sunbeams penetrate bright turquoise Arctic ocean water. On the left, the cheerful yellow duck mascot with dark glossy eyes and orange beak paddles smoothly with a clear miniature scuba visor. Beside it swims a majestic narwhal displaying its long, perfectly straight spiraled tusk. Bubbles float around them in a clean, modern editorial style.\n\nPRODUCTION DIRECTION:\nA high-end editorial 16:9 hero image featuring the iconic friendly yellow duck mascot with an orange beak, dark glossy eyes, and a small feather tuft on its head, wearing a cute transparent underwater scuba mask. The duck swims underwater in crystal clear turquoise ocean water next to a friendly narwhal showing a long, perfectly straight spiraled tusk. Golden sunbeams beam through the surface of the water, soft bubbles floating, bright warm atmospheric lighting, clean visual focus, no text, no logos, no UI.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot wearing scuba gear swims through sunny blue ocean water next to a friendly narwhal with a straight spiraled tusk.",
-      "alt_ja": "スキューバ装備を着けたデイリー・ダックのマスコットが、まっすぐな角を持つイッカクと一緒に澄んだ海中を泳ぐイラスト。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Arctic Ice Sheet Laboratory",
-      "concept_title_ja": "北極の氷上リサーチ",
-      "image_path": "automation_images/design_previews/2026-09-06/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "5ae1e8695052f7886aac4555a9a2d1b9fa75defb450b02032d5f1569d7a38413",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Narwhals Grow Nature's Only Straight Tusk\nSummary: Scientists have uncovered the biological process behind the narwhal's straight tusk, revealing a fascinating secret about one of the ocean's most iconic creatures.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nArctic Ice Sheet Laboratory\n\nCONCEPT:\nOn a sunny Arctic ice floe, the yellow duck mascot wearing a cozy winter parka uses a wooden ruler to measure a narwhal's straight tusk emerging from the sea.\n\nCOMPOSITION:\nLandscape 16:9 crisp outdoor setting. Bright sun-drenched snow and floating blue ocean ice floes. On the right ice sheet, the yellow duck mascot wearing a cute blue hooded winter jacket holds up a straight wooden measuring ruler. A friendly narwhal peeks out of an ocean breathing hole, pointing its iconic straight tusk straight into the sky. Playful scientific curiosity aesthetic.\n\nPRODUCTION DIRECTION:\nA vibrant 16:9 landscape visual of the cute yellow duck mascot with a small feather tuft, wearing a miniature blue winter hooded parka, standing on a white Arctic ice sheet. The duck holds a neat wooden measuring ruler next to an open water ice hole where a gentle narwhal emerges, showing its long, perfectly straight spiraled tusk. Bright sunny Arctic sky, snow-capped mountains in the backdrop, warm playful light, clean visual layout, no text, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot in a winter coat stands on an ice sheet with a ruler next to a narwhal peeking out with its straight tusk.",
-      "alt_ja": "防寒着を着た黄色いアヒルが氷の上から定規を構え、水面からまっすぐな角を出すイッカクと向き合っているイラスト。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Twilight Aurora Ocean Cruise",
-      "concept_title_ja": "オーロラが輝くトワイライト・クルーズ",
-      "image_path": "automation_images/design_previews/2026-09-06/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "dce818e83044ca6f9ddf6821d18d1bc97c170fa6e85c07395ca9f7aa35522ff3",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Narwhals Grow Nature's Only Straight Tusk\nSummary: Scientists have uncovered the biological process behind the narwhal's straight tusk, revealing a fascinating secret about one of the ocean's most iconic creatures.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nTwilight Aurora Ocean Cruise\n\nCONCEPT:\nUnder a magical green northern lights sky, the yellow duck mascot holds a warm lantern in a small boat while a narwhal glides past with its glowing straight tusk.\n\nCOMPOSITION:\nLandscape 16:9 twilight scene in the Arctic. Emerald green aurora borealis curves sweep across the dark starry night sky and reflect on still dark waters. On the left, the yellow duck mascot sits in a small cozy wooden rowboat holding a warm glowing lantern. Beside the boat, a narwhal swims peacefully, its straight spiraled tusk catching the golden lantern light.\n\nPRODUCTION DIRECTION:\nA breathtaking 16:9 visual narrative showing the recognizable yellow duck mascot with dark glossy eyes and orange beak sitting in a small wooden rowboat on calm ocean water, holding a warm golden glowing lantern. Overhead, brilliant green aurora borealis lights dance in the night sky. Gliding alongside the boat is a gentle narwhal with a long, elegant straight tusk illuminated by the lantern. Warm, magical glow, premium storytelling feel, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot holding a lantern in a small boat under green aurora borealis as a narwhal swims past with a glowing straight tusk.",
-      "alt_ja": "オーロラの下、ランタンを持つアヒルが乗った小舟の横を、まっすぐな角を持ったイッカクが泳ぐ幻想的なイラスト。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-06/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "GETTING STRAIGHT TO THE POINT!"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "GETTING STRAIGHT TO THE POINT!",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "GETTING STRAIGHT TO THE POINT!",
+    "meaning_ja": "「Getting straight to the point!」（要点に直行！／まっすぐな角の秘密へ！）。英語の有名な慣用句「get straight to the point」（要点に入る・ズバリ本題に入る）と、イッカクの「まっすぐに伸びた鋭い角（point）」という物理的な特徴を重ね合わせたスマートなダブルミーニングです。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "Arctic Ice Sheet Laboratory",
+    "concept_title_ja": "北極の氷上リサーチ",
+    "image_path": "automation_images/design_previews/2026-09-06/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "5ae1e8695052f7886aac4555a9a2d1b9fa75defb450b02032d5f1569d7a38413",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Narwhals Grow Nature's Only Straight Tusk\nSummary: Scientists have uncovered the biological process behind the narwhal's straight tusk, revealing a fascinating secret about one of the ocean's most iconic creatures.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nArctic Ice Sheet Laboratory\n\nCONCEPT:\nOn a sunny Arctic ice floe, the yellow duck mascot wearing a cozy winter parka uses a wooden ruler to measure a narwhal's straight tusk emerging from the sea.\n\nCOMPOSITION:\nLandscape 16:9 crisp outdoor setting. Bright sun-drenched snow and floating blue ocean ice floes. On the right ice sheet, the yellow duck mascot wearing a cute blue hooded winter jacket holds up a straight wooden measuring ruler. A friendly narwhal peeks out of an ocean breathing hole, pointing its iconic straight tusk straight into the sky. Playful scientific curiosity aesthetic.\n\nPRODUCTION DIRECTION:\nA vibrant 16:9 landscape visual of the cute yellow duck mascot with a small feather tuft, wearing a miniature blue winter hooded parka, standing on a white Arctic ice sheet. The duck holds a neat wooden measuring ruler next to an open water ice hole where a gentle narwhal emerges, showing its long, perfectly straight spiraled tusk. Bright sunny Arctic sky, snow-capped mountains in the backdrop, warm playful light, clean visual layout, no text, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The yellow duck mascot in a winter coat stands on an ice sheet with a ruler next to a narwhal peeking out with its straight tusk.",
+    "alt_ja": "防寒着を着た黄色いアヒルが氷の上から定規を構え、水面からまっすぐな角を出すイッカクと向き合っているイラスト。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-06.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-06 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-06 — Batch 1",
-  "final_email_sent_at": "2026-09-05T23:56:27.954839+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "GETTING STRAIGHT TO THE POINT!",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-06T00:38:34.783858+00:00"
+    "translation_language": "ja"
+  }
 }
