@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-07",
+    "displayDate": "September 7, 2026",
+    "slug": "arctic-puma-duck",
+    "title": "ARCTIC PUMA DUCK",
+    "duckName": "Arctic Puma Duck",
+    "storyTitleEn": "The extinct American 'cheetah' was not a cheetah after all",
+    "storyTitleJa": "The extinct American 'cheetah' was not a cheetah after all",
+    "image": "assets/ducks/2026-09-07-arctic-puma-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Arctic Puma Duck",
+    "imageAltJa": "Arctic Puma DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "New findings show that North America's extinct 'cheetah' was not a true cheetah after all. Instead, it was an Arctic, fish-loving relative of the puma, uncovering an unexpected and fascinating chapter in ancient animal history.",
+    "storyJa": "新たな発見により、北米の絶滅した「チーター」は本物のチーターではなかったことが判明しました。実際には北極圏に生息する魚好きなプーマの親戚であり、古代の動物史に予想外で魅力的な一ページを付け加えました。",
+    "duckEn": "Quack! A fish-loving puma relative is quite a surprise!",
+    "duckJa": "クワッ！魚好きでプーマの親戚だったなんて驚きだね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-extinct-american-cheetah.html",
+    "archiveSummaryEn": "It turns out North America's extinct 'cheetah' was actually an Arctic, fish-loving puma relative! A fascinating glimpse into ancient history.",
+    "archiveSummaryJa": "北米の絶滅した「チーター」は、実は北極圏で魚を食べていたプーマの親戚だったことが判明しました！古代史の興味深い新事実です。",
+    "reasonEn": "It turns out North America's extinct 'cheetah' was actually an Arctic, fish-loving puma relative! A fascinating glimpse into ancient history.",
+    "reasonJa": "北米の絶滅した「チーター」は、実は北極圏で魚を食べていたプーマの親戚だったことが判明しました！古代史の興味深い新事実です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-06",
     "displayDate": "September 6, 2026",
     "slug": "sea-unicorn",
