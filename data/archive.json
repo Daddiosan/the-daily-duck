@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-08",
+    "displayDate": "September 8, 2026",
+    "slug": "econ-duck",
+    "title": "ECON DUCK",
+    "duckName": "Econ Duck",
+    "storyTitleEn": "'The Jungle Book' offers an unconventional tool for undergraduate economics education",
+    "storyTitleJa": "'The Jungle Book' offers an unconventional tool for undergraduate economics education",
+    "image": "assets/ducks/2026-09-08-econ-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Econ Duck",
+    "imageAltJa": "Econ DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Learning economics is getting a creative twist. Educators are using 'The Jungle Book'—featuring familiar characters like Baloo and Mowgli—as an unconventional tool to explain core economic concepts to undergraduate students. By connecting economic ideas to classic stories, learning becomes both engaging and delightful.",
+    "storyJa": "経済学の学びにユニークな工夫が登場しました。大学の授業で、バルーやモーグリといった『ジャングル・ブック』のキャラクターを活用し、基礎的な経済概念を説明する試みが行われています。親しみやすい物語と結びつけることで、複雑なテーマも楽しく学べるようになっています。",
+    "duckEn": "Quack! Who knew Baloo could teach us about supply and demand?",
+    "duckJa": "クワッ！バルーが経済の仕組みを教えてくれるなんて驚きだね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-jungle-unconventional-tool-undergraduate-economics.html",
+    "archiveSummaryEn": "Professors are using 'The Jungle Book' to help university students learn economics! A creative way to make learning fun and engaging.",
+    "archiveSummaryJa": "大学の経済学の授業で『ジャングル・ブック』が教材として使われているそうです！親しみやすい物語で楽しく学べる素敵なアイデアですね。",
+    "reasonEn": "Professors are using 'The Jungle Book' to help university students learn economics! A creative way to make learning fun and engaging.",
+    "reasonJa": "大学の経済学の授業で『ジャングル・ブック』が教材として使われているそうです！親しみやすい物語で楽しく学べる素敵なアイデアですね。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-07",
     "displayDate": "September 7, 2026",
     "slug": "arctic-puma-duck",
