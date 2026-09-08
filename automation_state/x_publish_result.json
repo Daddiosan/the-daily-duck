@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-09-08T02:29:58.935420+00:00",
+  "issue_date": "2026-09-08",
+  "x_post_id": "2097150422796399085",
+  "x_post_url": "https://x.com/i/web/status/2097150422796399085",
+  "x_media_id": "2097150420212760577",
+  "image_path": "automation_images/x/2026-09-08-x-card.png",
+  "post_text": "Professors are using 'The Jungle Book' to help university students learn economics! A creative way to make learning fun and engaging.\n\nhttps://www.thedailyduck.ai/ducks/2026-09-08/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 158
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2097150422796399085",
+      "text": "Professors are using 'The Jungle Book' to help university students learn economics! A creative way to make learning fun and engaging.\n\nhttps://t.co/2maKJBMb4z https://t.co/w4j9gZN7sd"
+    }
+  }
+}
