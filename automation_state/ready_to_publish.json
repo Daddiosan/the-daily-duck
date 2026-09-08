@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-08",
-  "generated_at": "2026-09-08T02:18:52.876860+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-08T02:29:10.487460+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-08",
     "issue_date": "2026-09-08",
     "phase": 2,
@@ -561,40 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-07T22:23:04.659111+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 14,
-    "title": "'The Jungle Book' offers an unconventional tool for undergraduate economics education",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-09-jungle-unconventional-tool-undergraduate-economics.html",
-    "category": "creativity",
-    "happiness": 9,
-    "hope": 8,
-    "general_interest": 9,
-    "surprise": 9,
-    "duck_visual": 9,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 89,
-    "reason": "An amusing and creative approach using Baloo and Mowgli to explain economic principles, creating instant charm and delight.",
-    "candidate_number": 1,
-    "title_en": "How 'The Jungle Book' Is Teaching Students Economics",
-    "reason_en": "Educators are using 'The Jungle Book' as a creative and amusing tool to help undergraduate students understand economic principles through familiar story characters.",
-    "en_copy": "Learning economics is getting a creative twist. Educators are using 'The Jungle Book'—featuring familiar characters like Baloo and Mowgli—as an unconventional tool to explain core economic concepts to undergraduate students. By connecting economic ideas to classic stories, learning becomes both engaging and delightful.",
-    "duck_name": "Econ Duck",
-    "duck_en": "Quack! Who knew Baloo could teach us about supply and demand?",
-    "x_en": "Professors are using 'The Jungle Book' to help university students learn economics! A creative way to make learning fun and engaging.",
-    "title_ja": "『ジャングル・ブック』で学ぶ経済学？大学の授業に登場したユニークな教材",
-    "reason_ja": "大学の経済学の授業において、『ジャングル・ブック』のキャラクターを活用して経済の仕組みを楽しく説明するユニークな取り組みが注目されています。",
-    "jp_copy": "経済学の学びにユニークな工夫が登場しました。大学の授業で、バルーやモーグリといった『ジャングル・ブック』のキャラクターを活用し、基礎的な経済概念を説明する試みが行われています。親しみやすい物語と結びつけることで、複雑なテーマも楽しく学べるようになっています。",
-    "duck_jp": "クワッ！バルーが経済の仕組みを教えてくれるなんて驚きだね！",
-    "x_jp": "大学の経済学の授業で『ジャングル・ブック』が教材として使われているそうです！親しみやすい物語で楽しく学べる素敵なアイデアですね。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "The Jungle Lecture Hall",
       "concept_en": "A modern university lecture hall transformed into a tropical oasis where economics graphs meet jungle flora.",
@@ -606,107 +575,9 @@
       "composition_ja": "光が差し込む明るい大学教室で、木製の演台に立つ黄色のダックマスコット。背景の大きな黒板には、白チョークで描かれた需要と供給の曲線グラフとジャングルの葉のイラスト。周囲には青々とした観葉植物が配置された清潔感のある構図。",
       "alt_ja": "黒板に需要と供給のグラフが書かれたジャングル風の大学講義室で、演台に立つアヒルのマスコット。"
     },
-    {
-      "number": 2,
-      "title_en": "Storybook Economics Workshop",
-      "concept_en": "An open classic storybook on a wooden library desk with glowing economic charts emerging from its illustrated jungle pages.",
-      "composition_en": "Landscape composition showing a large, open hardcover storybook lying flat on a dark oak study table. The open pages reveal vibrant watercolor illustrations of a dense jungle scene, while soft glowing translucent 3D bar graphs and pie charts float gently above the book. The signature yellow duck mascot perches curiously on the edge of the hardcover, looking up at the floating charts with a delighted expression.",
-      "generation_prompt_en": "A whimsical yet refined hero landscape image. On a polished oak library desk sits a large, open hardcover book with vibrant tropical jungle watercolor illustrations on its pages. Soft, luminous 3D economic graphs and colorful floating chart elements hover gracefully above the open book pages. The signature yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft perches on the edge of the book, looking up in warm wonder. Cinematic soft lighting, studio visual quality, landscape orientation, no text, no UI, no watermarks.",
-      "alt_en": "An open jungle storybook on a wooden desk with luminous 3D economic graphs floating above its pages as the yellow duck mascot watches.",
-      "title_ja": "飛び出す絵本と経済学ワークショップ",
-      "concept_ja": "木製のデスクの上に開かれたジャングルの絵本から、光る3Dの経済学グラフが浮かび上がる幻想的で知的なコンセプト。",
-      "composition_ja": "シックなオーク材の机の上に置かれた大きな絵本。ページには水彩画風のジャングルが描かれ、その上空に柔らかく光る立体的な棒グラフや円グラフが浮遊。表紙の縁にちょこんと座った黄色のダックマスコットが、驚きと喜びに満ちた表情でそれを見上げています。",
-      "alt_ja": "開いたジャングルの絵本から光る経済グラフが浮かび上がり、それを見つめるアヒルのマスコット。"
-    },
-    {
-      "number": 3,
-      "title_en": "Jungle Fruit Market Exchange",
-      "concept_en": "A sunlit tropical fruit stall demonstrating scarcity and trade principles through balancing colorful jungle fruit.",
-      "composition_en": "Wide landscape composition set in a sun-dappled rainforest clearing. A beautifully crafted rustic wooden stall holds neatly stacked bananas and tropical fruits. The friendly yellow duck mascot stands behind a traditional brass balance scale, carefully weighing a golden banana against small counterweights to illustrate market equilibrium and resource valuation in a charming visual way.",
-      "generation_prompt_en": "A vibrant and charming landscape scene set in a sun-dappled tropical rainforest clearing. A beautifully crafted rustic wooden market stall displays neat pyramids of yellow bananas and mangoes beside a classic brass balance scale. The friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft operates the scale with a cheerful, approachable expression, demonstrating trade and resource scarcity. Warm natural sunlight, shallow depth of field, premium editorial illustration style, no readable text, no logos.",
-      "alt_en": "The yellow duck mascot weighing tropical fruit on a brass scale at a rustic jungle market stall in a sunlit forest clearing.",
-      "title_ja": "ジャングルのフルーツ市場と市場経済",
-      "concept_ja": "木漏れ日が差し込む森の市場で、トロピカルフルーツの天秤測定を通じて資源の希少性や交易の仕組みを表現したコンセプト。",
-      "composition_ja": "明るい熱帯雨林の開けた場所にある木製のフルーツ屋台。整然と盛られたバナナやマンゴーの横で、黄色のダックマスコットがクラシックな真鍮の天秤を使ってフルーツの重さを測る様子。市場の需要と供給や価値の交換を温かみのあるタッチで表現。",
-      "alt_ja": "木漏れ日の中、ジャングルの屋台で天秤を使ってバナナを測るアヒルのマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "SUPPLY AND DUCK-MAND IN THE JUNGLE!",
-      "meaning_ja": "【ダックダジャレ】日本語訳：「ジャングルの中の需要と供給（ダック）！」。経済学の最も基本となる言葉「Supply and Demand（需要と供給）」の『Demand』を、アヒルの『DUCK』と掛け合わせた「DUCK-MAND」へとダジャレ置換しています。『The Daily Duck』ブランドにぴったりの分かりやすい言葉遊びです。"
-    },
-    {
-      "number": 2,
-      "title": "THE BARE NECESSITIES OF MARKET ECONOMICS",
-      "meaning_ja": "【スマートな言葉遊び】日本語訳：「市場経済学の“真の必需品（ベア・ネセシティ）”」。ディズニー映画『ジャングル・ブック』の代表曲である『The Bare Necessities（ベア・ネセシティ／生活の基本・必要なもの）』を活用。「Bare（むき出しの・基本的な）」という単語と、経済学における基本概念（希少性や基礎的ニーズ）をスマートに掛け合わせたダブルミーニングです。"
-    },
-    {
-      "number": 3,
-      "title": "HOW BALOO BECAME A COLLEGE ECONOMICS PROFESSOR",
-      "meaning_ja": "【ポスターコピー】日本語訳：「バルーはいかにして大学の経済学教授になったのか」。ダジャレを使わず、映画ポスターや雑誌の特集記事のようなインパクト重視で構成。『ジャングル・ブック』の熊のバルーが大学の講義で教材として活躍しているという驚きと楽しさを直感的に伝える、力強くキャッチーなコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Jungle Lecture Hall",
-      "concept_title_ja": "ジャングル大学講義室",
-      "image_path": "automation_images/design_previews/2026-09-08/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "7a736c03768f87290363abfddd16ae1807df56cd76d5d2bffc13938bcc95406d",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How 'The Jungle Book' Is Teaching Students Economics\nSummary: Educators are using 'The Jungle Book' as a creative and amusing tool to help undergraduate students understand economic principles through familiar story characters.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Jungle Lecture Hall\n\nCONCEPT:\nA modern university lecture hall transformed into a tropical oasis where economics graphs meet jungle flora.\n\nCOMPOSITION:\nLandscape hero image featuring the friendly yellow duck mascot standing at a wooden lectern in a bright university classroom surrounded by lush potted tropical plants. Behind the duck, a large blackboard displays clean chalk drawings of simple supply and demand economic curves interspersed with leafy jungle sketches. Warm ambient sunlight streaming through high windows, clean editorial composition.\n\nPRODUCTION DIRECTION:\nA clean, warm, modern hero-image composition featuring the recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, and a small feather tuft. The duck stands proudly at a sleek wooden lectern in a bright university lecture hall filled with lush potted tropical jungle plants. On the large dark chalkboard behind the duck, clean white chalk drawings show simple supply and demand economic curves alongside cheerful tropical leaf sketches. Warm ambient lighting, highly detailed, editorial photography style, landscape 16:9 orientation, no text, no watermarks, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot standing at a university podium in front of a chalkboard with supply and demand graphs surrounded by jungle plants.",
-      "alt_ja": "黒板に需要と供給のグラフが書かれたジャングル風の大学講義室で、演台に立つアヒルのマスコット。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Storybook Economics Workshop",
-      "concept_title_ja": "飛び出す絵本と経済学ワークショップ",
-      "image_path": "automation_images/design_previews/2026-09-08/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "529c31fc74c7278886b7f02830212b591a55a253e3727e52384525dc74415aaf",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How 'The Jungle Book' Is Teaching Students Economics\nSummary: Educators are using 'The Jungle Book' as a creative and amusing tool to help undergraduate students understand economic principles through familiar story characters.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nStorybook Economics Workshop\n\nCONCEPT:\nAn open classic storybook on a wooden library desk with glowing economic charts emerging from its illustrated jungle pages.\n\nCOMPOSITION:\nLandscape composition showing a large, open hardcover storybook lying flat on a dark oak study table. The open pages reveal vibrant watercolor illustrations of a dense jungle scene, while soft glowing translucent 3D bar graphs and pie charts float gently above the book. The signature yellow duck mascot perches curiously on the edge of the hardcover, looking up at the floating charts with a delighted expression.\n\nPRODUCTION DIRECTION:\nA whimsical yet refined hero landscape image. On a polished oak library desk sits a large, open hardcover book with vibrant tropical jungle watercolor illustrations on its pages. Soft, luminous 3D economic graphs and colorful floating chart elements hover gracefully above the open book pages. The signature yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft perches on the edge of the book, looking up in warm wonder. Cinematic soft lighting, studio visual quality, landscape orientation, no text, no UI, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "An open jungle storybook on a wooden desk with luminous 3D economic graphs floating above its pages as the yellow duck mascot watches.",
-      "alt_ja": "開いたジャングルの絵本から光る経済グラフが浮かび上がり、それを見つめるアヒルのマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Jungle Fruit Market Exchange",
-      "concept_title_ja": "ジャングルのフルーツ市場と市場経済",
-      "image_path": "automation_images/design_previews/2026-09-08/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "80f046faac570189c334ff2fbc907de815fb11fe3266e82882761b79189e02ca",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How 'The Jungle Book' Is Teaching Students Economics\nSummary: Educators are using 'The Jungle Book' as a creative and amusing tool to help undergraduate students understand economic principles through familiar story characters.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nJungle Fruit Market Exchange\n\nCONCEPT:\nA sunlit tropical fruit stall demonstrating scarcity and trade principles through balancing colorful jungle fruit.\n\nCOMPOSITION:\nWide landscape composition set in a sun-dappled rainforest clearing. A beautifully crafted rustic wooden stall holds neatly stacked bananas and tropical fruits. The friendly yellow duck mascot stands behind a traditional brass balance scale, carefully weighing a golden banana against small counterweights to illustrate market equilibrium and resource valuation in a charming visual way.\n\nPRODUCTION DIRECTION:\nA vibrant and charming landscape scene set in a sun-dappled tropical rainforest clearing. A beautifully crafted rustic wooden market stall displays neat pyramids of yellow bananas and mangoes beside a classic brass balance scale. The friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft operates the scale with a cheerful, approachable expression, demonstrating trade and resource scarcity. Warm natural sunlight, shallow depth of field, premium editorial illustration style, no readable text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The yellow duck mascot weighing tropical fruit on a brass scale at a rustic jungle market stall in a sunlit forest clearing.",
-      "alt_ja": "木漏れ日の中、ジャングルの屋台で天秤を使ってバナナを測るアヒルのマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-08/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "SUPPLY AND DUCK-MAND IN THE JUNGLE!"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "SUPPLY AND DUCK-MAND IN THE JUNGLE!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "SUPPLY AND DUCK-MAND IN THE JUNGLE!",
+    "meaning_ja": "【ダックダジャレ】日本語訳：「ジャングルの中の需要と供給（ダック）！」。経済学の最も基本となる言葉「Supply and Demand（需要と供給）」の『Demand』を、アヒルの『DUCK』と掛け合わせた「DUCK-MAND」へとダジャレ置換しています。『The Daily Duck』ブランドにぴったりの分かりやすい言葉遊びです。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "The Jungle Lecture Hall",
+    "concept_title_ja": "ジャングル大学講義室",
+    "image_path": "automation_images/design_previews/2026-09-08/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "7a736c03768f87290363abfddd16ae1807df56cd76d5d2bffc13938bcc95406d",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How 'The Jungle Book' Is Teaching Students Economics\nSummary: Educators are using 'The Jungle Book' as a creative and amusing tool to help undergraduate students understand economic principles through familiar story characters.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Jungle Lecture Hall\n\nCONCEPT:\nA modern university lecture hall transformed into a tropical oasis where economics graphs meet jungle flora.\n\nCOMPOSITION:\nLandscape hero image featuring the friendly yellow duck mascot standing at a wooden lectern in a bright university classroom surrounded by lush potted tropical plants. Behind the duck, a large blackboard displays clean chalk drawings of simple supply and demand economic curves interspersed with leafy jungle sketches. Warm ambient sunlight streaming through high windows, clean editorial composition.\n\nPRODUCTION DIRECTION:\nA clean, warm, modern hero-image composition featuring the recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, and a small feather tuft. The duck stands proudly at a sleek wooden lectern in a bright university lecture hall filled with lush potted tropical jungle plants. On the large dark chalkboard behind the duck, clean white chalk drawings show simple supply and demand economic curves alongside cheerful tropical leaf sketches. Warm ambient lighting, highly detailed, editorial photography style, landscape 16:9 orientation, no text, no watermarks, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The yellow duck mascot standing at a university podium in front of a chalkboard with supply and demand graphs surrounded by jungle plants.",
+    "alt_ja": "黒板に需要と供給のグラフが書かれたジャングル風の大学講義室で、演台に立つアヒルのマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-08.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-08 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-08 — Batch 1",
-  "final_email_sent_at": "2026-09-08T02:19:00.766090+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "SUPPLY AND DUCK-MAND IN THE JUNGLE!",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-08T02:29:10.488471+00:00"
+    "translation_language": "ja"
+  }
 }
