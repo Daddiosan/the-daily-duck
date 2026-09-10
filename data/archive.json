@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-10",
+    "displayDate": "September 10, 2026",
+    "slug": "love-math",
+    "title": "LOVE MATH",
+    "duckName": "Love Math",
+    "storyTitleEn": "Scientists say love follows hidden mathematical rules",
+    "storyTitleJa": "Scientists say love follows hidden mathematical rules",
+    "image": "assets/ducks/2026-09-10-love-math.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Love Math",
+    "imageAltJa": "Love MathをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Researchers suggest that love and human attraction follow hidden mathematical rules. These findings provide a novel perspective on how romantic connections and emotional bounce-backs unfold according to underlying patterns.",
+    "storyJa": "研究者によると、恋愛や人の惹かれ合いには隠された数学的ルールが存在するとのことです。この研究は、感情の回復やロマンチックなつながりがどのような法則に従って生まれるのかについて、新たな視点を与えてくれます。",
+    "duckEn": "Quack! Romance has its own sweet mathematical formula!",
+    "duckJa": "クワッ！ロマンスにも素敵な数学の方程式があるのですね！",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/09/260906170140.htm",
+    "archiveSummaryEn": "Love isn't entirely unpredictable—scientists say human attraction and romance actually follow hidden mathematical rules!",
+    "archiveSummaryJa": "恋愛は気まぐれだけではない？科学者によると、人の惹かれ合いには隠された数学的ルールがあるそうです！",
+    "reasonEn": "Love isn't entirely unpredictable—scientists say human attraction and romance actually follow hidden mathematical rules!",
+    "reasonJa": "恋愛は気まぐれだけではない？科学者によると、人の惹かれ合いには隠された数学的ルールがあるそうです！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-08",
     "displayDate": "September 8, 2026",
     "slug": "econ-duck",

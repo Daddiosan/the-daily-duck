@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-09-10T09:55:16.193077+00:00",
+  "issue_date": "2026-09-10",
+  "image": "assets/ducks/2026-09-10-love-math.png",
+  "page": "ducks/2026-09-10/index.html",
+  "title": "Scientists say love follows hidden mathematical rules",
+  "duck_name": "Love Math",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
