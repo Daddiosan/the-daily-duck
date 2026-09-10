@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-10",
-  "generated_at": "2026-09-10T06:35:44.428387+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-10T09:55:00.706444+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-10",
     "issue_date": "2026-09-10",
     "phase": 2,
@@ -561,52 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-09T22:17:08.398019+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 23,
-    "title": "Scientists say love follows hidden mathematical rules",
-    "source": "ScienceDaily Offbeat",
-    "url": "https://www.sciencedaily.com/releases/2026/09/260906170140.htm",
-    "category": "culture",
-    "happiness": 8,
-    "hope": 8,
-    "general_interest": 8,
-    "surprise": 8,
-    "duck_visual": 7,
-    "source_quality": 8,
-    "freshness": 8,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 10,
-    "total_score": 82,
-    "reason": "A playful and relatable look at how human attraction, emotional bounce-back, and romantic connections follow surprising underlying rhythms.",
-    "candidate_number": 4,
-    "title_en": "Scientists Say Love Follows Hidden Mathematical Rules",
-    "reason_en": "A playful and relatable look at how human attraction, emotional bounce-back, and romantic connections follow surprising underlying rhythms.",
-    "en_copy": "Researchers suggest that love and human attraction follow hidden mathematical rules. These findings provide a novel perspective on how romantic connections and emotional bounce-backs unfold according to underlying patterns.",
-    "duck_name": "Love Math",
-    "duck_en": "Quack! Romance has its own sweet mathematical formula!",
-    "x_en": "Love isn't entirely unpredictable—scientists say human attraction and romance actually follow hidden mathematical rules!",
-    "title_ja": "科学者が解明：愛には隠された数学的ルールが存在する",
-    "reason_ja": "人の惹かれ合いや感情の回復、ロマンチックなつながりが驚くべき法則に従っていることを探る、楽しく共感できるニュース。",
-    "jp_copy": "研究者によると、恋愛や人の惹かれ合いには隠された数学的ルールが存在するとのことです。この研究は、感情の回復やロマンチックなつながりがどのような法則に従って生まれるのかについて、新たな視点を与えてくれます。",
-    "duck_jp": "クワッ！ロマンスにも素敵な数学の方程式があるのですね！",
-    "x_jp": "恋愛は気まぐれだけではない？科学者によると、人の惹かれ合いには隠された数学的ルールがあるそうです！"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Romantic Equation Chalkboard",
-      "concept_en": "The yellow duck mascot stands beside a cozy study chalkboard featuring glowing, heart-shaped mathematical curves and formulas.",
-      "composition_en": "A charming wide shot in a warm, sunlit study room. A friendly yellow duck mascot with an orange beak and glossy dark eyes stands on a polished wooden desk, gazing thoughtfully at a large dark green chalkboard behind it. On the chalkboard, elegant mathematical graphs form smooth heart curves and gentle sine waves drawn in soft white pastel chalk with glowing golden accents.",
-      "generation_prompt_en": "Clean modern editorial hero image, landscape composition. A cute friendly yellow duck mascot with smooth vibrant yellow down, small head feather tuft, orange beak, and glossy black eyes standing proudly on a sleek oak study desk. Behind the duck, a dark slate chalkboard is covered with warm glowing pastel chalk drawings of mathematical sine waves and geometric parabolas curving gracefully into heart shapes. Soft golden ambient sunlight streaming through a side window, depth of field, warm cozy color palette, high-end editorial photography, no text, no logos, no watermarks.",
-      "alt_en": "A yellow duck mascot standing near a chalkboard with glowing heart-shaped mathematical formulas.",
-      "title_ja": "愛の方程式と黒板",
-      "concept_ja": "温かみのある書斎で、ハート型の数学曲線が描かれた黒板の横に立つ黄色のアヒルのマスコット。",
-      "composition_ja": "日差しが差し込む明るい書斎。アヒルのマスコットが木製デスクの上に立ち、ハートを描く数学的グラフや曲線が描かれた黒板を見つめる広角ショット。",
-      "alt_ja": "光るハート型の数学方程式が描かれた黒板の横に立つ黄色のアヒルのマスコット。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "Drafting the Love Blueprint",
       "concept_en": "The yellow duck mascot uses a golden drafting compass on pastel grid paper to chart precision heart-shaped parabolas.",
@@ -618,95 +575,9 @@
       "composition_ja": "洗練された建築デスクを見下ろす俯瞰構図。ピンクとブルーの方眼紙の上で、金色のコンパスとともにハートの数学的曲線を作るアヒルのマスコット。",
       "alt_ja": "方眼紙上のハート曲線の横でコンパスを手にする黄色のアヒルのマスコット。"
     },
-    {
-      "number": 3,
-      "title_en": "Golden Hour Heart Waves",
-      "concept_en": "The yellow duck mascot floats peacefully on a mirror lake at dusk where glowing water ripples form glowing mathematical heart frequencies.",
-      "composition_en": "A serene outdoor scene at sunset. The yellow duck mascot floats gently on still turquoise water. Concentric illuminated water ripples radiate outwards, subtly transforming into glowing golden and magenta mathematical wave patterns that shape a glowing heart silhouette on the water surface around the duck.",
-      "generation_prompt_en": "Breathtaking editorial outdoor hero photograph, 16:9 landscape framing. A friendly bright yellow duck mascot with an orange beak, glossy black eyes, and a small feather tuft floating gracefully on the calm, reflective surface of a quiet lake at golden twilight. Radiating around the duck, neon pink and golden water ripples trace beautiful mathematical sine waves that seamlessly connect to form a floating glowing heart outline on the water's surface. Warm evening sky with soft bokeh, romantic atmosphere, dreamlike quality, highly detailed, no text, no logos.",
-      "alt_en": "A yellow duck mascot floating on calm water with glowing ripples forming a mathematical heart shape.",
-      "title_ja": "夕暮れの湖面に浮かぶ愛の波動",
-      "concept_ja": "黄昏時の静かな水面に浮かぶアヒルのマスコットと、数学的な波形となってハートを描く幻想的な光の水紋。",
-      "composition_ja": "美しい夕暮れの湖面をとらえた横長構図。水面に浮かぶアヒルの周りに、光る数学的サイン波の水紋が広がり、綺麗なハートのシルエットを浮かび上がらせる。",
-      "alt_ja": "光る水紋が数学的なハート型を描く湖面に浮かぶ黄色のアヒルのマスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACKING THE CODE OF ATTRACTION!",
-      "meaning_ja": "英語の慣用表現「Cracking the code of attraction（惹かれ合いの暗号を解読する）」の「Cracking」をアヒルの鳴き声「Quacking」に掛けたダジャレ。「恋愛の隠された数学的ルールを解明する」という意味とアヒルブランドの楽しさを表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "WHEN CHEMISTRY MEETS CALCULUS!",
-      "meaning_ja": "ロマンチックな相性を表す「Chemistry（化学・フィーリング）」と、高精度な数学を表す「Calculus（微積分・計算）」を対比させたスマートな言葉遊び。「感情的な惹かれ合いと数学的ルールの融合」を鮮やかに表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "LOVE ISN'T ACCIDENTAL. IT'S MATHEMATICAL.",
-      "meaning_ja": "「愛は偶然ではなく、数学なのだ」という映画ポスターのような力強いフレーズ。惹かれ合いや恋愛の背後には実は明確な法則が存在するというニュースの発見を、シンプルかつドラマチックに伝えるポスターコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Romantic Equation Chalkboard",
-      "concept_title_ja": "愛の方程式と黒板",
-      "image_path": "automation_images/design_previews/2026-09-10/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "932c1b7552ed0b7619ebac5f7fa2931dda85859f22071ff035c9b66b22290cd7",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Say Love Follows Hidden Mathematical Rules\nSummary: A playful and relatable look at how human attraction, emotional bounce-back, and romantic connections follow surprising underlying rhythms.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Romantic Equation Chalkboard\n\nCONCEPT:\nThe yellow duck mascot stands beside a cozy study chalkboard featuring glowing, heart-shaped mathematical curves and formulas.\n\nCOMPOSITION:\nA charming wide shot in a warm, sunlit study room. A friendly yellow duck mascot with an orange beak and glossy dark eyes stands on a polished wooden desk, gazing thoughtfully at a large dark green chalkboard behind it. On the chalkboard, elegant mathematical graphs form smooth heart curves and gentle sine waves drawn in soft white pastel chalk with glowing golden accents.\n\nPRODUCTION DIRECTION:\nClean modern editorial hero image, landscape composition. A cute friendly yellow duck mascot with smooth vibrant yellow down, small head feather tuft, orange beak, and glossy black eyes standing proudly on a sleek oak study desk. Behind the duck, a dark slate chalkboard is covered with warm glowing pastel chalk drawings of mathematical sine waves and geometric parabolas curving gracefully into heart shapes. Soft golden ambient sunlight streaming through a side window, depth of field, warm cozy color palette, high-end editorial photography, no text, no logos, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck mascot standing near a chalkboard with glowing heart-shaped mathematical formulas.",
-      "alt_ja": "光るハート型の数学方程式が描かれた黒板の横に立つ黄色のアヒルのマスコット。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Drafting the Love Blueprint",
-      "concept_title_ja": "愛の設計図とコンパス",
-      "image_path": "automation_images/design_previews/2026-09-10/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "50577f8f39f02464a14093aa3001e6dac006076eb5106f4d3ad7171b9a518828",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Say Love Follows Hidden Mathematical Rules\nSummary: A playful and relatable look at how human attraction, emotional bounce-back, and romantic connections follow surprising underlying rhythms.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nDrafting the Love Blueprint\n\nCONCEPT:\nThe yellow duck mascot uses a golden drafting compass on pastel grid paper to chart precision heart-shaped parabolas.\n\nCOMPOSITION:\nAn overhead high-angle visual of a high-end designer workbench. A small yellow duck mascot carefully holds a sleek vintage brass drafting compass, creating a perfectly symmetrical heart curve on soft pink and blue grid blueprint paper. Glowing holographic mathematical coordinates hover slightly above the paper.\n\nPRODUCTION DIRECTION:\nModern editorial photography, landscape hero shot, subtle high-angle view. A cute recognizable yellow duck mascot with a small feather tuft, bright orange bill, and big dark glossy eyes sitting on a clean architectural work table. The duck touches a polished brass drawing compass resting on pastel grid paper where elegant, precise mathematical curves intersect to form a perfect heart contour. Soft glowing pink and gold ambient light, shallow depth of field, clean design aesthetic, no text, no visible words, no UI, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck mascot on an architectural desk using a drafting compass on grid paper showing a heart curve.",
-      "alt_ja": "方眼紙上のハート曲線の横でコンパスを手にする黄色のアヒルのマスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Golden Hour Heart Waves",
-      "concept_title_ja": "夕暮れの湖面に浮かぶ愛の波動",
-      "image_path": "automation_images/design_previews/2026-09-10/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "0b4abe76e0b1dc088c68dfe67252ebadad7a5d3abbaa962c131ac219980dea60",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Say Love Follows Hidden Mathematical Rules\nSummary: A playful and relatable look at how human attraction, emotional bounce-back, and romantic connections follow surprising underlying rhythms.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nGolden Hour Heart Waves\n\nCONCEPT:\nThe yellow duck mascot floats peacefully on a mirror lake at dusk where glowing water ripples form glowing mathematical heart frequencies.\n\nCOMPOSITION:\nA serene outdoor scene at sunset. The yellow duck mascot floats gently on still turquoise water. Concentric illuminated water ripples radiate outwards, subtly transforming into glowing golden and magenta mathematical wave patterns that shape a glowing heart silhouette on the water surface around the duck.\n\nPRODUCTION DIRECTION:\nBreathtaking editorial outdoor hero photograph, 16:9 landscape framing. A friendly bright yellow duck mascot with an orange beak, glossy black eyes, and a small feather tuft floating gracefully on the calm, reflective surface of a quiet lake at golden twilight. Radiating around the duck, neon pink and golden water ripples trace beautiful mathematical sine waves that seamlessly connect to form a floating glowing heart outline on the water's surface. Warm evening sky with soft bokeh, romantic atmosphere, dreamlike quality, highly detailed, no text, no logos.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck mascot floating on calm water with glowing ripples forming a mathematical heart shape.",
-      "alt_ja": "光る水紋が数学的なハート型を描く湖面に浮かぶ黄色のアヒルのマスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-10/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "WHEN CHEMISTRY MEETS CALCULUS!"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "WHEN CHEMISTRY MEETS CALCULUS!",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "WHEN CHEMISTRY MEETS CALCULUS!",
+    "meaning_ja": "ロマンチックな相性を表す「Chemistry（化学・フィーリング）」と、高精度な数学を表す「Calculus（微積分・計算）」を対比させたスマートな言葉遊び。「感情的な惹かれ合いと数学的ルールの融合」を鮮やかに表現しています。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "Drafting the Love Blueprint",
+    "concept_title_ja": "愛の設計図とコンパス",
+    "image_path": "automation_images/design_previews/2026-09-10/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "50577f8f39f02464a14093aa3001e6dac006076eb5106f4d3ad7171b9a518828",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Say Love Follows Hidden Mathematical Rules\nSummary: A playful and relatable look at how human attraction, emotional bounce-back, and romantic connections follow surprising underlying rhythms.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nDrafting the Love Blueprint\n\nCONCEPT:\nThe yellow duck mascot uses a golden drafting compass on pastel grid paper to chart precision heart-shaped parabolas.\n\nCOMPOSITION:\nAn overhead high-angle visual of a high-end designer workbench. A small yellow duck mascot carefully holds a sleek vintage brass drafting compass, creating a perfectly symmetrical heart curve on soft pink and blue grid blueprint paper. Glowing holographic mathematical coordinates hover slightly above the paper.\n\nPRODUCTION DIRECTION:\nModern editorial photography, landscape hero shot, subtle high-angle view. A cute recognizable yellow duck mascot with a small feather tuft, bright orange bill, and big dark glossy eyes sitting on a clean architectural work table. The duck touches a polished brass drawing compass resting on pastel grid paper where elegant, precise mathematical curves intersect to form a perfect heart contour. Soft glowing pink and gold ambient light, shallow depth of field, clean design aesthetic, no text, no visible words, no UI, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A yellow duck mascot on an architectural desk using a drafting compass on grid paper showing a heart curve.",
+    "alt_ja": "方眼紙上のハート曲線の横でコンパスを手にする黄色のアヒルのマスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-10.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-10 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-10 — Batch 1",
-  "final_email_sent_at": "2026-09-10T06:35:47.815312+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "WHEN CHEMISTRY MEETS CALCULUS!",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-10T09:55:00.707449+00:00"
+    "translation_language": "ja"
+  }
 }
