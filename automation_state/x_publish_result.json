@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-09-11T05:29:04.652788+00:00",
+  "issue_date": "2026-09-11",
+  "x_post_id": "2098282657217966281",
+  "x_post_url": "https://x.com/i/web/status/2098282657217966281",
+  "x_media_id": "2098282654764290053",
+  "image_path": "automation_images/x/2026-09-11-x-card.png",
+  "post_text": "A psychologist won an Ig Nobel Prize for research showing rich drivers are the worst on the road. A funny look at everyday traffic habits!\n\nhttps://www.thedailyduck.ai/ducks/2026-09-11/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 163
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2098282657217966281",
+      "text": "A psychologist won an Ig Nobel Prize for research showing rich drivers are the worst on the road. A funny look at everyday traffic habits!\n\nhttps://t.co/Us1QScQdr9 https://t.co/mv1UxDimQn"
+    }
+  }
+}
