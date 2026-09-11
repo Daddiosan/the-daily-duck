@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-11",
+    "displayDate": "September 11, 2026",
+    "slug": "honk-smile",
+    "title": "HONK & SMILE",
+    "duckName": "Honk & Smile",
+    "storyTitleEn": "Psychologist wins Ig Nobel for proving rich drivers are the worst",
+    "storyTitleJa": "Psychologist wins Ig Nobel for proving rich drivers are the worst",
+    "image": "assets/ducks/2026-09-11-honk-smile.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Honk & Smile",
+    "imageAltJa": "Honk & SmileをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Commuting frustration is something almost every driver understands. A psychologist has now won an Ig Nobel Prize after research showed that drivers of expensive cars tend to be the worst on the road. The humorous recognition highlights how science can tackle life's everyday quirks.",
+    "storyJa": "毎日の通勤や運転でのイライラは、多くのドライバーが共感できるものでしょう。裕福なドライバーほど運転マナーが良くないことを証明する研究を行った心理学者が、イグノーベル賞を受賞しました。このユーモラスな受賞は、科学が日常のちょっとした疑問にも光を当てられることを示しています。",
+    "duckEn": "Science confirms what your everyday commute already taught you!",
+    "duckJa": "日頃のドライブで感じていたことが、科学によって証明されました！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-psychologist-ig-nobel-rich-drivers.html",
+    "archiveSummaryEn": "A psychologist won an Ig Nobel Prize for research showing rich drivers are the worst on the road. A funny look at everyday traffic habits!",
+    "archiveSummaryJa": "裕福なドライバーほど運転マナーが良くないことを証明した研究がイグノーベル賞を受賞！日常の交通にまつわるクスッと笑えるニュースです。",
+    "reasonEn": "A psychologist won an Ig Nobel Prize for research showing rich drivers are the worst on the road. A funny look at everyday traffic habits!",
+    "reasonJa": "裕福なドライバーほど運転マナーが良くないことを証明した研究がイグノーベル賞を受賞！日常の交通にまつわるクスッと笑えるニュースです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-10",
     "displayDate": "September 10, 2026",
     "slug": "love-math",
