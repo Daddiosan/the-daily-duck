@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-12",
-  "generated_at": "2026-09-12T09:41:09.382134+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-12T13:09:00.386571+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-12",
     "issue_date": "2026-09-12",
     "phase": 2,
@@ -561,64 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-12T00:09:49.740919+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 21,
-    "title": "Bite, buzz, release: How bees make flowers give up their pollen",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-09-bees-pollen.html",
-    "category": "nature",
-    "happiness": 8,
-    "hope": 7,
-    "general_interest": 8,
-    "surprise": 8,
-    "duck_visual": 9,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 9,
-    "total_score": 84,
-    "reason": "A delightful and visual look at a clever secret technique used by bees to bite flowers and shake pollen free using rapid muscle vibrations.",
-    "candidate_number": 3,
-    "title_en": "How Bees Use a Clever 'Bite and Buzz' Technique to Collect Pollen",
-    "reason_en": "A delightful and visual look at a clever secret technique used by bees to bite flowers and shake pollen free using rapid muscle vibrations.",
-    "en_copy": "Nature has some clever tricks, and bees have mastered a fascinating one for gathering pollen. By biting into flowers and using rapid muscle vibrations, they shake the pollen free in a method known as 'bite, buzz, release.' It is a wonderful example of tiny creatures using smart techniques to get their work done.",
-    "duck_name": "Buzzing Bee",
-    "duck_en": "Quack! Bite, buzz, release—bees sure know how to get things moving!",
-    "x_en": "Ever wonder how bees shake pollen free from flowers? They use a clever technique: bite, buzz with rapid muscle vibrations, and release!",
-    "title_ja": "ハチが花から花粉を集める巧みな「かみつき＆振動」テクニック",
-    "reason_ja": "ハチが花にかみつき、素早い筋肉の振動で花粉を振り落とすという、可愛らしく視覚的な工夫を紹介する話題です。",
-    "jp_copy": "自然界には面白い工夫があふれていますが、ハチも花粉を集めるための見事な技を持っています。花にかみつき、素早い筋肉の振動を利用して花粉を振り落とす「かんで、震えて、放す」という手法です。小さな生き物が見せる賢い工夫の素晴らしい例といえます。",
-    "duck_jp": "クワッ！かんで、震えて、放す—ハチの振動テクニックはすごいね！",
-    "x_jp": "ハチはどうやって花から花粉を取り出している？花にかみついて素早く筋肉を震わせる巧みなテクニックを紹介！"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "Macro Flower Discovery",
-      "concept_en": "A vibrant macro visual where the yellow duck mascot marvels up close at a furry bee performing its buzz-shake pollen technique on a blossom.",
-      "composition_en": "Horizontal editorial photograph. In the center-left, the iconic yellow duck mascot with a charming feather tuft peers curiously into an oversized purple blossom. On the blossom, a detailed bee vibrates the petal, releasing tiny floating golden pollen specks illuminated by warm sunbeams.",
-      "generation_prompt_en": "A high-end editorial landscape photograph featuring a clean modern visual style. In the foreground, an adorable friendly yellow duck mascot with an orange beak, large glossy dark eyes, a small feather tuft, and a warm curious expression looks closely at a vivid purple flower. Attached to the flower petal, a cute detailed bumblebee is buzzing softly, shaking loose tiny shimmering golden pollen grains that glow in soft morning sunlight. Shallow depth of field, warm golden-hour lighting, crisp details, zero text, zero watermarks, zero UI.",
-      "alt_en": "The Daily Duck mascot observing a bee vibrating a purple flower petal to release floating golden pollen grains in a bright garden.",
-      "title_ja": "マクロで追う花の発見",
-      "concept_ja": "黄色いアヒルのマスコットが、花びらを振動させて花粉を散らすハチの姿を至近距離で感動しながら観察する鮮やかなマクロ風ビジュアル。",
-      "composition_ja": "横長の木漏れ日が差し込む構図。画面中央左側で頭に小さな羽の束があるアヒルのマスコットが、大きな紫色の花を覗き込んでいます。花の上ではハチが花粉を振り落としており、輝く金色の花粉が光の中に舞っています。",
-      "alt_ja": "明るい庭園で、紫色の花びらを振動させて金色の花粉を散らすハチを興味深そうに観察する The Daily Duck のアヒルのマスコット。"
-    },
-    {
-      "number": 2,
-      "title_en": "Garden Science Explorer",
-      "concept_en": "The yellow duck mascot acts as a cute field naturalist in a sun-drenched botanical garden, examining the bee's pollen shaking technique.",
-      "composition_en": "Landscape framing on a rustic wooden bench. The friendly yellow duck mascot stands beside a potted wildflower, holding a stylized wooden magnifier to closely inspect a bee resting on a flower blossom as sparkling pollen dusting catches the morning light.",
-      "generation_prompt_en": "A clean, modern landscape editorial photo. The iconic friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft stands on a sunlit garden bench. The duck holds a sleek wooden magnifier, looking through it at a bumblebee perched on a glowing yellow wildflower blossom. Golden pollen dusted in the air, soft blurred garden greenery background, warm approachable atmosphere, highly detailed, no text, no logos, no UI.",
-      "alt_en": "The Daily Duck mascot holding a wooden magnifier on a sunny garden bench to inspect a bee on a wildflower.",
-      "title_ja": "庭園のサイエンス探検家",
-      "concept_ja": "光あふれる植物園で、アヒルのマスコットが可愛らしいフィールド研究者のようにハチの花粉採取技術を観察する構図。",
-      "composition_ja": "陽光が差し込む木製ベンチを捉えた横長構図。アヒルのマスコットが木製の虫眼鏡を手に持ち、鉢植えの野花の上で作業するハチを真剣かつ楽しそうに見つめています。",
-      "alt_ja": "日当たりの良い庭園ベンチで、木製ルーペを手に野花の上にいるハチを観察する The Daily Duck マスコット。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "Vibration Metaphor",
       "concept_en": "A playful visual metaphor where the yellow duck holds a tiny golden tuning fork next to a flower stem to illustrate the resonance of the pollen release.",
@@ -629,84 +574,10 @@
       "concept_ja": "アヒルのマスコットが小さな金色の音叉（おんさ）を花の茎にかざし、ハチが起こす振動と花粉の飛び散りを分かりやすく表現したユーモラスなビジュアル。",
       "composition_ja": "日差しあふれる野花畑の横長ヒーロー構図。笑顔のアヒルのマスコットが小さな音叉を紫色のベルフラワーの茎に近づけ、振動によって黄金色の花粉が空中にキラキラと舞い上がる様子をハチと共に描いています。",
       "alt_ja": "野原で小さな金色の音叉を花にかざし、ハチとともに花粉が舞い散る振動の仕組みを表現する The Daily Duck マスコット。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "QUACK THE CODE!",
-      "meaning_ja": "【アヒルダジャレ枠】「Crack the code（暗号や秘密を解明する）」という英語表現の Crack をアヒルの鳴き声「QUACK」に掛けたダジャレ。ハチが花から花粉を取り出す秘密のテクニックを解き明かしたニュースを、ブランドの象徴的な言葉遊びで表現しています。"
     },
-    {
-      "number": 2,
-      "title": "SHAKE, RATTLE, AND POLLEN!",
-      "meaning_ja": "【スマート言葉遊び枠】ロックンロールの名フレーズ「Shake, rattle and roll（揺らして、鳴らして、転がして）」の「roll」を「pollen（花粉）」に差し替えた言葉遊び。ハチが花にかみついて全身を震わせ、花粉を振り落とす躍動感をテンポよく表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "THE SECRET VIBRATION SHAKING UP NATURE!",
-      "meaning_ja": "【ポスターコピー枠】「自然界を揺るがす秘密の振動！」という、ドキュメンタリー映画や雑誌のカバーラインのようなキャッチーなコピー。ダジャレを使わず、小さなハチが見せる驚きの技術と自然の神秘をストレートかつ魅力的に伝えます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Macro Flower Discovery",
-      "concept_title_ja": "マクロで追う花の発見",
-      "image_path": "automation_images/design_previews/2026-09-12/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "c7f5613c06eb326036004348e4b136649767738efdabdcff0352bddf0b3123a8",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Bees Use a Clever 'Bite and Buzz' Technique to Collect Pollen\nSummary: A delightful and visual look at a clever secret technique used by bees to bite flowers and shake pollen free using rapid muscle vibrations.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nMacro Flower Discovery\n\nCONCEPT:\nA vibrant macro visual where the yellow duck mascot marvels up close at a furry bee performing its buzz-shake pollen technique on a blossom.\n\nCOMPOSITION:\nHorizontal editorial photograph. In the center-left, the iconic yellow duck mascot with a charming feather tuft peers curiously into an oversized purple blossom. On the blossom, a detailed bee vibrates the petal, releasing tiny floating golden pollen specks illuminated by warm sunbeams.\n\nPRODUCTION DIRECTION:\nA high-end editorial landscape photograph featuring a clean modern visual style. In the foreground, an adorable friendly yellow duck mascot with an orange beak, large glossy dark eyes, a small feather tuft, and a warm curious expression looks closely at a vivid purple flower. Attached to the flower petal, a cute detailed bumblebee is buzzing softly, shaking loose tiny shimmering golden pollen grains that glow in soft morning sunlight. Shallow depth of field, warm golden-hour lighting, crisp details, zero text, zero watermarks, zero UI.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot observing a bee vibrating a purple flower petal to release floating golden pollen grains in a bright garden.",
-      "alt_ja": "明るい庭園で、紫色の花びらを振動させて金色の花粉を散らすハチを興味深そうに観察する The Daily Duck のアヒルのマスコット。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Garden Science Explorer",
-      "concept_title_ja": "庭園のサイエンス探検家",
-      "image_path": "automation_images/design_previews/2026-09-12/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "448fa50869b1e19434f7854cf2bf03d47cb3e9835b5ef6fcaf938226c67aedf9",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Bees Use a Clever 'Bite and Buzz' Technique to Collect Pollen\nSummary: A delightful and visual look at a clever secret technique used by bees to bite flowers and shake pollen free using rapid muscle vibrations.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nGarden Science Explorer\n\nCONCEPT:\nThe yellow duck mascot acts as a cute field naturalist in a sun-drenched botanical garden, examining the bee's pollen shaking technique.\n\nCOMPOSITION:\nLandscape framing on a rustic wooden bench. The friendly yellow duck mascot stands beside a potted wildflower, holding a stylized wooden magnifier to closely inspect a bee resting on a flower blossom as sparkling pollen dusting catches the morning light.\n\nPRODUCTION DIRECTION:\nA clean, modern landscape editorial photo. The iconic friendly yellow duck mascot with an orange beak, glossy dark eyes, and a small feather tuft stands on a sunlit garden bench. The duck holds a sleek wooden magnifier, looking through it at a bumblebee perched on a glowing yellow wildflower blossom. Golden pollen dusted in the air, soft blurred garden greenery background, warm approachable atmosphere, highly detailed, no text, no logos, no UI.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot holding a wooden magnifier on a sunny garden bench to inspect a bee on a wildflower.",
-      "alt_ja": "日当たりの良い庭園ベンチで、木製ルーペを手に野花の上にいるハチを観察する The Daily Duck マスコット。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Vibration Metaphor",
-      "concept_title_ja": "振動のビジュアル・メタファー",
-      "image_path": "automation_images/design_previews/2026-09-12/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "e64c733562fe486a60ff974ba6c05df04404952a65b1e3695bda8996f1bb6bb9",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Bees Use a Clever 'Bite and Buzz' Technique to Collect Pollen\nSummary: A delightful and visual look at a clever secret technique used by bees to bite flowers and shake pollen free using rapid muscle vibrations.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nVibration Metaphor\n\nCONCEPT:\nA playful visual metaphor where the yellow duck holds a tiny golden tuning fork next to a flower stem to illustrate the resonance of the pollen release.\n\nCOMPOSITION:\nWide landscape hero image in a sunny meadow. The friendly yellow duck mascot holds a delicate miniature golden tuning fork near a bellflower stem, symbolizing vibration as a shower of glowing pollen particles floats around a happy bumblebee.\n\nPRODUCTION DIRECTION:\nA charming premium editorial scene in landscape orientation. The recognizable friendly yellow duck mascot, featuring an orange beak, glossy dark eyes, a small feather tuft, and a joyful smile, stands in a vibrant wildflower field. The duck holds a tiny polished golden tuning fork near a purple bell flower stem, illustrating gentle vibration as shimmering golden pollen particles float in the air alongside a happy bee. Bright natural sunlight, crisp visual focus, modern aesthetic, no text, no captions, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot in a wildflower field holding a tiny golden tuning fork next to a flower while pollen dust sparkles in the air near a bee.",
-      "alt_ja": "野原で小さな金色の音叉を花にかざし、ハチとともに花粉が舞い散る振動の仕組みを表現する The Daily Duck マスコット。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-12/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "THE SECRET VIBRATION SHAKING UP NATURE!"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE SECRET VIBRATION SHAKING UP NATURE!",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "THE SECRET VIBRATION SHAKING UP NATURE!",
+    "meaning_ja": "【ポスターコピー枠】「自然界を揺るがす秘密の振動！」という、ドキュメンタリー映画や雑誌のカバーラインのようなキャッチーなコピー。ダジャレを使わず、小さなハチが見せる驚きの技術と自然の神秘をストレートかつ魅力的に伝えます。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "Vibration Metaphor",
+    "concept_title_ja": "振動のビジュアル・メタファー",
+    "image_path": "automation_images/design_previews/2026-09-12/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "e64c733562fe486a60ff974ba6c05df04404952a65b1e3695bda8996f1bb6bb9",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: How Bees Use a Clever 'Bite and Buzz' Technique to Collect Pollen\nSummary: A delightful and visual look at a clever secret technique used by bees to bite flowers and shake pollen free using rapid muscle vibrations.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nVibration Metaphor\n\nCONCEPT:\nA playful visual metaphor where the yellow duck holds a tiny golden tuning fork next to a flower stem to illustrate the resonance of the pollen release.\n\nCOMPOSITION:\nWide landscape hero image in a sunny meadow. The friendly yellow duck mascot holds a delicate miniature golden tuning fork near a bellflower stem, symbolizing vibration as a shower of glowing pollen particles floats around a happy bumblebee.\n\nPRODUCTION DIRECTION:\nA charming premium editorial scene in landscape orientation. The recognizable friendly yellow duck mascot, featuring an orange beak, glossy dark eyes, a small feather tuft, and a joyful smile, stands in a vibrant wildflower field. The duck holds a tiny polished golden tuning fork near a purple bell flower stem, illustrating gentle vibration as shimmering golden pollen particles float in the air alongside a happy bee. Bright natural sunlight, crisp visual focus, modern aesthetic, no text, no captions, no watermarks.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck mascot in a wildflower field holding a tiny golden tuning fork next to a flower while pollen dust sparkles in the air near a bee.",
+    "alt_ja": "野原で小さな金色の音叉を花にかざし、ハチとともに花粉が舞い散る振動の仕組みを表現する The Daily Duck マスコット。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-12.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-12 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-12 — Batch 1",
-  "final_email_sent_at": "2026-09-12T09:41:14.059603+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE SECRET VIBRATION SHAKING UP NATURE!",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-12T13:09:00.387505+00:00"
+    "translation_language": "ja"
+  }
 }
