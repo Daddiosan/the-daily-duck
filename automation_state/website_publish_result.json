@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-09-12T13:09:55.564294+00:00",
+  "issue_date": "2026-09-12",
+  "image": "assets/ducks/2026-09-12-buzzing-bee.png",
+  "page": "ducks/2026-09-12/index.html",
+  "title": "Bite, buzz, release: How bees make flowers give up their pollen",
+  "duck_name": "Buzzing Bee",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

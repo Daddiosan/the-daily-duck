@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-12",
+    "displayDate": "September 12, 2026",
+    "slug": "buzzing-bee",
+    "title": "BUZZING BEE",
+    "duckName": "Buzzing Bee",
+    "storyTitleEn": "Bite, buzz, release: How bees make flowers give up their pollen",
+    "storyTitleJa": "Bite, buzz, release: How bees make flowers give up their pollen",
+    "image": "assets/ducks/2026-09-12-buzzing-bee.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Buzzing Bee",
+    "imageAltJa": "Buzzing BeeをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Nature has some clever tricks, and bees have mastered a fascinating one for gathering pollen. By biting into flowers and using rapid muscle vibrations, they shake the pollen free in a method known as 'bite, buzz, release.' It is a wonderful example of tiny creatures using smart techniques to get their work done.",
+    "storyJa": "自然界には面白い工夫があふれていますが、ハチも花粉を集めるための見事な技を持っています。花にかみつき、素早い筋肉の振動を利用して花粉を振り落とす「かんで、震えて、放す」という手法です。小さな生き物が見せる賢い工夫の素晴らしい例といえます。",
+    "duckEn": "Quack! Bite, buzz, release—bees sure know how to get things moving!",
+    "duckJa": "クワッ！かんで、震えて、放す—ハチの振動テクニックはすごいね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-bees-pollen.html",
+    "archiveSummaryEn": "Ever wonder how bees shake pollen free from flowers? They use a clever technique: bite, buzz with rapid muscle vibrations, and release!",
+    "archiveSummaryJa": "ハチはどうやって花から花粉を取り出している？花にかみついて素早く筋肉を震わせる巧みなテクニックを紹介！",
+    "reasonEn": "Ever wonder how bees shake pollen free from flowers? They use a clever technique: bite, buzz with rapid muscle vibrations, and release!",
+    "reasonJa": "ハチはどうやって花から花粉を取り出している？花にかみついて素早く筋肉を震わせる巧みなテクニックを紹介！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-11",
     "displayDate": "September 11, 2026",
     "slug": "honk-smile",
