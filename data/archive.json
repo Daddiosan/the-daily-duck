@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-13",
+    "displayDate": "September 13, 2026",
+    "slug": "remedy-duck",
+    "title": "REMEDY DUCK",
+    "duckName": "Remedy Duck",
+    "storyTitleEn": "A brief history of the hangover and its remedies—from cabbages to cloves and the lungs of a goat",
+    "storyTitleJa": "A brief history of the hangover and its remedies—from cabbages to cloves and the lungs of a goat",
+    "image": "assets/ducks/2026-09-13-remedy-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Remedy Duck",
+    "imageAltJa": "Remedy DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Throughout history, people have tried all sorts of unusual remedies to deal with hangovers. From eating cabbages and cloves to even stranger methods involving the lungs of a goat, historical records reveal just how far people would go to feel better after a night of celebrating. It is a fun and amusing reminder that trying to find the ultimate morning-after cure is a long-standing human tradition.",
+    "storyJa": "歴史を通じて、人々は二日酔いに対処するために実にさまざまな方法を試してきました。キャベツやクローブを食べることから、ヤギの肺を使った不思議な方法に至るまで、歴史的な記録は、人々がお祝いの翌朝に気分を良くしようとどれほど工夫を凝らしてきたかを示しています。最高の回復法を探し求める取り組みが、古くから続く人類の伝統であることを感じさせる微笑ましいニュースです。",
+    "duckEn": "I think I will stick to water and quiet pond naps!",
+    "duckJa": "ボクはお水と静かな池でのお昼寝にしておくよ！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-history-hangover-remedies-cabbages-cloves.html",
+    "archiveSummaryEn": "From cabbages and cloves to goat lungs, history is full of surprising hangover remedies!",
+    "archiveSummaryJa": "キャベツやクローブからヤギの肺まで！歴史には驚くような二日酔い対処法が溢れています。",
+    "reasonEn": "From cabbages and cloves to goat lungs, history is full of surprising hangover remedies!",
+    "reasonJa": "キャベツやクローブからヤギの肺まで！歴史には驚くような二日酔い対処法が溢れています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-12",
     "displayDate": "September 12, 2026",
     "slug": "buzzing-bee",
