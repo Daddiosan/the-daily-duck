@@ -82,6 +82,7 @@ jobs:
       - name: Rank Daily Duck news
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python scripts/rank_news_with_ai.py
 
