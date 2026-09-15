@@ -1,10 +1,5 @@
-import os
 import json
 import re
-import time
-import socket
-import urllib.request
-import urllib.error
 
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -15,36 +10,20 @@ from urllib.parse import (
     urlunsplit,
 )
 
+try:
+    # Running as `python scripts/rank_news_with_ai.py` (production/workflow
+    # invocation): the repo root is not on sys.path, only scripts/ is.
+    from scripts import llm_provider
+except ImportError:
+    # Running as a script directly: scripts/ itself is on sys.path, so
+    # llm_provider is a plain sibling module (matches this repo's existing
+    # convention, e.g. `from model_config import ...` in other scripts/*.py).
+    import llm_provider
+
 
 INPUT_FILE = "news_candidates.json"
 OUTPUT_FILE = "ai_ranked_news.json"
 ARCHIVE_FILE = Path("data/archive.json")
-
-MODEL = "gemini-3.6-flash"
-
-# ------------------------------------------------------------
-# Gemini retry settings
-# ------------------------------------------------------------
-
-MAX_GEMINI_ATTEMPTS = 4
-
-# Retry after:
-# attempt 1 -> 10 sec
-# attempt 2 -> 30 sec
-# attempt 3 -> 60 sec
-RETRY_DELAYS = [
-    10,
-    30,
-    60,
-]
-
-RETRYABLE_HTTP_CODES = {
-    429,
-    500,
-    502,
-    503,
-    504,
-}
 
 # ------------------------------------------------------------
 # Duplicate/history settings
@@ -52,6 +31,38 @@ RETRYABLE_HTTP_CODES = {
 
 MAX_HISTORY_ITEMS = 60
 CURRENT_TITLE_SIMILARITY = 0.92
+
+# ------------------------------------------------------------
+# Sad/tragic-story guard (Phase A, Human Decision 1)
+#
+# Deterministic, provider-independent, and derived directly from the
+# "AVOID NEGATIVE STORIES" section of build_prompt() below -- the same
+# category labels already used to instruct whichever LLM ranks the news.
+# Scoped to the `category` field only, not `reason`/`title` free text:
+# `category` is a short LLM-assigned label (see the CATEGORY section of
+# build_prompt(), whose own example categories never include these terms),
+# while `reason`/`title` are prose that can legitimately mention words like
+# "illness" while describing an uplifting recovery story -- the prompt's
+# own text explicitly allows that ("A recovery or conservation story may
+# qualify when its dominant emotional feeling is hopeful and positive").
+# Scanning prose would create false positives against that carve-out;
+# scanning the category label does not.
+# ------------------------------------------------------------
+
+PROHIBITED_CATEGORY_PATTERNS = [
+    re.compile(r"\bdeath\b", re.IGNORECASE),
+    re.compile(r"\btragedy\b", re.IGNORECASE),
+    re.compile(r"\btragic\b", re.IGNORECASE),
+    re.compile(r"\bwar\b", re.IGNORECASE),
+    re.compile(r"\bcrime\b", re.IGNORECASE),
+    re.compile(r"\bcriminal\b", re.IGNORECASE),
+    re.compile(r"\bdisaster\b", re.IGNORECASE),
+    re.compile(r"\bfear\b", re.IGNORECASE),
+    re.compile(r"\bsuffering\b", re.IGNORECASE),
+    re.compile(r"\boutrage\b", re.IGNORECASE),
+    re.compile(r"political conflict", re.IGNORECASE),
+    re.compile(r"severe illness", re.IGNORECASE),
+]
 
 
 # ============================================================
@@ -924,237 +935,12 @@ def build_schema():
 
 
 # ============================================================
-# Single Gemini request
+# Gemini/OpenAI request with fallback
+#
+# scripts/llm_provider.py is the sole retry/fallback owner for this
+# operation (see PHASE_A_RETRY_NORMALIZATION_AND_RANKING_FALLBACK_PLAN.md).
+# This module must not retry on its own.
 # ============================================================
-
-def call_gemini_once(
-    prompt,
-):
-    api_key = os.environ.get(
-        "GEMINI_API_KEY"
-    )
-
-    if not api_key:
-        raise RuntimeError(
-            "GEMINI_API_KEY is not configured."
-        )
-
-    url = (
-        "https://generativelanguage.googleapis.com/"
-        f"v1beta/models/{MODEL}:generateContent"
-        f"?key={api_key}"
-    )
-
-    body = {
-
-        "contents": [
-            {
-                "parts": [
-                    {
-                        "text": prompt
-                    }
-                ]
-            }
-        ],
-
-        "generationConfig": {
-            "temperature": 0.2,
-            "responseMimeType": "application/json",
-            "responseJsonSchema": build_schema(),
-        },
-    }
-
-    request = urllib.request.Request(
-        url,
-
-        data=json.dumps(
-            body
-        ).encode(
-            "utf-8"
-        ),
-
-        headers={
-            "Content-Type": "application/json"
-        },
-
-        method="POST",
-    )
-
-    with urllib.request.urlopen(
-        request,
-        timeout=120,
-    ) as response:
-
-        response_data = json.loads(
-            response.read().decode(
-                "utf-8"
-            )
-        )
-
-    try:
-        result_text = (
-            response_data[
-                "candidates"
-            ][0][
-                "content"
-            ][
-                "parts"
-            ][0][
-                "text"
-            ]
-        )
-
-    except (
-        KeyError,
-        IndexError,
-        TypeError,
-    ) as exc:
-
-        raise RuntimeError(
-            "Unexpected Gemini response structure: "
-            f"{json.dumps(response_data, ensure_ascii=False)[:1500]}"
-        ) from exc
-
-    return json.loads(
-        result_text
-    )
-
-
-# ============================================================
-# Gemini automatic retry
-# ============================================================
-
-def call_gemini(
-    prompt,
-):
-    """
-    Retry temporary Gemini/API/network failures.
-
-    Attempt 1
-      fail -> wait 10 sec
-
-    Attempt 2
-      fail -> wait 30 sec
-
-    Attempt 3
-      fail -> wait 60 sec
-
-    Attempt 4
-      fail -> raise error
-
-    Permanent HTTP errors such as 400/401/403 are not retried.
-    """
-
-    last_error = None
-
-    for attempt in range(
-        1,
-        MAX_GEMINI_ATTEMPTS + 1,
-    ):
-
-        print()
-        print(
-            f"Gemini request attempt "
-            f"{attempt}/{MAX_GEMINI_ATTEMPTS}"
-        )
-
-        try:
-
-            result = call_gemini_once(
-                prompt
-            )
-
-            if attempt > 1:
-
-                print(
-                    "Gemini retry succeeded."
-                )
-
-            return result
-
-        # ----------------------------------------------------
-        # HTTP errors
-        # ----------------------------------------------------
-
-        except urllib.error.HTTPError as error:
-
-            details = error.read().decode(
-                "utf-8",
-                errors="replace",
-            )
-
-            last_error = RuntimeError(
-                f"Gemini API HTTP "
-                f"{error.code}: {details}"
-            )
-
-            print(
-                f"Gemini HTTP error: "
-                f"{error.code}"
-            )
-
-            if (
-                error.code
-                not in RETRYABLE_HTTP_CODES
-            ):
-
-                print(
-                    "This HTTP error is not retryable."
-                )
-
-                raise last_error
-
-            print(
-                "Temporary Gemini/API error detected."
-            )
-
-        # ----------------------------------------------------
-        # Network errors
-        # ----------------------------------------------------
-
-        except (
-            urllib.error.URLError,
-            TimeoutError,
-            socket.timeout,
-        ) as error:
-
-            last_error = error
-
-            print(
-                "Temporary network/API error:"
-            )
-
-            print(
-                str(error)
-            )
-
-        # ----------------------------------------------------
-        # Stop after final attempt
-        # ----------------------------------------------------
-
-        if (
-            attempt
-            >= MAX_GEMINI_ATTEMPTS
-        ):
-            break
-
-        delay = RETRY_DELAYS[
-            attempt - 1
-        ]
-
-        print(
-            f"Retrying in {delay} seconds..."
-        )
-
-        time.sleep(
-            delay
-        )
-
-    raise RuntimeError(
-        "Gemini ranking failed after "
-        f"{MAX_GEMINI_ATTEMPTS} attempts. "
-        f"Last error: {last_error}"
-    )
 
 
 # ============================================================
@@ -1257,6 +1043,21 @@ def validate_result(
             selected_urls.add(
                 url
             )
+
+        category = text(
+            story.get(
+                "category"
+            )
+        )
+
+        for pattern in PROHIBITED_CATEGORY_PATTERNS:
+
+            if pattern.search(category):
+
+                raise RuntimeError(
+                    "Selected story violates the sad/tragic-story "
+                    f"guard (category: {category!r}): {story_id}"
+                )
 
     recommended_id = result.get(
         "recommended_id"
@@ -1386,21 +1187,23 @@ def main():
     )
 
     # --------------------------------------------------------
-    # Gemini + automatic retry
+    # Gemini primary, OpenAI fallback (llm_provider.py owns all
+    # retry/fallback attempts and calls validate_result() itself so the
+    # same provider-independent checks apply to either provider's output)
     # --------------------------------------------------------
 
-    result = call_gemini(
-        prompt
+    result, provider = llm_provider.generate_ranking(
+        prompt,
+        build_schema(),
+        validate=lambda candidate_result: validate_result(
+            candidate_result,
+            candidates,
+            archive,
+        ),
     )
 
-    # --------------------------------------------------------
-    # Validate
-    # --------------------------------------------------------
-
-    validate_result(
-        result,
-        candidates,
-        archive,
+    print(
+        f"Ranking result provider: {provider}"
     )
 
     # --------------------------------------------------------
