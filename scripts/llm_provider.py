@@ -121,6 +121,100 @@ def _describe_content_failure(exc: Exception, raw_text: str | None) -> str:
 
 
 # ============================================================
+# Gemini HTTPError body diagnostics (bounded, no secrets)
+#
+# Gemini's error responses follow the standard Google API error shape:
+#   {"error": {"code": ..., "message": ..., "status": ...,
+#              "details": [{"reason": ..., "domain": ...,
+#                            "metadata": {"service": ..., "method": ...}}]}}
+# This is read defensively -- a differently-shaped or unparseable body
+# degrades to all-None fields rather than raising. Never reads/logs the
+# request URL (it carries the API key), headers, or the key itself --
+# only fields Google's own error body already contains about the error.
+# ============================================================
+
+GEMINI_ERROR_BODY_MAX_BYTES = 8192
+GEMINI_ERROR_MESSAGE_MAX_CHARS = 300
+
+
+def _extract_gemini_error_diagnostic(http_error: urllib.error.HTTPError) -> dict[str, Any]:
+    diagnostic: dict[str, Any] = {
+        "GEMINI_HTTP_STATUS": http_error.code,
+        "GEMINI_ERROR_STATUS": None,
+        "GEMINI_ERROR_MESSAGE": None,
+        "GEMINI_ERROR_REASON": None,
+        "GEMINI_ERROR_SERVICE": None,
+        "GEMINI_ERROR_METHOD": None,
+    }
+
+    try:
+        raw_body = http_error.read(GEMINI_ERROR_BODY_MAX_BYTES)
+    except Exception:
+        return diagnostic
+
+    if not raw_body:
+        return diagnostic
+
+    try:
+        parsed = json.loads(raw_body.decode("utf-8", errors="replace"))
+    except json.JSONDecodeError:
+        return diagnostic
+
+    if not isinstance(parsed, dict):
+        return diagnostic
+
+    error = parsed.get("error")
+    if not isinstance(error, dict):
+        return diagnostic
+
+    status = error.get("status")
+    if isinstance(status, str):
+        diagnostic["GEMINI_ERROR_STATUS"] = status
+
+    message = error.get("message")
+    if isinstance(message, str):
+        diagnostic["GEMINI_ERROR_MESSAGE"] = (
+            message.replace("\n", " ")[:GEMINI_ERROR_MESSAGE_MAX_CHARS]
+        )
+
+    details = error.get("details")
+    if isinstance(details, list):
+        for entry in details:
+            if not isinstance(entry, dict):
+                continue
+
+            reason = entry.get("reason")
+            if isinstance(reason, str) and diagnostic["GEMINI_ERROR_REASON"] is None:
+                diagnostic["GEMINI_ERROR_REASON"] = reason
+
+            metadata = entry.get("metadata")
+            if isinstance(metadata, dict):
+                service = metadata.get("service")
+                if isinstance(service, str) and diagnostic["GEMINI_ERROR_SERVICE"] is None:
+                    diagnostic["GEMINI_ERROR_SERVICE"] = service
+
+                method = metadata.get("method")
+                if isinstance(method, str) and diagnostic["GEMINI_ERROR_METHOD"] is None:
+                    diagnostic["GEMINI_ERROR_METHOD"] = method
+
+            method_direct = entry.get("method")
+            if isinstance(method_direct, str) and diagnostic["GEMINI_ERROR_METHOD"] is None:
+                diagnostic["GEMINI_ERROR_METHOD"] = method_direct
+
+    return diagnostic
+
+
+def _describe_gemini_failure(exc: Exception) -> str:
+    diagnostic = getattr(exc, "gemini_diagnostic", None)
+
+    if not diagnostic:
+        return _describe_content_failure(exc, None)
+
+    fields = " ".join(f"{key}={value!r}" for key, value in diagnostic.items())
+    return f"HTTPError {fields}"
+
+
+# ============================================================
 # Error classification (structured, not string-matching)
 # ============================================================
 
@@ -219,8 +313,12 @@ def _call_gemini_once(prompt: str, schema: dict, *, api_key: str, model: str) ->
         method="POST",
     )
 
-    with urllib.request.urlopen(request, timeout=120) as response:
-        response_data = json.loads(response.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(request, timeout=120) as response:
+            response_data = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as http_error:
+        http_error.gemini_diagnostic = _extract_gemini_error_diagnostic(http_error)
+        raise
 
     try:
         return response_data["candidates"][0]["content"]["parts"][0]["text"]
@@ -314,7 +412,7 @@ def generate_ranking(
             raw_text = _call_gemini_once(prompt, schema, api_key=gemini_key, model=gemini_model)
         except Exception as exc:
             category = classify_gemini_error(exc)
-            detail = _describe_content_failure(exc, None)
+            detail = _describe_gemini_failure(exc)
             _log_attempt(operation, GEMINI, gemini_attempt, category)
             _log_detail(GEMINI, gemini_attempt, detail)
             provider_errors["gemini"] = detail
