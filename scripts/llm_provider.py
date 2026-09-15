@@ -58,6 +58,16 @@ HARD_MAX_PROVIDER_CALLS = GEMINI_MAX_ATTEMPTS + OPENAI_MAX_ATTEMPTS
 DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"
 DEFAULT_OPENAI_MODEL = "gpt-5.6-luna"
 
+# No cap was set on the OpenAI fallback call before this constant existed.
+# Ranking's own output shape (5 stories x 16 fields incl. free-text
+# "reason") is roughly 800-2500 visible tokens (see the cost estimate in
+# LLM_PROVIDER_AUDIT_AND_FALLBACK_PLAN.md); this budget adds generous
+# headroom on top of that so a model that spends part of its completion
+# budget on internal reasoning before emitting the JSON is not forced to
+# truncate the visible answer. Configurable since this is a judgment call,
+# not a measured value.
+DEFAULT_OPENAI_MAX_COMPLETION_TOKENS = 8000
+
 
 class ProviderFailure(RuntimeError):
     """Raised when the ranking operation must fail closed.
@@ -91,6 +101,23 @@ def _log_fallback(reason: str) -> None:
         f"LLM_FALLBACK_TRIGGERED=true LLM_FALLBACK_REASON={reason}",
         file=sys.stderr,
     )
+
+
+def _log_detail(provider: str, attempt: int, detail: str) -> None:
+    # Bounded, non-sensitive diagnostic: exception type + a short safe
+    # message (HTTP error text, JSONDecodeError's own position/msg, or
+    # validate_result()'s short structural message -- none of which include
+    # secrets, full prompts, or full model output) plus response length.
+    # Without this, only the taxonomy category (e.g. INVALID_RESPONSE) was
+    # ever visible in logs, which is not enough to tell a JSON parse
+    # failure apart from a schema/semantic validation failure.
+    print(f"LLM_PROVIDER={provider} LLM_ATTEMPT={attempt} LLM_DETAIL={detail}", file=sys.stderr)
+
+
+def _describe_content_failure(exc: Exception, raw_text: str | None) -> str:
+    length = len(raw_text) if raw_text else 0
+    safe_message = str(exc).replace("\n", " ")[:300]
+    return f"{type(exc).__name__} response_length={length} message={safe_message!r}"
 
 
 # ============================================================
@@ -140,6 +167,11 @@ def classify_openai_error(exc: Exception) -> str:
         return TEMPORARY_UNAVAILABLE
     if isinstance(exc, openai.APIStatusError):
         return _classify_http_status(getattr(exc, "status_code", None))
+    if isinstance(exc, ValueError):
+        # Raised by _call_openai_once() itself for a locally-detected
+        # response-quality problem (e.g. finish_reason=length truncation),
+        # not a transport/HTTP failure.
+        return INVALID_RESPONSE
     return UNKNOWN_PROVIDER_ERROR
 
 
@@ -206,15 +238,37 @@ def _call_gemini_once(prompt: str, schema: dict, *, api_key: str, model: str) ->
 def _call_openai_once(prompt: str, *, api_key: str, model: str) -> str:
     client = OpenAI(api_key=api_key)
 
+    max_completion_tokens = int(
+        os.environ.get("OPENAI_MAX_COMPLETION_TOKENS", "").strip()
+        or DEFAULT_OPENAI_MAX_COMPLETION_TOKENS
+    )
+
     response = client.chat.completions.create(
         model=model,
         messages=[{"role": "user", "content": prompt}],
+        # JSON mode: a standard, model-independent Chat Completions
+        # contract (not a gpt-5.6-luna-specific assumption) that makes the
+        # API itself reject/repair non-JSON output, rather than relying
+        # solely on the prompt's own "Return only the requested JSON"
+        # instruction the way the un-schema'd editorial/design-option
+        # prompts elsewhere in this repo already do.
+        response_format={"type": "json_object"},
+        max_completion_tokens=max_completion_tokens,
     )
 
     if not response.choices:
         return ""
 
-    return response.choices[0].message.content or ""
+    choice = response.choices[0]
+    finish_reason = getattr(choice, "finish_reason", None)
+
+    if finish_reason == "length":
+        raise ValueError(
+            "OpenAI response was truncated before completion "
+            f"(finish_reason=length, max_completion_tokens={max_completion_tokens})."
+        )
+
+    return choice.message.content or ""
 
 
 # ============================================================
@@ -260,8 +314,10 @@ def generate_ranking(
             raw_text = _call_gemini_once(prompt, schema, api_key=gemini_key, model=gemini_model)
         except Exception as exc:
             category = classify_gemini_error(exc)
+            detail = _describe_content_failure(exc, None)
             _log_attempt(operation, GEMINI, gemini_attempt, category)
-            provider_errors["gemini"] = f"{category}: {exc}"
+            _log_detail(GEMINI, gemini_attempt, detail)
+            provider_errors["gemini"] = detail
 
             if category in FAIL_CLOSED_CATEGORIES:
                 raise ProviderFailure(
@@ -281,8 +337,10 @@ def generate_ranking(
                 validate(parsed)
             except Exception as exc:
                 category = INVALID_RESPONSE
+                detail = _describe_content_failure(exc, raw_text)
                 _log_attempt(operation, GEMINI, gemini_attempt, category)
-                provider_errors["gemini"] = f"{category}: {exc}"
+                _log_detail(GEMINI, gemini_attempt, detail)
+                provider_errors["gemini"] = detail
 
                 if gemini_attempt < GEMINI_MAX_ATTEMPTS:
                     continue
@@ -309,8 +367,10 @@ def generate_ranking(
             raw_text = _call_openai_once(prompt, api_key=openai_key, model=openai_model)
         except Exception as exc:
             category = classify_openai_error(exc)
+            detail = _describe_content_failure(exc, None)
             _log_attempt(operation, OPENAI, openai_attempt, category)
-            provider_errors["openai"] = f"{category}: {exc}"
+            _log_detail(OPENAI, openai_attempt, detail)
+            provider_errors["openai"] = detail
 
             if category in FAIL_CLOSED_CATEGORIES:
                 raise ProviderFailure(
@@ -329,14 +389,21 @@ def generate_ranking(
                 validate(parsed)
             except Exception as exc:
                 category = INVALID_RESPONSE
+                detail = _describe_content_failure(exc, raw_text)
                 _log_attempt(operation, OPENAI, openai_attempt, category)
-                provider_errors["openai"] = f"{category}: {exc}"
+                _log_detail(OPENAI, openai_attempt, detail)
+                provider_errors["openai"] = detail
                 # No same-provider ping-pong retry for malformed output on
                 # the fallback provider -- one attempt is enough here.
                 break
             else:
                 _log_attempt(operation, OPENAI, openai_attempt, "SUCCESS")
                 return parsed, OPENAI
+
+    print(
+        f"LLM_ALL_PROVIDERS_FAILED provider_errors={provider_errors}",
+        file=sys.stderr,
+    )
 
     raise ProviderFailure(
         "Both Gemini and OpenAI failed to produce a valid ranking result.",

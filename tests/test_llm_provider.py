@@ -3,7 +3,7 @@ import json
 import socket
 import unittest
 import urllib.error
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import httpx2
 import openai
@@ -359,9 +359,20 @@ class ClassifyOpenAIErrorTests(unittest.TestCase):
             llm_provider.classify_openai_error(openai_timeout_error()), llm_provider.NETWORK_TIMEOUT
         )
 
-    def test_unclassified_exception_is_unknown(self):
+    def test_value_error_is_invalid_response(self):
+        # Raised by _call_openai_once() itself on finish_reason=length
+        # truncation -- a response-quality problem, not a transport error.
         self.assertEqual(
-            llm_provider.classify_openai_error(ValueError("???")),
+            llm_provider.classify_openai_error(ValueError("truncated")),
+            llm_provider.INVALID_RESPONSE,
+        )
+
+    def test_unclassified_exception_is_unknown(self):
+        class SomeOtherLibraryError(Exception):
+            pass
+
+        self.assertEqual(
+            llm_provider.classify_openai_error(SomeOtherLibraryError("???")),
             llm_provider.UNKNOWN_PROVIDER_ERROR,
         )
 
@@ -378,6 +389,90 @@ class ParseJsonTests(unittest.TestCase):
     def test_none_raises(self):
         with self.assertRaises(ValueError):
             llm_provider._parse_json(None)
+
+
+class FakeChoice:
+    def __init__(self, finish_reason, content):
+        self.finish_reason = finish_reason
+        self.message = type("Message", (), {"content": content})()
+
+
+class FakeOpenAIResponse:
+    def __init__(self, finish_reason, content):
+        self.choices = [FakeChoice(finish_reason, content)]
+
+
+class FakeOpenAIClient:
+    def __init__(self, response):
+        self.create_mock = MagicMock(return_value=response)
+        self.chat = type(
+            "Chat", (), {"completions": type("Completions", (), {"create": self.create_mock})()}
+        )()
+
+
+class CallOpenAIOnceTests(unittest.TestCase):
+    """Regression tests for the actual root cause fix: no response_format,
+    no explicit token budget, and no truncation check previously existed,
+    so a reasoning-heavy response that hit the API's own default output
+    cap could come back with empty/partial content and be misclassified
+    only as a bare INVALID_RESPONSE with no diagnostic detail."""
+
+    def test_normal_completion_returns_content(self):
+        fake_client = FakeOpenAIClient(FakeOpenAIResponse("stop", '{"a": 1}'))
+        with patch.object(llm_provider, "OpenAI", return_value=fake_client):
+            result = llm_provider._call_openai_once("prompt", api_key="k", model="gpt-5.6-luna")
+        self.assertEqual(result, '{"a": 1}')
+
+    def test_truncated_completion_raises_value_error(self):
+        fake_client = FakeOpenAIClient(FakeOpenAIResponse("length", '{"top_five": [') )
+        with patch.object(llm_provider, "OpenAI", return_value=fake_client):
+            with self.assertRaises(ValueError):
+                llm_provider._call_openai_once("prompt", api_key="k", model="gpt-5.6-luna")
+
+    def test_requests_json_object_mode_and_explicit_token_budget(self):
+        fake_client = FakeOpenAIClient(FakeOpenAIResponse("stop", "{}"))
+        with patch.object(llm_provider, "OpenAI", return_value=fake_client):
+            llm_provider._call_openai_once("prompt", api_key="k", model="gpt-5.6-luna")
+
+        _, kwargs = fake_client.create_mock.call_args
+        self.assertEqual(kwargs["response_format"], {"type": "json_object"})
+        self.assertEqual(kwargs["max_completion_tokens"], llm_provider.DEFAULT_OPENAI_MAX_COMPLETION_TOKENS)
+
+
+class ReproducedIncidentTests(unittest.TestCase):
+    """End-to-end reproduction of the observed controlled-run failure:
+    Gemini TEMPORARY_UNAVAILABLE x2 -> fallback -> OpenAI response
+    truncated (finish_reason=length) -> INVALID_RESPONSE -> both
+    providers exhausted -> fail closed, with diagnosable detail now
+    present instead of only the bare category label."""
+
+    def setUp(self):
+        patcher = patch.dict(
+            "os.environ",
+            {"GEMINI_API_KEY": "test-gemini-key", "OPENAI_API_KEY": "test-openai-key"},
+            clear=False,
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_truncated_openai_response_fails_closed_with_diagnosable_detail(self):
+        fake_client = FakeOpenAIClient(FakeOpenAIResponse("length", '{"top_five": ['))
+
+        with patch.object(
+            llm_provider, "_call_gemini_once", side_effect=gemini_http_error(503)
+        ) as gemini_mock, patch.object(
+            llm_provider, "OpenAI", return_value=fake_client
+        ):
+            with self.assertRaises(llm_provider.ProviderFailure) as ctx:
+                llm_provider.generate_ranking("prompt", {}, validate=noop_validate)
+
+        self.assertEqual(gemini_mock.call_count, llm_provider.GEMINI_MAX_ATTEMPTS)
+        self.assertEqual(fake_client.create_mock.call_count, 1)
+        self.assertIn("openai", ctx.exception.provider_errors)
+        # The fix: the failure detail is no longer just the bare category --
+        # it now names the exception type and carries response-length info,
+        # safely, with no secret or full-content exposure.
+        self.assertIn("ValueError", ctx.exception.provider_errors["openai"])
 
 
 if __name__ == "__main__":
