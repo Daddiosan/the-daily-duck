@@ -13,6 +13,7 @@ file only.
 """
 from __future__ import annotations
 
+import copy
 import json
 import os
 import re
@@ -144,7 +145,17 @@ def _log_detail(provider: str, attempt: int, detail: str) -> None:
 def _describe_content_failure(exc: Exception, raw_text: str | None) -> str:
     length = len(raw_text) if raw_text else 0
     safe_message = str(exc).replace("\n", " ")[:300]
-    return f"{type(exc).__name__} response_length={length} message={safe_message!r}"
+    detail = f"{type(exc).__name__} response_length={length} message={safe_message!r}"
+
+    # Best-effort: only _OpenAIResponseText instances (see _call_openai_once())
+    # carry this attribute; a plain str (e.g. in tests, or a Gemini-sourced
+    # raw_text) simply has none, so this never raises and never fabricates a
+    # value for a provider that doesn't expose one.
+    finish_reason = getattr(raw_text, "finish_reason", None)
+    if finish_reason is not None:
+        detail += f" finish_reason={finish_reason!r}"
+
+    return detail
 
 
 # ============================================================
@@ -392,8 +403,63 @@ def _call_gemini_once(prompt: str, schema: dict, *, api_key: str, model: str) ->
 # OpenAI transport (fallback)
 # ============================================================
 
+# JSON Schema keywords that are part of the schema Gemini's responseJsonSchema
+# accepts (see _call_gemini_once()) but are NOT in OpenAI Structured Outputs'
+# documented strict-mode subset. Sending an unsupported keyword risks the
+# request itself being rejected (400 INVALID_REQUEST) -- worse than the bug
+# this is fixing, since OpenAI is the last provider in the fallback chain.
+# The "exactly N items" cardinality these keywords would have expressed is
+# instead carried by the prompt's own explicit JSON-shape description (see
+# rank_news_with_ai.build_prompt()'s "OUTPUT FORMAT" section) and enforced,
+# as always, by the Python-side validate() callback -- never by the schema
+# alone.
+_OPENAI_UNSUPPORTED_SCHEMA_KEYWORDS = ("minItems", "maxItems")
+
+
+def _to_openai_strict_schema(schema: dict) -> dict:
+    """Adapts a schema authored for Gemini's responseJsonSchema into one
+    safe to send as an OpenAI Structured Outputs strict-mode schema.
+
+    Deep-copies first: Gemini keeps receiving the original, untransformed
+    schema unchanged (see _call_gemini_once()); only OpenAI's copy differs.
+
+    Recursively:
+    1. Forces additionalProperties=False on every object node -- required
+       by OpenAI strict mode, which Gemini's schema dialect does not
+       require.
+    2. Strips _OPENAI_UNSUPPORTED_SCHEMA_KEYWORDS (see above) from every
+       node that has them.
+    """
+    strict_schema = copy.deepcopy(schema)
+
+    def _walk(node: Any) -> None:
+        if isinstance(node, dict):
+            if node.get("type") == "object":
+                node["additionalProperties"] = False
+            for keyword in _OPENAI_UNSUPPORTED_SCHEMA_KEYWORDS:
+                node.pop(keyword, None)
+            for value in node.values():
+                _walk(value)
+        elif isinstance(node, list):
+            for item in node:
+                _walk(item)
+
+    _walk(strict_schema)
+    return strict_schema
+
+
+class _OpenAIResponseText(str):
+    """str subclass carrying the completion's finish_reason for diagnostics
+    (see _describe_content_failure()) without changing _call_openai_once()'s
+    string-compatible return contract -- every existing str operation
+    (equality, len, json.loads, ...) behaves identically."""
+
+    finish_reason: str | None = None
+
+
 def _call_openai_once(
     prompt: str,
+    schema: dict,
     *,
     api_key: str,
     model: str,
@@ -409,13 +475,24 @@ def _call_openai_once(
     response = client.chat.completions.create(
         model=model,
         messages=[{"role": "user", "content": prompt}],
-        # JSON mode: a standard, model-independent Chat Completions
-        # contract (not a gpt-5.6-luna-specific assumption) that makes the
-        # API itself reject/repair non-JSON output, rather than relying
-        # solely on the prompt's own "Return only the requested JSON"
-        # instruction the way the un-schema'd editorial/design-option
-        # prompts elsewhere in this repo already do.
-        response_format={"type": "json_object"},
+        # Structured Outputs (strict JSON Schema enforcement): a real
+        # production run proved plain json_object mode plus the prompt's own
+        # prose was insufficient -- OpenAI returned syntactically valid JSON
+        # that nonetheless lacked a "top_five" list of exactly five items,
+        # because unlike Gemini (which receives this same `schema` via
+        # responseJsonSchema, see _call_gemini_once()), OpenAI was never told
+        # the required field names or structure at all. This constrains the
+        # response to the same schema Gemini already enforces -- field
+        # names, types, and required-ness -- as a model-independent Chat
+        # Completions contract, not a gpt-5.6-luna-specific assumption.
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "name": "structured_output",
+                "strict": True,
+                "schema": _to_openai_strict_schema(schema),
+            },
+        },
         max_completion_tokens=effective_max_completion_tokens,
     )
 
@@ -431,7 +508,9 @@ def _call_openai_once(
             f"(finish_reason=length, max_completion_tokens={effective_max_completion_tokens})."
         )
 
-    return choice.message.content or ""
+    text = _OpenAIResponseText(choice.message.content or "")
+    text.finish_reason = finish_reason
+    return text
 
 
 # ============================================================
@@ -534,6 +613,7 @@ def _generate_with_fallback(
         try:
             raw_text = _call_openai_once(
                 prompt,
+                schema,
                 api_key=openai_key,
                 model=openai_model,
                 max_completion_tokens=openai_max_completion_tokens,

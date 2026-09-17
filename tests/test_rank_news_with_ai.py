@@ -59,11 +59,19 @@ class ValidateResultRegressionTests(unittest.TestCase):
     def test_valid_result_passes(self):
         validate_result(make_result(), make_candidates(), [])
 
-    def test_wrong_story_count_rejected(self):
+    def test_wrong_story_count_rejected_four(self):
         result = make_result()
         result["top_five"] = result["top_five"][:4]
         with self.assertRaises(RuntimeError):
             validate_result(result, make_candidates(), [])
+
+    def test_wrong_story_count_rejected_six(self):
+        result = make_result()
+        extra = dict(result["top_five"][0])
+        extra["id"] = 6
+        result["top_five"] = result["top_five"] + [extra]
+        with self.assertRaises(RuntimeError):
+            validate_result(result, make_candidates(6), [])
 
     def test_invalid_candidate_id_rejected(self):
         result = make_result({1: {"id": 999}})
@@ -90,6 +98,92 @@ class ValidateResultRegressionTests(unittest.TestCase):
         result["recommended_id"] = 999
         with self.assertRaises(RuntimeError):
             validate_result(result, make_candidates(), [])
+
+
+class ExactFiveDiagnosticsAndWordingTests(unittest.TestCase):
+    """Root-cause fix for the OpenAI-fallback incident (response_length=4359,
+    "Gemini must return exactly five stories."): the message is now
+    provider-neutral and carries safe diagnostics (expected/actual count,
+    bounded top-level keys) instead of naming Gemini regardless of which
+    provider actually produced the result."""
+
+    def test_diagnostics_expose_expected_and_actual_count_on_short_list(self):
+        result = make_result()
+        result["top_five"] = result["top_five"][:3]
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+
+        message = str(ctx.exception)
+        self.assertIn("EXPECTED_STORY_COUNT=5", message)
+        self.assertIn("ACTUAL_STORY_COUNT=3", message)
+        self.assertIn("TOP_LEVEL_KEYS=", message)
+        self.assertIn("top_five", message)
+
+    def test_diagnostics_report_unknown_count_when_top_five_is_not_a_list(self):
+        result = make_result()
+        result["top_five"] = {"unexpected": "wrapper"}
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+
+        message = str(ctx.exception)
+        self.assertIn("ACTUAL_STORY_COUNT=UNKNOWN", message)
+
+    def test_diagnostics_reveal_wrong_top_level_key(self):
+        # Simulates the plausible real-world cause: the model wrapped its
+        # five stories under a different key instead of "top_five".
+        result = {
+            "recommended_id": 1,
+            "recommended_reason": "Warm story.",
+            "stories": make_top_five(),
+        }
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+
+        message = str(ctx.exception)
+        self.assertIn("ACTUAL_STORY_COUNT=UNKNOWN", message)
+        self.assertIn("stories", message)
+
+    def test_diagnostics_do_not_leak_full_news_content(self):
+        result = make_result()
+        result["top_five"] = result["top_five"][:2]
+        result["a_very_long_unexpected_field"] = "x" * 10_000
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+
+        # The bounded key list must not blow up into the full field value.
+        self.assertLess(len(str(ctx.exception)), 1000)
+
+    def test_validation_messages_are_provider_neutral(self):
+        result = make_result()
+        result["top_five"] = result["top_five"][:4]
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+        self.assertNotIn("Gemini", str(ctx.exception))
+        self.assertIn("Ranking result", str(ctx.exception))
+
+        result = make_result({1: {"id": 999}})
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+        self.assertNotIn("Gemini", str(ctx.exception))
+
+        result = make_result({2: {"id": 1}})
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+        self.assertNotIn("Gemini", str(ctx.exception))
+
+        archive = [{"sourceUrl": "https://example.test/1", "published": True}]
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(make_result(), make_candidates(), archive)
+        self.assertNotIn("Gemini", str(ctx.exception))
+
+        result = make_result({2: {"url": "https://example.test/1"}})
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(result, make_candidates(), [])
+        self.assertNotIn("Gemini", str(ctx.exception))
+
+        with self.assertRaises(RuntimeError) as ctx:
+            validate_result(["not", "a", "dict"], make_candidates(), [])
+        self.assertNotIn("Gemini", str(ctx.exception))
 
 
 class SadStoryGuardTests(unittest.TestCase):

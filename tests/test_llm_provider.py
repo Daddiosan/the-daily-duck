@@ -1,3 +1,4 @@
+import copy
 import io
 import json
 import socket
@@ -485,33 +486,115 @@ class FakeOpenAIClient:
         )()
 
 
+SAMPLE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "top_five": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 5,
+            "items": {
+                "type": "object",
+                "properties": {"id": {"type": "integer"}},
+                "required": ["id"],
+            },
+        },
+    },
+    "required": ["top_five"],
+}
+
+
 class CallOpenAIOnceTests(unittest.TestCase):
-    """Regression tests for the actual root cause fix: no response_format,
-    no explicit token budget, and no truncation check previously existed,
-    so a reasoning-heavy response that hit the API's own default output
-    cap could come back with empty/partial content and be misclassified
-    only as a bare INVALID_RESPONSE with no diagnostic detail."""
+    """Regression tests for the OpenAI transport. Covers two fixes:
+
+    1. (pre-existing) no response_format, no explicit token budget, and no
+       truncation check previously existed, so a reasoning-heavy response
+       that hit the API's own default output cap could come back with
+       empty/partial content and be misclassified only as a bare
+       INVALID_RESPONSE with no diagnostic detail.
+    2. (this fix) _call_openai_once() never received `schema` at all, so
+       OpenAI -- unlike Gemini, which gets this exact schema via
+       responseJsonSchema -- had no machine-enforced knowledge of the
+       required field names/structure. A real production run proved the
+       prompt's prose alone was insufficient: OpenAI returned valid JSON
+       that lacked a "top_five" list of exactly five items."""
 
     def test_normal_completion_returns_content(self):
         fake_client = FakeOpenAIClient(FakeOpenAIResponse("stop", '{"a": 1}'))
         with patch.object(llm_provider, "OpenAI", return_value=fake_client):
-            result = llm_provider._call_openai_once("prompt", api_key="k", model="gpt-5.6-luna")
+            result = llm_provider._call_openai_once(
+                "prompt", SAMPLE_SCHEMA, api_key="k", model="gpt-5.6-luna"
+            )
         self.assertEqual(result, '{"a": 1}')
 
     def test_truncated_completion_raises_value_error(self):
         fake_client = FakeOpenAIClient(FakeOpenAIResponse("length", '{"top_five": [') )
         with patch.object(llm_provider, "OpenAI", return_value=fake_client):
             with self.assertRaises(ValueError):
-                llm_provider._call_openai_once("prompt", api_key="k", model="gpt-5.6-luna")
+                llm_provider._call_openai_once(
+                    "prompt", SAMPLE_SCHEMA, api_key="k", model="gpt-5.6-luna"
+                )
 
-    def test_requests_json_object_mode_and_explicit_token_budget(self):
+    def test_requests_strict_json_schema_mode_and_explicit_token_budget(self):
         fake_client = FakeOpenAIClient(FakeOpenAIResponse("stop", "{}"))
         with patch.object(llm_provider, "OpenAI", return_value=fake_client):
-            llm_provider._call_openai_once("prompt", api_key="k", model="gpt-5.6-luna")
+            llm_provider._call_openai_once(
+                "prompt", SAMPLE_SCHEMA, api_key="k", model="gpt-5.6-luna"
+            )
 
         _, kwargs = fake_client.create_mock.call_args
-        self.assertEqual(kwargs["response_format"], {"type": "json_object"})
-        self.assertEqual(kwargs["max_completion_tokens"], llm_provider.DEFAULT_OPENAI_MAX_COMPLETION_TOKENS)
+        response_format = kwargs["response_format"]
+        self.assertEqual(response_format["type"], "json_schema")
+        self.assertTrue(response_format["json_schema"]["strict"])
+        self.assertEqual(
+            response_format["json_schema"]["schema"],
+            llm_provider._to_openai_strict_schema(SAMPLE_SCHEMA),
+        )
+        self.assertEqual(
+            kwargs["max_completion_tokens"], llm_provider.DEFAULT_OPENAI_MAX_COMPLETION_TOKENS
+        )
+
+    def test_returned_text_carries_finish_reason_for_diagnostics(self):
+        fake_client = FakeOpenAIClient(FakeOpenAIResponse("stop", '{"a": 1}'))
+        with patch.object(llm_provider, "OpenAI", return_value=fake_client):
+            result = llm_provider._call_openai_once(
+                "prompt", SAMPLE_SCHEMA, api_key="k", model="gpt-5.6-luna"
+            )
+        self.assertEqual(result.finish_reason, "stop")
+        # Still behaves as a plain string everywhere else.
+        self.assertEqual(result, '{"a": 1}')
+        self.assertEqual(json.loads(result), {"a": 1})
+
+
+class ToOpenAIStrictSchemaTests(unittest.TestCase):
+    """Unit coverage of the Gemini-schema -> OpenAI-strict-schema adapter."""
+
+    def test_forces_additional_properties_false_on_every_object_node(self):
+        strict = llm_provider._to_openai_strict_schema(SAMPLE_SCHEMA)
+        self.assertFalse(strict["additionalProperties"])
+        self.assertFalse(strict["properties"]["top_five"]["items"]["additionalProperties"])
+
+    def test_strips_min_and_max_items(self):
+        strict = llm_provider._to_openai_strict_schema(SAMPLE_SCHEMA)
+        self.assertNotIn("minItems", strict["properties"]["top_five"])
+        self.assertNotIn("maxItems", strict["properties"]["top_five"])
+
+    def test_does_not_mutate_original_schema(self):
+        original = copy.deepcopy(SAMPLE_SCHEMA)
+        llm_provider._to_openai_strict_schema(SAMPLE_SCHEMA)
+        self.assertEqual(SAMPLE_SCHEMA, original)
+
+
+class DescribeContentFailureFinishReasonTests(unittest.TestCase):
+    def test_includes_finish_reason_when_present(self):
+        text = llm_provider._OpenAIResponseText('{"top_five": []}')
+        text.finish_reason = "stop"
+        detail = llm_provider._describe_content_failure(ValueError("bad"), text)
+        self.assertIn("finish_reason='stop'", detail)
+
+    def test_omits_finish_reason_when_absent(self):
+        detail = llm_provider._describe_content_failure(ValueError("bad"), '{"top_five": []}')
+        self.assertNotIn("finish_reason", detail)
 
 
 class ReproducedIncidentTests(unittest.TestCase):
@@ -776,6 +859,126 @@ class ProjectAccessDeniedEndToEndTests(unittest.TestCase):
         self.assertEqual(ctx.exception.category, llm_provider.PERMISSION_FAILURE)
         self.assertEqual(urlopen_mock.call_count, 1)
         self.assertEqual(openai_mock.call_count, 0)
+
+
+class OpenAiExactFiveIncidentRegressionTests(unittest.TestCase):
+    """Direct regression coverage for the production incident (GitHub
+    Actions run 35244664115): Gemini PROJECT_ACCESS_DENIED -> OpenAI
+    fallback returned syntactically valid JSON (response_length=4359) that
+    validate_result() rejected with "must return exactly five stories".
+    These prove the full generate_ranking() pipeline -- including the new
+    OpenAI structured-output schema -- still rejects every wrong-shape
+    variant exactly as before, with validate_result() itself unweakened."""
+
+    def setUp(self):
+        patcher = patch.dict(
+            "os.environ",
+            {"GEMINI_API_KEY": "test-gemini-key", "OPENAI_API_KEY": "test-openai-key"},
+            clear=False,
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    @staticmethod
+    def _validate(result):
+        from scripts.rank_news_with_ai import validate_result
+
+        candidates = [{"title": f"c{i}"} for i in range(1, 7)]
+        validate_result(result, candidates, [])
+
+    def _run_with_openai_response(self, raw_text):
+        with patch.object(
+            llm_provider, "_call_gemini_once", side_effect=gemini_http_error(503)
+        ) as gemini_mock, patch.object(
+            llm_provider, "_call_openai_once", return_value=raw_text
+        ) as openai_mock:
+            with self.assertRaises(llm_provider.ProviderFailure) as ctx:
+                llm_provider.generate_ranking("prompt", {}, validate=self._validate)
+        return gemini_mock, openai_mock, ctx
+
+    def test_2_openai_four_stories_fails(self):
+        payload = valid_ranking_result()
+        payload["top_five"] = payload["top_five"][:4]
+
+        gemini_mock, openai_mock, ctx = self._run_with_openai_response(json.dumps(payload))
+
+        self.assertEqual(gemini_mock.call_count, llm_provider.GEMINI_MAX_ATTEMPTS)
+        self.assertEqual(openai_mock.call_count, 1)
+        self.assertIn("EXPECTED_STORY_COUNT=5", ctx.exception.provider_errors["openai"])
+        self.assertIn("ACTUAL_STORY_COUNT=4", ctx.exception.provider_errors["openai"])
+
+    def test_3_openai_six_stories_fails(self):
+        payload = valid_ranking_result()
+        extra = dict(payload["top_five"][0])
+        extra["id"] = 6
+        payload["top_five"].append(extra)
+
+        _, openai_mock, ctx = self._run_with_openai_response(json.dumps(payload))
+
+        self.assertEqual(openai_mock.call_count, 1)
+        self.assertIn("ACTUAL_STORY_COUNT=6", ctx.exception.provider_errors["openai"])
+
+    def test_4_openai_wrong_top_level_key_fails(self):
+        # Simulates the plausible real-world cause of the incident: OpenAI
+        # wrapped its five stories under a different key instead of the
+        # required "top_five".
+        payload = {
+            "recommended_id": 1,
+            "recommended_reason": "Warm.",
+            "stories": valid_ranking_result()["top_five"],
+        }
+
+        _, openai_mock, ctx = self._run_with_openai_response(json.dumps(payload))
+
+        self.assertEqual(openai_mock.call_count, 1)
+        self.assertIn("ACTUAL_STORY_COUNT=UNKNOWN", ctx.exception.provider_errors["openai"])
+
+    def test_4b_openai_bare_array_top_level_fails(self):
+        payload = valid_ranking_result()["top_five"]
+
+        _, openai_mock, ctx = self._run_with_openai_response(json.dumps(payload))
+
+        self.assertEqual(openai_mock.call_count, 1)
+        self.assertIn("must be a JSON object", ctx.exception.provider_errors["openai"])
+
+    def test_5_openai_malformed_json_fails(self):
+        _, openai_mock, ctx = self._run_with_openai_response("not valid json at all")
+
+        self.assertEqual(openai_mock.call_count, 1)
+        self.assertIn("JSONDecodeError", ctx.exception.provider_errors["openai"])
+
+    def test_6_openai_duplicate_candidate_fails(self):
+        payload = valid_ranking_result()
+        payload["top_five"][1]["id"] = payload["top_five"][0]["id"]
+
+        _, openai_mock, ctx = self._run_with_openai_response(json.dumps(payload))
+
+        self.assertEqual(openai_mock.call_count, 1)
+        self.assertIn("same candidate more than once", ctx.exception.provider_errors["openai"])
+
+    def test_7_openai_invalid_candidate_id_fails(self):
+        payload = valid_ranking_result()
+        payload["top_five"][0]["id"] = 999
+
+        _, openai_mock, ctx = self._run_with_openai_response(json.dumps(payload))
+
+        self.assertEqual(openai_mock.call_count, 1)
+        self.assertIn("invalid candidate id", ctx.exception.provider_errors["openai"])
+
+    def test_openai_valid_five_stories_still_succeeds(self):
+        # Sanity anchor: the fix must not turn a genuinely valid OpenAI
+        # response into a failure.
+        with patch.object(
+            llm_provider, "_call_gemini_once", side_effect=gemini_http_error(503)
+        ), patch.object(
+            llm_provider, "_call_openai_once", return_value=json.dumps(valid_ranking_result())
+        ):
+            result, provider = llm_provider.generate_ranking(
+                "prompt", {}, validate=self._validate
+            )
+
+        self.assertEqual(provider, llm_provider.OPENAI)
+        self.assertEqual(len(result["top_five"]), 5)
 
 
 if __name__ == "__main__":

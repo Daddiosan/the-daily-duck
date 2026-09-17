@@ -796,6 +796,49 @@ Do NOT automatically recommend the most scientifically
 important story.
 
 ============================================================
+OUTPUT FORMAT — MANDATORY
+============================================================
+
+Return a single JSON object with EXACTLY this top-level shape
+(field names must match exactly):
+
+{{
+  "recommended_id": <integer, one of the five ids in "top_five">,
+  "recommended_reason": "<string>",
+  "top_five": [
+    {{
+      "id": <integer, exact original candidate id>,
+      "title": "<string>",
+      "source": "<string>",
+      "url": "<string>",
+      "category": "<string>",
+      "happiness": <integer 0-10>,
+      "hope": <integer 0-10>,
+      "general_interest": <integer 0-10>,
+      "surprise": <integer 0-10>,
+      "duck_visual": <integer 0-10>,
+      "source_quality": <integer 0-10>,
+      "freshness": <integer 0-10>,
+      "broad_appeal": <integer 0-10>,
+      "novelty_vs_archive": <integer 0-10>,
+      "total_score": <integer 0-100>,
+      "reason": "<string>"
+    }}
+    ... exactly 5 objects in this array, no more, no fewer ...
+  ]
+}}
+
+STRICT OUTPUT RULES:
+
+- "top_five" MUST contain EXACTLY 5 objects. Not 4. Not 6.
+- Do not wrap this object inside another key.
+- Do not return a bare JSON array as the top-level response.
+- Do not omit "recommended_id" or "recommended_reason".
+- Do not rename any field.
+- Every candidate id in "top_five" must be one of the ids supplied in
+  TODAY'S CANDIDATES below, and no id may repeat.
+
+============================================================
 PUBLISHED DAILY DUCK HISTORY
 ============================================================
 
@@ -944,8 +987,26 @@ def build_schema():
 
 
 # ============================================================
-# Validate Gemini result
+# Validate ranking result (provider-independent: applies identically
+# regardless of whether Gemini or the OpenAI fallback produced it)
 # ============================================================
+
+# Bounds for the diagnostic surfaced on a wrong-shape ranking result.
+# Deliberately small: enough to tell "missing top_five" apart from
+# "wrong item count" apart from "wrapped in a different key" without ever
+# logging full news content or the full raw response.
+_DIAGNOSTIC_MAX_TOP_LEVEL_KEYS = 10
+_DIAGNOSTIC_MAX_KEY_LENGTH = 40
+
+
+def _safe_top_level_keys(result):
+    if not isinstance(result, dict):
+        return []
+
+    keys = sorted(str(key) for key in result.keys())[:_DIAGNOSTIC_MAX_TOP_LEVEL_KEYS]
+
+    return [key[:_DIAGNOSTIC_MAX_KEY_LENGTH] for key in keys]
+
 
 def validate_result(
     result,
@@ -957,7 +1018,7 @@ def validate_result(
         dict,
     ):
         raise RuntimeError(
-            "Gemini result must be an object."
+            "Ranking result must be a JSON object."
         )
 
     top_five = result.get(
@@ -968,8 +1029,17 @@ def validate_result(
         not isinstance(top_five, list)
         or len(top_five) != 5
     ):
+        actual_count = (
+            len(top_five)
+            if isinstance(top_five, list)
+            else "UNKNOWN"
+        )
+
         raise RuntimeError(
-            "Gemini must return exactly five stories."
+            "Ranking result must contain exactly five stories. "
+            "EXPECTED_STORY_COUNT=5 "
+            f"ACTUAL_STORY_COUNT={actual_count} "
+            f"TOP_LEVEL_KEYS={_safe_top_level_keys(result)}"
         )
 
     valid_ids = set(
@@ -997,14 +1067,14 @@ def validate_result(
         if story_id not in valid_ids:
 
             raise RuntimeError(
-                "Gemini returned invalid "
+                "Ranking result returned invalid "
                 f"candidate id: {story_id}"
             )
 
         if story_id in selected_ids:
 
             raise RuntimeError(
-                "Gemini selected the same "
+                "Ranking result selected the same "
                 "candidate more than once."
             )
 
@@ -1024,7 +1094,7 @@ def validate_result(
         ):
 
             raise RuntimeError(
-                "Gemini selected an already "
+                "Ranking result selected an already "
                 "published URL: "
                 f"{story.get('url')}"
             )
@@ -1035,7 +1105,7 @@ def validate_result(
         ):
 
             raise RuntimeError(
-                "Gemini selected duplicate "
+                "Ranking result selected duplicate "
                 "URLs inside today's TOP 5."
             )
 
