@@ -3,18 +3,23 @@ from __future__ import annotations
 
 import json
 import os
-import random
-import re
 import smtplib
 import sys
-import time
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from google import genai
+try:
+    # Running as `python scripts/send_email.py` (production/workflow
+    # invocation): the repo root is not on sys.path, only scripts/ is.
+    from scripts import llm_provider
+except ImportError:
+    # Running as a script directly: scripts/ itself is on sys.path, so
+    # llm_provider is a plain sibling module (matches rank_news_with_ai.py's
+    # existing import pattern for the same module).
+    import llm_provider
 
 
 RANKED_PATH = Path("ai_ranked_news.json")
@@ -27,31 +32,6 @@ TEXT_MODEL = os.getenv(
 )
 
 JST = ZoneInfo("Asia/Tokyo")
-
-
-# ============================================================
-# Retry settings
-# ============================================================
-
-# Geminiの出力内容自体が不完全だった場合の再生成回数
-EDITORIAL_MAX_ATTEMPTS = 3
-
-# 429 / 5xx / high demand 等、
-# Gemini API側の一時障害に対する再試行回数
-GEMINI_API_MAX_ATTEMPTS = int(
-    os.getenv(
-        "GEMINI_API_MAX_ATTEMPTS",
-        "5",
-    )
-)
-
-# 最初のリトライ待ち時間
-GEMINI_RETRY_BASE_SECONDS = float(
-    os.getenv(
-        "GEMINI_RETRY_BASE_SECONDS",
-        "10",
-    )
-)
 
 
 # ============================================================
@@ -214,222 +194,147 @@ def load_top_five(
     )
 
 
-def clean_json_text(
-    text: str,
-) -> str:
-
-    cleaned = text.strip()
-
-    cleaned = re.sub(
-        r"^```(?:json)?\s*",
-        "",
-        cleaned,
-        flags=re.IGNORECASE,
-    )
-
-    cleaned = re.sub(
-        r"\s*```$",
-        "",
-        cleaned,
-    )
-
-    return cleaned.strip()
-
-
-# ============================================================
-# Gemini API retry
-# ============================================================
-
-def is_retryable_gemini_error(
-    exc: Exception,
-) -> bool:
-    """
-    Gemini側の一時障害かどうかを判定する。
-
-    Retry対象:
-      429 RESOURCE_EXHAUSTED
-      500 INTERNAL
-      502 BAD_GATEWAY
-      503 UNAVAILABLE
-      504 DEADLINE_EXCEEDED
-      timeout
-      high demand
-    """
-
-    error_text = str(
-        exc
-    ).lower()
-
-    retryable_markers = (
-        "429",
-        "500",
-        "502",
-        "503",
-        "504",
-        "resource_exhausted",
-        "internal",
-        "bad_gateway",
-        "unavailable",
-        "deadline_exceeded",
-        "high demand",
-        "temporarily unavailable",
-        "service unavailable",
-        "timeout",
-        "timed out",
-    )
-
-    return any(
-        marker in error_text
-        for marker in retryable_markers
-    )
-
-
-def call_gemini_with_retry(
-    client: genai.Client,
-    prompt: str,
-):
-    """
-    Gemini APIの一時エラーを自動再試行する。
-
-    デフォルト:
-      1回目: 即時
-      2回目: 約10秒後
-      3回目: 約20秒後
-      4回目: 約40秒後
-      5回目: 約80秒後
-
-    random jitterを追加する。
-    """
-
-    max_attempts = (
-        GEMINI_API_MAX_ATTEMPTS
-    )
-
-    if max_attempts < 1:
-        raise ValueError(
-            "GEMINI_API_MAX_ATTEMPTS "
-            "must be at least 1."
-        )
-
-    last_error: (
-        Exception | None
-    ) = None
-
-    for attempt in range(
-        1,
-        max_attempts + 1,
-    ):
-
-        print(
-            "Gemini API request attempt "
-            f"{attempt}/{max_attempts}..."
-        )
-
-        try:
-
-            response = (
-                client.models.generate_content(
-                    model=TEXT_MODEL,
-                    contents=prompt,
-                )
-            )
-
-            print(
-                "Gemini API request succeeded."
-            )
-
-            return response
-
-        except Exception as exc:
-
-            last_error = exc
-
-            if not (
-                is_retryable_gemini_error(
-                    exc
-                )
-            ):
-
-                print(
-                    "ERROR: Gemini returned "
-                    "a non-retryable error.",
-                    file=sys.stderr,
-                )
-
-                print(
-                    f"Gemini error: {exc}",
-                    file=sys.stderr,
-                )
-
-                raise
-
-            if attempt >= max_attempts:
-
-                print(
-                    "ERROR: Gemini temporary "
-                    "error persisted after "
-                    f"{max_attempts} attempts.",
-                    file=sys.stderr,
-                )
-
-                print(
-                    f"Last Gemini error: {exc}",
-                    file=sys.stderr,
-                )
-
-                raise
-
-            wait_base = (
-                GEMINI_RETRY_BASE_SECONDS
-                * (2 ** (attempt - 1))
-            )
-
-            jitter = (
-                random.uniform(
-                    0,
-                    3,
-                )
-            )
-
-            wait_seconds = (
-                wait_base
-                + jitter
-            )
-
-            print(
-                "WARNING: Temporary Gemini "
-                "API error detected.",
-                file=sys.stderr,
-            )
-
-            print(
-                f"Error: {exc}",
-                file=sys.stderr,
-            )
-
-            print(
-                "Retrying Gemini request "
-                f"in approximately "
-                f"{wait_seconds:.1f} seconds...",
-                file=sys.stderr,
-            )
-
-            time.sleep(
-                wait_seconds
-            )
-
-    if last_error is not None:
-        raise last_error
-
-    raise RuntimeError(
-        "Gemini retry loop "
-        "ended unexpectedly."
-    )
-
-
 # ============================================================
 # Editorial generation
+#
+# scripts/llm_provider.py is the sole retry/fallback owner for this
+# operation (Gemini primary, OpenAI fallback, bounded attempts on each
+# side; see PHASE_B_RETRY_NORMALIZATION_AND_EDITORIAL_FALLBACK_PLAN.md).
+# This module must not retry on its own.
 # ============================================================
+
+REQUIRED_EDITORIAL_FIELDS = [
+    "title_en",
+    "reason_en",
+    "en_copy",
+    "duck_name",
+    "duck_en",
+    "x_en",
+    "title_ja",
+    "reason_ja",
+    "jp_copy",
+    "duck_jp",
+    "x_jp",
+]
+
+
+def build_editorial_schema() -> dict[str, Any]:
+    story_schema = {
+        "type": "object",
+        "properties": {
+            "id": {"type": "integer"},
+            **{field: {"type": "string"} for field in REQUIRED_EDITORIAL_FIELDS},
+        },
+        "required": ["id", *REQUIRED_EDITORIAL_FIELDS],
+    }
+
+    return {
+        "type": "object",
+        "properties": {
+            "stories": {
+                "type": "array",
+                "minItems": 5,
+                "maxItems": 5,
+                "items": story_schema,
+            },
+        },
+        "required": ["stories"],
+    }
+
+
+def validate_editorial_result(
+    generated: Any,
+    expected_ids: list[str],
+) -> None:
+    """
+    Provider-independent validation applied identically to both a
+    Gemini-sourced and an OpenAI-sourced editorial response. Raises on
+    any invalid/unacceptable result; llm_provider.generate_editorial()
+    is the only caller.
+    """
+
+    if not isinstance(generated, dict):
+        raise ValueError(
+            "Editorial response must be a JSON object."
+        )
+
+    generated_stories = generated.get("stories")
+
+    if (
+        not isinstance(generated_stories, list)
+        or len(generated_stories) != 5
+    ):
+        raise ValueError(
+            "Editorial response must return exactly five stories."
+        )
+
+    for index, editorial in enumerate(generated_stories):
+
+        if not isinstance(editorial, dict):
+            raise ValueError(
+                "Every generated story must be an object."
+            )
+
+        generated_id = str(editorial.get("id", "")).strip()
+        expected_id = expected_ids[index]
+
+        if generated_id != expected_id:
+            raise ValueError(
+                "Editorial response changed or reordered story IDs. "
+                f"Expected {expected_id!r}, got {generated_id!r}."
+            )
+
+        for field in REQUIRED_EDITORIAL_FIELDS:
+
+            value = editorial.get(field)
+
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(
+                    f"Story {index + 1} is missing non-empty '{field}'."
+                )
+
+
+def combine_editorial_output(
+    top_five: list[dict[str, Any]],
+    generated_stories: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """
+    Apply the SAME combination logic regardless of which provider
+    (Gemini or OpenAI) produced generated_stories -- both were already
+    checked by validate_editorial_result() against the identical contract.
+    """
+
+    output: list[dict[str, Any]] = []
+
+    for index, editorial in enumerate(generated_stories):
+
+        original = dict(top_five[index])
+
+        combined = {
+            **original,
+
+            "candidate_number": index + 1,
+
+            # English-first canonical fields
+            "title_en": editorial["title_en"].strip(),
+            "reason_en": editorial["reason_en"].strip(),
+            "en_copy": editorial["en_copy"].strip(),
+            "duck_name": editorial["duck_name"].strip(),
+            "duck_en": editorial["duck_en"].strip(),
+            "x_en": editorial["x_en"].strip(),
+
+            # Japanese translation fields
+            "title_ja": editorial["title_ja"].strip(),
+            "reason_ja": editorial["reason_ja"].strip(),
+            "jp_copy": editorial["jp_copy"].strip(),
+            "duck_jp": editorial["duck_jp"].strip(),
+            "x_jp": editorial["x_jp"].strip(),
+        }
+
+        output.append(combined)
+
+    return output
+
 
 def generate_five_editorial_packages(
     ranked: dict[str, Any],
@@ -438,24 +343,10 @@ def generate_five_editorial_packages(
     ],
 ) -> list[dict[str, Any]]:
     """
-    Generate a complete Daily Duck editorial package
-    for all five stories.
-
-    Two retry layers are used:
-
-    1. Gemini API retry
-       Temporary 429 / 5xx / high-demand errors.
-
-    2. Editorial validation retry
-       Gemini returned JSON but one or more fields were
-       missing, invalid or reordered.
+    Generate a complete Daily Duck editorial package for all five
+    stories via llm_provider.generate_editorial() (Gemini primary,
+    OpenAI fallback, bounded attempts -- see module header).
     """
-
-    client = genai.Client(
-        api_key=required_env(
-            "GEMINI_API_KEY"
-        )
-    )
 
     source_stories: list[
         dict[str, Any]
@@ -695,294 +586,24 @@ FIVE SOURCE STORIES:
         for story in top_five
     ]
 
-    required_fields = [
-        "title_en",
-        "reason_en",
-        "en_copy",
-        "duck_name",
-        "duck_en",
-        "x_en",
-        "title_ja",
-        "reason_ja",
-        "jp_copy",
-        "duck_jp",
-        "x_jp",
-    ]
-
-    last_error: (
-        Exception | None
-    ) = None
-
-    for attempt in range(
-        1,
-        EDITORIAL_MAX_ATTEMPTS + 1,
-    ):
-
-        try:
-
-            print(
-                "Editorial generation attempt "
-                f"{attempt}/"
-                f"{EDITORIAL_MAX_ATTEMPTS}..."
-            )
-
-            response = (
-                call_gemini_with_retry(
-                    client=client,
-                    prompt=prompt.strip(),
-                )
-            )
-
-            response_text = getattr(
-                response,
-                "text",
-                None,
-            )
-
-            if not response_text:
-                raise RuntimeError(
-                    "Gemini returned "
-                    "no editorial text."
-                )
-
-            try:
-
-                generated = json.loads(
-                    clean_json_text(
-                        response_text
-                    )
-                )
-
-            except json.JSONDecodeError as exc:
-
-                raise ValueError(
-                    "Gemini did not "
-                    "return valid JSON: "
-                    f"{exc}"
-                ) from exc
-
-            if not isinstance(
-                generated,
-                dict,
-            ):
-
-                raise ValueError(
-                    "Gemini editorial response "
-                    "must be a JSON object."
-                )
-
-            generated_stories = (
-                generated.get(
-                    "stories"
-                )
-            )
-
-            if (
-                not isinstance(
-                    generated_stories,
-                    list,
-                )
-                or len(
-                    generated_stories
-                ) != 5
-            ):
-
-                raise ValueError(
-                    "Gemini must return exactly "
-                    "five editorial stories."
-                )
-
-            output: list[
-                dict[str, Any]
-            ] = []
-
-            for index, editorial in enumerate(
-                generated_stories
-            ):
-
-                if not isinstance(
-                    editorial,
-                    dict,
-                ):
-
-                    raise ValueError(
-                        "Every generated story "
-                        "must be an object."
-                    )
-
-                generated_id = str(
-                    editorial.get(
-                        "id",
-                        "",
-                    )
-                ).strip()
-
-                expected_id = (
-                    expected_ids[
-                        index
-                    ]
-                )
-
-                if (
-                    generated_id
-                    != expected_id
-                ):
-
-                    raise ValueError(
-                        "Gemini changed or "
-                        "reordered story IDs. "
-                        f"Expected "
-                        f"{expected_id!r}, "
-                        f"got "
-                        f"{generated_id!r}."
-                    )
-
-                for field in (
-                    required_fields
-                ):
-
-                    value = (
-                        editorial.get(
-                            field
-                        )
-                    )
-
-                    if (
-                        not isinstance(
-                            value,
-                            str,
-                        )
-                        or not value.strip()
-                    ):
-
-                        raise ValueError(
-                            f"Story "
-                            f"{index + 1} "
-                            "is missing "
-                            "non-empty "
-                            f"'{field}'."
-                        )
-
-                original = dict(
-                    top_five[
-                        index
-                    ]
-                )
-
-                combined = {
-                    **original,
-
-                    "candidate_number":
-                        index + 1,
-
-                    # English-first canonical fields
-                    "title_en":
-                        editorial[
-                            "title_en"
-                        ].strip(),
-
-                    "reason_en":
-                        editorial[
-                            "reason_en"
-                        ].strip(),
-
-                    "en_copy":
-                        editorial[
-                            "en_copy"
-                        ].strip(),
-
-                    "duck_name":
-                        editorial[
-                            "duck_name"
-                        ].strip(),
-
-                    "duck_en":
-                        editorial[
-                            "duck_en"
-                        ].strip(),
-
-                    "x_en":
-                        editorial[
-                            "x_en"
-                        ].strip(),
-
-                    # Japanese translation fields
-                    "title_ja":
-                        editorial[
-                            "title_ja"
-                        ].strip(),
-
-                    "reason_ja":
-                        editorial[
-                            "reason_ja"
-                        ].strip(),
-
-                    "jp_copy":
-                        editorial[
-                            "jp_copy"
-                        ].strip(),
-
-                    "duck_jp":
-                        editorial[
-                            "duck_jp"
-                        ].strip(),
-
-                    "x_jp":
-                        editorial[
-                            "x_jp"
-                        ].strip(),
-                }
-
-                output.append(
-                    combined
-                )
-
-            if attempt > 1:
-
-                print(
-                    "Editorial package "
-                    "recovered successfully "
-                    f"on attempt {attempt}."
-                )
-
-            return output
-
-        except Exception as exc:
-
-            last_error = exc
-
-            if (
-                attempt
-                < EDITORIAL_MAX_ATTEMPTS
-            ):
-
-                print(
-                    "WARNING: "
-                    "Incomplete/invalid "
-                    "editorial package on "
-                    f"attempt {attempt}: "
-                    f"{exc}"
-                )
-
-                print(
-                    "Retrying editorial "
-                    "generation..."
-                )
-
-                continue
-
-            print(
-                "ERROR: Editorial generation "
-                "failed after "
-                f"{EDITORIAL_MAX_ATTEMPTS} "
-                "attempts."
-            )
-
-    assert (
-        last_error is not None
+    generated, provider = llm_provider.generate_editorial(
+        prompt.strip(),
+        build_editorial_schema(),
+        validate=lambda result: validate_editorial_result(
+            result,
+            expected_ids,
+        ),
+        gemini_model=TEXT_MODEL,
     )
 
-    raise last_error
+    print(
+        f"Editorial generation provider: {provider}"
+    )
+
+    return combine_editorial_output(
+        top_five,
+        generated["stories"],
+    )
 
 
 # ============================================================
@@ -1429,13 +1050,13 @@ def main() -> int:
     )
 
     print(
-        "Gemini API retry attempts: "
-        f"{GEMINI_API_MAX_ATTEMPTS}"
+        "Gemini max attempts: "
+        f"{llm_provider.GEMINI_MAX_ATTEMPTS}"
     )
 
     print(
-        "Editorial validation attempts: "
-        f"{EDITORIAL_MAX_ATTEMPTS}"
+        "OpenAI fallback max attempts: "
+        f"{llm_provider.OPENAI_MAX_ATTEMPTS}"
     )
 
     story_options = (

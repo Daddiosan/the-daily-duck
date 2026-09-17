@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-"""Sole retry/fallback owner for the news-ranking LLM operation.
+"""Sole retry/fallback owner for LLM operations in this repo: news_ranking
+and editorial_generation.
 
 Primary: Gemini. Fallback: OpenAI. See
-PHASE_A_RETRY_NORMALIZATION_AND_RANKING_FALLBACK_PLAN.md for the approved
-design this module implements. No caller of generate_ranking() may retry
-on its own -- every physical provider attempt happens in this file only.
+PHASE_A_RETRY_NORMALIZATION_AND_RANKING_FALLBACK_PLAN.md (news_ranking) and
+PHASE_B_RETRY_NORMALIZATION_AND_EDITORIAL_FALLBACK_PLAN.md
+(editorial_generation) for the approved designs this module implements.
+generate_ranking() and generate_editorial() are thin, operation-specific
+wrappers around the same shared retry/fallback loop -- no caller of either
+one may retry on its own; every physical provider attempt happens in this
+file only.
 """
 from __future__ import annotations
 
@@ -29,6 +34,16 @@ TEMPORARY_UNAVAILABLE = "TEMPORARY_UNAVAILABLE"
 NETWORK_TIMEOUT = "NETWORK_TIMEOUT"
 AUTH_FAILURE = "AUTH_FAILURE"
 PERMISSION_FAILURE = "PERMISSION_FAILURE"
+# Narrow subset of PERMISSION_FAILURE: a *confirmed* Google project-denied
+# condition (HTTP 403 + status PERMISSION_DENIED + the specific "denied
+# access ... contact support" message), not every 403. See
+# _is_confirmed_project_access_denied(). Human-approved policy (Phase B):
+# this gets an immediate OpenAI fallback instead of failing closed, because
+# unlike an ordinary permission error it is not a request/config bug that
+# fallback would silently hide -- it is a known account-level condition that
+# has already been diagnosed. Applies to both news_ranking and
+# editorial_generation since both share this classifier.
+PROJECT_ACCESS_DENIED = "PROJECT_ACCESS_DENIED"
 INVALID_REQUEST = "INVALID_REQUEST"
 INVALID_RESPONSE = "INVALID_RESPONSE"
 UNKNOWN_PROVIDER_ERROR = "UNKNOWN_PROVIDER_ERROR"
@@ -37,6 +52,8 @@ CONFIG_MISSING = "CONFIG_MISSING"
 # Categories that stop all further attempts (on either provider)
 # immediately: these are configuration/request bugs, not transient
 # provider trouble, and silently switching provider would hide them.
+# PROJECT_ACCESS_DENIED is deliberately NOT included here -- see its
+# definition above.
 FAIL_CLOSED_CATEGORIES = {AUTH_FAILURE, PERMISSION_FAILURE, INVALID_REQUEST}
 
 # Transport-layer categories eligible for a same-provider bounded retry.
@@ -67,6 +84,16 @@ DEFAULT_OPENAI_MODEL = "gpt-5.6-luna"
 # truncate the visible answer. Configurable since this is a judgment call,
 # not a measured value.
 DEFAULT_OPENAI_MAX_COMPLETION_TOKENS = 8000
+
+# Editorial generation's output is larger than ranking's: 5 stories x 11
+# free-text fields (an English master copy plus a full Japanese
+# translation per story) versus ranking's 5 stories x 16 mostly-numeric
+# fields. Estimated at roughly 3000-5000 visible tokens (see
+# PHASE_B_RETRY_NORMALIZATION_AND_EDITORIAL_FALLBACK_PLAN.md); this budget
+# adds the same kind of generous reasoning headroom as
+# DEFAULT_OPENAI_MAX_COMPLETION_TOKENS does for ranking. Configurable since
+# this is a judgment call, not a measured value.
+DEFAULT_OPENAI_EDITORIAL_MAX_COMPLETION_TOKENS = 16000
 
 
 class ProviderFailure(RuntimeError):
@@ -232,8 +259,40 @@ def _classify_http_status(status: int | None) -> str:
     return UNKNOWN_PROVIDER_ERROR
 
 
+# Confirmed production evidence (Phase B): Google returns this exact text
+# on a project denied access to the API, distinct from an ordinary
+# permission error. Matched narrowly on both phrases (case-insensitively)
+# so wording drift in either phrase alone does not cause a false match,
+# while tolerating minor punctuation/formatting differences around them.
+_PROJECT_ACCESS_DENIED_MESSAGE_MARKERS = ("denied access", "contact support")
+
+
+def _is_confirmed_project_access_denied(exc: Exception) -> bool:
+    """Narrow, evidence-based detector for the confirmed Google
+    project-denied condition. Deliberately requires ALL of: HTTP 403,
+    structured status PERMISSION_DENIED, AND the specific denied-access
+    message text -- an ordinary 403 (e.g. API_KEY_SERVICE_BLOCKED, a
+    restricted key/model binding) must NOT match this and must keep
+    failing closed as PERMISSION_FAILURE.
+    """
+    diagnostic = getattr(exc, "gemini_diagnostic", None)
+    if not diagnostic:
+        return False
+
+    if diagnostic.get("GEMINI_HTTP_STATUS") != 403:
+        return False
+
+    if diagnostic.get("GEMINI_ERROR_STATUS") != "PERMISSION_DENIED":
+        return False
+
+    message = (diagnostic.get("GEMINI_ERROR_MESSAGE") or "").lower()
+    return all(marker in message for marker in _PROJECT_ACCESS_DENIED_MESSAGE_MARKERS)
+
+
 def classify_gemini_error(exc: Exception) -> str:
     if isinstance(exc, urllib.error.HTTPError):
+        if exc.code == 403 and _is_confirmed_project_access_denied(exc):
+            return PROJECT_ACCESS_DENIED
         return _classify_http_status(exc.code)
     if isinstance(exc, (urllib.error.URLError, socket.timeout, TimeoutError)):
         return NETWORK_TIMEOUT
@@ -333,10 +392,16 @@ def _call_gemini_once(prompt: str, schema: dict, *, api_key: str, model: str) ->
 # OpenAI transport (fallback)
 # ============================================================
 
-def _call_openai_once(prompt: str, *, api_key: str, model: str) -> str:
+def _call_openai_once(
+    prompt: str,
+    *,
+    api_key: str,
+    model: str,
+    max_completion_tokens: int | None = None,
+) -> str:
     client = OpenAI(api_key=api_key)
 
-    max_completion_tokens = int(
+    effective_max_completion_tokens = max_completion_tokens or int(
         os.environ.get("OPENAI_MAX_COMPLETION_TOKENS", "").strip()
         or DEFAULT_OPENAI_MAX_COMPLETION_TOKENS
     )
@@ -351,7 +416,7 @@ def _call_openai_once(prompt: str, *, api_key: str, model: str) -> str:
         # instruction the way the un-schema'd editorial/design-option
         # prompts elsewhere in this repo already do.
         response_format={"type": "json_object"},
-        max_completion_tokens=max_completion_tokens,
+        max_completion_tokens=effective_max_completion_tokens,
     )
 
     if not response.choices:
@@ -363,7 +428,7 @@ def _call_openai_once(prompt: str, *, api_key: str, model: str) -> str:
     if finish_reason == "length":
         raise ValueError(
             "OpenAI response was truncated before completion "
-            f"(finish_reason=length, max_completion_tokens={max_completion_tokens})."
+            f"(finish_reason=length, max_completion_tokens={effective_max_completion_tokens})."
         )
 
     return choice.message.content or ""
@@ -371,16 +436,24 @@ def _call_openai_once(prompt: str, *, api_key: str, model: str) -> str:
 
 # ============================================================
 # Retry owner
+#
+# _generate_with_fallback() is the single shared implementation behind
+# both generate_ranking() (news_ranking) and generate_editorial()
+# (editorial_generation). Keeping one implementation means a fix or policy
+# change here (e.g. the PROJECT_ACCESS_DENIED classification above)
+# automatically applies to both operations instead of being duplicated
+# into a second, potentially-diverging retry framework.
 # ============================================================
 
-def generate_ranking(
+def _generate_with_fallback(
     prompt: str,
     schema: dict,
     *,
     validate: Callable[[Any], None],
-    operation: str = "news_ranking",
-    gemini_model: str | None = None,
-    openai_model: str | None = None,
+    operation: str,
+    gemini_model: str,
+    openai_model: str,
+    openai_max_completion_tokens: int | None = None,
 ) -> tuple[Any, str]:
     """Return (validated_result, provider_name).
 
@@ -392,9 +465,6 @@ def generate_ranking(
     OPENAI_MAX_ATTEMPTS OpenAI calls; total physical provider calls for one
     invocation never exceed HARD_MAX_PROVIDER_CALLS.
     """
-    gemini_model = gemini_model or os.environ.get("GEMINI_TEXT_MODEL", "").strip() or DEFAULT_GEMINI_MODEL
-    openai_model = openai_model or os.environ.get("OPENAI_TEXT_MODEL", "").strip() or DEFAULT_OPENAI_MODEL
-
     provider_errors: dict[str, str] = {}
 
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
@@ -462,7 +532,12 @@ def generate_ranking(
     while openai_attempt < OPENAI_MAX_ATTEMPTS:
         openai_attempt += 1
         try:
-            raw_text = _call_openai_once(prompt, api_key=openai_key, model=openai_model)
+            raw_text = _call_openai_once(
+                prompt,
+                api_key=openai_key,
+                model=openai_model,
+                max_completion_tokens=openai_max_completion_tokens,
+            )
         except Exception as exc:
             category = classify_openai_error(exc)
             detail = _describe_content_failure(exc, None)
@@ -504,7 +579,74 @@ def generate_ranking(
     )
 
     raise ProviderFailure(
-        "Both Gemini and OpenAI failed to produce a valid ranking result.",
+        f"Both Gemini and OpenAI failed to produce a valid {operation} result.",
         category=UNKNOWN_PROVIDER_ERROR,
         provider_errors=provider_errors,
+    )
+
+
+def generate_ranking(
+    prompt: str,
+    schema: dict,
+    *,
+    validate: Callable[[Any], None],
+    operation: str = "news_ranking",
+    gemini_model: str | None = None,
+    openai_model: str | None = None,
+) -> tuple[Any, str]:
+    """Thin news_ranking wrapper around _generate_with_fallback().
+
+    See _generate_with_fallback() for the retry/fallback contract.
+    """
+    return _generate_with_fallback(
+        prompt,
+        schema,
+        validate=validate,
+        operation=operation,
+        gemini_model=(
+            gemini_model or os.environ.get("GEMINI_TEXT_MODEL", "").strip() or DEFAULT_GEMINI_MODEL
+        ),
+        openai_model=(
+            openai_model or os.environ.get("OPENAI_TEXT_MODEL", "").strip() or DEFAULT_OPENAI_MODEL
+        ),
+        # None -> _call_openai_once() falls back to OPENAI_MAX_COMPLETION_TOKENS
+        # env / DEFAULT_OPENAI_MAX_COMPLETION_TOKENS, unchanged from before
+        # this function was split out of the shared implementation.
+        openai_max_completion_tokens=None,
+    )
+
+
+def generate_editorial(
+    prompt: str,
+    schema: dict,
+    *,
+    validate: Callable[[Any], None],
+    operation: str = "editorial_generation",
+    gemini_model: str | None = None,
+    openai_model: str | None = None,
+) -> tuple[Any, str]:
+    """Thin editorial_generation wrapper around _generate_with_fallback().
+
+    Same retry/fallback policy as generate_ranking() (see
+    _generate_with_fallback()), with a larger OpenAI completion-token
+    budget sized for editorial's bigger output (see
+    DEFAULT_OPENAI_EDITORIAL_MAX_COMPLETION_TOKENS).
+    """
+    openai_max_completion_tokens = int(
+        os.environ.get("OPENAI_EDITORIAL_MAX_COMPLETION_TOKENS", "").strip()
+        or DEFAULT_OPENAI_EDITORIAL_MAX_COMPLETION_TOKENS
+    )
+
+    return _generate_with_fallback(
+        prompt,
+        schema,
+        validate=validate,
+        operation=operation,
+        gemini_model=(
+            gemini_model or os.environ.get("GEMINI_TEXT_MODEL", "").strip() or DEFAULT_GEMINI_MODEL
+        ),
+        openai_model=(
+            openai_model or os.environ.get("OPENAI_TEXT_MODEL", "").strip() or DEFAULT_OPENAI_MODEL
+        ),
+        openai_max_completion_tokens=openai_max_completion_tokens,
     )

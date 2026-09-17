@@ -57,6 +57,28 @@ PERMISSION_DENIED_BODY = {
     }
 }
 
+# Confirmed production evidence (Phase B): the exact 403 body Google returns
+# when a project has been denied access, distinct from an ordinary
+# PERMISSION_DENIED like PERMISSION_DENIED_BODY above.
+PROJECT_ACCESS_DENIED_BODY = {
+    "error": {
+        "code": 403,
+        "message": "Your project has been denied access. Please contact support.",
+        "status": "PERMISSION_DENIED",
+        "details": [
+            {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "PERMISSION_DENIED",
+                "domain": "generativelanguage.googleapis.com",
+                "metadata": {
+                    "service": "generativelanguage.googleapis.com",
+                    "method": "google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent",
+                },
+            }
+        ],
+    }
+}
+
 API_KEY_SERVICE_BLOCKED_BODY = {
     "error": {
         "code": 403,
@@ -665,6 +687,95 @@ class GeminiPermissionFailureEndToEndTests(unittest.TestCase):
         self.assertEqual(llm_provider.GEMINI_MAX_ATTEMPTS, 2)
         self.assertEqual(llm_provider.OPENAI_MAX_ATTEMPTS, 2)
         self.assertEqual(llm_provider.HARD_MAX_PROVIDER_CALLS, 4)
+
+
+class ProjectAccessDeniedClassificationTests(unittest.TestCase):
+    """Unit-level coverage of the narrow PROJECT_ACCESS_DENIED detector
+    (Phase B human-approved policy): only the confirmed project-denied body
+    matches; a generic 403/PERMISSION_DENIED body must not."""
+
+    def test_confirmed_project_denied_body_is_project_access_denied(self):
+        error = gemini_http_error_with_body(403, PROJECT_ACCESS_DENIED_BODY)
+        error.gemini_diagnostic = llm_provider._extract_gemini_error_diagnostic(
+            gemini_http_error_with_body(403, PROJECT_ACCESS_DENIED_BODY)
+        )
+        self.assertEqual(
+            llm_provider.classify_gemini_error(error), llm_provider.PROJECT_ACCESS_DENIED
+        )
+
+    def test_generic_permission_denied_body_stays_permission_failure(self):
+        error = gemini_http_error_with_body(403, PERMISSION_DENIED_BODY)
+        error.gemini_diagnostic = llm_provider._extract_gemini_error_diagnostic(
+            gemini_http_error_with_body(403, PERMISSION_DENIED_BODY)
+        )
+        self.assertEqual(
+            llm_provider.classify_gemini_error(error), llm_provider.PERMISSION_FAILURE
+        )
+
+    def test_api_key_service_blocked_body_stays_permission_failure(self):
+        error = gemini_http_error_with_body(403, API_KEY_SERVICE_BLOCKED_BODY)
+        error.gemini_diagnostic = llm_provider._extract_gemini_error_diagnostic(
+            gemini_http_error_with_body(403, API_KEY_SERVICE_BLOCKED_BODY)
+        )
+        self.assertEqual(
+            llm_provider.classify_gemini_error(error), llm_provider.PERMISSION_FAILURE
+        )
+
+    def test_403_without_any_diagnostic_stays_permission_failure(self):
+        # No body was ever read (classify_gemini_error() called directly on
+        # a bare HTTPError with no .gemini_diagnostic attribute at all) --
+        # must not crash and must not be misclassified as PROJECT_ACCESS_DENIED.
+        self.assertEqual(
+            llm_provider.classify_gemini_error(gemini_http_error(403)),
+            llm_provider.PERMISSION_FAILURE,
+        )
+
+
+class ProjectAccessDeniedEndToEndTests(unittest.TestCase):
+    """Reproduces the human-approved Phase B PROJECT_ACCESS_DENIED policy
+    end-to-end through generate_ranking(): the classifier is shared code
+    (scripts/llm_provider.py), so this policy change applies to news_ranking
+    exactly as it does to editorial_generation (see test_send_email.py for
+    the editorial_generation equivalent). A generic 403 must still fail
+    closed with no fallback, side by side with the confirmed case."""
+
+    def setUp(self):
+        patcher = patch.dict(
+            "os.environ",
+            {"GEMINI_API_KEY": "test-gemini-key", "OPENAI_API_KEY": "test-openai-key"},
+            clear=False,
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_21_news_ranking_project_access_denied_falls_back_to_openai(self):
+        error = gemini_http_error_with_body(403, PROJECT_ACCESS_DENIED_BODY)
+
+        with patch.object(
+            llm_provider.urllib.request, "urlopen", side_effect=error
+        ) as urlopen_mock, patch.object(
+            llm_provider, "_call_openai_once", return_value=json.dumps(valid_ranking_result())
+        ) as openai_mock:
+            result, provider = llm_provider.generate_ranking("prompt", {}, validate=noop_validate)
+
+        self.assertEqual(provider, llm_provider.OPENAI)
+        # Zero additional Gemini retries: exactly the one physical call that
+        # revealed the confirmed project-denied condition.
+        self.assertEqual(urlopen_mock.call_count, 1)
+        self.assertEqual(openai_mock.call_count, 1)
+
+    def test_22_news_ranking_generic_403_still_fails_closed(self):
+        error = gemini_http_error_with_body(403, PERMISSION_DENIED_BODY)
+
+        with patch.object(
+            llm_provider.urllib.request, "urlopen", side_effect=error
+        ) as urlopen_mock, patch.object(llm_provider, "_call_openai_once") as openai_mock:
+            with self.assertRaises(llm_provider.ProviderFailure) as ctx:
+                llm_provider.generate_ranking("prompt", {}, validate=noop_validate)
+
+        self.assertEqual(ctx.exception.category, llm_provider.PERMISSION_FAILURE)
+        self.assertEqual(urlopen_mock.call_count, 1)
+        self.assertEqual(openai_mock.call_count, 0)
 
 
 if __name__ == "__main__":
