@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-09-18T13:54:45.087361+00:00",
+  "issue_date": "2026-09-18",
+  "x_post_id": "2100946629369151870",
+  "x_post_url": "https://x.com/i/web/status/2100946629369151870",
+  "x_media_id": "2100946627121037312",
+  "image_path": "automation_images/x/2026-09-18-x-card.png",
+  "post_text": "Bolivia’s tilcayo tiger cat has been identified as the first new wildcat species in 100 years. The wild still has wonderful surprises in store.\n\nhttps://www.thedailyduck.ai/ducks/2026-09-18/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 168
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2100946629369151870",
+      "text": "Bolivia’s tilcayo tiger cat has been identified as the first new wildcat species in 100 years. The wild still has wonderful surprises in store.\n\nhttps://t.co/1BcVyMDLcn https://t.co/bpPDUi4VI1"
+    }
+  }
+}
