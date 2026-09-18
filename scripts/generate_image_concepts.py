@@ -5,18 +5,25 @@ import base64
 import hashlib
 import json
 import os
-import random
-import re
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from google import genai
 from openai import OpenAI
 from PIL import Image
 from io import BytesIO
+
+try:
+    # Running as `python scripts/generate_image_concepts.py` (production/
+    # workflow invocation): the repo root is not on sys.path, only scripts/
+    # is.
+    from scripts import llm_provider
+except ImportError:
+    # Running as a script directly: scripts/ itself is on sys.path, so
+    # llm_provider is a plain sibling module (matches send_email.py's /
+    # rank_news_with_ai.py's existing import pattern for the same module).
+    import llm_provider
 
 
 APPROVED_STORY_PATH = Path(
@@ -51,16 +58,25 @@ OPENAI_IMAGE_QUALITY = (
 IMAGE_CONCEPT_COUNT = 3
 TITLE_IDEA_COUNT = 3
 
-EDITORIAL_MAX_ATTEMPTS = int(
-    os.getenv("CONCEPT_MAX_ATTEMPTS", "3")
+# Provider-independent output contract for generate_options(), shared by
+# build_design_options_schema(), validate_design_options_result(), and
+# normalize_design_options() -- identical regardless of which provider
+# (Gemini or OpenAI) produced the response.
+REQUIRED_CONCEPT_FIELDS = (
+    "title_en",
+    "concept_en",
+    "composition_en",
+    "generation_prompt_en",
+    "alt_en",
+    "title_ja",
+    "concept_ja",
+    "composition_ja",
+    "alt_ja",
 )
 
-GEMINI_API_MAX_ATTEMPTS = int(
-    os.getenv("GEMINI_API_MAX_ATTEMPTS", "5")
-)
-
-GEMINI_RETRY_BASE_SECONDS = float(
-    os.getenv("GEMINI_RETRY_BASE_SECONDS", "10")
+REQUIRED_TITLE_FIELDS = (
+    "title",
+    "meaning_ja",
 )
 
 MAX_DUPLICATE_RETRIES = 2
@@ -108,25 +124,6 @@ def first_text(*values: Any) -> str:
         if isinstance(value, str) and value.strip():
             return value.strip()
     return ""
-
-
-def clean_json_text(value: str) -> str:
-    cleaned = value.strip()
-
-    cleaned = re.sub(
-        r"^```(?:json)?\s*",
-        "",
-        cleaned,
-        flags=re.IGNORECASE,
-    )
-
-    cleaned = re.sub(
-        r"\s*```$",
-        "",
-        cleaned,
-    )
-
-    return cleaned.strip()
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -212,91 +209,143 @@ def issue_date_from(
     return issue_date
 
 
-def is_retryable_gemini_error(
-    exc: Exception,
-) -> bool:
-    error_text = str(exc).lower()
+def build_design_options_schema() -> dict[str, Any]:
+    """JSON schema for generate_options()'s output, shared by both the
+    Gemini path (sent as responseJsonSchema) and the OpenAI fallback path
+    (adapted to strict-mode Structured Outputs by
+    llm_provider._to_openai_strict_schema()). Mirrors the exact contract
+    validate_design_options_result() and normalize_design_options() already
+    enforce -- exactly IMAGE_CONCEPT_COUNT concepts, exactly
+    TITLE_IDEA_COUNT titles, every required field present."""
 
-    retryable_markers = (
-        "429",
-        "500",
-        "502",
-        "503",
-        "504",
-        "resource_exhausted",
-        "internal",
-        "bad_gateway",
-        "unavailable",
-        "deadline_exceeded",
-        "high demand",
-        "temporarily unavailable",
-        "service unavailable",
-        "timeout",
-        "timed out",
-    )
+    concept_schema = {
+        "type": "object",
+        "properties": {
+            "number": {"type": "integer"},
+            **{field: {"type": "string"} for field in REQUIRED_CONCEPT_FIELDS},
+        },
+        "required": ["number", *REQUIRED_CONCEPT_FIELDS],
+    }
 
-    return any(
-        marker in error_text
-        for marker in retryable_markers
-    )
+    title_schema = {
+        "type": "object",
+        "properties": {
+            "number": {"type": "integer"},
+            **{field: {"type": "string"} for field in REQUIRED_TITLE_FIELDS},
+        },
+        "required": ["number", *REQUIRED_TITLE_FIELDS],
+    }
+
+    return {
+        "type": "object",
+        "properties": {
+            "image_concepts": {
+                "type": "array",
+                "minItems": IMAGE_CONCEPT_COUNT,
+                "maxItems": IMAGE_CONCEPT_COUNT,
+                "items": concept_schema,
+            },
+            "title_ideas": {
+                "type": "array",
+                "minItems": TITLE_IDEA_COUNT,
+                "maxItems": TITLE_IDEA_COUNT,
+                "items": title_schema,
+            },
+        },
+        "required": ["image_concepts", "title_ideas"],
+    }
 
 
-def call_gemini_with_retry(
-    client: genai.Client,
-    prompt: str,
-):
-    last_error: Exception | None = None
+def validate_design_options_result(generated: Any) -> None:
+    """Provider-independent validation applied identically to both a
+    Gemini-sourced and an OpenAI-sourced design-options response. Raises on
+    any invalid/unacceptable result; llm_provider.generate_design_options()
+    is the only caller. The JSON schema already constrains shape and field
+    presence; this additionally rejects fields that are present but blank,
+    which "type": "string" alone does not catch.
+    """
 
-    for attempt in range(
-        1,
-        GEMINI_API_MAX_ATTEMPTS + 1,
-    ):
-        print(
-            "Gemini API request attempt "
-            f"{attempt}/{GEMINI_API_MAX_ATTEMPTS}..."
+    if not isinstance(generated, dict):
+        raise ValueError(
+            "Design options response must be a JSON object."
         )
 
-        try:
-            response = client.models.generate_content(
-                model=TEXT_MODEL,
-                contents=prompt,
+    concepts = generated.get("image_concepts")
+    titles = generated.get("title_ideas")
+
+    if (
+        not isinstance(concepts, list)
+        or len(concepts) != IMAGE_CONCEPT_COUNT
+    ):
+        raise ValueError(
+            f"Design options response must return exactly {IMAGE_CONCEPT_COUNT} image concepts."
+        )
+
+    if (
+        not isinstance(titles, list)
+        or len(titles) != TITLE_IDEA_COUNT
+    ):
+        raise ValueError(
+            f"Design options response must return exactly {TITLE_IDEA_COUNT} title ideas."
+        )
+
+    for index, item in enumerate(concepts, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(
+                f"Image concept {index} must be an object."
             )
 
-            print(
-                "Gemini API request succeeded."
+        for field in REQUIRED_CONCEPT_FIELDS:
+            if not first_text(item.get(field)):
+                raise ValueError(
+                    f"Image concept {index} is missing {field}."
+                )
+
+    for index, item in enumerate(titles, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(
+                f"Title idea {index} must be an object."
             )
 
-            return response
+        for field in REQUIRED_TITLE_FIELDS:
+            if not first_text(item.get(field)):
+                raise ValueError(
+                    f"Title idea {index} is missing {field}."
+                )
 
-        except Exception as exc:
-            last_error = exc
 
-            if not is_retryable_gemini_error(exc):
-                raise
+def normalize_design_options(
+    generated: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Applies the SAME normalization regardless of which provider produced
+    `generated` -- already checked by validate_design_options_result()
+    against the identical contract. Reassigns "number" sequentially (the
+    pre-existing behavior; the model's own "number" output, if any, is not
+    trusted) and trims every required text field."""
 
-            if attempt >= GEMINI_API_MAX_ATTEMPTS:
-                raise
+    normalized_concepts: list[dict[str, Any]] = []
 
-            wait_seconds = (
-                GEMINI_RETRY_BASE_SECONDS
-                * (2 ** (attempt - 1))
-                + random.uniform(0, 3)
-            )
+    for index, item in enumerate(generated["image_concepts"], start=1):
+        normalized = dict(item)
+        normalized["number"] = index
 
-            print(
-                "WARNING: Temporary Gemini API error. "
-                f"Retrying in {wait_seconds:.1f}s...",
-                file=sys.stderr,
-            )
+        for field in REQUIRED_CONCEPT_FIELDS:
+            normalized[field] = first_text(normalized.get(field))
 
-            time.sleep(wait_seconds)
+        normalized_concepts.append(normalized)
 
-    if last_error is not None:
-        raise last_error
+    normalized_titles: list[dict[str, Any]] = []
 
-    raise RuntimeError(
-        "Gemini retry loop ended unexpectedly."
-    )
+    for index, item in enumerate(generated["title_ideas"], start=1):
+        normalized = dict(item)
+        normalized["number"] = index
+
+        for field in REQUIRED_TITLE_FIELDS:
+            normalized[field] = first_text(normalized.get(field))
+
+        normalized_titles.append(normalized)
+
+    return normalized_concepts, normalized_titles
 
 
 def generate_options(
@@ -306,10 +355,6 @@ def generate_options(
     list[dict[str, Any]],
     list[dict[str, Any]],
 ]:
-    client = genai.Client(
-        api_key=required_env("GEMINI_API_KEY")
-    )
-
     output_example = {
         "image_concepts": [
             {
@@ -621,163 +666,18 @@ FULL APPROVED STATE
 )}
 """.strip()
 
-    required_concept_fields = (
-        "title_en",
-        "concept_en",
-        "composition_en",
-        "generation_prompt_en",
-        "alt_en",
-        "title_ja",
-        "concept_ja",
-        "composition_ja",
-        "alt_ja",
+    generated, provider = llm_provider.generate_design_options(
+        prompt,
+        build_design_options_schema(),
+        validate=validate_design_options_result,
+        gemini_model=TEXT_MODEL,
     )
 
-    required_title_fields = (
-        "title",
-        "meaning_ja",
+    print(
+        f"Design options generation provider: {provider}"
     )
 
-    last_error: Exception | None = None
-
-    for attempt in range(
-        1,
-        EDITORIAL_MAX_ATTEMPTS + 1,
-    ):
-        try:
-            print(
-                "Design option generation attempt "
-                f"{attempt}/{EDITORIAL_MAX_ATTEMPTS}..."
-            )
-
-            response = call_gemini_with_retry(
-                client,
-                prompt,
-            )
-
-            raw = getattr(
-                response,
-                "text",
-                None,
-            )
-
-            if not raw:
-                raise RuntimeError(
-                    "Gemini returned no design option text."
-                )
-
-            parsed = json.loads(
-                clean_json_text(raw)
-            )
-
-            if not isinstance(parsed, dict):
-                raise ValueError(
-                    "Gemini response must be a JSON object."
-                )
-
-            concepts = parsed.get("image_concepts")
-            titles = parsed.get("title_ideas")
-
-            if (
-                not isinstance(concepts, list)
-                or len(concepts) != IMAGE_CONCEPT_COUNT
-            ):
-                raise ValueError(
-                    "Gemini must return exactly 3 image concepts."
-                )
-
-            if (
-                not isinstance(titles, list)
-                or len(titles) != TITLE_IDEA_COUNT
-            ):
-                raise ValueError(
-                    "Gemini must return exactly 3 title ideas."
-                )
-
-            normalized_concepts = []
-
-            for index, item in enumerate(
-                concepts,
-                start=1,
-            ):
-                if not isinstance(item, dict):
-                    raise ValueError(
-                        f"Image concept {index} must be an object."
-                    )
-
-                normalized = dict(item)
-                normalized["number"] = index
-
-                for field in required_concept_fields:
-                    value = first_text(
-                        normalized.get(field)
-                    )
-
-                    if not value:
-                        raise ValueError(
-                            f"Image concept {index} is missing {field}."
-                        )
-
-                    normalized[field] = value
-
-                normalized_concepts.append(
-                    normalized
-                )
-
-            normalized_titles = []
-
-            for index, item in enumerate(
-                titles,
-                start=1,
-            ):
-                if not isinstance(item, dict):
-                    raise ValueError(
-                        f"Title idea {index} must be an object."
-                    )
-
-                normalized = dict(item)
-                normalized["number"] = index
-
-                for field in required_title_fields:
-                    value = first_text(
-                        normalized.get(field)
-                    )
-
-                    if not value:
-                        raise ValueError(
-                            f"Title idea {index} is missing {field}."
-                        )
-
-                    normalized[field] = value
-
-                normalized_titles.append(
-                    normalized
-                )
-
-            return (
-                normalized_concepts,
-                normalized_titles,
-            )
-
-        except Exception as exc:
-            last_error = exc
-
-            if attempt < EDITORIAL_MAX_ATTEMPTS:
-                print(
-                    "WARNING: Invalid/incomplete package: "
-                    f"{exc}"
-                )
-                print(
-                    "Retrying design option generation..."
-                )
-                continue
-
-    if last_error is not None:
-        raise last_error
-
-    raise RuntimeError(
-        "Design option generation ended unexpectedly."
-    )
+    return normalize_design_options(generated)
 
 
 def build_image_prompt(

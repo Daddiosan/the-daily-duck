@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Sole retry/fallback owner for LLM operations in this repo: news_ranking
-and editorial_generation.
+"""Sole retry/fallback owner for LLM operations in this repo: news_ranking,
+editorial_generation, and design_options_generation.
 
 Primary: Gemini. Fallback: OpenAI. See
-PHASE_A_RETRY_NORMALIZATION_AND_RANKING_FALLBACK_PLAN.md (news_ranking) and
+PHASE_A_RETRY_NORMALIZATION_AND_RANKING_FALLBACK_PLAN.md (news_ranking),
 PHASE_B_RETRY_NORMALIZATION_AND_EDITORIAL_FALLBACK_PLAN.md
-(editorial_generation) for the approved designs this module implements.
-generate_ranking() and generate_editorial() are thin, operation-specific
-wrappers around the same shared retry/fallback loop -- no caller of either
-one may retry on its own; every physical provider attempt happens in this
-file only.
+(editorial_generation), and LLM_PROVIDER_AUDIT_AND_FALLBACK_PLAN.md's Phase D
+(design_options_generation) for the approved designs this module implements.
+generate_ranking(), generate_editorial(), and generate_design_options() are
+thin, operation-specific wrappers around the same shared retry/fallback
+loop -- no caller of any of them may retry on its own; every physical
+provider attempt happens in this file only.
 """
 from __future__ import annotations
 
@@ -95,6 +96,15 @@ DEFAULT_OPENAI_MAX_COMPLETION_TOKENS = 8000
 # DEFAULT_OPENAI_MAX_COMPLETION_TOKENS does for ranking. Configurable since
 # this is a judgment call, not a measured value.
 DEFAULT_OPENAI_EDITORIAL_MAX_COMPLETION_TOKENS = 16000
+
+# Design-options output (3 concepts x 9 free-text fields, incl. a
+# production-ready image-generation prompt per concept, plus 3 titles x 2
+# free-text fields) is smaller in item count than editorial's 5 stories but
+# has similarly long individual free-text fields (composition/generation
+# prompt directions). Sized between ranking's and editorial's budgets on
+# that basis. Configurable since this is a judgment call, not a measured
+# value.
+DEFAULT_OPENAI_DESIGN_OPTIONS_MAX_COMPLETION_TOKENS = 12000
 
 
 class ProviderFailure(RuntimeError):
@@ -715,6 +725,47 @@ def generate_editorial(
     openai_max_completion_tokens = int(
         os.environ.get("OPENAI_EDITORIAL_MAX_COMPLETION_TOKENS", "").strip()
         or DEFAULT_OPENAI_EDITORIAL_MAX_COMPLETION_TOKENS
+    )
+
+    return _generate_with_fallback(
+        prompt,
+        schema,
+        validate=validate,
+        operation=operation,
+        gemini_model=(
+            gemini_model or os.environ.get("GEMINI_TEXT_MODEL", "").strip() or DEFAULT_GEMINI_MODEL
+        ),
+        openai_model=(
+            openai_model or os.environ.get("OPENAI_TEXT_MODEL", "").strip() or DEFAULT_OPENAI_MODEL
+        ),
+        openai_max_completion_tokens=openai_max_completion_tokens,
+    )
+
+
+def generate_design_options(
+    prompt: str,
+    schema: dict,
+    *,
+    validate: Callable[[Any], None],
+    operation: str = "design_options_generation",
+    gemini_model: str | None = None,
+    openai_model: str | None = None,
+) -> tuple[Any, str]:
+    """Thin design_options_generation wrapper around _generate_with_fallback().
+
+    Same retry/fallback policy as generate_ranking()/generate_editorial()
+    (see _generate_with_fallback()), including the PROJECT_ACCESS_DENIED
+    immediate-fallback classification and the ordinary-403/401/400
+    fail-closed rule -- both live in the shared classify_gemini_error(), not
+    here. Kept as its own function rather than an alias for
+    generate_editorial() so the operation name, schema, and OpenAI
+    completion-token budget are explicit to this call site (see
+    DEFAULT_OPENAI_DESIGN_OPTIONS_MAX_COMPLETION_TOKENS) instead of being
+    borrowed from an unrelated operation.
+    """
+    openai_max_completion_tokens = int(
+        os.environ.get("OPENAI_DESIGN_OPTIONS_MAX_COMPLETION_TOKENS", "").strip()
+        or DEFAULT_OPENAI_DESIGN_OPTIONS_MAX_COMPLETION_TOKENS
     )
 
     return _generate_with_fallback(
