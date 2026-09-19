@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-19",
+    "displayDate": "September 19, 2026",
+    "slug": "rock-python",
+    "title": "ROCK PYTHON",
+    "duckName": "Rock Python",
+    "storyTitleEn": "Scientists just named a new snake after Guns N’ Roses legend Slash",
+    "storyTitleJa": "Scientists just named a new snake after Guns N’ Roses legend Slash",
+    "image": "assets/ducks/2026-09-19-rock-python.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Rock Python",
+    "imageAltJa": "Rock PythonをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Scientists have named a new snake after Guns N’ Roses legend Slash. It is a delightful meeting of wildlife discovery and rock ’n’ roll—and proof that sometimes a scientific name can have a little stage presence.",
+    "storyJa": "科学者たちが、新たに発見されたヘビにガンズ・アンド・ローゼズの伝説的ギタリスト、スラッシュの名を付けました。野生生物の発見とロックンロールが出会う、楽しいニュースです。科学名にも、ときにはステージ映えする遊び心があるのです。",
+    "duckEn": "This snake has officially entered its rock-star era.",
+    "duckJa": "このヘビ、正式にロックスター時代へ突入です。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/09/260918024816.htm",
+    "archiveSummaryEn": "A newly named snake is honoring Guns N’ Roses legend Slash—a charming collision of wildlife discovery and rock ’n’ roll. This snake has officially entered its rock-star era.",
+    "archiveSummaryJa": "新たに名付けられたヘビが、ガンズ・アンド・ローゼズの伝説、スラッシュに敬意を表しています。野生生物の発見とロックンロールが出会う、楽しいニュースです。このヘビ、正式にロックスター時代へ突入です。",
+    "reasonEn": "A newly named snake is honoring Guns N’ Roses legend Slash—a charming collision of wildlife discovery and rock ’n’ roll. This snake has officially entered its rock-star era.",
+    "reasonJa": "新たに名付けられたヘビが、ガンズ・アンド・ローゼズの伝説、スラッシュに敬意を表しています。野生生物の発見とロックンロールが出会う、楽しいニュースです。このヘビ、正式にロックスター時代へ突入です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-18",
     "displayDate": "September 18, 2026",
     "slug": "tilly-the-tiger-cat",
