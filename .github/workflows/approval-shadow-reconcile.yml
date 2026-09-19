@@ -1,0 +1,106 @@
+name: The Daily Duck - Approval Shadow Reconcile
+
+on:
+  workflow_run:
+    workflows:
+      - The Daily Duck - Gate A Approval Check
+      - The Daily Duck - Design Selection Check
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: phase3b-shadow-reconcile-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    env:
+      POLLER_WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+      POLLER_RUN_ID: ${{ github.event.workflow_run.id }}
+      POLLER_RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+      POLLER_CREATED_AT: ${{ github.event.workflow_run.created_at }}
+      POLLER_COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
+      POLLER_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+
+    steps:
+      - name: Checkout current main state read-only
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download read-only reconciliation evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ARTIFACT_ROOT="$RUNNER_TEMP/shadow-artifacts"
+          LOG_ROOT="$RUNNER_TEMP/poller-logs"
+          mkdir -p "$ARTIFACT_ROOT" "$LOG_ROOT"
+
+          gh api --method GET \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$POLLER_RUN_ID/logs" \
+            > "$RUNNER_TEMP/poller-logs.zip"
+          unzip -q "$RUNNER_TEMP/poller-logs.zip" -d "$LOG_ROOT"
+
+          gh api --method GET --paginate \
+            "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
+            --jq '.artifacts[] | select(.expired == false) | select(.name | startswith("phase3b-shadow-event-")) | [.workflow_run.id, .name] | @tsv' \
+            > "$RUNNER_TEMP/shadow-artifact-index.tsv"
+
+          while IFS=$'\t' read -r RUN_ID ARTIFACT_NAME; do
+            [ -n "$RUN_ID" ] || continue
+            DEST="$ARTIFACT_ROOT/$RUN_ID"
+            mkdir -p "$DEST"
+            gh run download "$RUN_ID" \
+              --name "$ARTIFACT_NAME" \
+              --dir "$DEST" || true
+          done < "$RUNNER_TEMP/shadow-artifact-index.tsv"
+
+      - name: Compare Shadow and production decisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUTPUT_DIR="$RUNNER_TEMP/phase3b-shadow-comparison"
+          mkdir -p "$OUTPUT_DIR"
+          python scripts/approval_shadow_compare.py \
+            --artifacts "$RUNNER_TEMP/shadow-artifacts" \
+            --logs "$RUNNER_TEMP/poller-logs" \
+            --output "$OUTPUT_DIR/comparison.json" \
+            --summary "$OUTPUT_DIR/summary.md"
+
+      - name: Publish sanitized reconciliation summary
+        if: always()
+        shell: bash
+        run: |
+          SUMMARY="$RUNNER_TEMP/phase3b-shadow-comparison/summary.md"
+          if [ -f "$SUMMARY" ]; then
+            cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Phase 3B-1 Shadow reconciliation" >> "$GITHUB_STEP_SUMMARY"
+            echo "Reconciliation failed before a summary was created." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload reconciliation observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3b-shadow-comparison-${{ github.event.workflow_run.id }}
+          path: ${{ runner.temp }}/phase3b-shadow-comparison/
+          if-no-files-found: warn
+          retention-days: 30

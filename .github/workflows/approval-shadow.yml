@@ -1,0 +1,133 @@
+name: The Daily Duck - Approval Shadow
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "Approval stage"
+        required: true
+        type: choice
+        options:
+          - GATE_A
+          - DESIGN_SELECTION
+      issue_date:
+        description: "Issue date (YYYY-MM-DD)"
+        required: true
+        type: string
+      command:
+        description: "Gate A: 1-5; Design: IMAGE TITLE or NEXT 3"
+        required: true
+        type: string
+      design_batch_id:
+        description: "Required for DESIGN_SELECTION; empty for GATE_A"
+        required: false
+        default: ""
+        type: string
+      upstream_run_id:
+        description: "Optional correlation metadata only"
+        required: false
+        default: ""
+        type: string
+      claimed_principal:
+        description: "Optional untrusted audit claim; never grants authority"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+  # Required only to locate/download the same Gate A artifact read by production.
+  actions: read
+
+concurrency:
+  group: phase3b-shadow-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    env:
+      SHADOW_STAGE: ${{ inputs.stage }}
+      SHADOW_ISSUE_DATE: ${{ inputs.issue_date }}
+      SHADOW_COMMAND: ${{ inputs.command }}
+      SHADOW_DESIGN_BATCH_ID: ${{ inputs.design_batch_id }}
+      SHADOW_UPSTREAM_RUN_ID: ${{ inputs.upstream_run_id }}
+      SHADOW_CLAIMED_PRINCIPAL: ${{ inputs.claimed_principal }}
+      # Non-secret repository variable: comma-separated GitHub logins.
+      APPROVAL_SHADOW_ACTORS: ${{ vars.APPROVAL_SHADOW_ACTORS }}
+
+    steps:
+      - name: Checkout observed main snapshot
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Create read-only Shadow observation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          OUTPUT_DIR="$RUNNER_TEMP/phase3b-shadow-event"
+          mkdir -p "$OUTPUT_DIR"
+          GATE_ARGUMENTS=()
+          export SHADOW_COMMIT_SHA
+          SHADOW_COMMIT_SHA=$(git rev-parse HEAD)
+
+          if [ "$SHADOW_STAGE" = "GATE_A" ]; then
+            DAILY_RUN_ID=$(gh run list \
+              --workflow daily-duck.yml \
+              --branch main \
+              --status success \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId' || true)
+
+            if [ -n "$DAILY_RUN_ID" ] && [ "$DAILY_RUN_ID" != "null" ]; then
+              PACKAGE_DIR="$RUNNER_TEMP/gate-a-package/$DAILY_RUN_ID"
+              mkdir -p "$PACKAGE_DIR"
+              gh run download "$DAILY_RUN_ID" \
+                --name daily-duck-results \
+                --dir "$PACKAGE_DIR" || true
+              PACKAGE=$(find "$PACKAGE_DIR" -type f \
+                -name gate_a_package.json -print -quit)
+              if [ -n "$PACKAGE" ]; then
+                GATE_ARGUMENTS=(--gate-package "$PACKAGE")
+                export SHADOW_OBSERVED_UPSTREAM_RUN_ID="$DAILY_RUN_ID"
+              fi
+            fi
+          fi
+
+          python scripts/approval_shadow.py \
+            --output "$OUTPUT_DIR/observation.json" \
+            --summary "$OUTPUT_DIR/summary.md" \
+            "${GATE_ARGUMENTS[@]}"
+
+      - name: Publish sanitized Shadow summary
+        if: always()
+        shell: bash
+        run: |
+          SUMMARY="$RUNNER_TEMP/phase3b-shadow-event/summary.md"
+          if [ -f "$SUMMARY" ]; then
+            cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Phase 3B-1 Shadow observation" >> "$GITHUB_STEP_SUMMARY"
+            echo "Observation failed before a summary was created." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload Shadow observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3b-shadow-event-${{ github.run_id }}
+          path: ${{ runner.temp }}/phase3b-shadow-event/
+          if-no-files-found: warn
+          retention-days: 30
