@@ -8,24 +8,38 @@ No network access, no live Google API, no real credentials, no cloud
 resource: every dependency create_app() takes (config/gmail/store/verifier)
 is injected with a local fake or an in-memory object.
 
-Flask is a Cloud Run deployment-time dependency (see
-cloud/approval_receiver/requirements.txt); it is intentionally not part of
-this project's local dev environment, and installing it here would be an
-environment mutation outside this task's authorized, test-file-only scope.
-When Flask is unavailable, these tests are skipped rather than reporting a
-false pass or a false regression; they run for real in any environment
-(such as the eventual Cloud Run build) where Flask is installed.
+Flask is a declared Phase 3B-2A1 A1 runtime dependency (see
+cloud/approval_receiver/requirements.txt: "Flask>=3.0,<4"), not merely a
+Cloud Run deployment-time detail, so it is also a test-time dependency of
+this module. In a correctly prepared Phase 3B-2A1 test environment (the
+project .venv with requirements.txt installed) these 8 tests are expected to
+execute normally, not skip. Acceptance requires zero HTTP-test skips.
+
+If Flask is missing, this module fails loudly at import time (see below)
+instead of silently skipping all 8 tests, because a clean checkout that
+silently skips this entire module could otherwise report an overall "OK"
+while providing zero HTTP-layer coverage.
 """
 
 import importlib.util
 import unittest
 
-FLASK_AVAILABLE = importlib.util.find_spec("flask") is not None
+if importlib.util.find_spec("flask") is None:
+    raise ImportError(
+        "Flask is a required Phase 3B-2A1 A1 test/runtime dependency "
+        "(see cloud/approval_receiver/requirements.txt) but is not "
+        "installed in this environment. Install it into the project "
+        "virtualenv before running this test module, e.g.:\n"
+        "  .venv/Scripts/python.exe -m pip install "
+        "-r cloud/approval_receiver/requirements.txt\n"
+        "This module intentionally fails at import time rather than "
+        "skipping its 8 HTTP tests, so a missing dependency cannot be "
+        "mistaken for passing coverage."
+    )
 
-if FLASK_AVAILABLE:
-    from cloud.approval_receiver.main import OIDCVerifier, create_app
-    from cloud.approval_receiver.observation import InMemoryObservationStore
-    from tests.test_approval_receiver import FakeGmail, config, pubsub_envelope
+from cloud.approval_receiver.main import OIDCVerifier, create_app
+from cloud.approval_receiver.observation import InMemoryObservationStore
+from tests.test_approval_receiver import FakeGmail, config, pubsub_envelope
 
 
 def _fake_verifier(cfg):
@@ -57,7 +71,6 @@ def _build_client(*, gmail=None, store=None, verifier=None, cfg=None):
     return app.test_client()
 
 
-@unittest.skipUnless(FLASK_AVAILABLE, "flask is not installed in this local environment")
 class HealthEndpointTests(unittest.TestCase):
     def test_health_ok_without_authentication(self):
         client = _build_client()
@@ -69,7 +82,6 @@ class HealthEndpointTests(unittest.TestCase):
         )
 
 
-@unittest.skipUnless(FLASK_AVAILABLE, "flask is not installed in this local environment")
 class PubsubEndpointTests(unittest.TestCase):
     def test_missing_bearer_token_rejected(self):
         client = _build_client()
@@ -135,7 +147,6 @@ class PubsubEndpointTests(unittest.TestCase):
         self.assertEqual(response.get_json()["status"], "RETRY")
 
 
-@unittest.skipUnless(FLASK_AVAILABLE, "flask is not installed in this local environment")
 class MaintenanceEndpointTests(unittest.TestCase):
     def test_missing_bearer_token_rejected(self):
         client = _build_client()
