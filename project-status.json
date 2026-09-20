@@ -1,0 +1,91 @@
+{
+  "schema_version": 2,
+  "project_id": "4f66257d-0c6f-4ca6-8ec0-6c3d45f7cd17",
+  "project_name": "the-daily-duck",
+  "source": "the-daily-duck-creator",
+  "updated_at": "2026-09-20T01:38:41Z",
+  "valid_until": "2026-10-04T01:38:41Z",
+  "quality_tier": "Q3_NORMAL",
+  "governance_baseline": null,
+  "primary_status": "ACTIVE",
+  "status_reason": "日次のDaily Duck生成・Webサイト公開・X投稿の自動化が実際に稼働している（直近の確認済み実行完了は2026-09-19、Web公開・X投稿ともにcommit済み）。Phase 3A（承認ドメイン基盤）・Phase 3B-1（読み取り専用approval shadow）はmainに統合済み。Phase 3B-2A1（Gmail受信）は設計・実装が進行中で未commitであり、そのクラウド配備には別途人間承認が必要。",
+  "current_phase": "本番日次自動化 稼働中 / Phase 3B-2A1（Google Event Receiver）設計・実装中（未commit、クラウド未配備）",
+  "progress": {
+    "state": "KNOWN",
+    "summary_ja": "2026-09-19分のDaily Duckが生成・承認・公開まで完了（Web公開 c901c28・X投稿 6376d51）。data/today.json・data/archive.jsonの最新日付は2026-09-19。Phase 3A（439a55c）・Phase 3B-1（0089367）はmainへ統合済み。Phase 3B-2A1はRunbook（docs/phase3b2/A1_RUNBOOK.md）と受信器コード（cloud/approval_receiver/）が未commitの作業ツリー上にあり、実クラウド資源は作成されていない。"
+  },
+  "next_action": {
+    "state": "KNOWN",
+    "summary_ja": "日次自動化は次回のスケジュール実行（毎日22:07 UTC=07:07 JST）で運用継続。開発側は、Phase 3B-2A1の実装・Runbookを完成させ、Gmail OAuth本番昇格やCloud Run/Pub/Sub/Firestore等のクラウド変更を行う前に、変更ごとに人間承認を得ること。"
+  },
+  "waiting": {
+    "state": "WAITING",
+    "reason_ja": "Phase 3B-2A1（Google Event Receiver）のクラウド配備（Gmail OAuth本番昇格、Cloud Run/Pub/Sub/Firestore等の作成）は、変更ごとに人間承認が必要と明記されている。日次本番パイプライン自体はこの承認待ちではなく稼働を継続する。"
+  },
+  "human_gate": {
+    "state": "REQUIRED",
+    "detail_ja": "Phase 3B-2A1のクラウドミューテーション（Google Cloud課金プロジェクト作成、Cloud Run配備、OAuth本番昇格等）はすべて人間承認が前提（docs/phase3b2/A1_RUNBOOK.mdに明記）。日次本番パイプライン自体には追加の人間承認ゲートは確認されていない。"
+  },
+  "validation_gate": {
+    "state": "NOT_ACQUIRED",
+    "detail_ja": "日次本番パイプラインに対する独立検証（CV-005相当）の実施記録は確認できませんでした。CV-013は未採用のため、この観点自体も未確立です。"
+  },
+  "evidence": [
+    {
+      "claim": "2026-09-19分のDaily DuckがWebサイトへ公開完了",
+      "source_type": "GIT_COMMIT",
+      "source_path": null,
+      "revision": "c901c284ae6f9816f0c0b6b9571572af156f03ff",
+      "observed_at": "2026-09-19T10:23:23Z"
+    },
+    {
+      "claim": "2026-09-19分のDaily DuckがXへ投稿完了",
+      "source_type": "GIT_COMMIT",
+      "source_path": null,
+      "revision": "6376d51633537127219d7068b885c41ec8262106",
+      "observed_at": "2026-09-19T10:23:56Z"
+    },
+    {
+      "claim": "Phase 3A: 承認ドメイン基盤をmainへ統合",
+      "source_type": "GIT_COMMIT",
+      "source_path": null,
+      "revision": "439a55cc0ac56b3363a8b949243781ed6f9a1fd0",
+      "observed_at": "2026-09-19T18:45:20+09:00"
+    },
+    {
+      "claim": "Phase 3B-1: 読み取り専用approval shadowをmainへ統合",
+      "source_type": "GIT_COMMIT",
+      "source_path": null,
+      "revision": "0089367804dad3fb3d563e40ed107c67a8dd855f",
+      "observed_at": "2026-09-19T20:51:53+09:00"
+    },
+    {
+      "claim": "日次自動化スケジュール定義（毎日22:07 UTC起動、workflow_dispatchも可）",
+      "source_type": "LOCAL_DOCUMENT",
+      "source_path": ".github/workflows/daily-duck.yml",
+      "revision": "4a975faaf5bfe45f872f5ae0abeae6d7b944623c",
+      "observed_at": "2026-09-18T01:02:53+09:00"
+    },
+    {
+      "claim": "Phase 3B-2A1 Google Event Receiver Runbook（将来の別承認クラウド配備を規定、未commit）",
+      "source_type": "LOCAL_DOCUMENT",
+      "source_path": "docs/phase3b2/A1_RUNBOOK.md",
+      "revision": null,
+      "observed_at": null
+    },
+    {
+      "claim": "Quality Tier既定Q3_NORMALの方針根拠（HD-2、ai-development-governance承認記録）",
+      "source_type": "GOVERNANCE_RECORD",
+      "source_path": null,
+      "revision": "34cff794a0cb1addac4a55adcc8489725ebe675c",
+      "observed_at": null
+    },
+    {
+      "claim": "2026-09-20T01:38:41Z時点でoriginを読み取り専用fetchしたが、2026-09-20分の新規公開commitは未確認",
+      "source_type": "OTHER",
+      "source_path": null,
+      "revision": null,
+      "observed_at": "2026-09-20T01:38:41Z"
+    }
+  ]
+}
