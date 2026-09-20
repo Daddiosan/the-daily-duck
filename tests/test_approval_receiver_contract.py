@@ -15,6 +15,27 @@ PYTHON_FILES = tuple(RECEIVER.glob("*.py"))
 # check below.
 IGNORED_RUNTIME_ENTRIES = {"__pycache__"}
 
+# The Phase 3B-2A1 approval baseline: the commit at which Human Gate
+# approval was granted to push the canonical-status-v2 checkpoint while
+# Phase 3B-2A1 existed only as untracked local work-in-progress (see that
+# checkpoint commit's own message and the session's push-approval record).
+# This is a fixed commit, not "current HEAD": pinning it here is what
+# makes a protected-file change remain detectable by this test even after
+# that change has been committed (and even if it has already been merged
+# or pushed), which comparing against HEAD cannot do, because HEAD moves
+# together with any such change.
+#
+# Everything reachable from this commit -- including any pre-existing,
+# unrelated, already-legitimate history on these protected paths -- is
+# baked into the baseline and never flagged; only a change to a protected
+# path landing after this specific commit is a real question this test
+# needs to surface. If a separate, legitimate workstream needs to modify
+# one of these paths while Phase 3B-2A1 is still open, that is a genuine
+# cross-workstream conflict for a human to resolve explicitly (by
+# re-approving and updating this constant with its own approval record),
+# not something this test should paper over by silently following HEAD.
+PHASE_3B_2A1_APPROVED_BASELINE = "4b83b28bbea99c8e2d7fdf8ef0cd3c163221815a"
+
 
 class ApprovalReceiverContractTests(unittest.TestCase):
     def test_exact_a1_files_exist(self):
@@ -112,21 +133,29 @@ class ApprovalReceiverContractTests(unittest.TestCase):
 
     def test_existing_protected_files_match_baseline(self):
         """Phase 3B-2A1 must never modify these already-committed, protected
-        paths. This is checked against the *current* HEAD rather than a
-        fixed historical commit: a hard-coded ancestor commit goes stale
-        every time those paths are legitimately touched by unrelated work
-        (e.g. Phase 3B-1), which is exactly what made the previous version
-        of this test fail with no real regression. Comparing the working
-        tree to HEAD instead means the assertion is always about "did
-        anything currently uncommitted change these paths" -- which is the
-        property this test actually needs to guard -- and it never drifts
-        on its own.
+        paths. This is checked against PHASE_3B_2A1_APPROVED_BASELINE, a
+        fixed, named, human-approved commit -- never against "current
+        HEAD". Comparing against HEAD would make a protected-file change
+        invisible the moment it is committed, since HEAD and the change
+        move together; that defeats the purpose of a post-commit,
+        independent check, which must still be able to catch a change
+        that already landed.
+
+        This also intentionally does not use the repository's very first
+        Phase 3B-1 commit as the baseline (an earlier version of this test
+        pinned one). That would flag Phase 3B-1's own later, legitimate
+        continuation of its own work on these same paths as a violation --
+        exactly the false failure that pin produced. Anchoring at the
+        commit where Phase 3B-2A1 itself was approved for its next
+        checkpoint correctly excludes history that predates it (including
+        that legitimate Phase 3B-1 continuation) while still catching any
+        change to these paths from that point forward, committed or not.
         """
         command = [
             "git",
             "diff",
             "--name-only",
-            "HEAD",
+            PHASE_3B_2A1_APPROVED_BASELINE,
             "--",
             ".github/workflows",
             "scripts/approval_domain.py",

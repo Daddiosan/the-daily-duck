@@ -24,6 +24,18 @@ belongs to this project and runs for real. The fake Firestore client,
 document reference, and transaction defined below model how the adapter
 uses the Firestore API surface; they do not attempt to model the internals
 of Firestore itself.
+
+Scope and limitation: this file verifies the adapter CAS and idempotency
+semantics locally (compare-and-set succeeds and fails correctly, insert-
+if-absent is idempotent, watch fields stay separate from the processing
+cursor). It does not, and cannot, verify real Firestore transaction
+isolation under concurrent Cloud Run instances: FakeTransaction applies
+writes immediately and FakeDocumentReference.get() ignores the
+transaction argument entirely, so a race between two concurrent callers
+is not modeled. That property is a separate, unverified item that must
+be validated (for example with a real Firestore emulator or a live-
+project smoke test) before or at the Phase 3B-2A1 deployment Human
+Gate; it is not covered by this local test file.
 """
 
 import sys
@@ -86,7 +98,10 @@ class FakeTransaction:
     google.cloud.firestore.Transaction batches writes and commits them
     atomically on success; this fake applies them immediately, which is
     sufficient to test the CAS and idempotency logic that belongs to this
-    adapter, since every call here is a single, unretried attempt.
+    adapter, for a single, unretried, non-concurrent call -- which is what
+    every test in this file exercises. It does not model, and is not used
+    here to verify, behavior under concurrent transactions; that remains
+    unverified by this file (see the module docstring).
     """
 
     def set(self, ref: FakeDocumentReference, data: dict, merge: bool = False) -> None:
@@ -126,12 +141,23 @@ def install_fake_google_cloud_firestore() -> dict[str, Any]:
 
         return wrapper
 
-    google_module = sys.modules.get("google") or types.ModuleType("google")
+    preexisting_google = sys.modules.get("google")
+    google_module = preexisting_google or types.ModuleType("google")
     cloud_module = types.ModuleType("google.cloud")
     firestore_module = types.ModuleType("google.cloud.firestore")
     firestore_module.transactional = transactional
     cloud_module.firestore = firestore_module
-    google_module.cloud = cloud_module
+
+    # Only attach the "cloud" attribute to a module object created here.
+    # A pre-existing real "google" package (as in the deployed Cloud Run
+    # image, where google-auth is genuinely installed) is never mutated:
+    # Python resolves "from google.cloud import firestore" against the
+    # sys.modules entries set below regardless of any attribute on the
+    # parent package, so setting sys.modules alone is sufficient and
+    # leaves no attribute residue on a real module for any other code
+    # to observe once restore_google_cloud_firestore runs.
+    if preexisting_google is None:
+        google_module.cloud = cloud_module
 
     sys.modules["google"] = google_module
     sys.modules["google.cloud"] = cloud_module
