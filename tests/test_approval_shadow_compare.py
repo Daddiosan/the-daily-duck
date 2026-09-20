@@ -303,6 +303,189 @@ class ApprovalShadowCompareTests(unittest.TestCase):
             )
         self.assertEqual(result["outcome"], "ACCEPT")
 
+    def test_25_live_gate_already_approved_ignores_inactive_wait_source(self):
+        raw_log = """\
+2026-09-19T14:48:29.5347891Z ##[group]Run echo "Gate A approval check finished."
+2026-09-19T14:48:29.5348323Z echo "Gate A approval check finished."
+2026-09-19T14:48:29.5355641Z else
+2026-09-19T14:48:29.5356236Z   echo "STATE: WAITING_STORY_SELECTION"
+2026-09-19T14:48:29.5356539Z fi
+2026-09-19T14:48:29.5398981Z ##[endgroup]
+2026-09-19T14:48:29.5461101Z Gate A approval check finished.
+2026-09-19T14:48:29.5024961Z This Gate A issue is already approved.
+2026-09-19T14:48:29.5646423Z STATE: APPROVED_STORY
+2026-09-19T14:48:29.5646958Z Selected story: 1
+2026-09-19T14:48:29.5647295Z Issue date: 2026-09-19
+"""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            state = root / "automation_state"
+            state.mkdir()
+            (state / "approved_story.json").write_text(json.dumps({
+                "issue_date": "2026-09-19",
+                "state": "APPROVED_STORY",
+                "approval_reply": "1",
+            }))
+            (state / "ready_to_publish.json").write_text(json.dumps({
+                "issue_date": "2026-09-19",
+                "state": "X_POSTED",
+            }))
+            result = production_evidence(
+                workflow_name="The Daily Duck - Gate A Approval Check",
+                conclusion="success",
+                log_text=raw_log,
+                repo_root=root,
+            )
+
+        self.assertEqual(result["canonical_command"], "SELECT_STORY:1")
+        self.assertEqual(result["outcome"], "ACCEPT")
+        self.assertFalse(result["conflict"])
+        comparison = compare(
+            [observation(
+                canonical_command="SELECT_STORY:1",
+                decision="NO_OP_ALREADY_APPLIED",
+            )],
+            result,
+            workflow_name="The Daily Duck - Gate A Approval Check",
+            poller_run_id="35449839356",
+            poller_run_attempt="1",
+            poller_created_at=BASE,
+            poller_completed_at=BASE + timedelta(minutes=2),
+            observed_at=BASE + timedelta(minutes=2),
+        )
+        self.assertEqual(comparison["classification"], "MATCH")
+
+    def test_26_new_gate_acceptance_ignores_inactive_wait_source(self):
+        raw_log = """\
+2026-09-19T01:00:00.0000000Z ##[group]Run if approved; then
+2026-09-19T01:00:00.0000001Z   echo "STATE: WAITING_STORY_SELECTION"
+2026-09-19T01:00:00.0000002Z fi
+2026-09-19T01:00:00.0000003Z ##[endgroup]
+2026-09-19T01:00:01.0000000Z issue_date: 2026-09-19
+2026-09-19T01:00:01.0000001Z EXACT GATE A STORY SELECTION FOUND: 2
+2026-09-19T01:00:01.0000002Z STATE: APPROVED_STORY
+"""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "automation_state").mkdir()
+            result = production_evidence(
+                workflow_name="The Daily Duck - Gate A Approval Check",
+                conclusion="success",
+                log_text=raw_log,
+                repo_root=root,
+            )
+        self.assertEqual(result["canonical_command"], "SELECT_STORY:2")
+        self.assertEqual(result["outcome"], "ACCEPT")
+        self.assertFalse(result["conflict"])
+
+    def test_27_genuine_gate_wait_still_conflicts_with_committed_accept(self):
+        raw_log = """\
+2026-09-19T01:00:00Z issue_date: 2026-09-19
+2026-09-19T01:00:01Z STATE: WAITING_STORY_SELECTION
+"""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            state = root / "automation_state"
+            state.mkdir()
+            (state / "approved_story.json").write_text(json.dumps({
+                "issue_date": "2026-09-19",
+                "state": "APPROVED_STORY",
+                "approval_reply": "1",
+            }))
+            result = production_evidence(
+                workflow_name="The Daily Duck - Gate A Approval Check",
+                conclusion="success",
+                log_text=raw_log,
+                repo_root=root,
+            )
+        self.assertEqual(result["outcome"], "UNKNOWN")
+        self.assertTrue(result["conflict"])
+
+    def test_28_design_runtime_wait_ignores_inactive_accept_source(self):
+        raw_log = """\
+2026-09-19T01:00:00Z ##[group]Run echo "Design action: WAIT"
+2026-09-19T01:00:00Z echo "NEXT 3 accepted."
+2026-09-19T01:00:00Z echo "STATE: READY_TO_PUBLISH"
+2026-09-19T01:00:00Z echo "STATE: ALREADY_SELECTED"
+2026-09-19T01:00:00Z echo "STATE: WAITING_FINAL_SELECTION"
+2026-09-19T01:00:00Z ##[endgroup]
+2026-09-19T01:00:01Z Design action: WAIT
+2026-09-19T01:00:01Z STATE: WAITING_FINAL_SELECTION
+"""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "automation_state").mkdir()
+            result = production_evidence(
+                workflow_name="The Daily Duck - Design Selection Check",
+                conclusion="success",
+                log_text=raw_log,
+                repo_root=root,
+            )
+        self.assertEqual(result["outcome"], "REJECT")
+        self.assertFalse(result["conflict"])
+
+    def test_29_success_without_state_or_runtime_markers_is_unknown(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "automation_state").mkdir()
+            result = production_evidence(
+                workflow_name="The Daily Duck - Gate A Approval Check",
+                conclusion="success",
+                log_text="2026-09-19T01:00:00Z check completed",
+                repo_root=root,
+            )
+        self.assertEqual(result["outcome"], "UNKNOWN")
+        self.assertFalse(result["conflict"])
+
+    def test_30_gate_source_code_only_cannot_create_acceptance(self):
+        raw_log = """\
+echo "STATE: APPROVED_STORY"
+print("EXACT GATE A STORY SELECTION FOUND: 3")
+    "STATE: APPROVED_STORY"
+"""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "automation_state").mkdir()
+            result = production_evidence(
+                workflow_name="The Daily Duck - Gate A Approval Check",
+                conclusion="success",
+                log_text=raw_log,
+                repo_root=root,
+            )
+        self.assertEqual(result["outcome"], "UNKNOWN")
+        self.assertNotIn("POLLER_LOG", result["evidence_sources"])
+
+    def test_31_design_source_code_only_cannot_create_acceptance(self):
+        raw_log = """\
+echo "NEXT 3 accepted."
+print("STATE: READY_TO_PUBLISH")
+    "STATE: ALREADY_SELECTED"
+"""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "automation_state").mkdir()
+            result = production_evidence(
+                workflow_name="The Daily Duck - Design Selection Check",
+                conclusion="success",
+                log_text=raw_log,
+                repo_root=root,
+            )
+        self.assertEqual(result["outcome"], "UNKNOWN")
+        self.assertNotIn("POLLER_LOG", result["evidence_sources"])
+
+    def test_32_real_design_action_wait_marker_is_reject(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "automation_state").mkdir()
+            result = production_evidence(
+                workflow_name="The Daily Duck - Design Selection Check",
+                conclusion="success",
+                log_text="Design action: WAIT",
+                repo_root=root,
+            )
+        self.assertEqual(result["outcome"], "REJECT")
+        self.assertFalse(result["conflict"])
+
 
 if __name__ == "__main__":
     unittest.main()

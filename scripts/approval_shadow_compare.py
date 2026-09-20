@@ -41,6 +41,10 @@ WORKFLOW_STAGE = {
     "The Daily Duck - Gate A Approval Check": "GATE_A",
     "The Daily Duck - Design Selection Check": "DESIGN_SELECTION",
 }
+_ACTIONS_TIMESTAMP_PREFIX = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}"
+    r"(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})\s"
+)
 
 
 def parse_time(value: object) -> datetime | None:
@@ -66,6 +70,35 @@ def _all_log_text(log_root: Path) -> str:
             except OSError:
                 continue
     return "\n".join(parts)
+
+
+def runtime_log_lines(log_text: str) -> tuple[str, ...]:
+    """Return runtime payload lines, excluding GitHub Runner command echoes.
+
+    Downloaded Actions logs prefix payload with an ISO timestamp. Before a
+    ``run`` step executes, the Runner also emits the complete shell source
+    between ``##[group]Run ...`` and ``##[endgroup]``. Those source lines are
+    not execution evidence and are deliberately discarded. Marker matching
+    remains whole-line and unindented, so standalone shell/Python/quoted source
+    cannot become evidence merely because it contains marker text. Unknown or
+    malformed prefixes remain intact and therefore fail closed.
+    """
+
+    lines: list[str] = []
+    in_run_source = False
+    for raw_line in log_text.splitlines():
+        payload = _ACTIONS_TIMESTAMP_PREFIX.sub("", raw_line, count=1)
+        if in_run_source:
+            if payload == "##[endgroup]":
+                in_run_source = False
+            continue
+        if payload.startswith("##[group]Run "):
+            in_run_source = True
+            continue
+        if payload.startswith("##["):
+            continue
+        lines.append(payload)
+    return tuple(lines)
 
 
 def _canonical(stage: str, raw: object) -> str | None:
@@ -94,7 +127,12 @@ def production_evidence(
     if stage is None:
         return {"stage": None, "outcome": "UNKNOWN", "conflict": True}
 
-    issue_matches = re.findall(r"(?:issue_date|Issue date):\s*(\d{4}-\d{2}-\d{2})", log_text)
+    runtime_text = "\n".join(runtime_log_lines(log_text))
+    issue_matches = re.findall(
+        r"^(?:issue_date|Issue date):\s*(\d{4}-\d{2}-\d{2})\s*$",
+        runtime_text,
+        flags=re.MULTILINE,
+    )
     issue_date = issue_matches[-1] if issue_matches else None
     state_dir = repo_root / "automation_state"
     sources: list[str] = []
@@ -113,16 +151,32 @@ def production_evidence(
                 state_command = _canonical(stage, approved.get("approval_reply"))
                 sources.append("COMMITTED_STATE")
         accepted_command = None
-        found = re.findall(r"EXACT GATE A STORY SELECTION FOUND:\s*([1-5])", log_text)
+        found = re.findall(
+            r"^EXACT GATE A STORY SELECTION FOUND:\s*([1-5])\s*$",
+            runtime_text,
+            flags=re.MULTILINE,
+        )
         if found:
             accepted_command = _canonical(stage, found[-1])
         log_accept = bool(
             accepted_command
-            or re.search(r"STATE:\s*APPROVED_STORY", log_text)
+            or re.search(
+                r"^STATE:\s*APPROVED_STORY\s*$",
+                runtime_text,
+                flags=re.MULTILINE,
+            )
         )
-        log_reject = bool(re.search(r"STATE:\s*WAITING_STORY_SELECTION", log_text))
+        log_reject = bool(
+            re.search(
+                r"^STATE:\s*WAITING_STORY_SELECTION\s*$",
+                runtime_text,
+                flags=re.MULTILINE,
+            )
+        )
         upstream_matches = re.findall(
-            r"Latest successful Daily Duck run ID:\s*([0-9]+)", log_text
+            r"^Latest successful Daily Duck run ID:\s*([0-9]+)\s*$",
+            runtime_text,
+            flags=re.MULTILINE,
         )
         upstream_run_id = upstream_matches[-1] if upstream_matches else None
     else:
@@ -159,9 +213,19 @@ def production_evidence(
                 state_outcome = "ACCEPT"
                 sources.append("COMMITTED_STATE")
 
-        next_three = "NEXT 3 accepted." in log_text
-        final_image = re.findall(r"FINAL IMAGE / CONCEPT:\s*([1-3])", log_text)
-        final_title = re.findall(r"FINAL TITLE:\s*([1-3])", log_text)
+        next_three = bool(
+            re.search(r"^NEXT 3 accepted\.\s*$", runtime_text, flags=re.MULTILINE)
+        )
+        final_image = re.findall(
+            r"^FINAL IMAGE / CONCEPT:\s*([1-3])\s*$",
+            runtime_text,
+            flags=re.MULTILINE,
+        )
+        final_title = re.findall(
+            r"^FINAL TITLE:\s*([1-3])\s*$",
+            runtime_text,
+            flags=re.MULTILINE,
+        )
         accepted_command = None
         if next_three:
             accepted_command = "NEXT_3"
@@ -170,12 +234,18 @@ def production_evidence(
         log_accept = bool(
             next_three
             or accepted_command
-            or "STATE: READY_TO_PUBLISH" in log_text
-            or "STATE: ALREADY_SELECTED" in log_text
+            or re.search(
+                r"^STATE:\s*(?:READY_TO_PUBLISH|ALREADY_SELECTED)\s*$",
+                runtime_text,
+                flags=re.MULTILINE,
+            )
         )
         log_reject = bool(
-            "Design action: WAIT" in log_text
-            or "STATE: WAITING_FINAL_SELECTION" in log_text
+            re.search(
+                r"^(?:Design action:\s*WAIT|STATE:\s*WAITING_FINAL_SELECTION)\s*$",
+                runtime_text,
+                flags=re.MULTILINE,
+            )
         ) and not next_three
         upstream_run_id = None
 
