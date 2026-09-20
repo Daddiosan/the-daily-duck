@@ -29,6 +29,44 @@ budget and alerts before deployment. Free tiers are quotas rather than a hard
 spending cap; logging, image retention, network transfer, and accidental high
 traffic can still create charges.
 
+## Deployment dependency order
+
+This is the actual required execution order, derived from runtime
+dependencies rather than section order alone. In particular:
+
+- OAuth production promotion and the two Secret Manager secrets below must
+  exist **before** the first Cloud Run revision is deployed: the container
+  reads `GMAIL_OAUTH_CLIENT_JSON`/`GMAIL_OAUTH_REFRESH_TOKEN` and the
+  non-secret configuration at process startup (`ReceiverConfig.from_env()`,
+  `build_gmail_client_from_env()`), so a revision deployed without them
+  fails to become healthy.
+- The Firestore real transaction-isolation gate (dedicated section below)
+  must be satisfied **before** the deliberate Gmail watch bootstrap,
+  because the watch bootstrap is what starts live message processing
+  against Firestore.
+- The Cloud Scheduler maintenance job must not be created enabled, and
+  must not be enabled at all, **before** the Gmail watch bootstrap Human
+  Gate succeeds (see "Scheduler configuration (post-watch)" below). An
+  enabled job reaching `/maintenance` before a deliberate watch exists
+  would perform an unplanned `users.watch` call.
+
+1. Project, billing, budget/alerts, required APIs.
+2. Service accounts and their IAM bindings.
+3. Firestore `(default)` database created and its mode verified.
+4. OAuth consent/production promotion and Secret Manager secrets.
+5. Artifact Registry, Pub/Sub topic, container image build/push.
+6. Cloud Run deployment, including the two-pass OIDC audience bootstrap
+   described below.
+7. Pub/Sub push subscription and Cloud Run Invoker IAM bindings.
+8. Read-only verification that unauthenticated/wrong-audience push is
+   rejected.
+9. Deployment Human Gate: real Firestore transaction isolation.
+10. Deliberate Gmail watch bootstrap (Human Gate).
+11. Scheduler configuration (post-watch) — created paused, enabled only
+    after step 10 succeeds.
+12. Monitoring/alerting.
+13. A1 live success criteria verification.
+
 ## OAuth consent and refresh token
 
 > **HUMAN GATE: REQUIRED — OAUTH PRODUCTION PROMOTION.** Steps 1-2 below move
@@ -85,6 +123,22 @@ Optional bounded values are `WATCH_RENEW_THRESHOLD_HOURS` (default 48),
 `FULL_RESYNC_NEWER_THAN` (default `7d`), and
 `FULL_RESYNC_MAX_MESSAGES` (default 100, maximum 500).
 
+### OIDC audience bootstrap sequence
+
+`OIDC_EXPECTED_AUDIENCE` must equal the exact Cloud Run service URL, which
+Cloud Run only assigns after the service is first deployed — it cannot be
+known in advance. Do not hard-code a guessed, external, or
+production-looking URL.
+
+1. Deploy the initial Cloud Run revision with a syntactically valid
+   placeholder audience value. The service will reject all callers until
+   corrected; this is safe and expected.
+2. Record the actual service URL that Cloud Run reports after deployment.
+3. Update `OIDC_EXPECTED_AUDIENCE` to that exact URL and redeploy.
+4. Only after this correction, configure the Pub/Sub push subscription and
+   (later, post-watch) the Cloud Scheduler job that call this service, so
+   neither is ever wired to a placeholder audience.
+
 ## Future infrastructure setup
 
 > **HUMAN GATE: REQUIRED — CLOUD / EXTERNAL MUTATION.** Every step below
@@ -95,8 +149,16 @@ Optional bounded values are `WATCH_RENEW_THRESHOLD_HOURS` (default 48),
 2. Create a regional Artifact Registry repository with a cleanup policy that
    retains the deployed image and a small rollback window while deleting old,
    untagged images.
-3. Create Firestore Standard edition. Apply least-privilege access to the
-   receiver's cursor and observation data where IAM permits.
+3. Create the project's Firestore `(default)` database.
+   `FirestoreObservationStore`/`build_firestore_store` call
+   `firestore.Client()` with no explicit database ID, so A1 requires the
+   `(default)` database rather than a named additional database. Verify
+   the required Firestore mode/edition against the deployed
+   `google-cloud-firestore` client library version and current Firestore
+   product requirements at deployment time — this repository does not pin
+   an exact mode, so do not assume Standard edition is correct without
+   that verification. Apply least-privilege access to the receiver's
+   cursor and observation data where IAM permits.
 4. Create separate service accounts:
    - Cloud Run runtime
    - Pub/Sub push caller
@@ -114,12 +176,14 @@ Optional bounded values are `WATCH_RENEW_THRESHOLD_HOURS` (default 48),
    Scheduler service accounts Cloud Run Invoker.
 10. Configure Pub/Sub authenticated push to `/pubsub` using the push service
     account and the exact expected OIDC audience.
-11. Configure a Cloud Scheduler hourly authenticated POST to `/maintenance`.
-    The endpoint performs catch-up and renews the watch only when expiration is
-    within 48 hours.
-12. Configure monitoring for Cloud Run 5xx, Pub/Sub retry/DLQ depth, OAuth
+11. Configure monitoring for Cloud Run 5xx, Pub/Sub retry/DLQ depth, OAuth
     401/403, cursor age, observation latency, duplicate count, watch expiration,
     and renewal failure.
+
+Cloud Scheduler configuration is deliberately **not** part of this list. It
+is deferred until after the Gmail watch bootstrap below (see "Scheduler
+configuration (post-watch)") so the maintenance job cannot invoke
+`users.watch` before the deliberate bootstrap Human Gate.
 
 Cloud Run IAM is the primary authentication boundary. The application also
 cryptographically verifies the Google-signed bearer token audience, verified
@@ -150,11 +214,29 @@ after a successful `users.watch` request.
 
 Watch renewal and the processing cursor are independent. Renewal must never
 advance or reset the processing cursor. Automatic renewal performed by the
-already-approved deployed service (future infrastructure setup step 11) is
-covered by that deployment's Human Gate. **HUMAN GATE: REQUIRED** applies
-again to any manual re-registration or renewal of `users.watch` performed
-outside the deployed service (for example, a direct `gcloud`/API call),
-because it changes live external watch state.
+already-approved deployed service (see "Scheduler configuration
+(post-watch)" below) is covered by that deployment's Human Gate.
+**HUMAN GATE: REQUIRED** applies again to any manual re-registration or
+renewal of `users.watch` performed outside the deployed service (for
+example, a direct `gcloud`/API call), because it changes live external
+watch state.
+
+## Scheduler configuration (post-watch)
+
+> **HUMAN GATE: REQUIRED — CLOUD MUTATION.** Do not create or enable the
+> Cloud Scheduler maintenance job until the Gmail watch bootstrap above has
+> completed successfully. An enabled Scheduler job reaching `/maintenance`
+> before a deliberate watch exists would perform an unplanned `users.watch`
+> call.
+
+1. Configure a Cloud Scheduler hourly authenticated POST to `/maintenance`,
+   created in a **paused/disabled** state.
+2. Verify the job is paused (a read-only `gcloud scheduler jobs describe`
+   check) before proceeding.
+3. **HUMAN GATE: REQUIRED — MUTATING OPERATION.** Only after confirming the
+   Gmail watch bootstrap succeeded, enable the job. Once enabled, it calls
+   `/maintenance` hourly, which performs catch-up and renews the watch only
+   when expiration is within the configured threshold (default 48 hours).
 
 ## Verification commands
 
@@ -170,10 +252,30 @@ gcloud secrets versions list gmail-oauth-client
 gcloud secrets versions list gmail-oauth-refresh-token
 ```
 
-Use an authenticated request from the approved caller to check `/health`, then
-`/maintenance`. Never put bearer tokens in copied logs or reports. Inspect
-Cloud Logging with field filters and confirm that raw sender, subject, message
-body, client secret, and refresh token are absent.
+An authenticated request to `/health` is also genuinely read-only: it
+requires no authentication and returns a static status with no Firestore or
+Gmail access.
+
+### Mutating verification: `/maintenance` (separate from the read-only checks above)
+
+> **HUMAN GATE: REQUIRED — MUTATING OPERATION.** An authenticated
+> `/maintenance` call is not read-only. Depending on stored cursor and
+> watch state it may:
+> - invoke Gmail `users.watch` when no watch is stored or the stored watch
+>   is within the renewal threshold, changing live external watch state;
+> - update the stored watch `historyId`/expiration fields;
+> - fetch Gmail messages and write sanitized observations and cursor state
+>   to Firestore.
+> The `gmail.readonly` OAuth scope limits what Gmail data can be read; it
+> does not make this endpoint's Firestore writes or its possible
+> `users.watch` call non-mutating. Do not invoke `/maintenance` before the
+> Gmail watch bootstrap above has completed.
+
+Only after human approval and after the Gmail watch bootstrap, send an
+authenticated request from the approved caller to `/maintenance`. Never put
+bearer tokens in copied logs or reports. Inspect Cloud Logging with field
+filters and confirm that raw sender, subject, message body, client secret,
+and refresh token are absent.
 
 ## A1 live success criteria
 
