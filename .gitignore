@@ -8,3 +8,6 @@ __pycache__/
 # Local environment / secrets
 .env
 .env.*
+
+# Repository-local Claude Code state (untracked; not for commit)
+.claude/

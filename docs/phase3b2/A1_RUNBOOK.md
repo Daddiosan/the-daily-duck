@@ -31,6 +31,10 @@ traffic can still create charges.
 
 ## OAuth consent and refresh token
 
+> **HUMAN GATE: REQUIRED — OAUTH PRODUCTION PROMOTION.** Steps 1-2 below move
+> the OAuth consent screen from Testing to a live production authorization
+> state. Obtain explicit human approval before performing them.
+
 > **Critical: set the OAuth consent screen to `External` and publishing status
 > `In production` before issuing the operational refresh token.**
 
@@ -43,10 +47,10 @@ seven days. Do not treat a Testing refresh token as an operational credential.
 4. Request only
    `https://www.googleapis.com/auth/gmail.readonly` with offline access.
 5. Complete the interactive grant as the monitored Gmail mailbox owner.
-6. Store the complete Desktop client JSON in Secret Manager secret
-   `gmail-oauth-client`.
-7. Store the refresh token separately in
-   `gmail-oauth-refresh-token`.
+6. **HUMAN GATE: REQUIRED — SECRET MANAGER MUTATION.** Store the complete
+   Desktop client JSON in Secret Manager secret `gmail-oauth-client`.
+7. **HUMAN GATE: REQUIRED — SECRET MANAGER MUTATION.** Store the refresh
+   token separately in `gmail-oauth-refresh-token`.
 8. Never place either value in a file, image, log, shell history, GitHub
    variable, or repository secret.
 
@@ -54,10 +58,11 @@ At deployment, expose the secret values to the container as
 `GMAIL_OAUTH_CLIENT_JSON` and `GMAIL_OAUTH_REFRESH_TOKEN`. Grant the Cloud Run
 runtime service account access only to those named secrets.
 
-If the mailbox password changes and the refresh token stops working, revoke
-the old OAuth grant, repeat the In-production offline grant, add a new Secret
-Manager version, redeploy, and verify `users.getProfile` before re-enabling the
-push subscription.
+**HUMAN GATE: REQUIRED — OAUTH + SECRET MANAGER MUTATION.** If the mailbox
+password changes and the refresh token stops working: revoke the old OAuth
+grant, repeat the In-production offline grant, add a new Secret Manager
+version, redeploy, and verify `users.getProfile` before re-enabling the push
+subscription.
 
 ## Required non-secret configuration
 
@@ -82,7 +87,9 @@ Optional bounded values are `WATCH_RENEW_THRESHOLD_HOURS` (default 48),
 
 ## Future infrastructure setup
 
-Do not execute these steps without explicit infrastructure approval.
+> **HUMAN GATE: REQUIRED — CLOUD / EXTERNAL MUTATION.** Every step below
+> mutates live cloud state. Do not execute any step without explicit
+> infrastructure approval.
 
 1. Enable the prerequisite APIs.
 2. Create a regional Artifact Registry repository with a cleanup policy that
@@ -96,14 +103,15 @@ Do not execute these steps without explicit infrastructure approval.
    - Cloud Scheduler maintenance caller
 5. Create a Pub/Sub topic and push subscription. Configure retry and a dead
    letter topic/subscription.
-6. Grant `serviceAccount:gmail-api-push@system.gserviceaccount.com` publisher
+6. **HUMAN GATE: REQUIRED — IAM MUTATION.** Grant
+   `serviceAccount:gmail-api-push@system.gserviceaccount.com` publisher
    access on the Gmail event topic.
 7. Build the image from `cloud/approval_receiver/Dockerfile` and record its
    immutable digest.
 8. Deploy Cloud Run privately, with no unauthenticated invocation, minimum
    instances zero, and the runtime service account.
-9. Grant only the Pub/Sub push and Scheduler service accounts Cloud Run
-   Invoker.
+9. **HUMAN GATE: REQUIRED — IAM MUTATION.** Grant only the Pub/Sub push and
+   Scheduler service accounts Cloud Run Invoker.
 10. Configure Pub/Sub authenticated push to `/pubsub` using the push service
     account and the exact expected OIDC audience.
 11. Configure a Cloud Scheduler hourly authenticated POST to `/maintenance`.
@@ -120,13 +128,18 @@ by a caller is proof of identity.
 
 ## Gmail watch bootstrap
 
+> **HUMAN GATE: REQUIRED — GMAIL users.watch MUTATION.** `users.watch`
+> changes external Gmail watch state even though the API scope is
+> `gmail.readonly`; the read-only data scope does not make this a read-only
+> operation. Obtain explicit human approval before step 3 below.
+
 Bootstrap must be deliberate because Gmail sends an immediate notification
 after a successful `users.watch` request.
 
 1. Confirm the push endpoint rejects unauthenticated requests.
 2. Confirm `users.getProfile` succeeds using `gmail.readonly`.
-3. Start `users.watch` with the configured Pub/Sub topic and
-   `labelIds: [INBOX]`.
+3. **HUMAN GATE: REQUIRED.** Start `users.watch` with the configured Pub/Sub
+   topic and `labelIds: [INBOX]`.
 4. Store the returned watch `historyId` and expiration only in the watch
    fields.
 5. Do not copy the watch `historyId` into `processing_history_id`.
@@ -136,12 +149,18 @@ after a successful `users.watch` request.
    `newer_than:7d` constraints and no hard-coded private address.
 
 Watch renewal and the processing cursor are independent. Renewal must never
-advance or reset the processing cursor.
+advance or reset the processing cursor. Automatic renewal performed by the
+already-approved deployed service (future infrastructure setup step 11) is
+covered by that deployment's Human Gate. **HUMAN GATE: REQUIRED** applies
+again to any manual re-registration or renewal of `users.watch` performed
+outside the deployed service (for example, a direct `gcloud`/API call),
+because it changes live external watch state.
 
 ## Verification commands
 
-Exact project, service, region, and subscription names must be reviewed before
-use. Representative read-only checks after an approved deployment are:
+**READ-ONLY verification — no cloud mutation.** Exact project, service,
+region, and subscription names must be reviewed before use. Representative
+read-only checks after an approved deployment are:
 
 ```text
 gcloud run services describe SERVICE --region REGION
@@ -192,17 +211,23 @@ body, client secret, and refresh token are absent.
 
 ## Rollback and revocation
 
+> **HUMAN GATE: REQUIRED — CLOUD / EXTERNAL MUTATION.** Every step below
+> mutates live cloud state. Obtain explicit human approval before executing
+> any step.
+
 1. Disable or detach the Pub/Sub push subscription.
 2. Stop the Scheduler maintenance job.
 3. Route Cloud Run to the previously recorded image digest or set service
    traffic to zero.
 4. Do not delete Firestore cursor/observations until audit evidence is exported
    and retention approval is obtained.
-5. Revoke the Gmail OAuth grant when abandoning the receiver.
-6. Disable and then destroy the corresponding Secret Manager versions after
-   confirming rollback.
-7. Remove Gmail publisher and Cloud Run Invoker IAM bindings that are no
-   longer required.
+5. **HUMAN GATE: REQUIRED — GMAIL users.watch / OAUTH MUTATION.** Revoke the
+   Gmail OAuth grant when abandoning the receiver.
+6. **HUMAN GATE: REQUIRED — SECRET MANAGER MUTATION.** Disable and then
+   destroy the corresponding Secret Manager versions after confirming
+   rollback.
+7. **HUMAN GATE: REQUIRED — IAM MUTATION.** Remove Gmail publisher and Cloud
+   Run Invoker IAM bindings that are no longer required.
 8. Apply the Artifact Registry cleanup policy; do not manually delete the only
    known-good rollback image.
 
