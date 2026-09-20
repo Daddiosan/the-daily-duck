@@ -62,7 +62,7 @@
     {
       "claim": "日次自動化スケジュール定義（毎日22:07 UTC起動、workflow_dispatchも可）",
       "source_type": "LOCAL_DOCUMENT",
-      "source_path": ".github/workflows/daily-duck.yml",
+      "source_path": null,
       "revision": "4a975faaf5bfe45f872f5ae0abeae6d7b944623c",
       "observed_at": "2026-09-18T01:02:53+09:00"
     },
