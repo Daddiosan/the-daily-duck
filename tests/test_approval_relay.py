@@ -1,15 +1,14 @@
-"""Behavioral test matrix for cloud/approval_relay (Thin Relay, Phase
-M3A): routing, dedupe, business retry budget, DRY_RUN, and genuine
-multi-threaded concurrency. Security/governance assertions live in
-tests/test_approval_relay_contract.py, not here.
-"""
+"""Behavioral tests for M3C ingress, routing, and transactional storage."""
 
 from __future__ import annotations
 
 import base64
 import json
+import sys
 import threading
+import types
 import unittest
+from dataclasses import replace
 from typing import Any
 
 from cloud.approval_relay.auth import AuthenticationError, PushAuthenticator
@@ -33,7 +32,6 @@ from cloud.approval_relay.github_dispatch import (
 )
 from cloud.approval_relay.ledger import (
     LEGAL_TRANSITIONS,
-    InMemoryIngressState,
     InMemoryRelayLedger,
     LedgerStateConflict,
     RelayLedgerState,
@@ -60,6 +58,14 @@ from cloud.approval_relay.router import (
     mailbox_hash_for,
     notification_key_for,
     workflow_for_stage,
+)
+from cloud.approval_relay.storage import (
+    CURSOR_PERSISTED_FIELDS,
+    EVENT_PERSISTED_FIELDS,
+    RELAY_CURSOR_COLLECTION,
+    RELAY_EVENTS_COLLECTION,
+    FirestoreRelayStorage,
+    InMemoryCursorStore,
 )
 
 
@@ -453,7 +459,7 @@ class DryRunTests(unittest.TestCase):
 
 
 def pubsub_envelope(
-    *, email: str = "owner@example.com", history_id: str = "101"
+    *, email: str = "owner@example.com", history_id: object = "101"
 ) -> dict[str, object]:
     data = base64.b64encode(
         json.dumps({"emailAddress": email, "historyId": history_id}).encode()
@@ -490,6 +496,22 @@ class PubSubEnvelopeTests(unittest.TestCase):
         for value in invalid:
             with self.subTest(value=value), self.assertRaises(EnvelopeError):
                 decode_pubsub_envelope(value)
+
+    def test_history_id_requires_nonempty_decimal_string(self):
+        for history_id in (
+            12345,
+            1.5,
+            True,
+            None,
+            [],
+            {},
+            "",
+            " ",
+            "12x",
+            "１２３",
+        ):
+            with self.subTest(history_id=history_id), self.assertRaises(EnvelopeError):
+                decode_pubsub_envelope(pubsub_envelope(history_id=history_id))
 
 
 # ---------------------------------------------------------------------------
@@ -867,6 +889,327 @@ class GmailReaderTests(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# Firestore durable cursor / ledger
+# ---------------------------------------------------------------------------
+
+
+class FakeSnapshot:
+    def __init__(self, data):
+        self._data = dict(data) if data is not None else None
+        self.exists = data is not None
+
+    def to_dict(self):
+        return dict(self._data) if self._data is not None else None
+
+
+class FakeDocumentReference:
+    def __init__(self, client, collection_name, document_id):
+        self._client = client
+        self._collection_name = collection_name
+        self._document_id = document_id
+
+    @property
+    def _collection(self):
+        return self._client._collections.setdefault(self._collection_name, {})
+
+    def get(self, transaction=None):
+        if transaction is not None:
+            self._client.transaction_reads += 1
+        return FakeSnapshot(self._collection.get(self._document_id))
+
+    def create(self, data):
+        if self._document_id in self._collection:
+            raise RuntimeError("already exists")
+        self._collection[self._document_id] = dict(data)
+
+    def set(self, data, merge=False):
+        if merge and self._document_id in self._collection:
+            self._collection[self._document_id] = {
+                **self._collection[self._document_id],
+                **dict(data),
+            }
+        else:
+            self._collection[self._document_id] = dict(data)
+
+    def update(self, data):
+        if self._document_id not in self._collection:
+            raise RuntimeError("missing document")
+        self._collection[self._document_id].update(dict(data))
+
+
+class FakeCollection:
+    def __init__(self, client, name):
+        self._client = client
+        self._name = name
+
+    def document(self, document_id):
+        return FakeDocumentReference(self._client, self._name, document_id)
+
+
+class FakeTransaction:
+    def __init__(self, client):
+        self.client = client
+
+    def create(self, reference, data):
+        reference.create(data)
+
+    def set(self, reference, data, merge=False):
+        reference.set(data, merge=merge)
+
+    def update(self, reference, data):
+        reference.update(data)
+
+
+class FakeFirestoreClient:
+    def __init__(self):
+        self._collections = {}
+        self.lock = threading.RLock()
+        self.transaction_count = 0
+        self.transactional_calls = 0
+        self.transaction_attempts = 0
+        self.transaction_reads = 0
+        self.conflicts_remaining = 0
+        self.injected_conflicts = 0
+
+    def collection(self, name):
+        return FakeCollection(self, name)
+
+    def transaction(self):
+        self.transaction_count += 1
+        return FakeTransaction(self)
+
+
+def install_fake_firestore():
+    saved = {
+        name: sys.modules.get(name)
+        for name in ("google", "google.cloud", "google.cloud.firestore")
+    }
+
+    def transactional(function):
+        def wrapper(transaction, *args, **kwargs):
+            with transaction.client.lock:
+                transaction.client.transactional_calls += 1
+                while True:
+                    transaction.client.transaction_attempts += 1
+                    if transaction.client.conflicts_remaining:
+                        transaction.client.conflicts_remaining -= 1
+                        transaction.client.injected_conflicts += 1
+                        continue
+                    return function(transaction, *args, **kwargs)
+
+        return wrapper
+
+    google_module = sys.modules.get("google") or types.ModuleType("google")
+    had_cloud_attribute = hasattr(google_module, "cloud")
+    original_cloud_attribute = getattr(google_module, "cloud", None)
+    cloud_module = types.ModuleType("google.cloud")
+    firestore_module = types.ModuleType("google.cloud.firestore")
+    firestore_module.transactional = transactional
+    cloud_module.firestore = firestore_module
+    if not hasattr(google_module, "cloud"):
+        google_module.cloud = cloud_module
+    sys.modules["google"] = google_module
+    sys.modules["google.cloud"] = cloud_module
+    sys.modules["google.cloud.firestore"] = firestore_module
+    return saved, had_cloud_attribute, original_cloud_attribute
+
+
+def restore_fake_firestore(saved):
+    modules, had_cloud_attribute, original_cloud_attribute = saved
+    google_module = sys.modules.get("google")
+    if google_module is not None:
+        if had_cloud_attribute:
+            google_module.cloud = original_cloud_attribute
+        elif hasattr(google_module, "cloud"):
+            delattr(google_module, "cloud")
+    for name, module in modules.items():
+        if module is None:
+            sys.modules.pop(name, None)
+        else:
+            sys.modules[name] = module
+
+
+class FirestoreRelayStorageTests(unittest.TestCase):
+    def setUp(self):
+        self.saved_modules = install_fake_firestore()
+        self.client = FakeFirestoreClient()
+        self.storage = FirestoreRelayStorage(self.client, clock=lambda: "cursor-time")
+
+    def tearDown(self):
+        restore_fake_firestore(self.saved_modules)
+
+    def test_first_cursor_initialization_and_cas(self):
+        mailbox_hash = mailbox_hash_for("owner@example.com")
+        self.assertIsNone(self.storage.read_cursor(mailbox_hash))
+        self.assertTrue(
+            self.storage.compare_and_update_cursor(mailbox_hash, None, "100")
+        )
+        self.assertEqual(self.storage.read_cursor(mailbox_hash).history_id, "100")
+        self.assertTrue(
+            self.storage.compare_and_update_cursor(mailbox_hash, "100", "101")
+        )
+        self.assertFalse(
+            self.storage.compare_and_update_cursor(mailbox_hash, "100", "102")
+        )
+
+    def test_sdk_transaction_retry_is_safe_for_cursor_initialization(self):
+        mailbox_hash = mailbox_hash_for("owner@example.com")
+        self.client.conflicts_remaining = 1
+        self.assertTrue(
+            self.storage.compare_and_update_cursor(mailbox_hash, None, "100")
+        )
+        self.assertEqual(self.client.injected_conflicts, 1)
+        self.assertEqual(self.client.transaction_attempts, 2)
+        self.assertEqual(self.storage.read_cursor(mailbox_hash).history_id, "100")
+
+    def test_restart_reads_persisted_cursor_and_env_floor_never_overwrites(self):
+        first_reader = FakeGmailReader(history=HistoryBatch(()))
+        first = RelayIngressService(
+            config=make_config(),
+            gmail=first_reader,
+            cursor_store=self.storage,
+            relay=make_service(mode=RelayMode.DRY_RUN),
+        )
+        first.process_pubsub(pubsub_envelope(history_id="101"))
+
+        reconstructed_storage = FirestoreRelayStorage(
+            self.client, clock=lambda: "restart-time"
+        )
+        second_reader = FakeGmailReader(history=HistoryBatch(()))
+        second = RelayIngressService(
+            config=replace(make_config(), initial_history_id="999"),
+            gmail=second_reader,
+            cursor_store=reconstructed_storage,
+            relay=make_service(mode=RelayMode.DRY_RUN),
+        )
+        second.process_pubsub(pubsub_envelope(history_id="102"))
+        self.assertEqual(first_reader.list_history_calls, ["100"])
+        self.assertEqual(second_reader.list_history_calls, ["101"])
+        persisted = reconstructed_storage.read_cursor(
+            mailbox_hash_for("owner@example.com")
+        )
+        self.assertEqual(persisted.history_id, "102")
+
+    def test_two_storage_instances_reserve_same_event_only_once(self):
+        other = FirestoreRelayStorage(self.client)
+        barrier = threading.Barrier(2)
+        results = []
+        result_lock = threading.Lock()
+
+        def reserve(storage):
+            barrier.wait(timeout=5)
+            value = storage.reserve_new(
+                "event-1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0"
+            )
+            with result_lock:
+                results.append(value is not None)
+
+        threads = [
+            threading.Thread(target=reserve, args=(self.storage,)),
+            threading.Thread(target=reserve, args=(other,)),
+        ]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(timeout=10)
+        self.assertEqual(sorted(results), [False, True])
+        self.assertGreaterEqual(self.client.transactional_calls, 2)
+        self.assertGreaterEqual(self.client.transaction_reads, 2)
+
+    def test_two_relay_instances_allow_at_most_one_dispatch_attempt(self):
+        dispatcher = FakeGitHubDispatcher()
+        first = RelayService(
+            ledger=self.storage,
+            dispatcher=dispatcher,
+            routing=ROUTING,
+            mode=RelayMode.LIVE,
+        )
+        second = RelayService(
+            ledger=FirestoreRelayStorage(self.client),
+            dispatcher=dispatcher,
+            routing=ROUTING,
+            mode=RelayMode.LIVE,
+        )
+        barrier = threading.Barrier(2)
+        results = []
+
+        def process(service):
+            barrier.wait(timeout=5)
+            results.append(service.process_event(make_event(subject=GATE_A_PATTERN)))
+
+        threads = [
+            threading.Thread(target=process, args=(first,)),
+            threading.Thread(target=process, args=(second,)),
+        ]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(timeout=10)
+        self.assertEqual(len(results), 2)
+        self.assertEqual(len(dispatcher.calls), 1)
+        self.assertIn(RelayStatus.DISPATCHED, {result.status for result in results})
+
+    def test_attempt_budget_terminal_states_and_independent_keys(self):
+        for key in ("retry", "unknown", "confirmed", "independent"):
+            self.storage.reserve_new(
+                key, stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0"
+            )
+
+        attempt = None
+        for number in range(1, 5):
+            attempt = self.storage.begin_attempt("retry", now=f"t{number}")
+            self.assertEqual(attempt.attempt_count, number)
+            self.storage.set_state(
+                "retry",
+                expected_state=RelayLedgerState.DISPATCH_ATTEMPTING,
+                next_state=(
+                    RelayLedgerState.SAFE_TO_RETRY
+                    if number < 4
+                    else RelayLedgerState.FAILED_FINAL
+                ),
+                now=f"s{number}",
+            )
+        self.assertIsNone(self.storage.begin_attempt("retry", now="t5"))
+
+        self.storage.begin_attempt("unknown", now="t1")
+        self.storage.set_state(
+            "unknown",
+            expected_state=RelayLedgerState.DISPATCH_ATTEMPTING,
+            next_state=RelayLedgerState.UNKNOWN_OUTCOME,
+            now="t2",
+        )
+        self.assertIsNone(self.storage.begin_attempt("unknown", now="t3"))
+
+        self.storage.begin_attempt("confirmed", now="t1")
+        self.storage.set_state(
+            "confirmed",
+            expected_state=RelayLedgerState.DISPATCH_ATTEMPTING,
+            next_state=RelayLedgerState.DISPATCH_CONFIRMED,
+            now="t2",
+        )
+        self.assertIsNone(self.storage.begin_attempt("confirmed", now="t3"))
+        self.assertIsNotNone(self.storage.begin_attempt("independent", now="t1"))
+
+    def test_persisted_schemas_are_minimal_and_collections_fixed(self):
+        mailbox_hash = mailbox_hash_for("owner@example.com")
+        self.storage.compare_and_update_cursor(mailbox_hash, None, "100")
+        self.storage.reserve_new(
+            "event-1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0"
+        )
+        cursor_data = self.client._collections[RELAY_CURSOR_COLLECTION][mailbox_hash]
+        event_data = self.client._collections[RELAY_EVENTS_COLLECTION]["event-1"]
+        self.assertEqual(set(cursor_data), CURSOR_PERSISTED_FIELDS)
+        self.assertEqual(set(event_data), EVENT_PERSISTED_FIELDS)
+        for forbidden in ("mailbox", "sender", "subject", "body", "token"):
+            self.assertNotIn(forbidden, cursor_data)
+            self.assertNotIn(forbidden, event_data)
+        self.assertEqual(
+            set(self.client._collections),
+            {RELAY_CURSOR_COLLECTION, RELAY_EVENTS_COLLECTION},
+        )
+
+
+# ---------------------------------------------------------------------------
 # Authenticated Flask ingress
 # ---------------------------------------------------------------------------
 
@@ -880,6 +1223,7 @@ def make_config() -> RelayConfig:
         oidc_expected_audience="https://relay.example/relay",
         oidc_expected_principals=frozenset({"push@example.iam.gserviceaccount.com"}),
         initial_history_id="100",
+        firestore_project="daily-duck-test",
     )
 
 
@@ -962,6 +1306,7 @@ class FlaskAppTests(unittest.TestCase):
             "RELAY_GMAIL_INITIAL_HISTORY_ID": "100",
             "RELAY_GMAIL_OAUTH_CLIENT_JSON": "{}",
             "RELAY_GMAIL_OAUTH_REFRESH_TOKEN": "secret-not-used",
+            "RELAY_FIRESTORE_PROJECT": "daily-duck-test",
         }
         calls = []
 
@@ -969,15 +1314,30 @@ class FlaskAppTests(unittest.TestCase):
             calls.append("gmail-built")
             return FakeGmailReader()
 
+        fake_firestore_client = FakeFirestoreClient()
         app = create_app_from_env(
             env=env,
             gmail_reader_factory=gmail_factory,
+            firestore_client_factory=lambda: fake_firestore_client,
             token_verifier_factory=lambda: (lambda token, audience: claims()),
         )
         self.assertEqual(calls, [])
         components = app.extensions["relay_components"]
         self.assertEqual(components["relay"].mode, RelayMode.DRY_RUN)
         self.assertIsInstance(components["dispatcher"], FakeGitHubDispatcher)
+        self.assertIsInstance(components["cursor_store"], FirestoreRelayStorage)
+        self.assertIsInstance(components["ledger"], FirestoreRelayStorage)
+        self.assertIs(components["cursor_store"], components["ledger"])
+
+        missing_firestore = dict(env)
+        del missing_firestore["RELAY_FIRESTORE_PROJECT"]
+        with self.assertRaises(ConfigurationError):
+            create_app_from_env(
+                env=missing_firestore,
+                gmail_reader_factory=gmail_factory,
+                firestore_client_factory=lambda: fake_firestore_client,
+                token_verifier_factory=lambda: (lambda token, audience: claims()),
+            )
 
     def test_production_constructor_rejects_live_mode(self):
         env = {
@@ -991,12 +1351,14 @@ class FlaskAppTests(unittest.TestCase):
             "RELAY_GMAIL_INITIAL_HISTORY_ID": "100",
             "RELAY_GMAIL_OAUTH_CLIENT_JSON": "{}",
             "RELAY_GMAIL_OAUTH_REFRESH_TOKEN": "secret-not-used",
+            "RELAY_FIRESTORE_PROJECT": "daily-duck-test",
             "RELAY_MODE": "LIVE",
         }
         with self.assertRaises(ConfigurationError):
             create_app_from_env(
                 env=env,
                 gmail_reader_factory=lambda: FakeGmailReader(),
+                firestore_client_factory=lambda: FakeFirestoreClient(),
                 token_verifier_factory=lambda: (lambda token, audience: claims()),
             )
 
@@ -1071,6 +1433,16 @@ class FlaskAppTests(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_non_string_history_id_is_rejected_before_gmail_access(self):
+        reader = FakeGmailReader(history=HistoryBatch(()))
+        response = self._app(gmail=reader).test_client().post(
+            "/relay",
+            json=pubsub_envelope(history_id=12345),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(reader.list_history_calls, [])
+
     def test_duplicate_notification_is_acked_without_second_history_walk(self):
         reader = FakeGmailReader(history=HistoryBatch(()))
         client = self._app(gmail=reader).test_client()
@@ -1087,14 +1459,12 @@ class FlaskAppTests(unittest.TestCase):
         reader = FakeGmailReader(
             history=HistoryBatch(("m1",)), messages={"m1": GmailReaderError("fail")}
         )
-        state = InMemoryIngressState(
-            mailbox_hash=mailbox_hash_for("owner@example.com"), initial_history_id="100"
-        )
+        cursor_store = InMemoryCursorStore(clock=lambda: "t0")
         app = create_app(
             config=make_config(),
             gmail=reader,
             authenticator=make_auth(),
-            ingress_state=state,
+            cursor_store=cursor_store,
         )
         response = app.test_client().post(
             "/relay",
@@ -1102,7 +1472,42 @@ class FlaskAppTests(unittest.TestCase):
             headers={"Authorization": "Bearer token"},
         )
         self.assertEqual(response.status_code, 500)
-        self.assertEqual(state.cursor(mailbox_hash_for("owner@example.com")), "100")
+        cursor = cursor_store.read_cursor(mailbox_hash_for("owner@example.com"))
+        self.assertIsNotNone(cursor)
+        self.assertEqual(cursor.history_id, "100")
+
+    def test_cursor_cas_failure_is_retryable_not_success(self):
+        class FailingFinalCursorStore(InMemoryCursorStore):
+            def __init__(self):
+                super().__init__(clock=lambda: "t0")
+                self.calls = 0
+
+            def compare_and_update_cursor(
+                self, mailbox_hash, expected_history_id, new_history_id
+            ):
+                self.calls += 1
+                if self.calls == 1:
+                    return super().compare_and_update_cursor(
+                        mailbox_hash, expected_history_id, new_history_id
+                    )
+                return False
+
+        cursor_store = FailingFinalCursorStore()
+        app = create_app(
+            config=make_config(),
+            gmail=FakeGmailReader(history=HistoryBatch(())),
+            authenticator=make_auth(),
+            cursor_store=cursor_store,
+        )
+        response = app.test_client().post(
+            "/relay",
+            json=pubsub_envelope(),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.get_json()["status"], "RETRY")
+        cursor = cursor_store.read_cursor(mailbox_hash_for("owner@example.com"))
+        self.assertEqual(cursor.history_id, "100")
 
     def test_health_endpoint(self):
         response = self._app().test_client().get("/health")

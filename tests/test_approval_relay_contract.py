@@ -1,5 +1,5 @@
 """Governance/security contract for cloud/approval_relay (Thin Relay,
-Phase M3A), mirroring the protection style of
+Phase M3C), mirroring the protection style of
 tests/test_approval_dispatcher_contract.py (A2) and
 tests/test_approval_receiver_contract.py (A1) without importing from
 either or from cloud.approval_receiver / cloud.approval_dispatcher at all.
@@ -30,6 +30,13 @@ from cloud.approval_relay.main import (
     RelayStatus,
 )
 from cloud.approval_relay.router import RelayInboundEvent, RoutingConfig
+from cloud.approval_relay.storage import (
+    CURSOR_PERSISTED_FIELDS,
+    EVENT_PERSISTED_FIELDS,
+    RELAY_CURSOR_COLLECTION,
+    RELAY_EVENTS_COLLECTION,
+    CursorRecord,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,6 +95,7 @@ class RelayFileBoundaryTests(unittest.TestCase):
             "github_dispatch.py",
             "gmail_reader.py",
             "auth.py",
+            "storage.py",
             "requirements.txt",
             "Dockerfile",
         }
@@ -101,8 +109,17 @@ class RelayFileBoundaryTests(unittest.TestCase):
             (ROOT / "docs" / "phase3b2" / "THIN_RELAY_RUNBOOK.md").is_file()
         )
 
+    def test_firestore_dependency_and_docker_source_are_explicit(self):
+        requirements = (RELAY / "requirements.txt").read_text(encoding="utf-8")
+        dockerfile = (RELAY / "Dockerfile").read_text(encoding="utf-8")
+        self.assertIn("google-cloud-firestore>=2.0,<3", requirements)
+        self.assertIn("storage.py", dockerfile)
+        self.assertIn('"--workers", "1"', dockerfile)
+        for forbidden in ("automation_state", "automation_images", "secrets"):
+            self.assertNotIn(forbidden, dockerfile)
+
     def test_a1_and_a2_directories_remain_untouched_by_this_component(self):
-        # This relay's own file set is exactly the six files above --
+        # This relay's own file set is exactly the files above --
         # nothing was added to, or removed from, cloud/approval_receiver/
         # or cloud/approval_dispatcher/. Their own contract tests remain
         # the authority for their internal boundaries; this only asserts
@@ -189,7 +206,6 @@ class RelayIndependenceImportTests(unittest.TestCase):
                 "InMemoryMessageDedupeStore",
                 "InMemoryTransitionLedger",
                 "InMemoryShadowObservationStore",
-                "InMemoryCursorStore",
             ):
                 self.assertNotIn(forbidden, defined_names)
 
@@ -263,6 +279,38 @@ class SanitizedDataContractTests(unittest.TestCase):
         self.assertEqual(fields, ALLOWED_LEDGER_FIELDS)
         for forbidden in ("subject", "body", "sender", "sender_email"):
             self.assertNotIn(forbidden, fields)
+
+    def test_firestore_schemas_contain_only_sanitized_fields(self):
+        self.assertEqual(CURSOR_PERSISTED_FIELDS, set(CursorRecord.__dataclass_fields__))
+        self.assertEqual(EVENT_PERSISTED_FIELDS, ALLOWED_LEDGER_FIELDS)
+        for fields in (CURSOR_PERSISTED_FIELDS, EVENT_PERSISTED_FIELDS):
+            for forbidden in (
+                "mailbox",
+                "sender",
+                "subject",
+                "body",
+                "oauth_token",
+                "oidc_token",
+                "authorization",
+            ):
+                self.assertNotIn(forbidden, fields)
+
+    def test_firestore_collection_names_are_fixed_application_constants(self):
+        self.assertEqual(RELAY_CURSOR_COLLECTION, "relay_cursor")
+        self.assertEqual(RELAY_EVENTS_COLLECTION, "relay_events")
+        storage_source = (RELAY / "storage.py").read_text(encoding="utf-8")
+        self.assertNotIn("os.environ", storage_source)
+
+    def test_production_wiring_uses_firestore_not_inmemory_state(self):
+        import inspect
+
+        from cloud.approval_relay.main import create_app_from_env
+
+        source = inspect.getsource(create_app_from_env)
+        self.assertIn("FirestoreRelayStorage", source)
+        self.assertIn("build_firestore_storage", source)
+        self.assertNotIn("InMemoryRelayLedger", source)
+        self.assertNotIn("InMemoryCursorStore", source)
 
     def test_relay_inbound_event_has_no_sender_or_body_field(self):
         fields = {f.name for f in RelayInboundEvent.__dataclass_fields__.values()}

@@ -3,7 +3,7 @@
 The relay does not parse approval commands and has no real GitHub adapter.
 Its production-shaped route authenticates Pub/Sub, walks Gmail history,
 fetches only Subject/From metadata, applies exact sender authorization, and
-records DRY_RUN routing intent in a local thread-safe ledger.
+records DRY_RUN routing intent in the configured transactional ledger.
 """
 
 from __future__ import annotations
@@ -31,10 +31,8 @@ from .gmail_reader import (
     build_gmail_reader_from_env,
 )
 from .ledger import (
-    InMemoryIngressState,
     InMemoryRelayLedger,
     LedgerStateConflict,
-    NotificationBusyError,
     RelayLedger,
     RelayLedgerState,
     utc_now_iso,
@@ -48,6 +46,12 @@ from .router import (
     mailbox_hash_for,
     notification_key_for,
     workflow_for_stage,
+)
+from .storage import (
+    CursorStore,
+    FirestoreRelayStorage,
+    InMemoryCursorStore,
+    build_firestore_storage,
 )
 
 
@@ -82,6 +86,10 @@ class ConfigurationError(ValueError):
 
 class EnvelopeError(ValueError):
     """The Pub/Sub envelope or decoded Gmail notification is malformed."""
+
+
+class CursorConflictError(RuntimeError):
+    """A cursor CAS lost and no completed concurrent advance explains it."""
 
 
 class RelayMode(str, Enum):
@@ -128,6 +136,7 @@ class RelayConfig:
     oidc_expected_audience: str
     oidc_expected_principals: frozenset[str]
     initial_history_id: str
+    firestore_project: str
     mode: RelayMode = RelayMode.DRY_RUN
 
     @classmethod
@@ -150,11 +159,11 @@ class RelayConfig:
             for item in required("RELAY_OIDC_EXPECTED_PRINCIPALS").split(",")
         )
         initial_history_id = required("RELAY_GMAIL_INITIAL_HISTORY_ID")
-        if not initial_history_id.isdecimal():
+        if not initial_history_id.isascii() or not initial_history_id.isdecimal():
             raise ConfigurationError("RELAY_GMAIL_INITIAL_HISTORY_ID is malformed.")
         raw_mode = str(values.get("RELAY_MODE", RelayMode.DRY_RUN.value)).strip()
         if raw_mode != RelayMode.DRY_RUN.value:
-            raise ConfigurationError("M3B production wiring permits DRY_RUN only.")
+            raise ConfigurationError("M3C production wiring permits DRY_RUN only.")
         # Validate secret presence now, but defer credential/client creation.
         required("RELAY_GMAIL_OAUTH_CLIENT_JSON")
         required("RELAY_GMAIL_OAUTH_REFRESH_TOKEN")
@@ -169,6 +178,7 @@ class RelayConfig:
             oidc_expected_audience=required("RELAY_OIDC_EXPECTED_AUDIENCE"),
             oidc_expected_principals=principals,
             initial_history_id=initial_history_id,
+            firestore_project=required("RELAY_FIRESTORE_PROJECT"),
         )
 
 
@@ -199,13 +209,20 @@ def decode_pubsub_envelope(envelope: object) -> PubSubNotification:
         raise EnvelopeError("Pub/Sub data is not valid base64 JSON.") from exc
     if not isinstance(payload, Mapping):
         raise EnvelopeError("Decoded Gmail notification must be a JSON object.")
-    email_address = str(payload.get("emailAddress", "")).strip().casefold()
-    history_id = str(payload.get("historyId", "")).strip()
-    if not email_address:
+    raw_email_address = payload.get("emailAddress")
+    history_id = payload.get("historyId")
+    if not isinstance(raw_email_address, str) or not raw_email_address.strip():
         raise EnvelopeError("Gmail notification is missing emailAddress.")
-    if not history_id or not history_id.isdecimal():
+    if (
+        not isinstance(history_id, str)
+        or not history_id
+        or not history_id.isascii()
+        or not history_id.isdecimal()
+    ):
         raise EnvelopeError("Gmail notification is missing a valid historyId.")
-    return PubSubNotification(email_address=email_address, history_id=history_id)
+    return PubSubNotification(
+        email_address=raw_email_address.strip().casefold(), history_id=history_id
+    )
 
 
 class RelayService:
@@ -343,13 +360,30 @@ class RelayIngressService:
         *,
         config: RelayConfig,
         gmail: GmailReader,
-        ingress_state: InMemoryIngressState,
+        cursor_store: CursorStore,
         relay: RelayService,
     ) -> None:
         self.config = config
         self.gmail = gmail
-        self.ingress_state = ingress_state
+        self.cursor_store = cursor_store
         self.relay = relay
+
+    def _read_or_initialize_cursor(self, mailbox_hash: str) -> str:
+        persisted = self.cursor_store.read_cursor(mailbox_hash)
+        if persisted is not None:
+            return persisted.history_id
+        if self.cursor_store.compare_and_update_cursor(
+            mailbox_hash, None, self.config.initial_history_id
+        ):
+            return self.config.initial_history_id
+        # A concurrent instance initialized first. Its persisted value wins;
+        # the environment floor is never written over it.
+        persisted = self.cursor_store.read_cursor(mailbox_hash)
+        if persisted is None:
+            raise CursorConflictError(
+                "Relay cursor initialization lost without a persisted winner."
+            )
+        return persisted.history_id
 
     def process_pubsub(self, envelope: object) -> dict[str, Any]:
         notification = decode_pubsub_envelope(envelope)
@@ -359,36 +393,38 @@ class RelayIngressService:
         notification_key = notification_key_for(
             notification.email_address, notification.history_id
         )
-        lease = self.ingress_state.begin(
-            notification_key=notification_key,
-            mailbox_hash=mailbox_hash,
-            target_history_id=notification.history_id,
-        )
-        if lease is None:
+        start_history_id = self._read_or_initialize_cursor(mailbox_hash)
+        if int(notification.history_id) <= int(start_history_id):
             return {"status": "DUPLICATE_NOTIFICATION", "processed": 0}
-        try:
-            batch = self.gmail.list_history(lease.start_history_id)
-            results: list[RelayResult] = []
-            for message_id in batch.message_ids:
-                metadata = self.gmail.get_message_metadata(message_id)
-                allowed = (
-                    metadata.sender is not None
-                    and metadata.sender in self.config.allowed_senders
-                )
-                results.append(
-                    self.relay.process_event(
-                        RelayInboundEvent(
-                            mailbox_identity=self.config.mailbox_identity,
-                            gmail_message_id=message_id,
-                            subject=metadata.subject,
-                            from_allowlist_match=allowed,
-                        )
+
+        batch = self.gmail.list_history(start_history_id)
+        results: list[RelayResult] = []
+        for message_id in batch.message_ids:
+            metadata = self.gmail.get_message_metadata(message_id)
+            allowed = (
+                metadata.sender is not None
+                and metadata.sender in self.config.allowed_senders
+            )
+            results.append(
+                self.relay.process_event(
+                    RelayInboundEvent(
+                        mailbox_identity=self.config.mailbox_identity,
+                        gmail_message_id=message_id,
+                        subject=metadata.subject,
+                        from_allowlist_match=allowed,
                     )
                 )
-            self.ingress_state.complete(lease)
-        except Exception:
-            self.ingress_state.abort(lease)
-            raise
+            )
+        if not self.cursor_store.compare_and_update_cursor(
+            mailbox_hash, start_history_id, notification.history_id
+        ):
+            refreshed = self.cursor_store.read_cursor(mailbox_hash)
+            if refreshed is None or int(refreshed.history_id) < int(
+                notification.history_id
+            ):
+                raise CursorConflictError(
+                    "Relay cursor CAS failed without a completed concurrent advance."
+                )
         _log_event(
             "relay_notification_processed",
             {
@@ -409,7 +445,7 @@ def create_app(
     config: RelayConfig | None = None,
     gmail: GmailReader | None = None,
     authenticator: PushAuthenticator | None = None,
-    ingress_state: InMemoryIngressState | None = None,
+    cursor_store: CursorStore | None = None,
     ledger: RelayLedger | None = None,
     dispatcher: GitHubDispatcher | None = None,
 ) -> Any:
@@ -423,10 +459,7 @@ def create_app(
         raise ConfigurationError("config, gmail, and authenticator are required.")
     actual_ledger = ledger or InMemoryRelayLedger()
     actual_dispatcher = dispatcher or FakeGitHubDispatcher()
-    state = ingress_state or InMemoryIngressState(
-        mailbox_hash=mailbox_hash_for(config.mailbox_identity),
-        initial_history_id=config.initial_history_id,
-    )
+    actual_cursor_store = cursor_store or InMemoryCursorStore()
     relay_service = RelayService(
         ledger=actual_ledger,
         dispatcher=actual_dispatcher,
@@ -434,14 +467,17 @@ def create_app(
         mode=config.mode,
     )
     ingress = RelayIngressService(
-        config=config, gmail=gmail, ingress_state=state, relay=relay_service
+        config=config,
+        gmail=gmail,
+        cursor_store=actual_cursor_store,
+        relay=relay_service,
     )
     app = Flask(__name__)
     app.extensions["relay_components"] = {
         "config": config,
         "gmail": gmail,
         "authenticator": authenticator,
-        "ingress_state": state,
+        "cursor_store": actual_cursor_store,
         "ledger": actual_ledger,
         "dispatcher": actual_dispatcher,
         "relay": relay_service,
@@ -457,7 +493,7 @@ def create_app(
             return jsonify({"status": "REJECTED", "reason": str(exc)}), 401
         except EnvelopeError as exc:
             return jsonify({"status": "REJECTED", "reason": str(exc)}), 400
-        except (GmailReaderError, NotificationBusyError, RuntimeError) as exc:
+        except (GmailReaderError, RuntimeError) as exc:
             _log_event("relay_retryable_failure", {"error_category": type(exc).__name__})
             return jsonify({"status": "RETRY", "reason": type(exc).__name__}), 500
         except Exception as exc:  # noqa: BLE001 - fail closed and request redelivery
@@ -475,15 +511,20 @@ def create_app_from_env(
     *,
     env: Mapping[str, str] | None = None,
     gmail_reader_factory: Callable[[], GmailReader] | None = None,
+    firestore_client_factory: Callable[[], Any] | None = None,
     token_verifier_factory: Callable[[], Callable[[str, str], Mapping[str, object]]]
     | None = None,
 ) -> Any:
-    """Production constructor. Construction itself performs no API call."""
+    """Construct production dependencies without a Firestore read or write."""
 
     values = os.environ if env is None else env
     config = RelayConfig.from_env(values)
     gmail_factory = gmail_reader_factory or (lambda: build_gmail_reader_from_env(values))
     gmail = LazyGmailReader(gmail_factory)
+    if firestore_client_factory is not None:
+        storage = FirestoreRelayStorage(firestore_client_factory())
+    else:
+        storage = build_firestore_storage(config.firestore_project)
     verifier = (token_verifier_factory or google_oidc_token_verifier)()
     authenticator = PushAuthenticator(
         expected_issuer=config.oidc_expected_issuer,
@@ -491,4 +532,10 @@ def create_app_from_env(
         expected_principals=config.oidc_expected_principals,
         token_verifier=verifier,
     )
-    return create_app(config=config, gmail=gmail, authenticator=authenticator)
+    return create_app(
+        config=config,
+        gmail=gmail,
+        authenticator=authenticator,
+        cursor_store=storage,
+        ledger=storage,
+    )

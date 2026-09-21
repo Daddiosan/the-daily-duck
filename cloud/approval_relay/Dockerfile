@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN mkdir -p cloud/approval_relay && \
     touch cloud/__init__.py cloud/approval_relay/__init__.py
-COPY main.py router.py ledger.py github_dispatch.py gmail_reader.py auth.py ./cloud/approval_relay/
+COPY main.py router.py ledger.py storage.py github_dispatch.py gmail_reader.py auth.py ./cloud/approval_relay/
 
 RUN useradd --create-home --uid 10001 relay
 USER relay

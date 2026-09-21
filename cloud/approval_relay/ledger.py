@@ -1,5 +1,4 @@
-"""Event/transition ledger for cloud/approval_relay (Thin Relay, Phase
-M3A).
+"""Event/transition ledger contract and in-memory test implementation.
 
 Deliberately NOT scripts.a2_dispatch.InMemoryMessageDedupeStore /
 InMemoryTransitionLedger, and not proof by way of them: those two classes'
@@ -17,13 +16,8 @@ InMemoryCursorStore already use and have already been proven correct under
 real concurrent threads by tests/test_approval_dispatcher.py's
 RealConcurrentCursorCasTests).
 
-Every RelayLedger method here is designed to be implementable as exactly
-one Firestore transaction against one document keyed by event_key -- see
-each method's docstring -- mirroring
-cloud/approval_dispatcher/storage.py's FirestoreDispatcherStorage
-@firestore.transactional pattern. No real Firestore-backed implementation
-exists in this phase (see docs/phase3b2/THIN_RELAY_RUNBOOK.md); building
-one is explicitly future, separately-approved work.
+The production Firestore implementation lives in storage.py. Every mutation
+there is one transaction against the deterministic event-key document.
 
 Persisted fields are exactly the minimum the task spec lists: event_key,
 stage, workflow, attempt_count, state, workflow_run_id, created_at,
@@ -280,73 +274,3 @@ class InMemoryRelayLedger:
             )
             self._records[event_key] = updated
             return replace(updated)
-
-
-@dataclass(frozen=True)
-class NotificationLease:
-    notification_key: str
-    mailbox_hash: str
-    start_history_id: str
-    target_history_id: str
-
-
-class NotificationBusyError(RuntimeError):
-    """Another notification for this mailbox must finish before this one."""
-
-
-class InMemoryIngressState:
-    """Thread-safe notification dedupe and cursor for single-instance R1.
-
-    This is intentionally not described as durable or cross-instance safe.
-    A failed history/message walk is aborted without cursor advancement.
-    """
-
-    def __init__(self, *, mailbox_hash: str, initial_history_id: str) -> None:
-        self._cursors = {mailbox_hash: initial_history_id}
-        self._completed: set[str] = set()
-        self._active_by_mailbox: dict[str, str] = {}
-        self._lock = Lock()
-
-    def begin(
-        self,
-        *,
-        notification_key: str,
-        mailbox_hash: str,
-        target_history_id: str,
-    ) -> NotificationLease | None:
-        with self._lock:
-            current = self._cursors.get(mailbox_hash)
-            if current is None:
-                raise NotificationBusyError("No history cursor exists for this mailbox.")
-            if notification_key in self._completed or int(target_history_id) <= int(current):
-                self._completed.add(notification_key)
-                return None
-            active = self._active_by_mailbox.get(mailbox_hash)
-            if active is not None:
-                raise NotificationBusyError("A mailbox history walk is already active.")
-            self._active_by_mailbox[mailbox_hash] = notification_key
-            return NotificationLease(
-                notification_key=notification_key,
-                mailbox_hash=mailbox_hash,
-                start_history_id=current,
-                target_history_id=target_history_id,
-            )
-
-    def complete(self, lease: NotificationLease) -> None:
-        with self._lock:
-            if self._active_by_mailbox.get(lease.mailbox_hash) != lease.notification_key:
-                raise NotificationBusyError("Notification lease is no longer active.")
-            current = self._cursors[lease.mailbox_hash]
-            if int(lease.target_history_id) > int(current):
-                self._cursors[lease.mailbox_hash] = lease.target_history_id
-            self._completed.add(lease.notification_key)
-            del self._active_by_mailbox[lease.mailbox_hash]
-
-    def abort(self, lease: NotificationLease) -> None:
-        with self._lock:
-            if self._active_by_mailbox.get(lease.mailbox_hash) == lease.notification_key:
-                del self._active_by_mailbox[lease.mailbox_hash]
-
-    def cursor(self, mailbox_hash: str) -> str | None:
-        with self._lock:
-            return self._cursors.get(mailbox_hash)
