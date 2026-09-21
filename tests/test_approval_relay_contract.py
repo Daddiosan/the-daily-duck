@@ -60,7 +60,18 @@ ALLOWED_LEDGER_FIELDS = frozenset(
 )
 
 ALLOWED_LOG_FIELDS = frozenset(
-    {"event_key_prefix", "stage", "workflow", "status", "attempt_count", "mode"}
+    {
+        "event_key_prefix",
+        "notification_key_prefix",
+        "stage",
+        "workflow",
+        "status",
+        "attempt_count",
+        "mode",
+        "from_allowlist_match",
+        "processed",
+        "error_category",
+    }
 )
 
 
@@ -75,6 +86,8 @@ class RelayFileBoundaryTests(unittest.TestCase):
             "router.py",
             "ledger.py",
             "github_dispatch.py",
+            "gmail_reader.py",
+            "auth.py",
             "requirements.txt",
             "Dockerfile",
         }
@@ -185,14 +198,11 @@ class NoRealGitHubNetworkCapabilityTests(unittest.TestCase):
     def test_no_real_http_or_github_client_library(self):
         source = _source().lower()
         for marker in (
-            "import requests",
             "import httpx",
             "urllib.request",
             "pygithub",
             "import jwt",
             "api.github.com",
-            "google.auth",
-            "google.oauth2",
         ):
             self.assertNotIn(marker, source)
 
@@ -256,7 +266,16 @@ class SanitizedDataContractTests(unittest.TestCase):
 
     def test_relay_inbound_event_has_no_sender_or_body_field(self):
         fields = {f.name for f in RelayInboundEvent.__dataclass_fields__.values()}
-        self.assertEqual(fields, {"mailbox_identity", "gmail_message_id", "subject"})
+        self.assertEqual(
+            fields,
+            {
+                "mailbox_identity",
+                "gmail_message_id",
+                "subject",
+                "from_allowlist_match",
+            },
+        )
+        self.assertNotIn("sender", fields)
 
     def test_logging_allowlist_covers_every_field_main_emits(self):
         main_source = (RELAY / "main.py").read_text(encoding="utf-8")
@@ -314,6 +333,7 @@ class BehavioralSecurityTests(unittest.TestCase):
             mailbox_identity="owner@example.com",
             gmail_message_id="m1",
             subject="The Daily Duck — Choose Today's Story — 2026-09-21",
+            from_allowlist_match=True,
         )
         service.process_event(event)
         service.process_event(event)
@@ -328,6 +348,7 @@ class BehavioralSecurityTests(unittest.TestCase):
             mailbox_identity="owner@example.com",
             gmail_message_id="m1",
             subject="The Daily Duck — Choose Today's Story — 2026-09-21",
+            from_allowlist_match=True,
         )
         first = service.process_event(event)
         second = service.process_event(event)

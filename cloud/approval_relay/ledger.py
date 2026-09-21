@@ -280,3 +280,73 @@ class InMemoryRelayLedger:
             )
             self._records[event_key] = updated
             return replace(updated)
+
+
+@dataclass(frozen=True)
+class NotificationLease:
+    notification_key: str
+    mailbox_hash: str
+    start_history_id: str
+    target_history_id: str
+
+
+class NotificationBusyError(RuntimeError):
+    """Another notification for this mailbox must finish before this one."""
+
+
+class InMemoryIngressState:
+    """Thread-safe notification dedupe and cursor for single-instance R1.
+
+    This is intentionally not described as durable or cross-instance safe.
+    A failed history/message walk is aborted without cursor advancement.
+    """
+
+    def __init__(self, *, mailbox_hash: str, initial_history_id: str) -> None:
+        self._cursors = {mailbox_hash: initial_history_id}
+        self._completed: set[str] = set()
+        self._active_by_mailbox: dict[str, str] = {}
+        self._lock = Lock()
+
+    def begin(
+        self,
+        *,
+        notification_key: str,
+        mailbox_hash: str,
+        target_history_id: str,
+    ) -> NotificationLease | None:
+        with self._lock:
+            current = self._cursors.get(mailbox_hash)
+            if current is None:
+                raise NotificationBusyError("No history cursor exists for this mailbox.")
+            if notification_key in self._completed or int(target_history_id) <= int(current):
+                self._completed.add(notification_key)
+                return None
+            active = self._active_by_mailbox.get(mailbox_hash)
+            if active is not None:
+                raise NotificationBusyError("A mailbox history walk is already active.")
+            self._active_by_mailbox[mailbox_hash] = notification_key
+            return NotificationLease(
+                notification_key=notification_key,
+                mailbox_hash=mailbox_hash,
+                start_history_id=current,
+                target_history_id=target_history_id,
+            )
+
+    def complete(self, lease: NotificationLease) -> None:
+        with self._lock:
+            if self._active_by_mailbox.get(lease.mailbox_hash) != lease.notification_key:
+                raise NotificationBusyError("Notification lease is no longer active.")
+            current = self._cursors[lease.mailbox_hash]
+            if int(lease.target_history_id) > int(current):
+                self._cursors[lease.mailbox_hash] = lease.target_history_id
+            self._completed.add(lease.notification_key)
+            del self._active_by_mailbox[lease.mailbox_hash]
+
+    def abort(self, lease: NotificationLease) -> None:
+        with self._lock:
+            if self._active_by_mailbox.get(lease.mailbox_hash) == lease.notification_key:
+                del self._active_by_mailbox[lease.mailbox_hash]
+
+    def cursor(self, mailbox_hash: str) -> str | None:
+        with self._lock:
+            return self._cursors.get(mailbox_hash)

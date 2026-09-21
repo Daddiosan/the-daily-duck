@@ -1,54 +1,40 @@
-"""Phase 3B-2 / M3A thin approval relay core: Gmail reply event -> routing
--> deduplication -> business-retry-budgeted GitHub Actions dispatch
-request.
+"""M3B thin relay: authenticated Gmail push to sanitized wake-up intent.
 
-TRUST RULE (read this first): this relay is a WAKE-UP SIGNAL ROUTER, never
-an approval authority. It never inspects, parses, or trusts a human's
-approval command text, never decides a story/image is approved, and never
-writes Daily Duck production automation_state. The existing GitHub Actions
-workflows it wakes up (approval-check-phase2.yml,
-design-selection-check.yml) remain exclusively responsible for reading the
-approval mailbox themselves, validating the human reply through
-scripts/approval_domain.py, and committing approval state. See
-docs/phase3b2/THIN_RELAY_RUNBOOK.md.
-
-This module is a genuinely new, independent sibling of
-cloud/approval_dispatcher/ (A2) and cloud/approval_receiver/ (A1): it does
-not import from, depend on, or modify either. It does not import
-scripts/approval_domain.py or scripts/a2_dispatch.py either -- unlike A2
-(which reuses those to classify and validate a real approval command),
-this relay never reaches the approval-command layer at all, so there is
-nothing of theirs for it to reuse.
-
-Only a FakeGitHubDispatcher exists in this phase (see
-github_dispatch.py) -- no real GitHub network call is possible through
-this module. create_app()'s default wiring only ever constructs the fake;
-there is no create_app_from_env()-style production wiring in this phase,
-deliberately, since a real deployment additionally requires the
-not-yet-built GitHub App/token integration this phase explicitly excludes.
-
-DRY_RUN is the default mode everywhere in this phase (local tests, and
-create_app()'s own default) -- see RelayMode and RelayService.process_event
-for exactly what DRY_RUN does and does not do.
+The relay does not parse approval commands and has no real GitHub adapter.
+Its production-shaped route authenticates Pub/Sub, walks Gmail history,
+fetches only Subject/From metadata, applies exact sender authorization, and
+records DRY_RUN routing intent in a local thread-safe ledger.
 """
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
+import os
 from dataclasses import dataclass
+from email.utils import parseaddr
 from enum import Enum
 from typing import Any, Callable, Mapping
 
+from .auth import AuthenticationError, PushAuthenticator, google_oidc_token_verifier
 from .github_dispatch import (
     DISPATCH_REF,
     DispatchOutcome,
     FakeGitHubDispatcher,
     GitHubDispatcher,
 )
+from .gmail_reader import (
+    GmailReader,
+    GmailReaderError,
+    LazyGmailReader,
+    build_gmail_reader_from_env,
+)
 from .ledger import (
+    InMemoryIngressState,
     InMemoryRelayLedger,
     LedgerStateConflict,
+    NotificationBusyError,
     RelayLedger,
     RelayLedgerState,
     utc_now_iso,
@@ -59,22 +45,25 @@ from .router import (
     RoutingConfig,
     classify_stage,
     event_key_for,
+    mailbox_hash_for,
+    notification_key_for,
     workflow_for_stage,
 )
 
 
 LOGGER = logging.getLogger("approval_relay")
-
-# Strict allowlist logging: only these keys are ever emitted. Never the
-# Gmail message subject, body, sender address, or any credential/token.
 _LOG_ALLOWED_FIELDS = frozenset(
     {
         "event_key_prefix",
+        "notification_key_prefix",
         "stage",
         "workflow",
         "status",
         "attempt_count",
         "mode",
+        "from_allowlist_match",
+        "processed",
+        "error_category",
     }
 )
 
@@ -84,11 +73,15 @@ def _log_event(event: str, fields: Mapping[str, Any]) -> None:
     LOGGER.info(json.dumps({"event": event, **safe}, sort_keys=True, default=str))
 
 
-# Business retry budget (task spec Sec. 10): initial attempt = 1, maximum
-# retries = 3, maximum business attempts = 4. This is entirely independent
-# of Pub/Sub transport-level delivery attempts, which this module never
-# counts or reasons about.
 MAX_BUSINESS_ATTEMPTS = 4
+
+
+class ConfigurationError(ValueError):
+    """Required application configuration is missing or malformed."""
+
+
+class EnvelopeError(ValueError):
+    """The Pub/Sub envelope or decoded Gmail notification is malformed."""
 
 
 class RelayMode(str, Enum):
@@ -102,8 +95,8 @@ class RelayStatus(str, Enum):
     ALREADY_IN_PROGRESS = "ALREADY_IN_PROGRESS"
     DUPLICATE_TERMINAL_NO_OP = "DUPLICATE_TERMINAL_NO_OP"
     UNRELATED_NO_DISPATCH = "UNRELATED_NO_DISPATCH"
+    UNAUTHORIZED_NO_DISPATCH = "UNAUTHORIZED_NO_DISPATCH"
     AMBIGUOUS_NO_DISPATCH = "AMBIGUOUS_NO_DISPATCH"
-    MALFORMED_NO_RETRY = "MALFORMED_NO_RETRY"
     SAFE_TO_RETRY = "SAFE_TO_RETRY"
     FAILED_FINAL = "FAILED_FINAL"
     UNKNOWN_OUTCOME = "UNKNOWN_OUTCOME"
@@ -120,58 +113,102 @@ class RelayResult:
     workflow_run_id: str | None = None
 
 
-class MalformedRelayEventError(ValueError):
-    """A synthetic/local relay notification is missing a required field.
-    Ack/no-retry (task spec Sec. 14): the caller returns a 200-equivalent
-    result rather than requesting redelivery, since redelivering the same
-    malformed payload can never succeed."""
+@dataclass(frozen=True)
+class PubSubNotification:
+    email_address: str
+    history_id: str
 
 
-def decode_relay_notification(payload: Mapping[str, Any]) -> RelayInboundEvent:
-    """Decode a synthetic/local representation of a Gmail/Pub/Sub-derived
-    notification into a RelayInboundEvent.
+@dataclass(frozen=True)
+class RelayConfig:
+    mailbox_identity: str
+    allowed_senders: frozenset[str]
+    routing: RoutingConfig
+    oidc_expected_issuer: str
+    oidc_expected_audience: str
+    oidc_expected_principals: frozenset[str]
+    initial_history_id: str
+    mode: RelayMode = RelayMode.DRY_RUN
 
-    This deliberately does NOT decode a raw Gmail-watch Pub/Sub envelope
-    (contrast cloud/approval_dispatcher/main.py's decode_pubsub_envelope)
-    and does NOT call the Gmail API: real Gmail/Pub/Sub integration is
-    explicitly out of scope for this phase (see module docstring and
-    docs/phase3b2/THIN_RELAY_RUNBOOK.md). payload is expected to already
-    carry the minimal, already-resolved metadata a future real deployment
-    would have obtained via its own thin Gmail read (mirroring A2's own
-    independent gmail_reader.py) -- mailbox_identity, gmail_message_id,
-    subject -- exactly what task spec Sec. 4 calls a "synthetic/local
-    representation of Gmail/PubSub notification".
-    """
+    @classmethod
+    def from_env(cls, env: Mapping[str, str] | None = None) -> "RelayConfig":
+        values = os.environ if env is None else env
 
-    if not isinstance(payload, Mapping):
-        raise MalformedRelayEventError("Relay notification must be a JSON object.")
-    mailbox_identity = str(payload.get("mailbox_identity", "")).strip()
-    gmail_message_id = str(payload.get("gmail_message_id", "")).strip()
-    subject = payload.get("subject")
-    if not mailbox_identity or not gmail_message_id or not isinstance(subject, str):
-        raise MalformedRelayEventError(
-            "Relay notification requires mailbox_identity, gmail_message_id, "
-            "and subject."
+        def required(name: str) -> str:
+            value = str(values.get(name, "")).strip()
+            if not value:
+                raise ConfigurationError(f"{name} is required.")
+            return value
+
+        mailbox = _configured_address(required("RELAY_MAILBOX_IDENTITY"))
+        senders = frozenset(
+            _configured_address(item)
+            for item in required("RELAY_ALLOWED_SENDERS").split(",")
         )
-    return RelayInboundEvent(
-        mailbox_identity=mailbox_identity,
-        gmail_message_id=gmail_message_id,
-        subject=subject,
-    )
+        principals = frozenset(
+            _configured_address(item)
+            for item in required("RELAY_OIDC_EXPECTED_PRINCIPALS").split(",")
+        )
+        initial_history_id = required("RELAY_GMAIL_INITIAL_HISTORY_ID")
+        if not initial_history_id.isdecimal():
+            raise ConfigurationError("RELAY_GMAIL_INITIAL_HISTORY_ID is malformed.")
+        raw_mode = str(values.get("RELAY_MODE", RelayMode.DRY_RUN.value)).strip()
+        if raw_mode != RelayMode.DRY_RUN.value:
+            raise ConfigurationError("M3B production wiring permits DRY_RUN only.")
+        # Validate secret presence now, but defer credential/client creation.
+        required("RELAY_GMAIL_OAUTH_CLIENT_JSON")
+        required("RELAY_GMAIL_OAUTH_REFRESH_TOKEN")
+        return cls(
+            mailbox_identity=mailbox,
+            allowed_senders=senders,
+            routing=RoutingConfig(
+                gate_a_subject_pattern=required("RELAY_GATE_A_SUBJECT_PATTERN"),
+                design_subject_pattern=required("RELAY_DESIGN_SUBJECT_PATTERN"),
+            ),
+            oidc_expected_issuer=required("RELAY_OIDC_EXPECTED_ISSUER"),
+            oidc_expected_audience=required("RELAY_OIDC_EXPECTED_AUDIENCE"),
+            oidc_expected_principals=principals,
+            initial_history_id=initial_history_id,
+        )
+
+
+def _configured_address(value: object) -> str:
+    text = str(value).strip().casefold()
+    if (
+        not text
+        or "@" not in text
+        or parseaddr(text, strict=True)[1].casefold() != text
+    ):
+        raise ConfigurationError("Configured email identity is malformed.")
+    return text
+
+
+def decode_pubsub_envelope(envelope: object) -> PubSubNotification:
+    if not isinstance(envelope, Mapping):
+        raise EnvelopeError("Pub/Sub envelope must be a JSON object.")
+    message = envelope.get("message")
+    if not isinstance(message, Mapping):
+        raise EnvelopeError("Pub/Sub envelope is missing message.")
+    data = message.get("data")
+    if not isinstance(data, str) or not data:
+        raise EnvelopeError("Pub/Sub message is missing data.")
+    try:
+        decoded = base64.b64decode(data, validate=True).decode("utf-8")
+        payload = json.loads(decoded)
+    except (UnicodeDecodeError, ValueError, TypeError) as exc:
+        raise EnvelopeError("Pub/Sub data is not valid base64 JSON.") from exc
+    if not isinstance(payload, Mapping):
+        raise EnvelopeError("Decoded Gmail notification must be a JSON object.")
+    email_address = str(payload.get("emailAddress", "")).strip().casefold()
+    history_id = str(payload.get("historyId", "")).strip()
+    if not email_address:
+        raise EnvelopeError("Gmail notification is missing emailAddress.")
+    if not history_id or not history_id.isdecimal():
+        raise EnvelopeError("Gmail notification is missing a valid historyId.")
+    return PubSubNotification(email_address=email_address, history_id=history_id)
 
 
 class RelayService:
-    """Core relay logic: routing -> dedupe/reserve -> (DRY_RUN: stop here)
-    -> business-budgeted dispatch attempt -> durable outcome recording.
-
-    No method here ever calls the GitHub dispatcher before the ledger
-    reservation/attempt CAS for the same event_key has already durably
-    succeeded (task spec Sec. 14, "never dispatch first and record
-    later") -- see process_event's call order: begin_attempt() always
-    happens, and always succeeds, strictly before self.dispatcher.dispatch
-    is ever called.
-    """
-
     def __init__(
         self,
         *,
@@ -190,50 +227,32 @@ class RelayService:
         self.max_business_attempts = max_business_attempts
 
     def process_event(self, event: RelayInboundEvent) -> RelayResult:
-        stage = classify_stage(event.subject, self.routing)
-
-        if stage is RelayStage.UNRELATED:
-            _log_event("relay_unrelated", {"stage": stage.value})
+        if not event.from_allowlist_match:
+            _log_event("relay_sender_rejected", {"from_allowlist_match": False})
             return RelayResult(
-                status=RelayStatus.UNRELATED_NO_DISPATCH, stage=stage, workflow=None
+                RelayStatus.UNAUTHORIZED_NO_DISPATCH, RelayStage.UNRELATED, None
             )
+        stage = classify_stage(event.subject, self.routing)
+        if stage is RelayStage.UNRELATED:
+            return RelayResult(RelayStatus.UNRELATED_NO_DISPATCH, stage, None)
 
         event_key = event_key_for(event.mailbox_identity, event.gmail_message_id)
-
         if stage is RelayStage.AMBIGUOUS:
-            # Recorded (if not already present) as a permanently-RECEIVED,
-            # human-review-visible observation. Never advanced to an
-            # attempt -- AMBIGUOUS is never dispatched, by construction:
-            # nothing below this branch ever calls begin_attempt() or the
-            # dispatcher for an AMBIGUOUS event_key.
             self.ledger.reserve_new(
                 event_key, stage=stage.value, workflow=None, now=self.clock()
             )
-            _log_event(
-                "relay_ambiguous",
-                {"stage": stage.value, "event_key_prefix": event_key[:12]},
-            )
             return RelayResult(
-                status=RelayStatus.AMBIGUOUS_NO_DISPATCH,
-                stage=stage,
-                workflow=None,
-                event_key=event_key,
+                RelayStatus.AMBIGUOUS_NO_DISPATCH, stage, None, event_key
             )
 
         workflow = workflow_for_stage(stage)
-        assert workflow is not None  # GATE_A/DESIGN_SELECTION always map to one
-
+        assert workflow is not None
         created = self.ledger.reserve_new(
             event_key, stage=stage.value, workflow=workflow, now=self.clock()
         )
         existing = created if created is not None else self.ledger.get(event_key)
-        assert existing is not None  # reserve_new only returns None if it exists
-
+        assert existing is not None
         if self.mode is RelayMode.DRY_RUN:
-            # DRY_RUN never calls begin_attempt() or the dispatcher,
-            # regardless of the record's state -- see RelayMode docstring
-            # and task spec Sec. 13. The result can never be confused with
-            # a real DISPATCHED/DISPATCH_CONFIRMED outcome.
             _log_event(
                 "relay_dry_run_routed",
                 {
@@ -241,60 +260,46 @@ class RelayService:
                     "workflow": workflow,
                     "event_key_prefix": event_key[:12],
                     "mode": self.mode.value,
+                    "from_allowlist_match": True,
                 },
             )
             return RelayResult(
-                status=RelayStatus.DRY_RUN_ROUTED,
-                stage=stage,
-                workflow=workflow,
-                event_key=event_key,
-                attempt_count=existing.attempt_count,
+                RelayStatus.DRY_RUN_ROUTED,
+                stage,
+                workflow,
+                event_key,
+                existing.attempt_count,
             )
 
         attempt = self.ledger.begin_attempt(event_key, now=self.clock())
         if attempt is None:
-            # Either a concurrent duplicate already holds
-            # DISPATCH_ATTEMPTING, or the record is already terminal.
             current = self.ledger.get(event_key)
-            in_progress = (
-                current is not None
-                and current.state is RelayLedgerState.DISPATCH_ATTEMPTING
-            )
-            status = (
-                RelayStatus.ALREADY_IN_PROGRESS
-                if in_progress
-                else RelayStatus.DUPLICATE_TERMINAL_NO_OP
+            in_progress = bool(
+                current and current.state is RelayLedgerState.DISPATCH_ATTEMPTING
             )
             return RelayResult(
-                status=status,
-                stage=stage,
-                workflow=workflow,
-                event_key=event_key,
-                attempt_count=current.attempt_count if current is not None else None,
-                workflow_run_id=(
-                    current.workflow_run_id if current is not None else None
-                ),
+                RelayStatus.ALREADY_IN_PROGRESS
+                if in_progress
+                else RelayStatus.DUPLICATE_TERMINAL_NO_OP,
+                stage,
+                workflow,
+                event_key,
+                current.attempt_count if current else None,
+                current.workflow_run_id if current else None,
             )
 
         dispatch_result = self.dispatcher.dispatch(workflow=workflow, ref=DISPATCH_REF)
-
         if dispatch_result.outcome is DispatchOutcome.SUCCESS:
-            next_state = RelayLedgerState.DISPATCH_CONFIRMED
-            status = RelayStatus.DISPATCHED
+            next_state, status = RelayLedgerState.DISPATCH_CONFIRMED, RelayStatus.DISPATCHED
         elif dispatch_result.outcome is DispatchOutcome.CLEAR_RETRYABLE_FAILURE:
             if attempt.attempt_count < self.max_business_attempts:
-                next_state = RelayLedgerState.SAFE_TO_RETRY
-                status = RelayStatus.SAFE_TO_RETRY
+                next_state, status = RelayLedgerState.SAFE_TO_RETRY, RelayStatus.SAFE_TO_RETRY
             else:
-                next_state = RelayLedgerState.FAILED_FINAL
-                status = RelayStatus.FAILED_FINAL
+                next_state, status = RelayLedgerState.FAILED_FINAL, RelayStatus.FAILED_FINAL
         elif dispatch_result.outcome is DispatchOutcome.CLEAR_FINAL_FAILURE:
-            next_state = RelayLedgerState.FAILED_FINAL
-            status = RelayStatus.FAILED_FINAL
+            next_state, status = RelayLedgerState.FAILED_FINAL, RelayStatus.FAILED_FINAL
         else:
-            next_state = RelayLedgerState.UNKNOWN_OUTCOME
-            status = RelayStatus.UNKNOWN_OUTCOME
-
+            next_state, status = RelayLedgerState.UNKNOWN_OUTCOME, RelayStatus.UNKNOWN_OUTCOME
         try:
             final = self.ledger.set_state(
                 event_key,
@@ -304,13 +309,6 @@ class RelayService:
                 workflow_run_id=dispatch_result.workflow_run_id,
             )
         except LedgerStateConflict:
-            # A real dispatch attempt already happened; its outcome could
-            # not be durably recorded. Never issue a second dispatch call
-            # in this request (task spec Sec. 14). Best-effort: try once
-            # to at least mark UNKNOWN_OUTCOME for future reconciliation
-            # visibility. If even that fails, the record stays stuck in
-            # DISPATCH_ATTEMPTING, which is equally safe against automatic
-            # redispatch -- see ledger.py's module docstring.
             try:
                 self.ledger.set_state(
                     event_key,
@@ -320,103 +318,177 @@ class RelayService:
                 )
             except LedgerStateConflict:
                 pass
-            _log_event(
-                "relay_critical_unrecorded_outcome",
-                {
-                    "stage": stage.value,
-                    "workflow": workflow,
-                    "event_key_prefix": event_key[:12],
-                },
-            )
             return RelayResult(
-                status=RelayStatus.CRITICAL_UNKNOWN_OUTCOME_UNRECORDED,
-                stage=stage,
-                workflow=workflow,
-                event_key=event_key,
-                attempt_count=attempt.attempt_count,
+                RelayStatus.CRITICAL_UNKNOWN_OUTCOME_UNRECORDED,
+                stage,
+                workflow,
+                event_key,
+                attempt.attempt_count,
             )
+        return RelayResult(
+            status,
+            stage,
+            workflow,
+            event_key,
+            final.attempt_count,
+            final.workflow_run_id,
+        )
 
+
+class RelayIngressService:
+    """Expand one Gmail notification and route every changed message."""
+
+    def __init__(
+        self,
+        *,
+        config: RelayConfig,
+        gmail: GmailReader,
+        ingress_state: InMemoryIngressState,
+        relay: RelayService,
+    ) -> None:
+        self.config = config
+        self.gmail = gmail
+        self.ingress_state = ingress_state
+        self.relay = relay
+
+    def process_pubsub(self, envelope: object) -> dict[str, Any]:
+        notification = decode_pubsub_envelope(envelope)
+        if notification.email_address != self.config.mailbox_identity:
+            raise EnvelopeError("Gmail notification mailbox mismatch.")
+        mailbox_hash = mailbox_hash_for(notification.email_address)
+        notification_key = notification_key_for(
+            notification.email_address, notification.history_id
+        )
+        lease = self.ingress_state.begin(
+            notification_key=notification_key,
+            mailbox_hash=mailbox_hash,
+            target_history_id=notification.history_id,
+        )
+        if lease is None:
+            return {"status": "DUPLICATE_NOTIFICATION", "processed": 0}
+        try:
+            batch = self.gmail.list_history(lease.start_history_id)
+            results: list[RelayResult] = []
+            for message_id in batch.message_ids:
+                metadata = self.gmail.get_message_metadata(message_id)
+                allowed = (
+                    metadata.sender is not None
+                    and metadata.sender in self.config.allowed_senders
+                )
+                results.append(
+                    self.relay.process_event(
+                        RelayInboundEvent(
+                            mailbox_identity=self.config.mailbox_identity,
+                            gmail_message_id=message_id,
+                            subject=metadata.subject,
+                            from_allowlist_match=allowed,
+                        )
+                    )
+                )
+            self.ingress_state.complete(lease)
+        except Exception:
+            self.ingress_state.abort(lease)
+            raise
         _log_event(
-            "relay_dispatch_outcome",
+            "relay_notification_processed",
             {
-                "stage": stage.value,
-                "workflow": workflow,
-                "status": status.value,
-                "attempt_count": final.attempt_count,
-                "event_key_prefix": event_key[:12],
+                "notification_key_prefix": notification_key[:12],
+                "processed": len(results),
+                "mode": self.relay.mode.value,
             },
         )
-        return RelayResult(
-            status=status,
-            stage=stage,
-            workflow=workflow,
-            event_key=event_key,
-            attempt_count=final.attempt_count,
-            workflow_run_id=final.workflow_run_id,
-        )
+        return {
+            "status": "ACKNOWLEDGED",
+            "processed": len(results),
+            "results": [result.status.value for result in results],
+        }
 
 
 def create_app(
     *,
-    service: RelayService | None = None,
-    routing: RoutingConfig | None = None,
-    mode: RelayMode = RelayMode.DRY_RUN,
+    config: RelayConfig | None = None,
+    gmail: GmailReader | None = None,
+    authenticator: PushAuthenticator | None = None,
+    ingress_state: InMemoryIngressState | None = None,
+    ledger: RelayLedger | None = None,
+    dispatcher: GitHubDispatcher | None = None,
 ) -> Any:
-    """Create the Flask adapter.
-
-    No production/network wiring exists in this phase: the default
-    service, if none is supplied, always uses InMemoryRelayLedger and
-    FakeGitHubDispatcher -- there is no create_app_from_env() and no
-    Firestore/real-GitHub-App wiring anywhere in this module (see module
-    docstring). Deploying this app to a real Cloud Run service is
-    explicitly out of scope for this phase.
-    """
+    """Create an authenticated app; missing dependencies fail closed."""
 
     try:
         from flask import Flask, jsonify, request
-    except ImportError as exc:  # pragma: no cover - deployment dependency
+    except ImportError as exc:  # pragma: no cover
         raise RuntimeError("Flask dependency is unavailable.") from exc
-
-    actual_routing = routing or RoutingConfig(
-        gate_a_subject_pattern="The Daily Duck — Choose Today's Story",
-        design_subject_pattern="The Daily Duck — Choose Image + Title",
+    if config is None or gmail is None or authenticator is None:
+        raise ConfigurationError("config, gmail, and authenticator are required.")
+    actual_ledger = ledger or InMemoryRelayLedger()
+    actual_dispatcher = dispatcher or FakeGitHubDispatcher()
+    state = ingress_state or InMemoryIngressState(
+        mailbox_hash=mailbox_hash_for(config.mailbox_identity),
+        initial_history_id=config.initial_history_id,
     )
-    actual_service = service or RelayService(
-        ledger=InMemoryRelayLedger(),
-        dispatcher=FakeGitHubDispatcher(),
-        routing=actual_routing,
-        mode=mode,
+    relay_service = RelayService(
+        ledger=actual_ledger,
+        dispatcher=actual_dispatcher,
+        routing=config.routing,
+        mode=config.mode,
     )
-
+    ingress = RelayIngressService(
+        config=config, gmail=gmail, ingress_state=state, relay=relay_service
+    )
     app = Flask(__name__)
+    app.extensions["relay_components"] = {
+        "config": config,
+        "gmail": gmail,
+        "authenticator": authenticator,
+        "ingress_state": state,
+        "ledger": actual_ledger,
+        "dispatcher": actual_dispatcher,
+        "relay": relay_service,
+    }
 
     @app.post("/relay")
-    def relay() -> Any:
+    def relay_route() -> Any:
         try:
-            event = decode_relay_notification(request.get_json(silent=True) or {})
-        except MalformedRelayEventError as exc:
-            _log_event("relay_malformed_event", {})
-            return (
-                jsonify(
-                    {"status": RelayStatus.MALFORMED_NO_RETRY.value, "reason": str(exc)}
-                ),
-                200,
-            )
-        result = actual_service.process_event(event)
-        return (
-            jsonify(
-                {
-                    "status": result.status.value,
-                    "stage": result.stage.value,
-                    "workflow": result.workflow,
-                    "attempt_count": result.attempt_count,
-                }
-            ),
-            200,
-        )
+            authenticator.verify(request.headers.get("Authorization"))
+            result = ingress.process_pubsub(request.get_json(silent=True))
+            return jsonify(result), 200
+        except AuthenticationError as exc:
+            return jsonify({"status": "REJECTED", "reason": str(exc)}), 401
+        except EnvelopeError as exc:
+            return jsonify({"status": "REJECTED", "reason": str(exc)}), 400
+        except (GmailReaderError, NotificationBusyError, RuntimeError) as exc:
+            _log_event("relay_retryable_failure", {"error_category": type(exc).__name__})
+            return jsonify({"status": "RETRY", "reason": type(exc).__name__}), 500
+        except Exception as exc:  # noqa: BLE001 - fail closed and request redelivery
+            _log_event("relay_unexpected_failure", {"error_category": type(exc).__name__})
+            return jsonify({"status": "RETRY", "reason": type(exc).__name__}), 500
 
     @app.get("/health")
     def health() -> Any:
         return jsonify({"status": "OK"}), 200
 
     return app
+
+
+def create_app_from_env(
+    *,
+    env: Mapping[str, str] | None = None,
+    gmail_reader_factory: Callable[[], GmailReader] | None = None,
+    token_verifier_factory: Callable[[], Callable[[str, str], Mapping[str, object]]]
+    | None = None,
+) -> Any:
+    """Production constructor. Construction itself performs no API call."""
+
+    values = os.environ if env is None else env
+    config = RelayConfig.from_env(values)
+    gmail_factory = gmail_reader_factory or (lambda: build_gmail_reader_from_env(values))
+    gmail = LazyGmailReader(gmail_factory)
+    verifier = (token_verifier_factory or google_oidc_token_verifier)()
+    authenticator = PushAuthenticator(
+        expected_issuer=config.oidc_expected_issuer,
+        expected_audience=config.oidc_expected_audience,
+        expected_principals=config.oidc_expected_principals,
+        token_verifier=verifier,
+    )
+    return create_app(config=config, gmail=gmail, authenticator=authenticator)

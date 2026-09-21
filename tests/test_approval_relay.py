@@ -6,9 +6,21 @@ tests/test_approval_relay_contract.py, not here.
 
 from __future__ import annotations
 
+import base64
+import json
 import threading
 import unittest
 from typing import Any
+
+from cloud.approval_relay.auth import AuthenticationError, PushAuthenticator
+from cloud.approval_relay.gmail_reader import (
+    FakeGmailReader,
+    GmailReaderError,
+    HistoryBatch,
+    MessageMetadata,
+    RealGmailReader,
+    decode_message_metadata,
+)
 
 from cloud.approval_relay.github_dispatch import (
     ALLOWED_WORKFLOWS,
@@ -21,18 +33,23 @@ from cloud.approval_relay.github_dispatch import (
 )
 from cloud.approval_relay.ledger import (
     LEGAL_TRANSITIONS,
+    InMemoryIngressState,
     InMemoryRelayLedger,
     LedgerStateConflict,
     RelayLedgerState,
 )
 from cloud.approval_relay.main import (
-    MalformedRelayEventError,
     MAX_BUSINESS_ATTEMPTS,
+    ConfigurationError,
+    EnvelopeError,
+    RelayConfig,
+    RelayIngressService,
     RelayMode,
     RelayService,
     RelayStatus,
     create_app,
-    decode_relay_notification,
+    create_app_from_env,
+    decode_pubsub_envelope,
 )
 from cloud.approval_relay.router import (
     RelayInboundEvent,
@@ -40,6 +57,8 @@ from cloud.approval_relay.router import (
     RoutingConfig,
     classify_stage,
     event_key_for,
+    mailbox_hash_for,
+    notification_key_for,
     workflow_for_stage,
 )
 
@@ -53,10 +72,17 @@ ROUTING = RoutingConfig(
 
 
 def make_event(
-    *, subject: str, mailbox: str = "owner@example.com", message_id: str = "msg-1"
+    *,
+    subject: str | None,
+    mailbox: str = "owner@example.com",
+    message_id: str = "msg-1",
+    authorized: bool = True,
 ) -> RelayInboundEvent:
     return RelayInboundEvent(
-        mailbox_identity=mailbox, gmail_message_id=message_id, subject=subject
+        mailbox_identity=mailbox,
+        gmail_message_id=message_id,
+        subject=subject,
+        from_allowlist_match=authorized,
     )
 
 
@@ -117,6 +143,40 @@ class RoutingTests(unittest.TestCase):
         self.assertIsNone(workflow_for_stage(RelayStage.UNRELATED))
         self.assertIsNone(workflow_for_stage(RelayStage.AMBIGUOUS))
 
+    def test_sender_and_subject_are_both_required(self):
+        dispatcher = FakeGitHubDispatcher()
+        service = make_service(dispatcher=dispatcher, mode=RelayMode.DRY_RUN)
+        authorized_gate = service.process_event(make_event(subject=GATE_A_PATTERN))
+        authorized_design = service.process_event(
+            make_event(subject=DESIGN_PATTERN, message_id="m2")
+        )
+        unauthorized_gate = service.process_event(
+            make_event(subject=GATE_A_PATTERN, message_id="m3", authorized=False)
+        )
+        unauthorized_design = service.process_event(
+            make_event(subject=DESIGN_PATTERN, message_id="m4", authorized=False)
+        )
+        unrelated = service.process_event(make_event(subject="hello", message_id="m5"))
+        self.assertEqual(authorized_gate.status, RelayStatus.DRY_RUN_ROUTED)
+        self.assertEqual(authorized_design.status, RelayStatus.DRY_RUN_ROUTED)
+        self.assertEqual(unauthorized_gate.status, RelayStatus.UNAUTHORIZED_NO_DISPATCH)
+        self.assertEqual(unauthorized_design.status, RelayStatus.UNAUTHORIZED_NO_DISPATCH)
+        self.assertEqual(unrelated.status, RelayStatus.UNRELATED_NO_DISPATCH)
+        self.assertEqual(dispatcher.calls, [])
+
+    def test_missing_subject_and_malformed_sender_are_not_candidates(self):
+        service = make_service(mode=RelayMode.DRY_RUN)
+        self.assertEqual(
+            service.process_event(make_event(subject=None)).status,
+            RelayStatus.UNRELATED_NO_DISPATCH,
+        )
+        self.assertEqual(
+            service.process_event(
+                make_event(subject=GATE_A_PATTERN, authorized=False)
+            ).status,
+            RelayStatus.UNAUTHORIZED_NO_DISPATCH,
+        )
+
 
 class EventKeyTests(unittest.TestCase):
     def test_deterministic_for_same_inputs(self):
@@ -133,6 +193,12 @@ class EventKeyTests(unittest.TestCase):
         a = event_key_for("owner@example.com", "msg-1")
         b = event_key_for("other@example.com", "msg-1")
         self.assertNotEqual(a, b)
+
+    def test_notification_and_message_keys_have_separate_namespaces(self):
+        notification = notification_key_for("owner@example.com", "101")
+        message = event_key_for("owner@example.com", "101")
+        self.assertEqual(notification, notification_key_for("OWNER@example.com", "101"))
+        self.assertNotEqual(notification, message)
 
 
 # ---------------------------------------------------------------------------
@@ -386,32 +452,44 @@ class DryRunTests(unittest.TestCase):
 # ---------------------------------------------------------------------------
 
 
-class MalformedEventTests(unittest.TestCase):
-    def test_missing_gmail_message_id_raises(self):
-        with self.assertRaises(MalformedRelayEventError):
-            decode_relay_notification(
-                {"mailbox_identity": "owner@example.com", "subject": GATE_A_PATTERN}
-            )
+def pubsub_envelope(
+    *, email: str = "owner@example.com", history_id: str = "101"
+) -> dict[str, object]:
+    data = base64.b64encode(
+        json.dumps({"emailAddress": email, "historyId": history_id}).encode()
+    ).decode()
+    return {"message": {"data": data, "messageId": "pubsub-1"}}
 
-    def test_missing_subject_raises(self):
-        with self.assertRaises(MalformedRelayEventError):
-            decode_relay_notification(
-                {"mailbox_identity": "owner@example.com", "gmail_message_id": "m1"}
-            )
 
-    def test_non_mapping_payload_raises(self):
-        with self.assertRaises(MalformedRelayEventError):
-            decode_relay_notification("not-a-mapping")  # type: ignore[arg-type]
+class PubSubEnvelopeTests(unittest.TestCase):
+    def test_valid_envelope(self):
+        value = decode_pubsub_envelope(pubsub_envelope())
+        self.assertEqual(value.email_address, "owner@example.com")
+        self.assertEqual(value.history_id, "101")
 
-    def test_valid_payload_decodes(self):
-        event = decode_relay_notification(
+    def test_invalid_shapes_fail_closed(self):
+        invalid = [
+            None,
+            {},
+            {"message": {}},
+            {"message": {"data": "%%%"}},
+            {"message": {"data": base64.b64encode(b"not json").decode()}},
             {
-                "mailbox_identity": "owner@example.com",
-                "gmail_message_id": "m1",
-                "subject": GATE_A_PATTERN,
-            }
-        )
-        self.assertEqual(event.gmail_message_id, "m1")
+                "message": {
+                    "data": base64.b64encode(json.dumps({"historyId": "1"}).encode()).decode()
+                }
+            },
+            {
+                "message": {
+                    "data": base64.b64encode(
+                        json.dumps({"emailAddress": "owner@example.com"}).encode()
+                    ).decode()
+                }
+            },
+        ]
+        for value in invalid:
+            with self.subTest(value=value), self.assertRaises(EnvelopeError):
+                decode_pubsub_envelope(value)
 
 
 # ---------------------------------------------------------------------------
@@ -623,43 +701,411 @@ class RealConcurrencyTests(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
-# Flask adapter (structural smoke coverage; full HTTP/OIDC/Cloud Run wiring
-# is explicitly out of scope for this phase).
+# Gmail history / metadata
 # ---------------------------------------------------------------------------
 
 
-class FlaskAppTests(unittest.TestCase):
-    def test_default_app_is_dry_run_and_routes_correctly(self):
-        app = create_app()
-        client = app.test_client()
+class _Request:
+    def __init__(self, value):
+        self.value = value
 
-        response = client.post(
-            "/relay",
-            json={
-                "mailbox_identity": "owner@example.com",
-                "gmail_message_id": "m1",
-                "subject": GATE_A_PATTERN,
+    def execute(self):
+        if isinstance(self.value, Exception):
+            raise self.value
+        return self.value
+
+
+class _HistoryApi:
+    def __init__(self, pages):
+        self.pages = list(pages)
+        self.calls = []
+
+    def list(self, **kwargs):
+        self.calls.append(kwargs)
+        return _Request(self.pages.pop(0))
+
+
+class _MessagesApi:
+    def __init__(self, messages=None):
+        self.messages = dict(messages or {})
+        self.calls = []
+
+    def get(self, **kwargs):
+        self.calls.append(kwargs)
+        return _Request(self.messages[kwargs["id"]])
+
+
+class _UsersApi:
+    def __init__(self, pages, messages=None):
+        self.history_api = _HistoryApi(pages)
+        self.messages_api = _MessagesApi(messages)
+
+    def history(self):
+        return self.history_api
+
+    def messages(self):
+        return self.messages_api
+
+
+class _GmailApi:
+    def __init__(self, pages, messages=None):
+        self.users_api = _UsersApi(pages, messages)
+
+    def users(self):
+        return self.users_api
+
+
+class GmailReaderTests(unittest.TestCase):
+    def test_one_page_and_multi_page_dedupe(self):
+        api = _GmailApi(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "p2",
+                },
+                {
+                    "history": [
+                        {
+                            "messagesAdded": [
+                                {"message": {"id": "m1"}},
+                                {"message": {"id": "m2"}},
+                            ]
+                        }
+                    ]
+                },
+            ]
+        )
+        batch = RealGmailReader(api).list_history("100")
+        self.assertEqual(batch.message_ids, ("m1", "m2"))
+        self.assertEqual(api.users_api.history_api.calls[1]["pageToken"], "p2")
+
+    def test_later_page_failure_never_returns_partial_success(self):
+        api = _GmailApi(
+            [
+                {"history": [], "nextPageToken": "p2"},
+                RuntimeError("later page failed"),
+            ]
+        )
+        with self.assertRaises(GmailReaderError):
+            RealGmailReader(api).list_history("100")
+
+    def test_repeated_page_token_fails(self):
+        api = _GmailApi(
+            [
+                {"history": [], "nextPageToken": "same"},
+                {"history": [], "nextPageToken": "same"},
+            ]
+        )
+        with self.assertRaises(GmailReaderError):
+            RealGmailReader(api).list_history("100")
+
+    def test_empty_page_with_continuation_is_followed(self):
+        api = _GmailApi(
+            [
+                {"history": [], "nextPageToken": "p2"},
+                {"history": [{"messagesAdded": [{"message": {"id": "m1"}}]}]},
+            ]
+        )
+        self.assertEqual(
+            RealGmailReader(api).list_history("100").message_ids, ("m1",)
+        )
+
+    def test_message_fetch_requests_metadata_only(self):
+        api = _GmailApi(
+            [],
+            {
+                "m1": {
+                    "id": "m1",
+                    "payload": {
+                        "headers": [
+                            {"name": "Subject", "value": GATE_A_PATTERN},
+                            {"name": "From", "value": "Duck <OWNER@Example.com>"},
+                        ]
+                    },
+                }
             },
         )
+        value = RealGmailReader(api).get_message_metadata("m1")
+        self.assertEqual(value.sender, "owner@example.com")
+        call = api.users_api.messages_api.calls[0]
+        self.assertEqual(call["format"], "metadata")
+        self.assertEqual(call["metadataHeaders"], ["Subject", "From"])
 
-        self.assertEqual(response.status_code, 200)
-        body = response.get_json()
-        self.assertEqual(body["status"], RelayStatus.DRY_RUN_ROUTED.value)
-        self.assertEqual(body["workflow"], GATE_A_WORKFLOW)
+    def test_spoof_display_name_and_malformed_headers_do_not_authorize(self):
+        spoof = decode_message_metadata(
+            {
+                "id": "m1",
+                "payload": {
+                    "headers": [
+                        {"name": "Subject", "value": GATE_A_PATTERN},
+                        {
+                            "name": "From",
+                            "value": '"owner@example.com" <attacker@example.com>',
+                        },
+                    ]
+                },
+            }
+        )
+        malformed = decode_message_metadata({"id": "m2", "payload": {"headers": []}})
+        self.assertEqual(spoof.sender, "attacker@example.com")
+        self.assertIsNone(malformed.sender)
+        self.assertIsNone(malformed.subject)
 
-    def test_malformed_payload_acked_not_retried(self):
-        app = create_app()
-        client = app.test_client()
-        response = client.post("/relay", json={})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.get_json()["status"], RelayStatus.MALFORMED_NO_RETRY.value
+    def test_sender_normalization_is_case_insensitive_and_trims_whitespace(self):
+        value = decode_message_metadata(
+            {
+                "id": "m1",
+                "payload": {
+                    "headers": [
+                        {"name": "Subject", "value": GATE_A_PATTERN},
+                        {"name": "From", "value": "  OWNER@Example.com  "},
+                    ]
+                },
+            }
+        )
+        self.assertEqual(value.sender, "owner@example.com")
+
+
+# ---------------------------------------------------------------------------
+# Authenticated Flask ingress
+# ---------------------------------------------------------------------------
+
+
+def make_config() -> RelayConfig:
+    return RelayConfig(
+        mailbox_identity="owner@example.com",
+        allowed_senders=frozenset({"owner@example.com"}),
+        routing=ROUTING,
+        oidc_expected_issuer="https://accounts.google.com",
+        oidc_expected_audience="https://relay.example/relay",
+        oidc_expected_principals=frozenset({"push@example.iam.gserviceaccount.com"}),
+        initial_history_id="100",
+    )
+
+
+def claims(**overrides):
+    value = {
+        "iss": "https://accounts.google.com",
+        "aud": "https://relay.example/relay",
+        "email": "push@example.iam.gserviceaccount.com",
+        "email_verified": True,
+    }
+    value.update(overrides)
+    return value
+
+
+def make_auth(verifier=None) -> PushAuthenticator:
+    return PushAuthenticator(
+        expected_issuer="https://accounts.google.com",
+        expected_audience="https://relay.example/relay",
+        expected_principals=frozenset({"push@example.iam.gserviceaccount.com"}),
+        token_verifier=verifier or (lambda token, audience: claims()),
+    )
+
+
+class AuthenticationTests(unittest.TestCase):
+    def test_missing_and_malformed_bearer_rejected(self):
+        auth = make_auth()
+        for header in (None, "", "Basic token", "Bearer", "Bearer a b"):
+            with self.subTest(header=header), self.assertRaises(AuthenticationError):
+                auth.verify(header)
+
+    def test_invalid_token_wrong_issuer_audience_and_principal_rejected(self):
+        cases = [
+            lambda token, audience: (_ for _ in ()).throw(ValueError("bad")),
+            lambda token, audience: claims(iss="https://evil.example"),
+            lambda token, audience: claims(aud="wrong"),
+            lambda token, audience: claims(email="other@example.com"),
+        ]
+        for verifier in cases:
+            with self.assertRaises(AuthenticationError):
+                make_auth(verifier).verify("Bearer token")
+
+    def test_valid_fake_verifier_result_accepted(self):
+        make_auth().verify("Bearer token")
+
+
+class FlaskAppTests(unittest.TestCase):
+    def _app(self, *, gmail=None, dispatcher=None):
+        reader = gmail or FakeGmailReader(
+            history=HistoryBatch(("m1",)),
+            messages={
+                "m1": MessageMetadata("m1", GATE_A_PATTERN, "owner@example.com")
+            },
+        )
+        return create_app(
+            config=make_config(),
+            gmail=reader,
+            authenticator=make_auth(),
+            dispatcher=dispatcher,
         )
 
+    def test_missing_dependencies_fail_closed(self):
+        with self.assertRaises(ConfigurationError):
+            create_app()
+        with self.assertRaises(ConfigurationError):
+            create_app_from_env(
+                env={},
+                gmail_reader_factory=lambda: FakeGmailReader(),
+                token_verifier_factory=lambda: (lambda token, audience: claims()),
+            )
+
+    def test_production_constructor_is_dry_run_and_does_no_gmail_call(self):
+        env = {
+            "RELAY_MAILBOX_IDENTITY": "owner@example.com",
+            "RELAY_ALLOWED_SENDERS": "owner@example.com",
+            "RELAY_GATE_A_SUBJECT_PATTERN": GATE_A_PATTERN,
+            "RELAY_DESIGN_SUBJECT_PATTERN": DESIGN_PATTERN,
+            "RELAY_OIDC_EXPECTED_ISSUER": "https://accounts.google.com",
+            "RELAY_OIDC_EXPECTED_AUDIENCE": "https://relay.example/relay",
+            "RELAY_OIDC_EXPECTED_PRINCIPALS": "push@example.iam.gserviceaccount.com",
+            "RELAY_GMAIL_INITIAL_HISTORY_ID": "100",
+            "RELAY_GMAIL_OAUTH_CLIENT_JSON": "{}",
+            "RELAY_GMAIL_OAUTH_REFRESH_TOKEN": "secret-not-used",
+        }
+        calls = []
+
+        def gmail_factory():
+            calls.append("gmail-built")
+            return FakeGmailReader()
+
+        app = create_app_from_env(
+            env=env,
+            gmail_reader_factory=gmail_factory,
+            token_verifier_factory=lambda: (lambda token, audience: claims()),
+        )
+        self.assertEqual(calls, [])
+        components = app.extensions["relay_components"]
+        self.assertEqual(components["relay"].mode, RelayMode.DRY_RUN)
+        self.assertIsInstance(components["dispatcher"], FakeGitHubDispatcher)
+
+    def test_production_constructor_rejects_live_mode(self):
+        env = {
+            "RELAY_MAILBOX_IDENTITY": "owner@example.com",
+            "RELAY_ALLOWED_SENDERS": "owner@example.com",
+            "RELAY_GATE_A_SUBJECT_PATTERN": GATE_A_PATTERN,
+            "RELAY_DESIGN_SUBJECT_PATTERN": DESIGN_PATTERN,
+            "RELAY_OIDC_EXPECTED_ISSUER": "https://accounts.google.com",
+            "RELAY_OIDC_EXPECTED_AUDIENCE": "https://relay.example/relay",
+            "RELAY_OIDC_EXPECTED_PRINCIPALS": "push@example.iam.gserviceaccount.com",
+            "RELAY_GMAIL_INITIAL_HISTORY_ID": "100",
+            "RELAY_GMAIL_OAUTH_CLIENT_JSON": "{}",
+            "RELAY_GMAIL_OAUTH_REFRESH_TOKEN": "secret-not-used",
+            "RELAY_MODE": "LIVE",
+        }
+        with self.assertRaises(ConfigurationError):
+            create_app_from_env(
+                env=env,
+                gmail_reader_factory=lambda: FakeGmailReader(),
+                token_verifier_factory=lambda: (lambda token, audience: claims()),
+            )
+
+    def test_auth_runs_before_event_processing(self):
+        reader = FakeGmailReader(history=HistoryBatch(("m1",)), messages={})
+        response = self._app(gmail=reader).test_client().post("/relay", json={})
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(reader.list_history_calls, [])
+
+    def test_valid_real_shaped_push_routes_dry_run_without_dispatch(self):
+        dispatcher = FakeGitHubDispatcher()
+        app = self._app(dispatcher=dispatcher)
+        response = app.test_client().post(
+            "/relay",
+            json=pubsub_envelope(),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["results"], ["DRY_RUN_ROUTED"])
+        self.assertEqual(dispatcher.calls, [])
+        components = app.extensions["relay_components"]
+        self.assertIsInstance(components["dispatcher"], FakeGitHubDispatcher)
+        self.assertEqual(components["relay"].mode, RelayMode.DRY_RUN)
+
+    def test_real_ingress_sender_subject_matrix_is_fail_closed_and_sanitized(self):
+        messages = {
+            "m1": MessageMetadata("m1", GATE_A_PATTERN, "owner@example.com"),
+            "m2": MessageMetadata("m2", DESIGN_PATTERN, "owner@example.com"),
+            "m3": MessageMetadata("m3", GATE_A_PATTERN, "attacker@example.com"),
+            "m4": MessageMetadata("m4", DESIGN_PATTERN, "attacker@example.com"),
+            "m5": MessageMetadata("m5", "unrelated", "owner@example.com"),
+            "m6": MessageMetadata(
+                "m6", f"{GATE_A_PATTERN} {DESIGN_PATTERN}", "owner@example.com"
+            ),
+            "m7": MessageMetadata("m7", GATE_A_PATTERN, None),
+            "m8": MessageMetadata("m8", None, "owner@example.com"),
+        }
+        reader = FakeGmailReader(
+            history=HistoryBatch(tuple(messages)), messages=messages
+        )
+        dispatcher = FakeGitHubDispatcher()
+        app = self._app(gmail=reader, dispatcher=dispatcher)
+        response = app.test_client().post(
+            "/relay",
+            json=pubsub_envelope(),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.get_json()["results"],
+            [
+                "DRY_RUN_ROUTED",
+                "DRY_RUN_ROUTED",
+                "UNAUTHORIZED_NO_DISPATCH",
+                "UNAUTHORIZED_NO_DISPATCH",
+                "UNRELATED_NO_DISPATCH",
+                "AMBIGUOUS_NO_DISPATCH",
+                "UNAUTHORIZED_NO_DISPATCH",
+                "UNRELATED_NO_DISPATCH",
+            ],
+        )
+        self.assertEqual(dispatcher.calls, [])
+        ledger = app.extensions["relay_components"]["ledger"]
+        self.assertIsNotNone(ledger.get(event_key_for("owner@example.com", "m1")))
+        self.assertIsNone(ledger.get(event_key_for("owner@example.com", "m3")))
+
+    def test_wrong_mailbox_rejected(self):
+        response = self._app().test_client().post(
+            "/relay",
+            json=pubsub_envelope(email="wrong@example.com"),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_duplicate_notification_is_acked_without_second_history_walk(self):
+        reader = FakeGmailReader(history=HistoryBatch(()))
+        client = self._app(gmail=reader).test_client()
+        for _ in range(2):
+            response = client.post(
+                "/relay",
+                json=pubsub_envelope(),
+                headers={"Authorization": "Bearer token"},
+            )
+            self.assertEqual(response.status_code, 200)
+        self.assertEqual(reader.list_history_calls, ["100"])
+
+    def test_failed_message_fetch_does_not_advance_cursor(self):
+        reader = FakeGmailReader(
+            history=HistoryBatch(("m1",)), messages={"m1": GmailReaderError("fail")}
+        )
+        state = InMemoryIngressState(
+            mailbox_hash=mailbox_hash_for("owner@example.com"), initial_history_id="100"
+        )
+        app = create_app(
+            config=make_config(),
+            gmail=reader,
+            authenticator=make_auth(),
+            ingress_state=state,
+        )
+        response = app.test_client().post(
+            "/relay",
+            json=pubsub_envelope(),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(state.cursor(mailbox_hash_for("owner@example.com")), "100")
+
     def test_health_endpoint(self):
-        app = create_app()
-        client = app.test_client()
-        response = client.get("/health")
+        response = self._app().test_client().get("/health")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json()["status"], "OK")
 

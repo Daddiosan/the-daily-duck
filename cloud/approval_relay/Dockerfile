@@ -15,9 +15,11 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY main.py router.py ledger.py github_dispatch.py ./
+RUN mkdir -p cloud/approval_relay && \
+    touch cloud/__init__.py cloud/approval_relay/__init__.py
+COPY main.py router.py ledger.py github_dispatch.py gmail_reader.py auth.py ./cloud/approval_relay/
 
 RUN useradd --create-home --uid 10001 relay
 USER relay
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--threads", "8", "--timeout", "60", "main:create_app()"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--threads", "8", "--timeout", "60", "cloud.approval_relay.main:create_app_from_env()"]

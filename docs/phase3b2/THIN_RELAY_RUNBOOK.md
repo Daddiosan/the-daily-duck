@@ -1,230 +1,171 @@
-# Thin Approval Relay Runbook (Phase 3B-2 / M3A)
+# Thin Approval Relay Runbook (Phase 3B-2 / M3B)
 
 Component: `cloud/approval_relay/`
-Task: TDD-M3A-THIN-RELAY-LOCAL-01
-
-## Architecture
-
-```
-Gmail (Daily Duck mailbox)
-  -> existing Gmail watch (owned by A1 only)
-  -> existing Pub/Sub topic
-       +-- existing push subscription -> A1 (cloud/approval_receiver)
-       +-- existing push subscription -> A2 (cloud/approval_dispatcher, shadow only)
-       +-- NEW push subscription      -> Relay (cloud/approval_relay)
-                                             -> routing (subject only)
-                                             -> ledger reserve/attempt CAS
-                                             -> GitHub Actions workflow_dispatch
-                                                  (approval-check-phase2.yml or
-                                                   design-selection-check.yml)
-```
-
-The relay is a third independent sibling subscription on the same
-Pub/Sub topic A1 and A2 already use (the same fan-out pattern
-`docs/phase3b2/A2_SHADOW_RUNBOOK.md` establishes for A2). It does not
-import from, depend on, or modify `cloud/approval_receiver/` (A1) or
-`cloud/approval_dispatcher/` (A2), and neither of those is modified by
-this component's existence.
+Task: `TDD-M3B-RELAY-INGRESS-AUTH-01`
 
 ## Trust rule
 
-**A relay event is a wake-up signal, not an approval.** The relay never
-inspects, parses, or trusts a human's approval command text (a story
-number, an image/title selection). It never decides a story or image is
-approved, never writes Daily Duck production `automation_state`, never
-sends email, never publishes the website or X, and never commits to git.
-The GitHub Actions workflows it wakes up
-(`approval-check-phase2.yml` -> `scripts/check_story_approval.py`,
-`design-selection-check.yml` -> `scripts/check_design_selection.py`)
-remain exclusively responsible for reading the approval mailbox
-themselves, validating the human reply through
-`scripts/approval_domain.py`, issue-date/staleness/design-batch
-validation, committing approval state, and triggering downstream
-production steps.
+A relay event is a wake-up signal, never an approval. The relay does not read
+or interpret the reply body, decide whether a story or image is approved,
+write production `automation_state`, send mail, publish, or commit. The
+existing GitHub Actions workflows remain the final approval authority and
+continue to validate the command through `scripts/approval_domain.py`.
 
-## Routing authority
+M3B adds production-shaped Gmail ingress and application authentication, but
+it remains local-only and `DRY_RUN`. Only `FakeGitHubDispatcher` exists.
 
-The relay classifies a candidate stage (`GATE_A`, `DESIGN_SELECTION`,
-`UNRELATED`, `AMBIGUOUS`) from the inbound reply's **email Subject header
-only** — a plain `pattern in subject` substring match against two
-configured constants, `RoutingConfig.gate_a_subject_pattern` /
-`design_subject_pattern` (`cloud/approval_relay/router.py`,
-`classify_stage`). This is the exact technique already reviewed and
-shipped in `cloud/approval_dispatcher/main.py`'s
-`DispatcherService._resolve_stage_guess` and
-`scripts/a2_dispatch.py`'s `_classify_and_dispatch`: stage there is
-selected purely from a subject substring match, strictly before any
-production-`automation_state` read (production state is only consulted
-afterwards, for staleness/no-op checks unrelated to which stage a message
-belongs to). No production state is required to distinguish the two
-stages, and the relay reads none.
+## Ingress flow
 
-This is safe because the two real outbound approval-email subjects are
-stable and mutually exclusive substrings:
+```text
+authenticated Pub/Sub push
+  -> verify Google OIDC issuer + audience + service-account principal
+  -> decode emailAddress + historyId
+  -> verify configured mailbox
+  -> walk Gmail history from the local cursor (all pages)
+  -> fetch each message in metadata format (Subject and From only)
+  -> exact sender allowlist check
+  -> Subject stage classification
+  -> sanitized message-key ledger record
+  -> DRY_RUN stop (zero GitHub calls)
+```
 
-- Gate A (`scripts/send_email.py`): `"The Daily Duck — Choose Today's
-  Story — <issue_date>"`
-- Design Selection (`scripts/send_design_approval_email.py`):
-  `"The Daily Duck — Choose Image + Title — <issue_date> — Batch <N>"`
+Authentication runs before envelope parsing or Gmail access. The raw
+Authorization header and bearer token are never logged. The Gmail reader asks
+for `gmail.readonly`, follows every `nextPageToken`, deterministically removes
+duplicate message IDs, rejects repeated/cyclic tokens, and returns no batch if
+any page fails. Message fetches use Gmail `format=metadata` with only `Subject`
+and `From`; no body is fetched or retained.
 
-`"Choose Today's Story"` and `"Choose Image + Title"` never overlap as
-substrings and both survive an email client's `"Re: "` / `"Re: Re: "`
-reply prefix (the base phrase remains a substring of the reply Subject).
-If a malformed/adversarial subject were engineered to contain both marker
-phrases, `classify_stage` resolves to `AMBIGUOUS` rather than silently
-preferring one stage or triggering both.
+## Sender and routing boundary
 
-This subject-substring check is routing-only pattern matching, not
-approval-command parsing — the relay never imports or calls
-`scripts/approval_domain.py`'s `extract_gate_a_command_from_gmail` /
-`extract_design_command_from_gmail`, and never touches the reply body at
-all.
+The real address extracted from Gmail's authenticated `From` metadata is
+trimmed and case-folded, matching the existing A1 exact-address semantics.
+Display names do not grant access. The address is used only for the transient
+allowlist comparison and is then reduced to `from_allowlist_match`.
 
-## Final approval authority
+Both conditions are required for a dispatch candidate:
 
-Unchanged and untouched by this component: the existing GitHub Actions
-workflows and `scripts/approval_domain.py`'s `decide_transition`, exactly
-as before. The relay has zero authority over approval decisions.
+1. the actual normalized sender exactly matches `RELAY_ALLOWED_SENDERS`; and
+2. the Subject matches exactly one configured stage substring.
 
-## Fixed workflow allowlist
+The result is `GATE_A`, `DESIGN_SELECTION`, `UNRELATED`, or `AMBIGUOUS`. A
+missing Subject, malformed From, unauthorized sender, unrelated Subject, or
+ambiguous Subject never becomes a dispatch candidate. Subject matching is
+wake-up routing only and does not parse or trust approval-command content.
 
-`cloud/approval_relay/github_dispatch.py` defines:
+## Event keys and cursor
 
-- `GATE_A_WORKFLOW = "approval-check-phase2.yml"`
-- `DESIGN_SELECTION_WORKFLOW = "design-selection-check.yml"`
-- `DISPATCH_REF = "main"`
+Raw mailbox identity is never stored in a key. `mailbox_hash` is
+`sha256(mailbox.strip().casefold())`.
 
-These are application-controlled Python constants, never derived from
-caller input. `router.workflow_for_stage` maps `GATE_A` /
-`DESIGN_SELECTION` to exactly these two names and `UNRELATED` /
-`AMBIGUOUS` to `None` (never dispatched).
-`github_dispatch.FakeGitHubDispatcher.dispatch` independently re-validates
-both `workflow` and `ref` against the same allowlist/constant before
-returning any outcome (defense in depth — see the security contract
-below).
+- Notification dedupe key:
+  `sha256("notification:" + mailbox_hash + ":" + historyId)`. It deduplicates
+  Pub/Sub/Gmail notification delivery in the local ingress state.
+- Message routing key:
+  `sha256("message:" + mailbox_hash + ":" + gmail_message_id)`. It deduplicates
+  each expanded message and is the future dispatch-dedupe identity.
 
-## Event key
+Neither key includes the body, full Subject, or sender address. `historyId` is
+never treated as a message ID.
 
-`router.event_key_for(mailbox_identity, gmail_message_id)` computes
-`sha256(sha256(mailbox_identity.strip().lower()):gmail_message_id)`.
+The cursor begins at the configured `RELAY_GMAIL_INITIAL_HISTORY_ID`. Only a
+fully successful history walk and all message metadata processing advance it
+to the notification's `historyId`. A page failure, repeated token, message
+fetch failure, or other incomplete processing releases the local lease without
+advancing the cursor, so Pub/Sub redelivery can retry. An active walk
+serializes later work for the same mailbox; the later push receives a retryable
+response instead of being silently acknowledged.
 
-This is the same construction already used by
-`cloud/approval_receiver/observation.py`'s `create_sanitized_observation`
-and `scripts/a2_dispatch.py`'s `_observation_id` — reused deliberately,
-not reinvented, so the relay's redelivery-dedupe key rests on the exact
-same foundation those two already-reviewed components depend on.
+## Authentication and configuration
 
-**Inherited assumption, not independently re-verified here:** Gmail's
-message `id` is treated as stable and distinct per message, including
-across a Pub/Sub redelivery of the same notification. No sentence in this
-repository states that as an explicit Gmail API guarantee (it is not
-documented anywhere in this codebase); A1, A2, and now this relay all
-build their idempotency mechanisms directly on top of that assumption
-without an independent citation. The message body is never hashed to
-form the key — only the two stable, non-secret identifiers above.
-Different `(mailbox_identity, gmail_message_id)` pairs collide only on a
-SHA-256 collision, treated as negligible.
+`/relay` requires `Authorization: Bearer <OIDC token>`. Verification uses
+Google's signature-verifying `google-auth` implementation in production and a
+dependency-injected verifier in tests. The relay independently checks:
 
-## Retry: transport vs. business budget
+- configured issuer (`RELAY_OIDC_EXPECTED_ISSUER`);
+- configured audience (`RELAY_OIDC_EXPECTED_AUDIENCE`);
+- `email_verified is true`; and
+- exact normalized principal membership in
+  `RELAY_OIDC_EXPECTED_PRINCIPALS`.
 
-Pub/Sub delivery-attempt retries (a transport concern, not implemented by
-this local-only phase) are entirely separate from the relay's own
-**business** attempt budget, tracked durably per `event_key` in
-`RelayLedgerRecord.attempt_count`:
+Missing/malformed authorization, a verification error, or wrong
+issuer/audience/principal is rejected with HTTP 401 before event processing.
+Malformed Pub/Sub/Gmail envelopes and mailbox mismatch are rejected with HTTP
+400. Incomplete Gmail processing returns HTTP 500 for bounded Pub/Sub retry.
 
-- initial attempt = 1
-- maximum retries = 3
-- maximum business attempts = 4
+Production construction also requires the mailbox, sender allowlist, both
+Subject patterns, initial history ID, and Gmail OAuth client/refresh-token
+configuration. Missing or malformed configuration fails closed. `RELAY_MODE`
+defaults to `DRY_RUN`; M3B production wiring rejects any other value.
 
-`cloud/approval_relay/main.py`'s `MAX_BUSINESS_ATTEMPTS = 4` enforces
-this: a `CLEAR_RETRYABLE_FAILURE` outcome moves the record to
-`SAFE_TO_RETRY` only while `attempt_count < 4`; at `attempt_count == 4` it
-moves to `FAILED_FINAL` instead. No sleep/backoff loop exists anywhere in
-this component (see the security contract).
+## Ledger and runtime limitation
 
-## Ledger states
+The message ledger and notification cursor/dedupe state are thread-safe within
+one process. They are not durable and are not cross-instance coordination.
+Accordingly, any R1 Cloud DRY_RUN deployment using this M3B state must use:
 
-`cloud/approval_relay/ledger.py` — `RelayLedgerState`:
+- Cloud Run maximum instances = 1; and
+- Gunicorn workers = 1 (the Dockerfile enforces this).
 
-`RECEIVED`, `DISPATCH_ATTEMPTING`, `DISPATCH_CONFIRMED`, `SAFE_TO_RETRY`,
-`UNKNOWN_OUTCOME`, `FAILED_FINAL`. The exhaustive legal transition table
-is `ledger.LEGAL_TRANSITIONS`; see that module's docstring for the full
-state-machine writeup, including why a crash between a real dispatch
-attempt and its durable outcome write is safe by construction (the
-record stays stuck in `DISPATCH_ATTEMPTING`, which is not
-attempt-eligible, so it can never be automatically redispatched — the
-same non-redispatch guarantee `UNKNOWN_OUTCOME` carries, without a
-seventh state).
+Threads may be greater than one because both local stores use locks and the
+ingress state serializes history walks per mailbox. A restart loses cursor and
+dedupe progress; that is acceptable only while GitHub dispatch remains fake.
+A durable cross-instance ledger/cursor is required before R2.
 
-## UNKNOWN_OUTCOME
+The sanitized message ledger persists only `event_key`, `stage`, `workflow`,
+attempt count/state, optional fake workflow run ID, and timestamps. It never
+persists the Subject, body, sender address, mailbox address, token, or raw
+envelope.
 
-Covers every case where a dispatch request may have reached GitHub but
-this relay never received a trustworthy confirmation. `UNKNOWN_OUTCOME`
-is reserved and **never** automatically redispatched, by any future
-duplicate Pub/Sub delivery. Only a future, **separately approved**
-reconciliation/manual-resolution path may resolve it — that path is not
-designed or implemented in this phase.
+## Fixed targets and Human Gate
 
-## Security
+The only allowlisted workflow targets remain:
 
-- Fixed `workflow`/`ref` targets only (see Fixed workflow allowlist
-  above); no arbitrary `workflow_dispatch` endpoint, no caller-controlled
-  repo/ref.
-- No real GitHub network implementation exists in this phase — only a
-  `Protocol` and `FakeGitHubDispatcher`
-  (`cloud/approval_relay/github_dispatch.py`). Adding a real GitHub
-  App/JWT/token implementation requires an explicit **Human Gate**
-  covering the credential-separation review, exactly as
-  `docs/phase3b2/A2_SHADOW_RUNBOOK.md` already requires for A2/any
-  successor — this relay is that successor.
-- No SMTP, no website/X publication capability, no periodic
-  schedule/polling implementation anywhere in this component.
-- No production `automation_state` mirror or write.
-- No full email body, full subject, or sender email address is ever
-  persisted or logged — `RelayLedgerRecord` has no such fields, and
-  `main.py`'s `_LOG_ALLOWED_FIELDS` is an explicit allowlist enforced by
-  `tests/test_approval_relay_contract.py`.
-- Removing the existing 15-minute cron schedules
-  (`approval-check-phase2.yml`, `design-selection-check.yml`) requires
-  its own explicit **Human Gate** and is not authorized by this phase —
-  see Deployment progression below.
+- `approval-check-phase2.yml` on `main`;
+- `design-selection-check.yml` on `main`.
+
+No real GitHub client, App, token, or `workflow_dispatch` call exists. Adding
+one requires an explicit Human Gate. The current polling cron schedules remain
+unchanged; removing them requires a later Human Gate after parallel validation
+and recovery coverage. Real GitHub dispatch and cron removal are NOT authorized by this phase.
 
 ## Deployment progression
 
-- **Phase R0** (this phase, M3A): local fake dispatcher only. No cloud
-  deployment.
-- **Phase R1**: cloud deployment in `DRY_RUN` mode, zero real GitHub
-  dispatch.
-- **Phase R2**: real GitHub dispatch enabled, but the existing 15-minute
-  cron schedules on `approval-check-phase2.yml` /
-  `design-selection-check.yml` remain unchanged and continue running.
-- **Phase R3**: parallel observation / acceptance period (relay dispatch
-  and cron both active; compare outcomes).
-- **Phase R4**: an explicit Human Gate to disable the 15-minute cron,
-  once R3 has demonstrated the relay is reliable.
-- **Phase R5**: a daily reconciliation/catch-up mechanism remains in
-  place even after R4 (covers `UNKNOWN_OUTCOME` resolution and any
-  Gmail-history unobserved-window gap — see A2's own documented cursor
-  limitations, which this relay inherits until a lossless catch-up
-  design is separately approved).
+- **R0:** local synthetic core (M3A).
+- **M3B:** real-shaped Gmail Pub/Sub ingress, Gmail history/message metadata
+  retrieval, sender allowlist, and OIDC authentication; still local only and
+  always `DRY_RUN` in production wiring.
+- **R1:** Cloud `DRY_RUN`; no real GitHub dispatch.
+- **R2:** real GitHub dispatch; NOT authorized by M3B.
 
-**Real GitHub dispatch and cron removal are NOT authorized by this
-phase (M3A).** Only the local fake dispatcher and `DRY_RUN` routing exist
-here.
+R1 prerequisites are authenticated Pub/Sub push, real Gmail history/message
+retrieval, sender allowlisting, a verified container build/runtime, configured
+watch baseline history ID, and enforcement of the single-instance/single-worker
+limitation while the in-memory state remains.
 
-## Rollback
+Before R2, all of the following require separate design/review and approval:
 
-Disable the relay's Pub/Sub subscription/traffic; the existing
-15-minute cron schedules on `approval-check-phase2.yml` and
-`design-selection-check.yml` remain the system of record until Phase R4's
-Human Gate explicitly disables them. No change made by this phase alters
-those workflows, their cron triggers, or any other existing file.
+- real GitHub App credentials and adapter;
+- sender allowlist revalidation at the dispatcher boundary;
+- durable cross-instance cursor and dispatch ledger;
+- `UNKNOWN_OUTCOME` reconciliation;
+- quota and circuit-breaker policy; and
+- catch-up/backfill for stale history or restart gaps.
 
-## Out of scope for this phase
+R1 readiness must not be claimed until every R1 prerequisite, including an
+actual container build/runtime test, has passed.
 
-Real GitHub App/token, real `workflow_dispatch` API calls, actual Cloud
-Run deployment, actual Pub/Sub subscription, actual Firestore, Gmail
-watch changes, catch-up/backfill implementation, cron removal, any
-modification to the existing approval workflows, Vercel configuration,
-real `UNKNOWN_OUTCOME` reconciliation, and real credential/Secret Manager
-setup.
+## Container and rollback
+
+Build only from the relay directory, which excludes repository secrets,
+`automation_state`, and image assets:
+
+```text
+docker build -f cloud/approval_relay/Dockerfile cloud/approval_relay
+```
+
+The image copies only the six Python source modules and requirements, runs as a
+non-root user, and starts `create_app_from_env()` with one Gunicorn worker.
+
+Rollback for R1 is disabling relay subscription traffic or the service. The
+existing polling workflows remain the system of record and are unchanged.
