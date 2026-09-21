@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-21",
-  "generated_at": "2026-09-21T02:58:22.856770+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-21T05:20:03.741307+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-21",
     "issue_date": "2026-09-21",
     "phase": 2,
@@ -561,52 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-21T00:06:31.128347+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 2,
-    "title": "Scientists discover a hidden “ID card” in cat urine",
-    "source": "ScienceDaily Offbeat",
-    "url": "https://www.sciencedaily.com/releases/2026/09/260919031033.htm",
-    "category": "animals",
-    "happiness": 8,
-    "hope": 6,
-    "general_interest": 9,
-    "surprise": 10,
-    "duck_visual": 9,
-    "source_quality": 7,
-    "freshness": 10,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 9,
-    "total_score": 86,
-    "reason": "A funny and wonderfully unexpected look at how cats recognize one another. The “chemical calling card” idea is easy to understand, memorable, and highly shareable.",
-    "candidate_number": 1,
-    "title_en": "Scientists Find a Hidden ID Card in Cat Urine",
-    "reason_en": "This funny, unexpected discovery offers a memorable look at how cats may recognize one another through a chemical calling card.",
-    "en_copy": "Cats may leave more than a scent behind. Scientists have discovered a hidden “ID card” in cat urine: chemical information that helps reveal how cats recognize one another. It is an unexpectedly sophisticated form of feline communication—and a wonderfully amusing reminder that the animal world is full of surprises.",
-    "duck_name": "The Whisker ID",
-    "duck_en": "A little chemistry, a lot of cat personality.",
-    "x_en": "Scientists found a hidden “ID card” in cat urine, offering a funny and unexpected look at how cats recognize one another. The animal world is full of surprises!",
-    "title_ja": "科学者、猫の尿に隠れた「身分証」を発見",
-    "reason_ja": "猫同士が化学的な「名札」のような情報を通じて互いを見分ける仕組みに迫る、意外で楽しい発見です。",
-    "jp_copy": "猫が残していくのは、においだけではないのかもしれません。科学者たちは猫の尿に隠れた「身分証」を発見しました。そこには、猫が互いを見分ける仕組みを知る手がかりとなる化学的な情報が含まれています。思いがけず高度な猫のコミュニケーションの一例であり、動物の世界が驚きに満ちていることを教えてくれる、なんともユニークな発見です。",
-    "duck_jp": "少しの化学、大いなる猫らしさ。",
-    "x_jp": "科学者が猫の尿に隠れた「身分証」を発見。猫同士がどうやって互いを見分けるのかを知る、意外で楽しい手がかりです。動物の世界は驚きに満ちています！"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Chemical Calling Card",
-      "concept_en": "A charming visual metaphor for the hidden chemical ID card in cat urine, presented as a playful detective discovery.",
-      "composition_en": "Landscape hero composition. Place the recognizable friendly yellow Daily Duck mascot in the foreground, wearing a tiny detective-style magnifying glass pose beside a softly glowing abstract calling-card shape made of floating molecule-like dots. In the background, show a curious domestic cat silhouette near a simple litter area, with a subtle luminous scent trail connecting the cat to the chemical card. Keep the visual metaphor clean and non-literal, with no visible bodily fluids. Warm cream, amber, and soft teal palette; strong central focal point; premium editorial illustration style.",
-      "generation_prompt_en": "Create one clean, modern, charming premium editorial illustration in a wide landscape hero format. Feature a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck is investigating a softly glowing abstract chemical calling card made from elegant molecule-like dots and connected lines, suggesting hidden identification information. Include a curious domestic cat in the middle background and a subtle luminous scent trail leading toward the abstract card. Use a playful detective-discovery mood, warm cream and golden yellow with restrained teal accents, simple polished shapes, soft studio lighting, strong focal point, generous negative space. Do not depict urine or bodily fluids literally. No logos, no watermark, no UI, no readable embedded text, no headline, no labels, no letters or numbers in the image.",
-      "alt_en": "A friendly yellow duck investigates an abstract glowing chemical calling card linked by a scent trail to a curious cat.",
-      "title_ja": "化学の名刺を追う探偵ダック",
-      "concept_ja": "猫の尿に隠れた化学的な「身分証」を、探偵が発見するような楽しい視覚メタファーで表現します。",
-      "composition_ja": "横長のヒーロー構図。手前に、オレンジ色のくちばし、大きな黒く艶のある目、小さな羽毛の tuft を持つ、おなじみの黄色いダックを配置します。ダックの隣には、分子のような光の点でできた抽象的な「名刺」を浮かべ、背景には好奇心を示す飼い猫と、猫からそのカードへ向かう淡い発光のにおいの軌跡を描きます。尿や体液は直接描かず、温かなクリーム色、黄色、控えめな青緑で、すっきりと上質にまとめます。",
-      "alt_ja": "好奇心のある猫から伸びるにおいの軌跡につながった、抽象的に光る化学の名刺を黄色いダックが調べている。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "The Scent Recognition Network",
       "concept_en": "A visual exploration of how cats may recognize one another through chemical information, using an elegant invisible communication network.",
@@ -618,95 +575,9 @@
       "composition_ja": "横長のヒーロー構図で、明るく親しみやすい空間の中央に黄色いダックを配置します。奥行きの異なる位置に2〜3匹のシンプルな猫を置き、半透明のにおいのリボンと小さな抽象的分子の集まりでつなぎます。ダックは光るリボンを観察し、見えないコミュニケーションを楽しく理解できるようにします。淡いラベンダー、青、ハニーイエロー、クリーム色を使い、文字や科学的ラベルは入れません。",
       "alt_ja": "黄色いダックが、複数の猫をつなぐ光るにおいのリボンによる抽象的な化学コミュニケーション網を観察している。"
     },
-    {
-      "number": 3,
-      "title_en": "The Whisker ID Reveal",
-      "concept_en": "A playful reveal scene in which the Daily Duck presents the surprising idea that a cat’s scent may carry more than a smell.",
-      "composition_en": "Landscape hero composition designed like a polished editorial reveal. Place the duck mascot on the left, warmly presenting a small glowing translucent capsule or card-shaped light containing abstract molecular patterns, not readable information. Place a dignified curious cat on the right, looking toward the reveal. Between them, use a soft spotlight and a gentle swirl of scent-like particles to suggest a hidden identity signal. Keep the background minimal and warm, with a rich midnight-blue-to-cream gradient and golden highlights. The image should feel surprising, amusing, and premium without showing literal urine or inventing factual objects.",
-      "generation_prompt_en": "Create one clean, modern, premium editorial illustration in a wide landscape hero format. Feature the consistent Daily Duck mascot on the left: friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. The duck presents a small glowing translucent card-shaped light or capsule containing only abstract molecule-like patterns, symbolizing a hidden chemical ID in cat urine. On the right, show one dignified curious domestic cat looking toward the reveal. Add a soft spotlight and a gentle swirl of scent-like particles between them. Make the scene feel like a delightful scientific surprise, using a refined midnight blue, warm cream, and golden-yellow palette, simple shapes, subtle depth, and strong focal contrast. Do not show urine, bodily fluids, readable information, letters, numbers, labels, logos, watermarks, UI, or any headline in the image.",
-      "alt_en": "A friendly yellow duck reveals an abstract glowing chemical ID beside a curious cat.",
-      "title_ja": "ひみつの猫ID、公開",
-      "concept_ja": "猫のにおいには、単なる香り以上の情報が含まれるかもしれないという意外性を、発表の瞬間のように楽しく表現します。",
-      "composition_ja": "上質なエディトリアル発表シーンを思わせる横長構図です。左側に、黄色い羽、オレンジ色のくちばし、大きな艶のある黒い目、小さな羽毛の tuft、親しみやすい表情を持つダックを置きます。ダックは、抽象的な分子模様だけが入った半透明の光るカード状オブジェクトを提示します。右側には、発見を見つめる堂々とした好奇心のある猫を配置し、両者の間に淡いスポットライトとにおいを思わせる粒子の渦を加えます。尿や体液は描かず、驚きとユーモアのある上質な雰囲気にします。",
-      "alt_ja": "黄色いダックが、好奇心のある猫の隣で、抽象的に光る化学的な身分証を披露している。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IT OR NOT: A CAT ID",
-      "meaning_ja": "自然な意味は「信じられないかもしれないが、猫のIDだ」です。元になっている表現は “Believe It or Not!”。その “believe” を、アヒルのくちばしを意味する “bill” に置き換えたダジャレで、Daily Duckらしい明確なダック・パンになっています。"
-    },
-    {
-      "number": 2,
-      "title": "THE SCENT OF IDENTITY",
-      "meaning_ja": "「アイデンティティーの香り」という意味です。英語の “sense of identity（アイデンティティーの感覚）” を連想させながら、“sense” と “scent” の近い響きと意味のずれを使っています。猫が化学的な情報で互いを見分けるという話に直接つながる、ダック語に頼らない知的な言葉遊びです。"
-    },
-    {
-      "number": 3,
-      "title": "EVERY CAT LEAVES A CLUE",
-      "meaning_ja": "「どの猫も手がかりを残す」という意味です。短く断定的なリズムがあり、ポスターやソーシャルカードで一目で読める強さがあります。単なるにおいではなく、猫の識別に関わる化学的な手がかりが残されるかもしれないという、意外で好奇心を誘うニュアンスを持たせています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Chemical Calling Card",
-      "concept_title_ja": "化学の名刺を追う探偵ダック",
-      "image_path": "automation_images/design_previews/2026-09-21/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "7fd0ddc0c2e1dbb09ea571d7718e629e6b5e67e9077b27cca8a444394aae0f46",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Find a Hidden ID Card in Cat Urine\nSummary: This funny, unexpected discovery offers a memorable look at how cats may recognize one another through a chemical calling card.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Chemical Calling Card\n\nCONCEPT:\nA charming visual metaphor for the hidden chemical ID card in cat urine, presented as a playful detective discovery.\n\nCOMPOSITION:\nLandscape hero composition. Place the recognizable friendly yellow Daily Duck mascot in the foreground, wearing a tiny detective-style magnifying glass pose beside a softly glowing abstract calling-card shape made of floating molecule-like dots. In the background, show a curious domestic cat silhouette near a simple litter area, with a subtle luminous scent trail connecting the cat to the chemical card. Keep the visual metaphor clean and non-literal, with no visible bodily fluids. Warm cream, amber, and soft teal palette; strong central focal point; premium editorial illustration style.\n\nPRODUCTION DIRECTION:\nCreate one clean, modern, charming premium editorial illustration in a wide landscape hero format. Feature a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck is investigating a softly glowing abstract chemical calling card made from elegant molecule-like dots and connected lines, suggesting hidden identification information. Include a curious domestic cat in the middle background and a subtle luminous scent trail leading toward the abstract card. Use a playful detective-discovery mood, warm cream and golden yellow with restrained teal accents, simple polished shapes, soft studio lighting, strong focal point, generous negative space. Do not depict urine or bodily fluids literally. No logos, no watermark, no UI, no readable embedded text, no headline, no labels, no letters or numbers in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck investigates an abstract glowing chemical calling card linked by a scent trail to a curious cat.",
-      "alt_ja": "好奇心のある猫から伸びるにおいの軌跡につながった、抽象的に光る化学の名刺を黄色いダックが調べている。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Scent Recognition Network",
-      "concept_title_ja": "見えないにおいのコミュニケーション",
-      "image_path": "automation_images/design_previews/2026-09-21/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "9e03540e4b1c5c7efb0006148f2d1ca7b9dd6e026a4a25b752b93e9a21b8bcf4",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Find a Hidden ID Card in Cat Urine\nSummary: This funny, unexpected discovery offers a memorable look at how cats may recognize one another through a chemical calling card.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Scent Recognition Network\n\nCONCEPT:\nA visual exploration of how cats may recognize one another through chemical information, using an elegant invisible communication network.\n\nCOMPOSITION:\nLandscape hero composition with the yellow duck mascot centered in a bright, friendly visualization space. Arrange two or three simple cat figures at different depths, connected by flowing translucent scent ribbons and tiny abstract molecule clusters. The duck gently holds or observes one glowing ribbon, making the invisible communication feel understandable and delightful. Use layered depth, clean curves, soft lavender, honey yellow, and pale blue, with no scientific labels or readable text. The mood is curious, intelligent, and warmly surprising.\n\nPRODUCTION DIRECTION:\nCreate one publishable wide landscape editorial illustration with a clean modern premium style. Show the recognizable friendly yellow Daily Duck mascot, with bright yellow feathers, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, standing at the center of an elegant abstract communication scene. Surround it with two or three simplified curious domestic cats at different depths. Connect the cats with translucent flowing scent ribbons and small abstract molecule clusters, suggesting chemical information that helps cats recognize one another. Make the invisible network visually clear without literal urine or laboratory equipment. Use soft lavender, pale blue, honey yellow, and warm cream, polished shapes, gentle lighting, strong focal hierarchy, and generous negative space. No logos, watermarks, UI, readable text, labels, letters, numbers, or headline inside the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck observes glowing scent ribbons connecting several cats in an abstract chemical recognition network.",
-      "alt_ja": "黄色いダックが、複数の猫をつなぐ光るにおいのリボンによる抽象的な化学コミュニケーション網を観察している。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Whisker ID Reveal",
-      "concept_title_ja": "ひみつの猫ID、公開",
-      "image_path": "automation_images/design_previews/2026-09-21/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "d6613a6485c7063aa758733b02edb767d5ba1f9843ceaeb922b39931b00584e7",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Find a Hidden ID Card in Cat Urine\nSummary: This funny, unexpected discovery offers a memorable look at how cats may recognize one another through a chemical calling card.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Whisker ID Reveal\n\nCONCEPT:\nA playful reveal scene in which the Daily Duck presents the surprising idea that a cat’s scent may carry more than a smell.\n\nCOMPOSITION:\nLandscape hero composition designed like a polished editorial reveal. Place the duck mascot on the left, warmly presenting a small glowing translucent capsule or card-shaped light containing abstract molecular patterns, not readable information. Place a dignified curious cat on the right, looking toward the reveal. Between them, use a soft spotlight and a gentle swirl of scent-like particles to suggest a hidden identity signal. Keep the background minimal and warm, with a rich midnight-blue-to-cream gradient and golden highlights. The image should feel surprising, amusing, and premium without showing literal urine or inventing factual objects.\n\nPRODUCTION DIRECTION:\nCreate one clean, modern, premium editorial illustration in a wide landscape hero format. Feature the consistent Daily Duck mascot on the left: friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. The duck presents a small glowing translucent card-shaped light or capsule containing only abstract molecule-like patterns, symbolizing a hidden chemical ID in cat urine. On the right, show one dignified curious domestic cat looking toward the reveal. Add a soft spotlight and a gentle swirl of scent-like particles between them. Make the scene feel like a delightful scientific surprise, using a refined midnight blue, warm cream, and golden-yellow palette, simple shapes, subtle depth, and strong focal contrast. Do not show urine, bodily fluids, readable information, letters, numbers, labels, logos, watermarks, UI, or any headline in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck reveals an abstract glowing chemical ID beside a curious cat.",
-      "alt_ja": "黄色いダックが、好奇心のある猫の隣で、抽象的に光る化学的な身分証を披露している。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-21/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "THE SCENT OF IDENTITY"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE SCENT OF IDENTITY",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "THE SCENT OF IDENTITY",
+    "meaning_ja": "「アイデンティティーの香り」という意味です。英語の “sense of identity（アイデンティティーの感覚）” を連想させながら、“sense” と “scent” の近い響きと意味のずれを使っています。猫が化学的な情報で互いを見分けるという話に直接つながる、ダック語に頼らない知的な言葉遊びです。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "The Scent Recognition Network",
+    "concept_title_ja": "見えないにおいのコミュニケーション",
+    "image_path": "automation_images/design_previews/2026-09-21/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "9e03540e4b1c5c7efb0006148f2d1ca7b9dd6e026a4a25b752b93e9a21b8bcf4",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Scientists Find a Hidden ID Card in Cat Urine\nSummary: This funny, unexpected discovery offers a memorable look at how cats may recognize one another through a chemical calling card.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Scent Recognition Network\n\nCONCEPT:\nA visual exploration of how cats may recognize one another through chemical information, using an elegant invisible communication network.\n\nCOMPOSITION:\nLandscape hero composition with the yellow duck mascot centered in a bright, friendly visualization space. Arrange two or three simple cat figures at different depths, connected by flowing translucent scent ribbons and tiny abstract molecule clusters. The duck gently holds or observes one glowing ribbon, making the invisible communication feel understandable and delightful. Use layered depth, clean curves, soft lavender, honey yellow, and pale blue, with no scientific labels or readable text. The mood is curious, intelligent, and warmly surprising.\n\nPRODUCTION DIRECTION:\nCreate one publishable wide landscape editorial illustration with a clean modern premium style. Show the recognizable friendly yellow Daily Duck mascot, with bright yellow feathers, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, standing at the center of an elegant abstract communication scene. Surround it with two or three simplified curious domestic cats at different depths. Connect the cats with translucent flowing scent ribbons and small abstract molecule clusters, suggesting chemical information that helps cats recognize one another. Make the invisible network visually clear without literal urine or laboratory equipment. Use soft lavender, pale blue, honey yellow, and warm cream, polished shapes, gentle lighting, strong focal hierarchy, and generous negative space. No logos, watermarks, UI, readable text, labels, letters, numbers, or headline inside the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A friendly yellow duck observes glowing scent ribbons connecting several cats in an abstract chemical recognition network.",
+    "alt_ja": "黄色いダックが、複数の猫をつなぐ光るにおいのリボンによる抽象的な化学コミュニケーション網を観察している。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-21.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-21 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-21 — Batch 1",
-  "final_email_sent_at": "2026-09-21T02:58:27.233579+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE SCENT OF IDENTITY",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-21T05:20:03.742350+00:00"
+    "translation_language": "ja"
+  }
 }
