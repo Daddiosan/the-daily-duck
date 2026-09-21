@@ -335,7 +335,12 @@ class DispatcherService:
             # does not attempt to backfill messages predating A2's first
             # observed history id -- A2 is a comparison/validation tool,
             # not the system of record, so perfect backfill is not
-            # required the way it would be for A1.
+            # required the way it would be for A1. UNOBSERVED WINDOW: any
+            # mail that arrived before this first notification is never
+            # walked or classified by A2 -- see
+            # docs/phase3b2/A2_SHADOW_RUNBOOK.md's Cursor Semantics
+            # section for why this is acceptable for shadow validation
+            # only, not for lossless production event processing.
             return self._apply_cursor_cas(
                 None, target_history_id, recovery_path="INITIAL_CURSOR", processed=0
             )
@@ -352,6 +357,13 @@ class DispatcherService:
         try:
             batch = self.gmail.list_history(current)
         except StaleHistoryError:
+            # UNOBSERVED WINDOW: Gmail has already discarded the history
+            # entries between `current` and wherever the mailbox actually
+            # is now, so this resync necessarily skips whatever mail
+            # arrived in that gap -- there is no API call that can
+            # recover it after the fact. See
+            # docs/phase3b2/A2_SHADOW_RUNBOOK.md's Cursor Semantics
+            # section.
             return self._apply_cursor_cas(
                 current,
                 target_history_id,
@@ -360,6 +372,18 @@ class DispatcherService:
             )
 
         processed = self._process_messages(batch.message_ids)
+        # Cursor advancement intentionally uses target_history_id (the
+        # triggering Pub/Sub notification's own historyId), never
+        # batch.latest_history_id (the possibly-newer position this walk
+        # actually observed while paginating) -- see HistoryBatch's
+        # docstring in gmail_reader.py and
+        # docs/phase3b2/A2_SHADOW_RUNBOOK.md's Cursor Semantics section
+        # for why. Any mail this walk incidentally saw beyond
+        # target_history_id is processed now (its own idempotent
+        # dedupe/CAS logic makes that safe) but the cursor still stops at
+        # target_history_id, so a later notification for that newer
+        # position is a safe, cheap, fully-deduped no-op rather than a
+        # skipped range.
         return self._apply_cursor_cas(
             current, target_history_id, recovery_path="PUSH", processed=processed
         )

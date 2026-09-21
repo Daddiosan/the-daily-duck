@@ -17,6 +17,7 @@ import json
 import logging
 import os
 import sys
+import threading
 import types
 import unittest
 from email.message import EmailMessage
@@ -582,6 +583,30 @@ class CursorAndHistoryTests(unittest.TestCase):
                 pubsub_envelope(email="someone-else@example.com")
             )
 
+    def test_cursor_advances_to_notification_target_not_batches_latest_history_id(self):
+        # The walk claims it observed all the way up to "999" -- newer
+        # than the triggering notification's own historyId "200" -- to
+        # prove the cursor still lands on the notification's own target,
+        # never on HistoryBatch.latest_history_id. See gmail_reader.py's
+        # HistoryBatch docstring and main.py's _process_to_history
+        # comments for why this is the deliberate, documented design
+        # (M2B Fix: latest_history_id review).
+        message = raw_message(subject=f"{GATE_A_PATTERN} — {ISSUE}", body="3")
+        gmail = FakeGmailReader(
+            history_results={
+                "100": HistoryBatch(message_ids=("msg-1",), latest_history_id="999")
+            },
+            messages={"msg-1": message},
+        )
+        harness = Harness(
+            gmail=gmail, state_snapshots={ApprovalStage.GATE_A: gate_a_snapshot()}
+        )
+        result = harness.push(history_id="200")
+        self.assertEqual(result["recovery_path"], "PUSH")
+        self.assertEqual(
+            harness.cursor_store.read_cursor().processing_history_id, "200"
+        )
+
 
 # ---------------------------------------------------------------------------
 # M2A Fix #1 / #2: RealGmailReader pagination and structured 403
@@ -1016,6 +1041,234 @@ class CursorCasHandlingTests(unittest.TestCase):
         self.assertEqual(len(harness.observation_store._records), 1)
         [record] = harness.observation_store._records.values()
         self.assertEqual(record["classification"], "GATE_A_REPLY")
+
+
+# ---------------------------------------------------------------------------
+# M2B: genuine multi-threaded exercise of cursor CAS concurrency. The
+# CursorCasHandlingTests above prove the _apply_cursor_cas decision-logic
+# branches are wired correctly given a scripted outcome; these use real
+# threading.Thread/Barrier/Event to prove the same invariants hold under
+# an actual OS-thread race on one real InMemoryCursorStore (which uses a
+# real threading.Lock), not merely a scripted stand-in for one.
+# ---------------------------------------------------------------------------
+
+
+class RealConcurrentCursorCasTests(unittest.TestCase):
+    def test_two_real_threads_race_on_cas_no_loss_no_redundant_reprocessing(self):
+        """Two independent DispatcherService instances -- each with its
+        own Gmail reader, observation store, and transition ledger,
+        deliberately, so this test isolates the cursor-CAS race this
+        follow-up is scoped to fix -- share exactly one real
+        InMemoryCursorStore and race on it with real OS threads,
+        synchronized via a threading.Barrier so neither attempts its CAS
+        until BOTH have already completed their own message-level writes
+        (mirroring _process_to_history's real call order: _process_messages
+        always runs before _apply_cursor_cas). This deliberately does NOT
+        also exercise scripts.a2_dispatch.InMemoryTransitionLedger /
+        InMemoryShadowObservationStore under real concurrent contention --
+        their own docstrings already disclose they are not thread-safe
+        fakes (see InMemoryTransitionLedger's PRODUCTION_CAS_REQUIREMENT
+        docstring); that is a separate, already-documented limitation,
+        out of scope here.
+        """
+
+        message_a = raw_message(subject=f"{GATE_A_PATTERN} — {ISSUE}", body="3")
+        message_b = raw_message(
+            subject=f"{DESIGN_PATTERN} — {ISSUE} — Batch 4", body="1 3"
+        )
+        gmail_a = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-a",))},
+            messages={"msg-a": message_a},
+        )
+        gmail_b = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-b",))},
+            messages={"msg-b": message_b},
+        )
+        shared_cursor_store = InMemoryCursorStore(CursorState("100"))
+
+        service_a = DispatcherService(
+            make_config(),
+            gmail_a,
+            shared_cursor_store,
+            InMemoryShadowObservationStore(),
+            InMemoryTransitionLedger(),
+            FakeProductionStateReader({ApprovalStage.GATE_A: gate_a_snapshot()}),
+        )
+        service_b = DispatcherService(
+            make_config(),
+            gmail_b,
+            shared_cursor_store,
+            InMemoryShadowObservationStore(),
+            InMemoryTransitionLedger(),
+            FakeProductionStateReader(
+                {ApprovalStage.DESIGN_SELECTION: design_snapshot()}
+            ),
+        )
+
+        barrier = threading.Barrier(2)
+        real_cas = shared_cursor_store.compare_and_update_cursor
+
+        def synchronized_cas(expected, new):
+            # Reached only after this call's own _process_messages has
+            # already returned (see _process_to_history's call order).
+            # Waiting on the barrier here forces BOTH threads' own
+            # writes to be complete before either one's CAS attempt is
+            # allowed to proceed -- requirement B before C.
+            barrier.wait(timeout=5)
+            return real_cas(expected, new)
+
+        shared_cursor_store.compare_and_update_cursor = synchronized_cas
+
+        results: dict[str, Any] = {}
+        errors: dict[str, BaseException] = {}
+
+        def run(service, key):
+            try:
+                results[key] = service.process_pubsub(
+                    pubsub_envelope(history_id="200")
+                )
+            except BaseException as exc:  # noqa: BLE001 - captured for assertion
+                errors[key] = exc
+
+        t_a = threading.Thread(target=run, args=(service_a, "a"))
+        t_b = threading.Thread(target=run, args=(service_b, "b"))
+        t_a.start()
+        t_b.start()
+        t_a.join(timeout=5)
+        t_b.join(timeout=5)
+
+        self.assertEqual(errors, {})
+        self.assertEqual(set(results), {"a", "b"})
+
+        # C/D: exactly one real (lock-arbitrated, not scripted) CAS won;
+        # the other observed failure and took the benign path.
+        recovery_paths = {results["a"]["recovery_path"], results["b"]["recovery_path"]}
+        self.assertEqual(recovery_paths, {"PUSH", "BENIGN_CONCURRENT_ADVANCE"})
+
+        # The shared cursor landed exactly at the target, exactly once.
+        self.assertEqual(
+            shared_cursor_store.read_cursor().processing_history_id, "200"
+        )
+
+        # G: no observation lost -- both workers' distinct messages were
+        # processed, regardless of which one won the real CAS race.
+        self.assertEqual(results["a"]["processed"], 1)
+        self.assertEqual(results["b"]["processed"], 1)
+        self.assertEqual(len(service_a.observation_store._records), 1)
+        self.assertEqual(len(service_b.observation_store._records), 1)
+
+        # H: the benign-CAS resolution did not trigger any redundant
+        # reprocessing/re-dispatch of either message -- each Gmail
+        # message was fetched exactly once, by exactly the worker that
+        # actually walked it.
+        self.assertEqual(gmail_a.get_message_calls, ["msg-a"])
+        self.assertEqual(gmail_b.get_message_calls, ["msg-b"])
+
+    def test_cursor_already_advanced_by_another_worker_does_not_rescue_this_workers_failed_write(
+        self,
+    ):
+        """Worker B independently, genuinely advances the shared real
+        cursor to the target position while worker A -- which already
+        committed to processing based on the same stale cursor value --
+        has its own required observation write fail. Proves the "cursor
+        already advanced -> benign" fallback in
+        DispatcherService._apply_cursor_cas is never even reached for a
+        worker whose own write did not succeed: _process_messages (and
+        therefore any write failure inside it) unconditionally runs, and
+        its exception unconditionally propagates, strictly before
+        _apply_cursor_cas is ever called for that worker -- regardless of
+        what any other worker did to the shared cursor in the meantime.
+        No code change was required to satisfy this: the invariant
+        already holds because of that ordering (see
+        DispatcherService._process_to_history).
+        """
+
+        shared_cursor_store = InMemoryCursorStore(CursorState("100"))
+        real_read_cursor = shared_cursor_store.read_cursor
+        worker_a_read_cursor = threading.Event()
+
+        def tracking_read_cursor():
+            result = real_read_cursor()
+            worker_a_read_cursor.set()
+            return result
+
+        # Both workers call read_cursor() as their first cursor-store
+        # interaction; wrapping it here only needs to observe that SOME
+        # read happened before worker B is allowed to start, and worker A
+        # is started first below, so this reliably marks worker A's read.
+        shared_cursor_store.read_cursor = tracking_read_cursor
+
+        message_a = raw_message(subject=f"{GATE_A_PATTERN} — {ISSUE}", body="3")
+        gmail_a = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-a",))},
+            messages={"msg-a": message_a},
+        )
+        service_a = DispatcherService(
+            make_config(),
+            gmail_a,
+            shared_cursor_store,
+            RaisingObservationStore(),
+            InMemoryTransitionLedger(),
+            FakeProductionStateReader({ApprovalStage.GATE_A: gate_a_snapshot()}),
+        )
+
+        message_b = raw_message(subject=f"{GATE_A_PATTERN} — {ISSUE}", body="3")
+        gmail_b = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-b",))},
+            messages={"msg-b": message_b},
+        )
+        service_b = DispatcherService(
+            make_config(),
+            gmail_b,
+            shared_cursor_store,
+            InMemoryShadowObservationStore(),
+            InMemoryTransitionLedger(),
+            FakeProductionStateReader({ApprovalStage.GATE_A: gate_a_snapshot()}),
+        )
+
+        results: dict[str, Any] = {}
+        errors: dict[str, BaseException] = {}
+
+        def run_a():
+            try:
+                results["a"] = service_a.process_pubsub(
+                    pubsub_envelope(history_id="200")
+                )
+            except BaseException as exc:  # noqa: BLE001 - captured for assertion
+                errors["a"] = exc
+
+        def run_b():
+            # Only start once worker A has already captured its own
+            # (stale) view of the cursor, so worker B's real advance
+            # happens independently of, and is not required to precede,
+            # worker A's own already-committed attempt.
+            worker_a_read_cursor.wait(timeout=5)
+            try:
+                results["b"] = service_b.process_pubsub(
+                    pubsub_envelope(history_id="200")
+                )
+            except BaseException as exc:  # noqa: BLE001 - captured for assertion
+                errors["b"] = exc
+
+        t_a = threading.Thread(target=run_a)
+        t_b = threading.Thread(target=run_b)
+        t_a.start()
+        t_b.start()
+        t_a.join(timeout=5)
+        t_b.join(timeout=5)
+
+        # B genuinely, independently advanced the real shared cursor.
+        self.assertNotIn("b", errors)
+        self.assertEqual(results["b"]["recovery_path"], "PUSH")
+        self.assertEqual(real_read_cursor().processing_history_id, "200")
+
+        # A's own write failure propagates as a genuine error -- it is
+        # never silently treated as ACKNOWLEDGED/benign just because the
+        # cursor happens to already be at the target by the time anyone
+        # might look.
+        self.assertIn("a", errors)
+        self.assertIsInstance(errors["a"], RuntimeError)
+        self.assertNotIn("a", results)
 
 
 # ---------------------------------------------------------------------------

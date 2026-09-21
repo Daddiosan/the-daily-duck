@@ -109,6 +109,51 @@ OAuth production-promotion process.
   reconciliation design from Phase B.5), not a polling mechanism, and is
   not implemented in this phase.
 
+## Cursor Semantics
+
+A2's own Gmail history-walk cursor (`a2_cursor`, below) advances by three
+distinct paths in `DispatcherService._process_to_history`, and it is
+important not to read any of them as lossless production event
+processing:
+
+- **INITIAL_CURSOR** (first-ever run, no saved cursor yet): the cursor is
+  seeded directly at the triggering notification's own `historyId`. A2
+  does not backfill or walk any mail that arrived before this first
+  notification -- there is no Gmail API call this module makes that
+  could recover that window after the fact, since it never held a prior
+  cursor to walk forward from. This is an **unobserved window by
+  design**, acceptable because A2 is a comparison/validation tool, not
+  the system of record (A1 remains the system of record and is
+  unaffected).
+- **STALE_HISTORY_RESYNC** (Gmail's `history.list` returns 404 for the
+  saved cursor, i.e. Gmail has already garbage-collected that history
+  range): the cursor resyncs directly to the triggering notification's
+  `historyId`, again with **no attempt to recover the skipped interval**
+  -- once Gmail 404s a `startHistoryId`, that range's history entries are
+  gone from the API, not merely unread.
+- **PUSH** (the normal path): the cursor advances to the triggering
+  notification's own `target_history_id`, deliberately NOT to
+  `HistoryBatch.latest_history_id` (the possibly-newer position the walk
+  actually observed while paginating -- see `gmail_reader.py`'s
+  `HistoryBatch` docstring). Any mail the walk incidentally saw beyond
+  `target_history_id` is still processed and persisted now (safely,
+  since message-level dedupe/CAS makes reprocessing idempotent); the
+  cursor simply waits for that later mail's own, separate Pub/Sub
+  notification to formally advance past it. `latest_history_id` is kept
+  on `HistoryBatch` for potential future diagnostic use only -- no
+  current code path depends on it for correctness.
+
+**This must not be represented as lossless production event processing.**
+A2's shadow observation set is guaranteed complete only across
+uninterrupted PUSH-to-PUSH history walks; any INITIAL_CURSOR or
+STALE_HISTORY_RESYNC event creates a real gap in what A2 has observed
+relative to the mailbox's actual history, by design, in this phase. This
+is acceptable only for shadow validation/comparison purposes. Before any
+Thin Relay / production cutover work that would need A2 (or a successor)
+to see every event, a separately approved catch-up/backfill mechanism
+must exist -- notification-loss and catch-up are explicitly NOT addressed
+by this phase's design and are NOT implemented here.
+
 ## Firestore Collections (Phase C shadow only)
 
 Same Google Cloud project and same Firestore database as A1 (see Phase

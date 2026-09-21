@@ -97,7 +97,23 @@ class UnknownGmailAuthorizationError(GmailReaderError):
 
 @dataclass(frozen=True)
 class HistoryBatch:
-    """Changed Gmail message ids returned by one history walk."""
+    """Changed Gmail message ids returned by one history walk.
+
+    latest_history_id is the highest historyId actually observed while
+    paginating (i.e. the mailbox's history position at the moment this
+    walk's last page was fetched, which can be newer than the historyId
+    the triggering Pub/Sub notification itself carried, if more mail
+    arrived between when Gmail sent that notification and when this walk
+    ran). It is intentionally NOT used by
+    DispatcherService._process_to_history for cursor advancement -- see
+    that method's docstring/comments and
+    docs/phase3b2/A2_SHADOW_RUNBOOK.md's Cursor Semantics section for why
+    advancing only to the notification's own target_history_id is the
+    deliberate choice, not an oversight. It is kept on this dataclass as
+    diagnostic/observability information (e.g. to measure how far a walk
+    is from the mailbox's true current state) for potential future use,
+    not because any current code path consumes it for correctness.
+    """
 
     message_ids: tuple[str, ...]
     latest_history_id: str | None = None
