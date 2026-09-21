@@ -319,6 +319,32 @@ class IdempotencyAndTransitionTests(unittest.TestCase):
         self.assertNotEqual(poll.idempotency_key, event.idempotency_key)
         self.assertEqual(poll.transition_key, event.transition_key)
 
+    def test_gmail_push_shares_transition_key_with_poll_and_event(self):
+        # GMAIL_PUSH, GMAIL_POLL, and EVENT are three different delivery
+        # mechanisms/trust origins for what can be the exact same business
+        # transition; transition_key must be identical across all three so
+        # decide_transition's own applied-key tracking treats them as one
+        # transition regardless of which path observed it first.
+        push = gate(
+            source=ApprovalSource.GMAIL_PUSH,
+            event_id=None,
+            message_id="<push@example.com>",
+            upstream_run_id=None,
+        )
+        poll = gate(
+            source=ApprovalSource.GMAIL_POLL,
+            event_id=None,
+            upstream_run_id=None,
+        )
+        event = gate(event_id="event-with-run", upstream_run_id="run-300")
+        self.assertEqual(push.transition_key, poll.transition_key)
+        self.assertEqual(push.transition_key, event.transition_key)
+        # A GMAIL_PUSH command carrying a message_id is never legacy_metadata,
+        # unlike the bare GMAIL_POLL command above (which has neither
+        # event_id, message_id, nor upstream_run_id).
+        self.assertFalse(push.legacy_metadata)
+        self.assertTrue(poll.legacy_metadata)
+
     def test_different_message_ids_only_change_delivery_key(self):
         first = gate(
             source=ApprovalSource.GMAIL_POLL,

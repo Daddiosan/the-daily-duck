@@ -24,6 +24,16 @@ class ApprovalStage(str, Enum):
 
 class ApprovalSource(str, Enum):
     GMAIL_POLL = "GMAIL_POLL"
+    # A Gmail message delivered via Gmail push notification / Pub/Sub,
+    # rather than found by periodic IMAP search. Its trust origin is the
+    # same authenticated Gmail message (GMAIL_MESSAGE_METADATA) as
+    # GMAIL_POLL, so it carries an identical authorization contract in
+    # _validate_principal_source -- this is a delivery-mechanism label, not
+    # a different trust boundary. It is deliberately distinct from EVENT,
+    # whose only current consumer (scripts/approval_shadow.py) asserts a
+    # GitHub Actions actor identity (TrustedPrincipalSource.
+    # GITHUB_WORKFLOW_CONTEXT), a categorically different trust origin.
+    GMAIL_PUSH = "GMAIL_PUSH"
     EVENT = "EVENT"
     RECONCILIATION = "RECONCILIATION"
 
@@ -430,6 +440,7 @@ def _validate_principal_source(
     allowed_sources = {
         ApprovalSource.EVENT: {TrustedPrincipalSource.GITHUB_WORKFLOW_CONTEXT},
         ApprovalSource.GMAIL_POLL: {TrustedPrincipalSource.GMAIL_MESSAGE_METADATA},
+        ApprovalSource.GMAIL_PUSH: {TrustedPrincipalSource.GMAIL_MESSAGE_METADATA},
         ApprovalSource.RECONCILIATION: {
             TrustedPrincipalSource.GMAIL_MESSAGE_METADATA,
             TrustedPrincipalSource.VERIFIED_RECONCILIATION_RECORD,

@@ -210,6 +210,44 @@ class PrincipalAuthorizationTests(unittest.TestCase):
             caught.exception.reason, "TRUSTED_PRINCIPAL_SOURCE_MISMATCH"
         )
 
+    def test_gmail_push_accepts_gmail_principal_provenance(self):
+        # GMAIL_PUSH (Gmail push notification delivery) carries the exact
+        # same authorization contract as GMAIL_POLL (periodic IMAP search
+        # delivery): both require GMAIL_MESSAGE_METADATA. Only the enum
+        # label differs, so future observations/audits can tell the two
+        # delivery mechanisms apart without implying a difference in trust.
+        command = build_approval_command(
+            stage=ApprovalStage.GATE_A,
+            issue_date="2026-09-19",
+            command="3",
+            source_type=ApprovalSource.GMAIL_PUSH,
+            trusted_principal=trusted_principal_from_gmail_metadata(
+                "owner@example.com"
+            ),
+            allowed_principals=ALLOWED,
+            message_id="<push@example.com>",
+        )
+        self.assertEqual(
+            command.principal_source,
+            TrustedPrincipalSource.GMAIL_MESSAGE_METADATA,
+        )
+
+    def test_gmail_push_rejects_github_principal_provenance(self):
+        with self.assertRaises(ApprovalValidationError) as caught:
+            build_approval_command(
+                stage=ApprovalStage.GATE_A,
+                issue_date="2026-09-19",
+                command="3",
+                source_type=ApprovalSource.GMAIL_PUSH,
+                trusted_principal=trusted_principal_from_github_context(
+                    "github-owner"
+                ),
+                allowed_principals=ALLOWED,
+            )
+        self.assertEqual(
+            caught.exception.reason, "TRUSTED_PRINCIPAL_SOURCE_MISMATCH"
+        )
+
     def test_reconciliation_accepts_gmail_metadata_provenance(self):
         command = build_approval_command(
             stage=ApprovalStage.GATE_A,

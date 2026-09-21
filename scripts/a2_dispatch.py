@@ -25,16 +25,21 @@ fetch, before that discard happens; it cannot classify from A1's stored
 observation alone.
 
 The trusted-principal source for this module's build_approval_command() calls
-is ApprovalSource.GMAIL_POLL, not ApprovalSource.EVENT. This looks
+is ApprovalSource.GMAIL_PUSH, not ApprovalSource.EVENT. This looks
 counterintuitive for an event-driven path, but it is what
 scripts/approval_domain.py's _validate_principal_source actually authorizes:
 ApprovalSource.EVENT requires a TrustedPrincipalSource.GITHUB_WORKFLOW_CONTEXT
 principal (a GitHub Actions actor), which does not exist yet at the point A2
 classifies a Gmail message. The trust origin here is an authenticated Gmail
-message (GMAIL_MESSAGE_METADATA), which is exactly what GMAIL_POLL pairs with,
-regardless of whether the message arrived via periodic IMAP search or a Gmail
-push notification. See PHASE_A_NOTES in tests/test_a2_dispatch.py for the
-full rationale.
+message (GMAIL_MESSAGE_METADATA), which is exactly what GMAIL_PUSH (and its
+sibling ApprovalSource.GMAIL_POLL, used by the legacy IMAP-search pollers)
+pairs with. GMAIL_PUSH and GMAIL_POLL share an identical authorization
+contract in _validate_principal_source; they exist as separate enum values
+only to label the delivery mechanism (Gmail push notification vs. periodic
+IMAP search) accurately, so this module's own classification never gets
+mistaken for polling in logs, observations, or future audits. See
+PHASE_A_NOTES and PHASE_B5_NOTES in tests/test_a2_dispatch.py for the full
+rationale.
 """
 
 from __future__ import annotations
@@ -611,7 +616,7 @@ def _classify_and_dispatch(
             stage=stage,
             issue_date=active_issue_date,
             command=wire_command,
-            source_type=ApprovalSource.GMAIL_POLL,
+            source_type=ApprovalSource.GMAIL_PUSH,
             trusted_principal=trusted_principal_from_gmail_metadata(message.sender),
             allowed_principals=allowed_senders,
             message_id=message.gmail_message_id,

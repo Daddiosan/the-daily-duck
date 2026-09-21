@@ -1,26 +1,42 @@
-"""Phase 3B-2 A2 (Phase A + Phase B) tests.
+"""Phase 3B-2 A2 (Phase A + Phase B + Phase B.6) tests.
 
-PHASE_A_NOTES documents one non-obvious design decision so a future reader
-does not "fix" it back to something that fails scripts/approval_domain.py's
-own authorization contract:
-
-scripts/a2_dispatch.py calls build_approval_command() with
-source_type=ApprovalSource.GMAIL_POLL, not ApprovalSource.EVENT, even though
-A2 is the event-driven path. This is intentional: approval_domain's
+PHASE_A_NOTES / PHASE_B5_NOTES documented, at the time, that
+scripts/a2_dispatch.py used source_type=ApprovalSource.GMAIL_POLL for its
+build_approval_command() calls, because approval_domain's
 _validate_principal_source only allows ApprovalSource.EVENT to pair with a
 TrustedPrincipalSource.GITHUB_WORKFLOW_CONTEXT principal (see
 tests/test_approval_domain.py's own gate()/design() helpers, which use
-trusted_principal_from_github_context only for ApprovalSource.EVENT). A2
-classifies a Gmail message before any GitHub Actions execution context
-exists, so its trust origin is GMAIL_MESSAGE_METADATA, which is exactly what
-ApprovalSource.GMAIL_POLL is authorized to pair with -- regardless of
-whether the Gmail message was found by periodic IMAP search or a Gmail push
-notification. ApprovalSourceContractTests below proves this against
-approval_domain.py directly (not just by assertion in this docstring):
-EVENT+GMAIL_MESSAGE_METADATA is rejected by
-_validate_principal_source's TRUSTED_PRINCIPAL_SOURCE_MISMATCH, so A2 could
-not use EVENT even if it wanted to, without approval_domain.py itself being
-changed (out of scope here; see Phase B report's APPROVAL_SOURCE_VERDICT).
+trusted_principal_from_github_context only for ApprovalSource.EVENT), which
+does not exist yet at the point A2 classifies a Gmail message. That
+reasoning is unchanged and still explains why A2 cannot and should not use
+EVENT. What changed in Phase B.6 is the label for the correct choice.
+
+PHASE_B6_NOTES: approval_domain.py now defines a dedicated
+ApprovalSource.GMAIL_PUSH, mapped to the exact same
+TrustedPrincipalSource.GMAIL_MESSAGE_METADATA requirement as GMAIL_POLL (see
+approval_domain.py's _validate_principal_source and its own comment on the
+GMAIL_PUSH enum member). scripts/a2_dispatch.py now uses GMAIL_PUSH instead
+of GMAIL_POLL. This is a pure relabeling of A2's OWN calls: GMAIL_POLL's
+existing authorization contract, and every legacy consumer that still uses
+it (approval_shadow.py's GMAIL_POLL-sourced comparisons, the
+approval_domain-level tests below), are completely unchanged --
+ApprovalSourceContractTests proves GMAIL_POLL+GMAIL_MESSAGE_METADATA still
+ACCEPTs exactly as before. GMAIL_PUSH and GMAIL_POLL are two labels sharing
+one identical authorization contract; only their names differ, so that a
+future observation or audit log naming the source can tell a Gmail push
+delivery apart from a periodic IMAP search without implying any difference
+in trust. ApprovalSource.EVENT's authorization contract
+(GITHUB_WORKFLOW_CONTEXT only) is untouched by this change --
+EVENT+GMAIL_MESSAGE_METADATA is still rejected, proven below.
+
+build_approval_command's legacy_metadata flag
+(`legacy = normalized_source is ApprovalSource.GMAIL_POLL and not (...)`)
+checks GMAIL_POLL by identity, not by category, so it was never triggered
+by GMAIL_PUSH even before this comment was added; GMAIL_PUSH-sourced
+commands always get legacy_metadata=False regardless of which optional
+identifiers are supplied. No change to that line was needed or made; this
+is proven directly below rather than only asserted here.
+
 ApprovalSource.EVENT's only current consumer, scripts/approval_shadow.py, is
 a *different* kind of event: a human-triggered workflow_dispatch through
 GitHub's own UI, whose trust origin genuinely is a GitHub actor. A2's Gmail
@@ -182,69 +198,143 @@ def call(message, snapshot, *, dedupe=None, ledger=None, adapter=None):
 
 
 class ApprovalSourceContractTests(unittest.TestCase):
-    """Proves the ApprovalSource.GMAIL_POLL choice against
-    scripts/approval_domain.py's own authorization contract, rather than
-    only asserting it in prose."""
+    """Proves the ApprovalSource.GMAIL_PUSH choice, and that it changes
+    nothing about GMAIL_POLL or EVENT, against
+    scripts/approval_domain.py's own authorization contract -- rather than
+    only asserting it in prose. Covers exactly the security-invariant matrix
+    required for the Phase B.6 GMAIL_PUSH change:
 
-    def test_event_source_rejects_gmail_metadata_principal(self):
-        with self.assertRaises(ApprovalValidationError) as caught:
-            build_approval_command(
-                stage=ApprovalStage.GATE_A,
-                issue_date=ISSUE,
-                command="3",
-                source_type=ApprovalSource.EVENT,
-                trusted_principal=trusted_principal_from_gmail_metadata(
-                    "owner@example.com"
-                ),
-                allowed_principals=ALLOWED_SENDERS,
-                message_id="msg-1",
-            )
-        self.assertEqual(
-            caught.exception.reason, "TRUSTED_PRINCIPAL_SOURCE_MISMATCH"
-        )
+      GMAIL_PUSH + GMAIL_MESSAGE_METADATA          = ACCEPT
+      GMAIL_PUSH + GITHUB_WORKFLOW_CONTEXT         = REJECT
+      EVENT      + GMAIL_MESSAGE_METADATA          = REJECT (unchanged)
+      GMAIL_POLL + GMAIL_MESSAGE_METADATA          = ACCEPT (unchanged)
+    """
 
-    def test_gmail_poll_source_accepts_gmail_metadata_principal(self):
-        command = build_approval_command(
+    def _build(self, *, source_type, trusted_principal, message_id="msg-1"):
+        return build_approval_command(
             stage=ApprovalStage.GATE_A,
             issue_date=ISSUE,
             command="3",
-            source_type=ApprovalSource.GMAIL_POLL,
+            source_type=source_type,
+            trusted_principal=trusted_principal,
+            allowed_principals=ALLOWED_SENDERS,
+            message_id=message_id,
+        )
+
+    def test_gmail_push_accepts_gmail_metadata_principal(self):
+        command = self._build(
+            source_type=ApprovalSource.GMAIL_PUSH,
             trusted_principal=trusted_principal_from_gmail_metadata(
                 "owner@example.com"
             ),
-            allowed_principals=ALLOWED_SENDERS,
-            message_id="msg-1",
         )
         self.assertEqual(command.command, "SELECT_STORY:3")
+        self.assertEqual(command.source_type, ApprovalSource.GMAIL_PUSH)
 
-    def test_gmail_poll_source_rejects_github_actor_principal(self):
-        # The inverse pairing is also rejected: GMAIL_POLL requires
-        # GMAIL_MESSAGE_METADATA, not GITHUB_WORKFLOW_CONTEXT. This shows
-        # the restriction is a real two-way contract, not a one-off
-        # special case for EVENT.
+    def test_gmail_push_rejects_github_actor_principal(self):
         # Use an identity that IS on the allowlist so authorize_principal's
         # earlier allowlist check passes and the assertion actually
         # exercises _validate_principal_source's source-type mismatch,
         # rather than being masked by an unrelated UNAUTHORIZED_TRUSTED_
         # PRINCIPAL from a name that was never allowed in the first place.
         with self.assertRaises(ApprovalValidationError) as caught:
-            build_approval_command(
-                stage=ApprovalStage.GATE_A,
-                issue_date=ISSUE,
-                command="3",
-                source_type=ApprovalSource.GMAIL_POLL,
+            self._build(
+                source_type=ApprovalSource.GMAIL_PUSH,
                 trusted_principal=trusted_principal_from_github_context(
                     "owner@example.com"
                 ),
-                allowed_principals=ALLOWED_SENDERS,
+                message_id=None,
             )
         self.assertEqual(
             caught.exception.reason, "TRUSTED_PRINCIPAL_SOURCE_MISMATCH"
         )
 
-    def test_a2_module_actually_uses_gmail_poll_end_to_end(self):
+    def test_event_source_rejects_gmail_metadata_principal_unchanged(self):
+        with self.assertRaises(ApprovalValidationError) as caught:
+            self._build(
+                source_type=ApprovalSource.EVENT,
+                trusted_principal=trusted_principal_from_gmail_metadata(
+                    "owner@example.com"
+                ),
+            )
+        self.assertEqual(
+            caught.exception.reason, "TRUSTED_PRINCIPAL_SOURCE_MISMATCH"
+        )
+
+    def test_gmail_poll_accepts_gmail_metadata_principal_unchanged(self):
+        # GMAIL_POLL's own authorization contract must be byte-for-byte
+        # unchanged by the addition of the sibling GMAIL_PUSH value.
+        command = self._build(
+            source_type=ApprovalSource.GMAIL_POLL,
+            trusted_principal=trusted_principal_from_gmail_metadata(
+                "owner@example.com"
+            ),
+        )
+        self.assertEqual(command.command, "SELECT_STORY:3")
+
+    def test_gmail_poll_rejects_github_actor_principal_unchanged(self):
+        # The inverse pairing is also still rejected: GMAIL_POLL requires
+        # GMAIL_MESSAGE_METADATA, not GITHUB_WORKFLOW_CONTEXT. This shows
+        # the restriction is a real two-way contract, not a one-off
+        # special case for EVENT, and that GMAIL_PUSH's addition did not
+        # loosen it.
+        with self.assertRaises(ApprovalValidationError) as caught:
+            self._build(
+                source_type=ApprovalSource.GMAIL_POLL,
+                trusted_principal=trusted_principal_from_github_context(
+                    "owner@example.com"
+                ),
+                message_id=None,
+            )
+        self.assertEqual(
+            caught.exception.reason, "TRUSTED_PRINCIPAL_SOURCE_MISMATCH"
+        )
+
+    def test_a2_module_actually_uses_gmail_push_end_to_end(self):
         outcome, _, _, _ = call(gate_a_message(), GATE_A_SNAPSHOT)
-        self.assertEqual(outcome.command.source_type, ApprovalSource.GMAIL_POLL)
+        self.assertEqual(outcome.command.source_type, ApprovalSource.GMAIL_PUSH)
+
+    def test_gmail_push_command_is_never_flagged_legacy_metadata(self):
+        # GMAIL_PUSH commands are expected to always carry a Gmail
+        # message_id (A2 always supplies one), so they must never be
+        # accidentally classified as the legacy_metadata=True case that
+        # exists only for GMAIL_POLL deliveries carrying no correlation
+        # identifiers at all. This holds even in the deliberately-adversarial
+        # case of a GMAIL_PUSH command built WITHOUT a message_id (which
+        # should not normally happen, but must still not be misclassified
+        # as "legacy" -- legacy_metadata is reserved for GMAIL_POLL by
+        # identity, not by category).
+        with_id = self._build(
+            source_type=ApprovalSource.GMAIL_PUSH,
+            trusted_principal=trusted_principal_from_gmail_metadata(
+                "owner@example.com"
+            ),
+            message_id="msg-1",
+        )
+        self.assertFalse(with_id.legacy_metadata)
+
+        without_id = self._build(
+            source_type=ApprovalSource.GMAIL_PUSH,
+            trusted_principal=trusted_principal_from_gmail_metadata(
+                "owner@example.com"
+            ),
+            message_id=None,
+        )
+        self.assertFalse(without_id.legacy_metadata)
+
+    def test_gmail_poll_without_any_identifier_is_still_legacy_unchanged(self):
+        # Contrast case proving GMAIL_POLL's own legacy_metadata semantics
+        # were not altered by adding GMAIL_PUSH: a GMAIL_POLL command with
+        # no event_id/message_id/upstream_run_id is still legacy_metadata=True,
+        # exactly as before this change.
+        poll_command = self._build(
+            source_type=ApprovalSource.GMAIL_POLL,
+            trusted_principal=trusted_principal_from_gmail_metadata(
+                "owner@example.com"
+            ),
+            message_id=None,
+        )
+        self.assertTrue(poll_command.legacy_metadata)
 
 
 # ---------------------------------------------------------------------------
