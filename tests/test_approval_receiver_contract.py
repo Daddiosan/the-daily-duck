@@ -34,7 +34,23 @@ IGNORED_RUNTIME_ENTRIES = {"__pycache__"}
 # cross-workstream conflict for a human to resolve explicitly (by
 # re-approving and updating this constant with its own approval record),
 # not something this test should paper over by silently following HEAD.
-PHASE_3B_2A1_APPROVED_BASELINE = "4b83b28bbea99c8e2d7fdf8ef0cd3c163221815a"
+#
+# REAPPROVAL RECORD (Phase 3B-2 GMAIL_PUSH): this test correctly fired
+# exactly as designed above when commit
+# 23f54a4234bcb332f8f0b97bedb255b749235dd0
+# ("Phase 3B-2: add explicit GMAIL_PUSH trust source") modified
+# scripts/approval_domain.py and scripts/a2_dispatch.py -- a separate,
+# legitimate workstream from Phase 3B-2A1, changing a protected path while
+# this baseline was still pinned to the older commit above. The human
+# explicitly reviewed that diff (ApprovalSource.GMAIL_PUSH added, mapped
+# only to TrustedPrincipalSource.GMAIL_MESSAGE_METADATA; EVENT's and
+# GMAIL_POLL's own authorization contracts left byte-for-byte unchanged;
+# no workflow, cron, cloud, Dockerfile, or secret touched) and explicitly
+# approved re-pinning the baseline to that commit. The baseline below is
+# updated to it; the mechanism itself -- and its requirement that any
+# further change to a protected path past this new baseline be surfaced
+# for the same explicit human review -- is unchanged.
+PHASE_3B_2A1_APPROVED_BASELINE = "23f54a4234bcb332f8f0b97bedb255b749235dd0"
 
 
 class ApprovalReceiverContractTests(unittest.TestCase):
