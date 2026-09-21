@@ -104,11 +104,35 @@ class A2Decision(str, Enum):
     SKIPPED_DUPLICATE_TRANSITION = "SKIPPED_DUPLICATE_TRANSITION"
     DISPATCH_FAILED_RETRYABLE = "DISPATCH_FAILED_RETRYABLE"
     DISPATCH_FAILED_NON_RETRYABLE = "DISPATCH_FAILED_NON_RETRYABLE"
+    DISPATCH_OUTCOME_UNKNOWN = "DISPATCH_OUTCOME_UNKNOWN"
 
 
 class DispatchErrorClass(str, Enum):
     RETRYABLE = "RETRYABLE"
     NON_RETRYABLE = "NON_RETRYABLE"
+    # Phase B finding: a definite HTTP response (even an error one) proves
+    # GitHub evaluated the request, so it is safely RETRYABLE or
+    # NON_RETRYABLE. A response that never arrives at all proves nothing --
+    # GitHub may have already accepted and started the workflow_dispatch
+    # before the connection was lost. Treating that as ordinary RETRYABLE
+    # would let a Pub/Sub redelivery (or any other blind retry) request a
+    # second, real dispatch for a transition that may have already
+    # succeeded. AMBIGUOUS exists so that case is never silently folded into
+    # "safe to retry".
+    AMBIGUOUS = "AMBIGUOUS"
+
+
+class DispatchOutcomeState(str, Enum):
+    """Durable per-transition_key dispatch state, independent of any single
+    delivery attempt. A production Firestore-backed TransitionLedger should
+    persist exactly these states (see PRODUCTION_CAS_REQUIREMENT in
+    tests/test_a2_dispatch.py's Phase B notes)."""
+
+    PENDING = "PENDING"  # reserved, adapter not yet called
+    DISPATCH_ATTEMPTED = "DISPATCH_ATTEMPTED"  # adapter call in flight/just returned
+    CONFIRMED = "CONFIRMED"  # GitHub confirmed the dispatch; never retry
+    UNKNOWN_OUTCOME = "UNKNOWN_OUTCOME"  # ambiguous; needs reconciliation, not retry
+    FAILED_FINAL = "FAILED_FINAL"  # confirmed not sent; reported, not auto-retried
 
 
 # HTTP-status and symbolic-error-kind classification for A2's OWN outbound
@@ -117,10 +141,24 @@ class DispatchErrorClass(str, Enum):
 # nothing in this module sleeps or loops. Retry attempts themselves are the
 # Pub/Sub subscription's responsibility (maxDeliveryAttempts), not this
 # module's; classify_dispatch_failure only decides whether a failure should
-# be acknowledged (non-retryable) or left for Pub/Sub redelivery (retryable).
+# be acknowledged (non-retryable), left for Pub/Sub redelivery (retryable),
+# or held for reconciliation before any retry (ambiguous).
+#
+# Only error kinds that PROVE the request never left this process (a
+# connection could not even be established) belong in the retryable set.
+# Anything that could plausibly mean "the request was sent but the response
+# was lost" belongs in the ambiguous set instead -- including a bare/legacy
+# "TIMEOUT" or "NETWORK_ERROR" whose phase (pre-send vs. post-send) is not
+# known, per the fail-safe principle: an unqualified signal must not be
+# assumed safe.
 _RETRYABLE_HTTP_STATUS = frozenset({429, 500, 502, 503, 504})
 _NON_RETRYABLE_HTTP_STATUS = frozenset({400, 401, 403})
-_RETRYABLE_ERROR_KINDS = frozenset({"TIMEOUT", "NETWORK_ERROR"})
+_RETRYABLE_ERROR_KINDS = frozenset(
+    {"CONNECT_TIMEOUT", "DNS_FAILURE", "CONNECTION_REFUSED"}
+)
+_AMBIGUOUS_ERROR_KINDS = frozenset(
+    {"TIMEOUT", "RESPONSE_TIMEOUT", "NETWORK_ERROR", "EXCEPTION"}
+)
 _NON_RETRYABLE_ERROR_KINDS = frozenset(
     {
         "INVALID_SCHEMA",
@@ -164,7 +202,8 @@ class GitHubDispatchAdapter(Protocol):
 
 
 class TransitionLedger(Protocol):
-    """Dispatch-layer duplicate-dispatch guard.
+    """Dispatch-layer duplicate-dispatch guard, tracking DispatchOutcomeState
+    per transition_key.
 
     This is deliberately separate from decide_transition's own
     applied_transition_keys check: that check only sees the CURRENT
@@ -172,38 +211,106 @@ class TransitionLedger(Protocol):
     downstream GitHub Actions run has not completed. Without this ledger, a
     second delivery of an equivalent (but not identical) Gmail message could
     request a second dispatch before the first run finishes.
+
+    reserve_if_absent is the only entry into a blocking state (PENDING);
+    every other state is reached only from PENDING or DISPATCH_ATTEMPTED, so
+    a transition_key can never silently become re-reservable except through
+    release() (confirmed-safe cases) or a reconciliation job explicitly
+    resolving an UNKNOWN_OUTCOME.
     """
 
-    def mark_applied_if_absent(self, transition_key: str) -> bool: ...
+    def reserve_if_absent(self, transition_key: str) -> bool: ...
+
+    def mark_attempted(self, transition_key: str) -> None:
+        """Record that the outbound dispatch call is about to be made (or was
+        just made). This exists purely for reconciliation observability: it
+        lets a human or reconciliation job distinguish "never even
+        attempted" (still PENDING, e.g. the process crashed before sending
+        anything) from "attempted, outcome unknown" (see mark_unknown_outcome).
+        It does not by itself change whether re-reservation is blocked --
+        PENDING already blocks it."""
+        ...
+
+    def mark_confirmed(self, transition_key: str) -> None:
+        """GitHub confirmed the dispatch succeeded. Permanent; never
+        released automatically."""
+        ...
+
+    def mark_unknown_outcome(self, transition_key: str) -> None:
+        """GitHub's receipt of the request could not be determined. Blocks
+        re-reservation until a reconciliation job explicitly resolves it
+        (see the production TransitionLedger's resolve_unknown_outcome)."""
+        ...
 
     def release(self, transition_key: str) -> None:
-        """Undo a reservation after a failed dispatch so a legitimate retry
+        """Undo a reservation after a failure GitHub confirmed did NOT
+        create a dispatch (a definite HTTP response), so a legitimate retry
         (this module's own caller, or a Pub/Sub redelivery) is not
-        permanently blocked."""
+        permanently blocked. Never call this for an AMBIGUOUS outcome."""
         ...
+
+    def state_of(self, transition_key: str) -> DispatchOutcomeState | None: ...
 
 
 class InMemoryTransitionLedger:
     """Fake ledger for local tests. Not durable; carries no cloud dependency.
 
-    A production implementation should reuse the same transactional
-    check-and-set pattern already implemented by
-    cloud.approval_receiver.observation.FirestoreObservationStore
-    (insert_observation_if_absent), keyed by transition_key in a separate
-    Firestore collection, rather than a new mechanism.
+    PRODUCTION_CAS_REQUIREMENT: a real implementation must make
+    reserve_if_absent an atomic, transactional create-if-absent against a
+    single durable store (mirroring
+    cloud.approval_receiver.observation.FirestoreObservationStore's already
+    -implemented @firestore.transactional insert_observation_if_absent),
+    keyed by transition_key in its own Firestore collection. Two concurrent
+    callers calling this in-memory version from separate processes would NOT
+    be safe -- this class only proves the state machine's logic, not
+    concurrency safety. See tests/test_a2_dispatch.py's concurrency review
+    for exactly what a synchronized, single-process fake can and cannot
+    demonstrate about that requirement.
     """
 
     def __init__(self) -> None:
-        self._applied: set[str] = set()
+        self._state: dict[str, DispatchOutcomeState] = {}
 
-    def mark_applied_if_absent(self, transition_key: str) -> bool:
-        if transition_key in self._applied:
+    def reserve_if_absent(self, transition_key: str) -> bool:
+        if transition_key in self._state:
             return False
-        self._applied.add(transition_key)
+        self._state[transition_key] = DispatchOutcomeState.PENDING
         return True
 
+    def mark_attempted(self, transition_key: str) -> None:
+        self._state[transition_key] = DispatchOutcomeState.DISPATCH_ATTEMPTED
+
+    def mark_confirmed(self, transition_key: str) -> None:
+        self._state[transition_key] = DispatchOutcomeState.CONFIRMED
+
+    def mark_unknown_outcome(self, transition_key: str) -> None:
+        self._state[transition_key] = DispatchOutcomeState.UNKNOWN_OUTCOME
+
     def release(self, transition_key: str) -> None:
-        self._applied.discard(transition_key)
+        self._state.pop(transition_key, None)
+
+    def state_of(self, transition_key: str) -> DispatchOutcomeState | None:
+        return self._state.get(transition_key)
+
+    def resolve_unknown_outcome(self, transition_key: str, *, confirmed: bool) -> None:
+        """Not called anywhere in this module's automatic flow -- reserved
+        for a future, separately approved reconciliation job that performs a
+        read-only GitHub Actions run lookup before calling this.
+
+        confirmed=True: the read-only check found the dispatched run; mark
+        CONFIRMED so this transition_key can never be dispatched again.
+        confirmed=False: the check found no such run; release the key so a
+        fresh, deliberate retry may proceed.
+        """
+
+        if self._state.get(transition_key) is not DispatchOutcomeState.UNKNOWN_OUTCOME:
+            raise ValueError(
+                f"Cannot resolve {transition_key!r}: not in UNKNOWN_OUTCOME state."
+            )
+        if confirmed:
+            self._state[transition_key] = DispatchOutcomeState.CONFIRMED
+        else:
+            self._state.pop(transition_key, None)
 
 
 class MessageDedupeStore(Protocol):
@@ -312,16 +419,26 @@ def classify_dispatch_failure(result: DispatchAttemptResult) -> DispatchErrorCla
     """
 
     if result.http_status is not None:
+        # A definite HTTP status means GitHub evaluated the request, so
+        # there is no send/receive ambiguity to worry about here.
         if result.http_status in _RETRYABLE_HTTP_STATUS:
             return DispatchErrorClass.RETRYABLE
         if result.http_status in _NON_RETRYABLE_HTTP_STATUS:
             return DispatchErrorClass.NON_RETRYABLE
     if result.error_kind in _RETRYABLE_ERROR_KINDS:
         return DispatchErrorClass.RETRYABLE
+    if result.error_kind in _AMBIGUOUS_ERROR_KINDS:
+        return DispatchErrorClass.AMBIGUOUS
     if result.error_kind in _NON_RETRYABLE_ERROR_KINDS:
         return DispatchErrorClass.NON_RETRYABLE
-    # Fail closed: an unrecognized failure is never retried automatically.
-    return DispatchErrorClass.NON_RETRYABLE
+    # Fail safe: a completely unrecognized failure (no HTTP status, no known
+    # error_kind) tells us nothing about whether GitHub received the
+    # request. Phase A defaulted this to NON_RETRYABLE; Phase B corrects
+    # that, because NON_RETRYABLE implies "confirmed not sent", which an
+    # unrecognized failure cannot actually prove. AMBIGUOUS is the
+    # conservative default: it blocks automatic retry AND requires
+    # reconciliation before any retry, rather than one or the other.
+    return DispatchErrorClass.AMBIGUOUS
 
 
 def build_dispatch_payload(command: ApprovalCommand) -> dict[str, str]:
@@ -348,6 +465,23 @@ class A2Outcome:
     command: ApprovalCommand | None = None
     payload: Mapping[str, str] | None = None
     dispatch_result: DispatchAttemptResult | None = None
+    dispatch_state: DispatchOutcomeState | None = None
+
+
+# The retry-layer boundary: a future Cloud Run /pubsub handler must map its
+# HTTP response solely through this function, never through its own
+# judgment call per decision. Pub/Sub redelivers on a non-2xx response and
+# stops on 2xx; this function is what decides which of those two happens for
+# every possible A2Decision, so the "max 3, RETRYABLE only" retry policy is
+# enforced in exactly one place. In particular DISPATCH_OUTCOME_UNKNOWN acks
+# (True): letting Pub/Sub redeliver an ambiguous outcome would not create a
+# second GitHub call by itself (the transition ledger already blocks that),
+# but it would burn delivery attempts on something only a reconciliation
+# job, not a retry, can resolve.
+def should_acknowledge_to_pubsub(decision: A2Decision) -> bool:
+    """True = ack (Pub/Sub must not redeliver). False = nack (redeliver)."""
+
+    return decision is not A2Decision.DISPATCH_FAILED_RETRYABLE
 
 
 def _observation_id(mailbox_identity: str, gmail_message_id: str) -> str:
@@ -440,11 +574,26 @@ def _classify_and_dispatch(
     active_issue_date = str(production_snapshot.get("active_issue_date") or "")
     if active_issue_date:
         expected_subject = f"{base_pattern} — {active_issue_date}"
+        if stage is ApprovalStage.DESIGN_SELECTION:
+            # scripts/send_design_approval_email.py's real subject is
+            # "<pattern> — <issue_date> — Batch <N>" (build_email()). The
+            # batch number must be checked here, not left to
+            # build_approval_command's STALE_DESIGN_BATCH: that check
+            # cannot fire because design_batch_id_value below is always
+            # read from production_snapshot's CURRENT batch, never from the
+            # message itself (a Gmail reply's wire text never states which
+            # batch it is for -- only the subject does). Without this,
+            # a reply to an old batch's email would be silently treated as
+            # if it were for the CURRENT batch, which can point a valid-
+            # looking image/title number at the wrong concept.
+            active_batch = production_snapshot.get("active_design_batch_id")
+            if active_batch is not None:
+                expected_subject = f"{expected_subject} — Batch {active_batch}"
         if expected_subject not in message.subject:
             return A2Outcome(
                 decision=A2Decision.SKIPPED_STALE,
                 classification=EventClassification.STALE_REPLY,
-                reason="subject matches pattern but not the active issue date",
+                reason="subject matches pattern but not the active issue/batch",
             )
 
     try:
@@ -518,21 +667,37 @@ def _classify_and_dispatch(
     # TransitionOutcome.APPLY beyond this point. Reserve the transition
     # before dispatching so a second, concurrently classified delivery of an
     # equivalent command cannot request a second dispatch.
-    if not transition_ledger.mark_applied_if_absent(command.transition_key):
+    if not transition_ledger.reserve_if_absent(command.transition_key):
+        blocking_state = transition_ledger.state_of(command.transition_key)
         return A2Outcome(
             decision=A2Decision.SKIPPED_DUPLICATE_TRANSITION,
             classification=classification,
-            reason="transition_key already dispatched",
+            reason=f"transition_key already {blocking_state}",
             command=command,
+            dispatch_state=blocking_state,
         )
 
     payload = build_dispatch_payload(command)
     workflow_file = WORKFLOW_FILE_BY_STAGE[stage]
-    result = dispatch_adapter.dispatch_workflow(
-        workflow_file=workflow_file, ref=DISPATCH_REF, inputs=payload
-    )
+
+    transition_ledger.mark_attempted(command.transition_key)
+    try:
+        result = dispatch_adapter.dispatch_workflow(
+            workflow_file=workflow_file, ref=DISPATCH_REF, inputs=payload
+        )
+    except Exception as exc:  # noqa: BLE001 - deliberately fail-safe
+        # An exception from the adapter (e.g. the real HTTP client raising
+        # instead of returning a result) is exactly as uninformative as a
+        # lost response: we cannot tell whether GitHub received the
+        # request. It must never be treated as safely retryable.
+        result = DispatchAttemptResult(
+            success=False,
+            error_kind="EXCEPTION",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
 
     if result.success:
+        transition_ledger.mark_confirmed(command.transition_key)
         return A2Outcome(
             decision=A2Decision.DISPATCHED,
             classification=classification,
@@ -540,13 +705,34 @@ def _classify_and_dispatch(
             command=command,
             payload=payload,
             dispatch_result=result,
+            dispatch_state=DispatchOutcomeState.CONFIRMED,
         )
 
-    # The dispatch did not happen; release the reservation so a legitimate
-    # retry (this module's caller reprocessing after a Pub/Sub redelivery)
-    # is not permanently blocked by this attempt's failure.
-    transition_ledger.release(command.transition_key)
     error_class = classify_dispatch_failure(result)
+
+    if error_class is DispatchErrorClass.AMBIGUOUS:
+        # GitHub's receipt of the request is unknown. Keep the reservation
+        # in place: no automatic path (a Pub/Sub redelivery reprocessing
+        # this same message, or a second, unrelated Gmail message carrying
+        # the same business command) may request a second dispatch until a
+        # read-only reconciliation check resolves this one way or the
+        # other. This is the fail-safe branch the ambiguous-timeout review
+        # exists to guarantee.
+        transition_ledger.mark_unknown_outcome(command.transition_key)
+        return A2Outcome(
+            decision=A2Decision.DISPATCH_OUTCOME_UNKNOWN,
+            classification=classification,
+            reason=result.detail or "dispatch outcome could not be determined",
+            command=command,
+            payload=payload,
+            dispatch_result=result,
+            dispatch_state=DispatchOutcomeState.UNKNOWN_OUTCOME,
+        )
+
+    # RETRYABLE or NON_RETRYABLE: GitHub gave a definite response (or the
+    # error_kind otherwise proves the request never left this process), so
+    # releasing the reservation cannot create a duplicate dispatch.
+    transition_ledger.release(command.transition_key)
     failure_decision = (
         A2Decision.DISPATCH_FAILED_RETRYABLE
         if error_class is DispatchErrorClass.RETRYABLE
@@ -559,4 +745,9 @@ def _classify_and_dispatch(
         command=command,
         payload=payload,
         dispatch_result=result,
+        dispatch_state=(
+            DispatchOutcomeState.FAILED_FINAL
+            if error_class is DispatchErrorClass.NON_RETRYABLE
+            else None
+        ),
     )
