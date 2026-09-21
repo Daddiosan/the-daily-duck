@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-21",
+    "displayDate": "September 21, 2026",
+    "slug": "the-whisker-id",
+    "title": "THE WHISKER ID",
+    "duckName": "The Whisker ID",
+    "storyTitleEn": "Scientists discover a hidden “ID card” in cat urine",
+    "storyTitleJa": "Scientists discover a hidden “ID card” in cat urine",
+    "image": "assets/ducks/2026-09-21-the-whisker-id.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Whisker ID",
+    "imageAltJa": "The Whisker IDをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Cats may leave more than a scent behind. Scientists have discovered a hidden “ID card” in cat urine: chemical information that helps reveal how cats recognize one another. It is an unexpectedly sophisticated form of feline communication—and a wonderfully amusing reminder that the animal world is full of surprises.",
+    "storyJa": "猫が残していくのは、においだけではないのかもしれません。科学者たちは猫の尿に隠れた「身分証」を発見しました。そこには、猫が互いを見分ける仕組みを知る手がかりとなる化学的な情報が含まれています。思いがけず高度な猫のコミュニケーションの一例であり、動物の世界が驚きに満ちていることを教えてくれる、なんともユニークな発見です。",
+    "duckEn": "A little chemistry, a lot of cat personality.",
+    "duckJa": "少しの化学、大いなる猫らしさ。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/09/260919031033.htm",
+    "archiveSummaryEn": "Scientists found a hidden “ID card” in cat urine, offering a funny and unexpected look at how cats recognize one another. The animal world is full of surprises!",
+    "archiveSummaryJa": "科学者が猫の尿に隠れた「身分証」を発見。猫同士がどうやって互いを見分けるのかを知る、意外で楽しい手がかりです。動物の世界は驚きに満ちています！",
+    "reasonEn": "Scientists found a hidden “ID card” in cat urine, offering a funny and unexpected look at how cats recognize one another. The animal world is full of surprises!",
+    "reasonJa": "科学者が猫の尿に隠れた「身分証」を発見。猫同士がどうやって互いを見分けるのかを知る、意外で楽しい手がかりです。動物の世界は驚きに満ちています！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-20",
     "displayDate": "September 20, 2026",
     "slug": "shuttle-enterprise",
