@@ -155,19 +155,67 @@ sender email address, or any credential/token.
 A2's own outbound calls are limited to Gmail API reads and Firestore
 read/writes -- there is no outbound GitHub call to classify as
 retryable/non-retryable/ambiguous in this phase (that design, from Phase B,
-applies only once real dispatch exists). For A2's `/pubsub` handler:
+applies only once real dispatch exists). This section previously stated a
+Pub/Sub `maxDeliveryAttempts` target of 3, conflating two genuinely
+different mechanisms; the corrected distinction follows.
+
+### A. Transport delivery (Pub/Sub, implemented in this phase)
 
 - Terminal classification outcomes (valid, invalid, stale, unrelated,
-  duplicate) -> HTTP 200 (ack). Pub/Sub does not redeliver.
-- Temporary Gmail/Firestore failures -> HTTP 500 (non-2xx). Pub/Sub
-  redelivers, bounded by the subscription's `maxDeliveryAttempts` (target: 3,
-  for consistency with the real-dispatch design even though shadow mode
-  carries no duplicate-side-effect risk from over-retrying). Exceeding that
-  routes to a dead-letter topic.
+  duplicate, benign concurrent cursor advance) -> HTTP 200 (ack). Pub/Sub
+  does not redeliver.
+- Rate-limit and other short-lived transient Gmail/Firestore failures, and
+  unresolved cursor CAS concurrency conflicts -> HTTP 500 (non-2xx).
+  Pub/Sub redelivers, bounded by the subscription's `maxDeliveryAttempts`.
+  Pub/Sub's supported range for this setting is 5-100, and delivery-attempt
+  enforcement is itself best-effort (Pub/Sub may deliver a small number of
+  extra attempts beyond the configured value). If this architecture uses
+  dead lettering for shadow, configure `maxDeliveryAttempts` at 5 (the
+  protocol minimum) unless a later Human Gate chooses a higher value.
+  Exceeding it routes to the dead-letter topic.
 - Permanent Gmail authentication/configuration failures -> HTTP 200 (ack),
   to avoid an infinite Pub/Sub redelivery loop for a failure retrying
   cannot fix, while the failure is still logged under `error_category` for
   a human/reconciliation to notice.
+- A long-duration Gmail quota condition (e.g. 403 `dailyLimitExceeded`) is
+  distinct from both of the above: it is not acked away like a permanent
+  failure (the quota does eventually clear, and acking it would silently
+  stop processing unprocessed mail), and it is not assumed safe to retry
+  immediately like an ordinary rate limit either. It maps to HTTP 500 like
+  an ordinary temporary failure, so Pub/Sub redelivery still applies
+  (bounded by `maxDeliveryAttempts`/dead-letter as above), but it is logged
+  under a distinct `error_category` so it is observable and never confused
+  with an ordinary short-lived rate limit or a permission failure. The
+  cursor is never advanced past a batch that raised this condition.
+- A 403 with an unrecognized or unreadable (malformed/non-JSON) structured
+  reason is never silently treated as a known permanent permission
+  failure. It is classified into its own distinct, observable
+  `error_category` and follows the same HTTP 500/redelivery path as the
+  quota condition above, rather than being guessed at from message text.
+
+### B. Business retry budget (NOT implemented in this phase)
+
+Future real Daily Duck operation (once real GitHub dispatch exists) is
+expected to define a business retry budget of first attempt + at most 3
+retries = at most 4 business attempts. This is a distinct concept from A's
+transport-level `maxDeliveryAttempts` and is NOT implemented by it:
+
+- A durable, logical per-transition attempt counter would be required to
+  implement a business retry budget correctly (Pub/Sub's own delivery
+  count is a transport-layer counter of *push attempts*, not of *logical
+  dispatch attempts*, and is not durably exposed to application logic
+  across redeliveries in a way that alone is sufficient for this).
+- This ledger does not exist yet and is explicitly out of scope for shadow
+  hardening -- it is future Thin Relay / real-dispatch work, not something
+  this phase implements.
+- `UNKNOWN_OUTCOME` for a future real GitHub dispatch call (did the
+  `workflow_dispatch` actually happen before the failure?) is also not
+  solved by Pub/Sub redelivery alone -- redelivering a request whose
+  outcome is unknown risks a duplicate dispatch, which is exactly why the
+  Phase B five-state `TransitionLedger` design (see Firestore Collections,
+  above) exists as a separate, not-yet-built piece of work.
+- Nothing in this runbook authorizes real GitHub dispatch. Shadow mode
+  remains zero-GitHub-call, as stated throughout this document.
 
 ## Data Retention Restrictions
 
@@ -205,8 +253,9 @@ token, refresh token, GitHub token, private key, raw `Authorization` header.
 5. Create the new Pub/Sub push subscription on the existing Gmail topic,
    targeting A2's Cloud Run URL, with its own push service account granted
    Cloud Run Invoker on A2's service only.
-6. Configure the subscription's retry policy (`maxDeliveryAttempts`: 3) and
-   dead-letter topic.
+6. Configure the subscription's retry policy (`maxDeliveryAttempts`: 5,
+   Pub/Sub's protocol minimum, per the corrected Retry Behavior section
+   above -- Pub/Sub only supports 5-100, not 3) and dead-letter topic.
 7. Read-only verification: confirm an unauthenticated or wrong-audience
    push to A2's `/pubsub` endpoint is rejected.
 8. **PRODUCTION_STATE_GAP -- MUST BE RESOLVED BEFORE THIS GATE**:

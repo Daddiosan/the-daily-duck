@@ -59,6 +59,42 @@ class StaleHistoryError(GmailReaderError):
     the current Gmail profile historyId is required."""
 
 
+class QuotaExceededGmailError(GmailReaderError):
+    """A long-duration Gmail quota condition (e.g. 403 dailyLimitExceeded),
+    distinct from both an ordinary rate-limit (short-lived, safely retried
+    immediately) and a permanent permission failure (safely acked away).
+
+    Deliberately NOT a PermanentGmailError: main.py's /pubsub route would
+    acknowledge (HTTP 200) a PermanentGmailError, stopping Pub/Sub
+    redelivery -- appropriate for a failure retrying cannot fix, but wrong
+    here, since a daily quota does eventually clear and treating it as
+    permanent would silently stop processing unprocessed mail. Deliberately
+    NOT a TemporaryGmailError either, so it is distinguishable in
+    error_category logs from an ordinary short-lived rate limit. Falls
+    through to main.py's generic GmailReaderError branch (HTTP 500, Pub/Sub
+    redelivery bounded by the subscription's maxDeliveryAttempts/dead-letter
+    policy) -- see docs/phase3b2/A2_SHADOW_RUNBOOK.md's Retry Behavior
+    section. The caller (DispatcherService) never advances its cursor past
+    this point, since the exception propagates before any
+    compare_and_update_cursor call for this batch."""
+
+
+class UnknownGmailAuthorizationError(GmailReaderError):
+    """A 403 whose structured Google API error reason (or absence of one)
+    does not match any reason this reader recognizes as either a
+    rate-limit condition, a quota condition, or a known permanent
+    permission/policy failure.
+
+    Conservative by construction: never silently reclassified as
+    PermanentGmailError (which would be acked away and stop retries) just
+    because the status code was 403 and the reason was unrecognized or a
+    non-JSON/malformed body meant no structured reason could be read at
+    all. Like QuotaExceededGmailError, falls through to the generic
+    GmailReaderError branch (HTTP 500, bounded Pub/Sub redelivery),
+    keeping the failure observable via error_category instead of causing
+    silent data loss."""
+
+
 @dataclass(frozen=True)
 class HistoryBatch:
     """Changed Gmail message ids returned by one history walk."""
@@ -191,11 +227,75 @@ def _http_status(exc: BaseException) -> int | None:
         return None
 
 
+# Structured Gmail/Google API error reason codes. Not exhaustive of every
+# reason Google's APIs can return -- only the ones this reader classifies
+# by name; anything else falls through to UnknownGmailAuthorizationError
+# rather than being guessed at.
+_RETRYABLE_403_REASONS = frozenset({"rateLimitExceeded", "userRateLimitExceeded"})
+_QUOTA_403_REASONS = frozenset({"dailyLimitExceeded", "quotaExceeded"})
+_PERMANENT_403_REASONS = frozenset(
+    {"domainPolicy", "forbidden", "insufficientPermissions", "accessNotConfigured"}
+)
+
+
+def _error_reason(exc: BaseException) -> str | None:
+    """Extract the structured Google API error 'reason' code (e.g.
+    'rateLimitExceeded', 'domainPolicy') from an HttpError-shaped
+    exception's JSON error body, mirroring googleapiclient.errors.HttpError's
+    .content attribute (raw response bytes).
+
+    Returns None whenever no structured reason can be read -- a missing
+    .content attribute, a non-JSON/malformed body, or a JSON body that
+    does not carry an error.errors[].reason -- so callers never fall back
+    to guessing a category from human-readable message text.
+    """
+
+    content = getattr(exc, "content", None)
+    if content is None:
+        return None
+    try:
+        text = content.decode("utf-8") if isinstance(content, bytes) else str(content)
+        payload = json.loads(text)
+    except (UnicodeDecodeError, ValueError, TypeError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    error = payload.get("error")
+    if not isinstance(error, dict):
+        return None
+    errors = error.get("errors")
+    if isinstance(errors, list) and errors:
+        first = errors[0]
+        if isinstance(first, dict):
+            reason = first.get("reason")
+            if isinstance(reason, str) and reason:
+                return reason
+    status_reason = error.get("status")
+    return status_reason if isinstance(status_reason, str) and status_reason else None
+
+
+def _classify_403(exc: BaseException) -> type[GmailReaderError]:
+    """Map a Gmail API 403 to a specific exception class using the
+    structured reason code only -- never human-readable message text."""
+
+    reason = _error_reason(exc)
+    if reason in _RETRYABLE_403_REASONS:
+        return TemporaryGmailError
+    if reason in _QUOTA_403_REASONS:
+        return QuotaExceededGmailError
+    if reason in _PERMANENT_403_REASONS:
+        return PermanentGmailError
+    return UnknownGmailAuthorizationError
+
+
 class RealGmailReader:
-    """Production Gmail API reader. Never constructed or called by any
-    test in this repository -- see
-    tests/test_approval_dispatcher_contract.py's real-network prohibition
-    and A2_SHADOW_RUNBOOK.md. Mirrors
+    """Production Gmail API reader. Never performs a real network call in
+    this repository's test suite -- tests/test_approval_dispatcher.py
+    exercises this class only against a fake low-level service double
+    (mirroring cloud.approval_receiver's own FakeFirestoreClient
+    technique for storage.py), never a real googleapiclient service or
+    real Gmail credentials. See tests/test_approval_dispatcher_contract.py's
+    real-network prohibition and A2_SHADOW_RUNBOOK.md. Mirrors
     cloud/approval_receiver/gmail_client.py's GmailClient error-mapping
     shape, but is an independent implementation (see this module's
     docstring for why: A2 must not import from cloud.approval_receiver).
@@ -209,38 +309,80 @@ class RealGmailReader:
             result = self._service.users().getProfile(userId="me").execute()
         except Exception as exc:  # noqa: BLE001 - mapped below
             status = _http_status(exc)
-            if status in (401, 403):
+            if status == 401:
                 raise PermanentGmailError("Gmail profile lookup was refused.") from exc
+            if status == 403:
+                raise _classify_403(exc)("Gmail profile lookup was refused.") from exc
             raise TemporaryGmailError("Gmail profile lookup failed.") from exc
         return dict(result or {})
 
     def list_history(self, start_history_id: str) -> HistoryBatch:
-        try:
-            response = (
-                self._service.users()
-                .history()
-                .list(userId="me", startHistoryId=start_history_id)
-                .execute()
-            )
-        except Exception as exc:  # noqa: BLE001 - mapped below
-            status = _http_status(exc)
-            if status == 404:
-                raise StaleHistoryError("Gmail history cursor is no longer valid.") from exc
-            if status in (401, 403):
-                raise PermanentGmailError("Gmail history list was refused.") from exc
-            raise TemporaryGmailError("Gmail history list failed.") from exc
+        """Walk every page of Gmail history starting at start_history_id.
+
+        Follows nextPageToken until absent, sending startHistoryId only on
+        the first page (subsequent pages are addressed by pageToken alone,
+        matching the Gmail API's own pagination contract). Bounded by
+        max_pages and by seen-page-token cycle detection so a
+        repeated/cyclic token from a misbehaving API or test double fails
+        with a controlled GmailReaderError instead of looping forever.
+        """
 
         message_ids: list[str] = []
-        for entry in response.get("history", []) or []:
-            for added in entry.get("messagesAdded", []) or []:
-                message = added.get("message") or {}
-                message_id = message.get("id")
-                if message_id:
-                    message_ids.append(str(message_id))
-        latest = response.get("historyId")
+        latest_history_id: str | None = None
+        seen_page_tokens: set[str] = set()
+        page_token: str | None = None
+        max_pages = 500
+
+        for _ in range(max_pages):
+            request_kwargs: dict[str, Any] = {"userId": "me"}
+            if page_token is None:
+                request_kwargs["startHistoryId"] = start_history_id
+            else:
+                request_kwargs["pageToken"] = page_token
+            try:
+                response = (
+                    self._service.users().history().list(**request_kwargs).execute()
+                )
+            except Exception as exc:  # noqa: BLE001 - mapped below
+                status = _http_status(exc)
+                if status == 404:
+                    raise StaleHistoryError(
+                        "Gmail history cursor is no longer valid."
+                    ) from exc
+                if status == 401:
+                    raise PermanentGmailError("Gmail history list was refused.") from exc
+                if status == 403:
+                    raise _classify_403(exc)("Gmail history list was refused.") from exc
+                raise TemporaryGmailError("Gmail history list failed.") from exc
+
+            for entry in response.get("history", []) or []:
+                for added in entry.get("messagesAdded", []) or []:
+                    message = added.get("message") or {}
+                    message_id = message.get("id")
+                    if message_id:
+                        message_ids.append(str(message_id))
+
+            latest = response.get("historyId")
+            if latest is not None:
+                latest_history_id = str(latest)
+
+            next_token = response.get("nextPageToken")
+            if not next_token:
+                break
+            if next_token in seen_page_tokens:
+                raise GmailReaderError(
+                    "Gmail history pagination returned a repeated page token."
+                )
+            seen_page_tokens.add(next_token)
+            page_token = next_token
+        else:
+            raise GmailReaderError(
+                "Gmail history pagination did not terminate within the page limit."
+            )
+
         return HistoryBatch(
             message_ids=tuple(dict.fromkeys(message_ids)),
-            latest_history_id=str(latest) if latest is not None else None,
+            latest_history_id=latest_history_id,
         )
 
     def get_message(self, message_id: str) -> Mapping[str, Any]:
@@ -253,8 +395,10 @@ class RealGmailReader:
             )
         except Exception as exc:  # noqa: BLE001 - mapped below
             status = _http_status(exc)
-            if status in (401, 403):
+            if status == 401:
                 raise PermanentGmailError("Gmail message fetch was refused.") from exc
+            if status == 403:
+                raise _classify_403(exc)("Gmail message fetch was refused.") from exc
             raise TemporaryGmailError("Gmail message fetch failed.") from exc
         return dict(result or {})
 

@@ -138,6 +138,17 @@ class AuthenticationError(ValueError):
     """The signed caller identity cannot be verified."""
 
 
+class CursorConflictError(RuntimeError):
+    """A cursor compare_and_update_cursor() write lost to a conflicting
+    concurrent update that did not resolve to a benign already-advanced
+    state (see DispatcherService._apply_cursor_cas). Must never be
+    silently treated as a successful ACK. Subclasses RuntimeError so it
+    is retried (HTTP 500, bounded by Pub/Sub maxDeliveryAttempts/
+    dead-letter) via create_app's existing
+    (TemporaryGmailError, GmailReaderError, RuntimeError) route branch,
+    with no new route-handling code required."""
+
+
 def _log_event(event: str, fields: Mapping[str, Any]) -> None:
     safe = {key: value for key, value in fields.items() if key in _LOG_ALLOWED_FIELDS}
     LOGGER.info(json.dumps({"event": event, **safe}, sort_keys=True, default=str))
@@ -325,14 +336,9 @@ class DispatcherService:
             # observed history id -- A2 is a comparison/validation tool,
             # not the system of record, so perfect backfill is not
             # required the way it would be for A1.
-            self.cursor_store.compare_and_update_cursor(None, target_history_id)
-            result = {
-                "status": "ACKNOWLEDGED",
-                "recovery_path": "INITIAL_CURSOR",
-                "processed": 0,
-            }
-            _log_event("a2_history_processed", result)
-            return result
+            return self._apply_cursor_cas(
+                None, target_history_id, recovery_path="INITIAL_CURSOR", processed=0
+            )
 
         if _history_not_newer(target_history_id, current):
             result = {
@@ -346,24 +352,73 @@ class DispatcherService:
         try:
             batch = self.gmail.list_history(current)
         except StaleHistoryError:
-            self.cursor_store.compare_and_update_cursor(current, target_history_id)
+            return self._apply_cursor_cas(
+                current,
+                target_history_id,
+                recovery_path="STALE_HISTORY_RESYNC",
+                processed=0,
+            )
+
+        processed = self._process_messages(batch.message_ids)
+        return self._apply_cursor_cas(
+            current, target_history_id, recovery_path="PUSH", processed=processed
+        )
+
+    def _apply_cursor_cas(
+        self,
+        expected_history_id: str | None,
+        target_history_id: str,
+        *,
+        recovery_path: str,
+        processed: int,
+    ) -> dict[str, Any]:
+        """Apply the cursor compare_and_update_cursor() result explicitly.
+
+        A False result is never silently treated as success. It is first
+        checked against a re-read of the current cursor: if that re-read
+        proves another worker already advanced the cursor to
+        target_history_id or beyond, this is a benign concurrent
+        completion (this call's own message-level writes, if any, already
+        happened via _process_messages before this CAS attempt, so they
+        are already idempotently persisted regardless of which worker's
+        CAS "won"). Any other outcome -- the cursor still behind, or a
+        malformed/unparseable history id that cannot be proven to be at or
+        beyond target -- is a genuine, not-yet-resolved concurrency
+        conflict: raise CursorConflictError so the caller retries rather
+        than acknowledging a cursor advance that did not actually happen.
+
+        Does not rely on the CPython GIL or on a single Cloud Run
+        instance -- the only trust placed in the cursor store is its own
+        compare_and_update_cursor() atomicity contract, and the fallback
+        re-read/compare below is safe even if that store is shared across
+        many concurrent instances.
+        """
+
+        if self.cursor_store.compare_and_update_cursor(
+            expected_history_id, target_history_id
+        ):
             result = {
                 "status": "ACKNOWLEDGED",
-                "recovery_path": "STALE_HISTORY_RESYNC",
-                "processed": 0,
+                "recovery_path": recovery_path,
+                "processed": processed,
             }
             _log_event("a2_history_processed", result)
             return result
 
-        processed = self._process_messages(batch.message_ids)
-        self.cursor_store.compare_and_update_cursor(current, target_history_id)
-        result = {
-            "status": "ACKNOWLEDGED",
-            "recovery_path": "PUSH",
-            "processed": processed,
-        }
-        _log_event("a2_history_processed", result)
-        return result
+        refreshed = self.cursor_store.read_cursor().processing_history_id
+        if refreshed is not None and _history_not_newer(target_history_id, refreshed):
+            result = {
+                "status": "ACKNOWLEDGED",
+                "recovery_path": "BENIGN_CONCURRENT_ADVANCE",
+                "processed": processed,
+            }
+            _log_event("a2_history_processed", result)
+            return result
+
+        raise CursorConflictError(
+            "Gmail history cursor CAS failed and did not resolve to a benign "
+            "concurrent advance."
+        )
 
     def _process_messages(self, message_ids: tuple[str, ...]) -> int:
         count = 0
@@ -515,10 +570,14 @@ def create_app(
     return app
 
 
-def create_app_from_env() -> Any:
-    """Production wiring for the Dockerfile's CMD. Never constructed or
-    called by any test in this repository -- see
-    tests/test_approval_dispatcher_contract.py's real-network prohibition.
+def create_app_from_env(
+    *,
+    gmail_reader_factory: Callable[[], GmailReader] | None = None,
+    firestore_client_factory: Callable[[], Any] | None = None,
+    token_verifier_factory: Callable[[], Callable[[str, str], Mapping[str, object]]]
+    | None = None,
+) -> Any:
+    """Production wiring for the Dockerfile's CMD.
 
     KNOWN LIMITATION (PRODUCTION_STATE_GAP, see module docstring): this
     wires FakeProductionStateReader(), which always returns an empty
@@ -531,22 +590,30 @@ def create_app_from_env() -> Any:
     automation_state/*.json, or another mechanism) is an explicit
     prerequisite for A2_SHADOW_RUNBOOK.md's real deployment Human Gate,
     not something this module invents on its own.
+
+    The three *_factory parameters are a minimal dependency-injection seam
+    for local production-wiring tests only (see
+    tests/test_approval_dispatcher.py's ProductionWiringTests): supplying
+    all three replaces every external constructor (Gmail API service
+    build, Firestore client, OIDC token verifier) with a controlled fake,
+    so no google.cloud.firestore / googleapiclient / google.oauth2 import
+    ever executes and no network call is possible. The real Dockerfile CMD
+    always calls this with no arguments, so all three default to exactly
+    the production builders this function used before the seam existed.
     """
 
-    try:
-        from google.cloud import firestore
-    except ImportError as exc:  # pragma: no cover - deployment dependency
-        raise RuntimeError("Firestore dependency is unavailable.") from exc
-    try:
-        from google.oauth2 import id_token as google_id_token
-        from google.auth.transport import requests as google_auth_requests
-    except ImportError as exc:  # pragma: no cover - deployment dependency
-        raise RuntimeError("Google auth dependencies are unavailable.") from exc
-
     config = DispatcherConfig.from_env()
-    gmail = build_gmail_reader_from_env()
+    gmail = (gmail_reader_factory or build_gmail_reader_from_env)()
 
-    firestore_client = firestore.Client()
+    if firestore_client_factory is not None:
+        firestore_client = firestore_client_factory()
+    else:
+        try:
+            from google.cloud import firestore
+        except ImportError as exc:  # pragma: no cover - deployment dependency
+            raise RuntimeError("Firestore dependency is unavailable.") from exc
+        firestore_client = firestore.Client()
+
     storage = FirestoreDispatcherStorage(
         firestore_client,
         cursor_collection=os.environ.get("A2_CURSOR_COLLECTION", "a2_cursor"),
@@ -559,10 +626,20 @@ def create_app_from_env() -> Any:
         ),
     )
 
-    request_adapter = google_auth_requests.Request()
+    if token_verifier_factory is not None:
+        verify_token = token_verifier_factory()
+    else:
+        try:
+            from google.oauth2 import id_token as google_id_token
+            from google.auth.transport import requests as google_auth_requests
+        except ImportError as exc:  # pragma: no cover - deployment dependency
+            raise RuntimeError("Google auth dependencies are unavailable.") from exc
+        request_adapter = google_auth_requests.Request()
 
-    def verify_token(token: str, audience: str) -> Mapping[str, object]:
-        return google_id_token.verify_oauth2_token(token, request_adapter, audience)
+        def verify_token(token: str, audience: str) -> Mapping[str, object]:
+            return google_id_token.verify_oauth2_token(
+                token, request_adapter, audience
+            )
 
     authenticator = PushAuthenticator(
         expected_audience=config.oidc_expected_audience,

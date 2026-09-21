@@ -15,30 +15,37 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import os
 import sys
 import types
 import unittest
 from email.message import EmailMessage
 from typing import Any
+from unittest import mock
 
 from cloud.approval_dispatcher.gmail_reader import (
     FakeGmailReader,
     GmailReaderError,
     HistoryBatch,
     PermanentGmailError,
+    QuotaExceededGmailError,
+    RealGmailReader,
     StaleHistoryError,
     TemporaryGmailError,
+    UnknownGmailAuthorizationError,
     decode_message_fields,
 )
 from cloud.approval_dispatcher.main import (
     AuthenticationError,
     ConfigurationError,
+    CursorConflictError,
     DispatcherConfig,
     DispatcherService,
     EnvelopeError,
     FakeProductionStateReader,
     PushAuthenticator,
     create_app,
+    create_app_from_env,
     decode_pubsub_envelope,
 )
 from cloud.approval_dispatcher.storage import (
@@ -577,6 +584,441 @@ class CursorAndHistoryTests(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# M2A Fix #1 / #2: RealGmailReader pagination and structured 403
+# classification, tested via a fake low-level Gmail API service double.
+# No real googleapiclient service or real network I/O anywhere below.
+# ---------------------------------------------------------------------------
+
+
+class FakeRawGmailService:
+    """Low-level fake mimicking googleapiclient's fluent
+    service.users().history()/messages()/getProfile() chain, for
+    RealGmailReader tests. Every fluent method just records the call and
+    returns self; .execute() pops the next scripted response (a dict
+    payload) or raises the next scripted exception, in call order.
+    """
+
+    def __init__(self, responses: list[Any]) -> None:
+        self._responses = list(responses)
+        self.calls: list[dict[str, Any]] = []
+
+    def users(self) -> "FakeRawGmailService":
+        return self
+
+    def history(self) -> "FakeRawGmailService":
+        return self
+
+    def messages(self) -> "FakeRawGmailService":
+        return self
+
+    def list(self, **kwargs: Any) -> "FakeRawGmailService":
+        self.calls.append({"method": "history.list", **kwargs})
+        return self
+
+    def get(self, **kwargs: Any) -> "FakeRawGmailService":
+        self.calls.append({"method": "messages.get", **kwargs})
+        return self
+
+    def getProfile(self, **kwargs: Any) -> "FakeRawGmailService":
+        self.calls.append({"method": "getProfile", **kwargs})
+        return self
+
+    def execute(self) -> Any:
+        if not self._responses:
+            raise AssertionError(
+                "FakeRawGmailService.execute() called more times than scripted"
+            )
+        response = self._responses.pop(0)
+        if isinstance(response, Exception):
+            raise response
+        return response
+
+
+class FakeHttpError(Exception):
+    """Minimal stand-in for googleapiclient.errors.HttpError's shape --
+    .resp.status (int) and .content (raw JSON response body bytes) --
+    which is exactly what gmail_reader._http_status/_error_reason read.
+    The real googleapiclient package is never imported by this test file
+    or by gmail_reader.py.
+    """
+
+    def __init__(
+        self,
+        status: int,
+        *,
+        reason: str | None = None,
+        message: str = "Gmail API error",
+        malformed_body: bool = False,
+    ) -> None:
+        super().__init__(message)
+        self.resp = types.SimpleNamespace(status=status)
+        if malformed_body:
+            self.content = b"not-json-at-all{{{"
+        elif reason is None:
+            self.content = json.dumps(
+                {"error": {"code": status, "message": message, "errors": []}}
+            ).encode("utf-8")
+        else:
+            self.content = json.dumps(
+                {
+                    "error": {
+                        "code": status,
+                        "message": message,
+                        "errors": [
+                            {
+                                "domain": "usageLimits",
+                                "reason": reason,
+                                "message": message,
+                            }
+                        ],
+                    }
+                }
+            ).encode("utf-8")
+
+
+class HistoryPaginationTests(unittest.TestCase):
+    def test_a_single_page_no_next_token(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "historyId": "150",
+                }
+            ]
+        )
+        batch = RealGmailReader(service).list_history("100")
+        self.assertEqual(batch.message_ids, ("m1",))
+        self.assertEqual(batch.latest_history_id, "150")
+        self.assertEqual(len(service.calls), 1)
+        self.assertEqual(service.calls[0]["startHistoryId"], "100")
+        self.assertNotIn("pageToken", service.calls[0])
+
+    def test_b_two_pages_collects_both(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "tok1",
+                },
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m2"}}]}],
+                    "historyId": "160",
+                },
+            ]
+        )
+        batch = RealGmailReader(service).list_history("100")
+        self.assertEqual(batch.message_ids, ("m1", "m2"))
+        self.assertEqual(batch.latest_history_id, "160")
+        self.assertEqual(len(service.calls), 2)
+        self.assertEqual(service.calls[1]["pageToken"], "tok1")
+        self.assertNotIn("startHistoryId", service.calls[1])
+
+    def test_c_three_pages_collects_all(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "tok1",
+                },
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m2"}}]}],
+                    "nextPageToken": "tok2",
+                },
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m3"}}]}],
+                    "historyId": "170",
+                },
+            ]
+        )
+        batch = RealGmailReader(service).list_history("100")
+        self.assertEqual(batch.message_ids, ("m1", "m2", "m3"))
+        self.assertEqual(batch.latest_history_id, "170")
+        self.assertEqual(len(service.calls), 3)
+        self.assertEqual(service.calls[2]["pageToken"], "tok2")
+
+    def test_d_duplicate_message_ids_across_pages_are_deduplicated(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "tok1",
+                },
+                {
+                    "history": [
+                        {"messagesAdded": [{"message": {"id": "m1"}}]},
+                        {"messagesAdded": [{"message": {"id": "m2"}}]},
+                    ]
+                },
+            ]
+        )
+        batch = RealGmailReader(service).list_history("100")
+        self.assertEqual(batch.message_ids, ("m1", "m2"))
+
+    def test_e_empty_intermediate_page_then_later_data(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "tok1",
+                },
+                {"history": [], "nextPageToken": "tok2"},
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m2"}}]}],
+                    "historyId": "180",
+                },
+            ]
+        )
+        batch = RealGmailReader(service).list_history("100")
+        self.assertEqual(batch.message_ids, ("m1", "m2"))
+        self.assertEqual(len(service.calls), 3)
+
+    def test_f_repeated_cyclic_page_token_fails_safely(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "tokA",
+                },
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m2"}}]}],
+                    "nextPageToken": "tokA",
+                },
+            ]
+        )
+        with self.assertRaises(GmailReaderError):
+            RealGmailReader(service).list_history("100")
+        # Fails on the second repeated token, not after looping further.
+        self.assertEqual(len(service.calls), 2)
+
+    def test_g_api_failure_on_later_page_propagates_correct_error_class(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "tok1",
+                },
+                FakeHttpError(500),
+            ]
+        )
+        with self.assertRaises(TemporaryGmailError):
+            RealGmailReader(service).list_history("100")
+
+    def test_g_permanent_failure_on_later_page_propagates_correct_error_class(self):
+        service = FakeRawGmailService(
+            [
+                {
+                    "history": [{"messagesAdded": [{"message": {"id": "m1"}}]}],
+                    "nextPageToken": "tok1",
+                },
+                FakeHttpError(403, reason="domainPolicy"),
+            ]
+        )
+        with self.assertRaises(PermanentGmailError):
+            RealGmailReader(service).list_history("100")
+
+
+class Gmail403ReasonClassificationTests(unittest.TestCase):
+    def _get_message_error(self, error: Exception) -> GmailReaderError:
+        service = FakeRawGmailService([error])
+        with self.assertRaises(GmailReaderError) as ctx:
+            RealGmailReader(service).get_message("m1")
+        return ctx.exception
+
+    def test_rate_limit_exceeded_is_temporary(self):
+        exc = self._get_message_error(FakeHttpError(403, reason="rateLimitExceeded"))
+        self.assertIsInstance(exc, TemporaryGmailError)
+
+    def test_user_rate_limit_exceeded_is_temporary(self):
+        exc = self._get_message_error(
+            FakeHttpError(403, reason="userRateLimitExceeded")
+        )
+        self.assertIsInstance(exc, TemporaryGmailError)
+
+    def test_domain_policy_is_permanent(self):
+        exc = self._get_message_error(FakeHttpError(403, reason="domainPolicy"))
+        self.assertIsInstance(exc, PermanentGmailError)
+
+    def test_unknown_403_reason_is_not_silently_permanent(self):
+        exc = self._get_message_error(
+            FakeHttpError(403, reason="somethingNeverSeenBefore")
+        )
+        self.assertIsInstance(exc, UnknownGmailAuthorizationError)
+        self.assertNotIsInstance(exc, PermanentGmailError)
+
+    def test_daily_limit_exceeded_is_quota_not_permanent(self):
+        exc = self._get_message_error(FakeHttpError(403, reason="dailyLimitExceeded"))
+        self.assertIsInstance(exc, QuotaExceededGmailError)
+        self.assertNotIsInstance(exc, PermanentGmailError)
+
+    def test_401_is_permanent_regardless_of_reason(self):
+        exc = self._get_message_error(FakeHttpError(401, reason="rateLimitExceeded"))
+        self.assertIsInstance(exc, PermanentGmailError)
+
+    def test_429_is_temporary(self):
+        exc = self._get_message_error(FakeHttpError(429))
+        self.assertIsInstance(exc, TemporaryGmailError)
+        self.assertNotIsInstance(exc, PermanentGmailError)
+
+    def test_500_is_temporary(self):
+        exc = self._get_message_error(FakeHttpError(500))
+        self.assertIsInstance(exc, TemporaryGmailError)
+
+    def test_malformed_403_body_is_not_silently_permanent(self):
+        exc = self._get_message_error(FakeHttpError(403, malformed_body=True))
+        self.assertIsInstance(exc, UnknownGmailAuthorizationError)
+        self.assertNotIsInstance(exc, PermanentGmailError)
+
+    def test_classification_applies_uniformly_to_list_history(self):
+        service = FakeRawGmailService([FakeHttpError(403, reason="domainPolicy")])
+        with self.assertRaises(PermanentGmailError):
+            RealGmailReader(service).list_history("100")
+
+    def test_classification_applies_uniformly_to_get_profile(self):
+        service = FakeRawGmailService([FakeHttpError(403, reason="rateLimitExceeded")])
+        with self.assertRaises(TemporaryGmailError):
+            RealGmailReader(service).get_profile()
+
+
+# ---------------------------------------------------------------------------
+# M2A Fix #3: cursor CAS result handling / concurrency conflict resolution
+# ---------------------------------------------------------------------------
+
+
+class ScriptedCursorStore:
+    """Test double: read_cursor() returns `initial` until
+    compare_and_update_cursor() has been called at least once, after which
+    it returns `post_cas` -- deterministically simulating what a
+    concurrent worker's write would look like from this call's
+    perspective, without real threads or timing races."""
+
+    def __init__(
+        self, *, initial: CursorState, cas_result: bool, post_cas: CursorState
+    ) -> None:
+        self._initial = initial
+        self._post_cas = post_cas
+        self._cas_result = cas_result
+        self._cas_attempted = False
+        self.cas_calls: list[tuple[str | None, str]] = []
+
+    def read_cursor(self) -> CursorState:
+        return self._post_cas if self._cas_attempted else self._initial
+
+    def compare_and_update_cursor(
+        self, expected_history_id: str | None, new_history_id: str
+    ) -> bool:
+        self.cas_calls.append((expected_history_id, new_history_id))
+        self._cas_attempted = True
+        return self._cas_result
+
+
+class CursorCasHandlingTests(unittest.TestCase):
+    def _harness_with_cursor_store(self, cursor_store, *, gmail=None):
+        harness = Harness(gmail=gmail)
+        harness.cursor_store = cursor_store
+        harness.service.cursor_store = cursor_store
+        return harness
+
+    def test_cas_success_acknowledges_normally(self):
+        message = raw_message(subject=f"{GATE_A_PATTERN} — {ISSUE}", body="3")
+        gmail = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-1",))},
+            messages={"msg-1": message},
+        )
+        cursor_store = ScriptedCursorStore(
+            initial=CursorState("100"), cas_result=True, post_cas=CursorState("200")
+        )
+        harness = self._harness_with_cursor_store(cursor_store, gmail=gmail)
+        harness.service.state_reader = FakeProductionStateReader(
+            {ApprovalStage.GATE_A: gate_a_snapshot()}
+        )
+        result = harness.push(history_id="200")
+        self.assertEqual(result["status"], "ACKNOWLEDGED")
+        self.assertEqual(result["recovery_path"], "PUSH")
+        self.assertEqual(result["processed"], 1)
+        self.assertEqual(cursor_store.cas_calls, [("100", "200")])
+
+    def test_cas_false_other_worker_advanced_to_exact_target_is_benign(self):
+        cursor_store = ScriptedCursorStore(
+            initial=CursorState("100"), cas_result=False, post_cas=CursorState("200")
+        )
+        harness = self._harness_with_cursor_store(cursor_store)
+        result = harness.push(history_id="200")
+        self.assertEqual(result["status"], "ACKNOWLEDGED")
+        self.assertEqual(result["recovery_path"], "BENIGN_CONCURRENT_ADVANCE")
+
+    def test_cas_false_other_worker_advanced_beyond_target_is_benign(self):
+        cursor_store = ScriptedCursorStore(
+            initial=CursorState("100"), cas_result=False, post_cas=CursorState("250")
+        )
+        harness = self._harness_with_cursor_store(cursor_store)
+        result = harness.push(history_id="200")
+        self.assertEqual(result["recovery_path"], "BENIGN_CONCURRENT_ADVANCE")
+
+    def test_cas_false_cursor_still_behind_is_conflict_not_ack(self):
+        cursor_store = ScriptedCursorStore(
+            initial=CursorState("100"), cas_result=False, post_cas=CursorState("150")
+        )
+        harness = self._harness_with_cursor_store(cursor_store)
+        with self.assertRaises(CursorConflictError):
+            harness.push(history_id="200")
+
+    def test_cas_false_malformed_refreshed_cursor_is_conflict_not_ack(self):
+        cursor_store = ScriptedCursorStore(
+            initial=CursorState("100"),
+            cas_result=False,
+            post_cas=CursorState("not-a-number"),
+        )
+        harness = self._harness_with_cursor_store(cursor_store)
+        with self.assertRaises(CursorConflictError):
+            harness.push(history_id="200")
+
+    def test_duplicate_redelivery_after_benign_concurrent_completion(self):
+        message = raw_message(subject=f"{GATE_A_PATTERN} — {ISSUE}", body="3")
+        gmail = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-1",))},
+            messages={"msg-1": message},
+        )
+        cursor_store = ScriptedCursorStore(
+            initial=CursorState("100"), cas_result=False, post_cas=CursorState("200")
+        )
+        harness = self._harness_with_cursor_store(cursor_store, gmail=gmail)
+        harness.service.state_reader = FakeProductionStateReader(
+            {ApprovalStage.GATE_A: gate_a_snapshot()}
+        )
+        first = harness.push(history_id="200")
+        self.assertEqual(first["recovery_path"], "BENIGN_CONCURRENT_ADVANCE")
+
+        # The redelivered Pub/Sub notification for the SAME history id
+        # arrives again, now against the real cursor position the other
+        # worker actually persisted.
+        real_cursor_store = InMemoryCursorStore(CursorState("200"))
+        harness.cursor_store = real_cursor_store
+        harness.service.cursor_store = real_cursor_store
+        second = harness.push(history_id="200")
+        self.assertEqual(second["recovery_path"], "DUPLICATE_NOTIFICATION")
+        self.assertEqual(second["processed"], 0)
+        self.assertEqual(len(gmail.get_message_calls), 1)
+
+    def test_no_loss_of_sanitized_observation_records_after_benign_cas(self):
+        message = raw_message(subject=f"{GATE_A_PATTERN} — {ISSUE}", body="3")
+        gmail = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-1",))},
+            messages={"msg-1": message},
+        )
+        cursor_store = ScriptedCursorStore(
+            initial=CursorState("100"), cas_result=False, post_cas=CursorState("200")
+        )
+        harness = self._harness_with_cursor_store(cursor_store, gmail=gmail)
+        harness.service.state_reader = FakeProductionStateReader(
+            {ApprovalStage.GATE_A: gate_a_snapshot()}
+        )
+        harness.push(history_id="200")
+        self.assertEqual(len(harness.observation_store._records), 1)
+        [record] = harness.observation_store._records.values()
+        self.assertEqual(record["classification"], "GATE_A_REPLY")
+
+
+# ---------------------------------------------------------------------------
 # Firestore-shaped storage: tested via a fake google.cloud.firestore module
 # ---------------------------------------------------------------------------
 
@@ -742,6 +1184,105 @@ class FirestoreDispatcherStorageTests(unittest.TestCase):
             self.client.collection("a2_cursor").document("gmail_cursor").get()
         )
         self.assertNotIn("a", cursor_doc.to_dict())
+
+
+# ---------------------------------------------------------------------------
+# M2A Fix #4: create_app_from_env production-wiring test. Proves the
+# production entry path builds correctly with every external constructor
+# replaced by a controlled fake -- no real Gmail, Firestore, or OIDC call
+# is reachable anywhere in this class.
+# ---------------------------------------------------------------------------
+
+
+_WIRING_ENV = {
+    "A2_MAILBOX_IDENTITY": "duck@example.com",
+    "A2_ALLOWED_SENDERS": "owner@example.com",
+    "A2_GATE_A_SUBJECT_PATTERN": GATE_A_PATTERN,
+    "A2_DESIGN_SUBJECT_PATTERN": DESIGN_PATTERN,
+    "A2_OIDC_EXPECTED_AUDIENCE": "https://a2.example.run.app/pubsub",
+    "A2_OIDC_EXPECTED_CALLERS": "pubsub@example.iam.gserviceaccount.com",
+}
+
+
+class ProductionWiringTests(unittest.TestCase):
+    def setUp(self):
+        self._saved_firestore = install_fake_google_cloud_firestore()
+
+    def tearDown(self):
+        restore_google_cloud_firestore(self._saved_firestore)
+
+    def test_builds_and_wires_intended_components_with_no_real_network(self):
+        fake_gmail = FakeGmailReader(
+            history_results={"100": HistoryBatch(message_ids=("msg-1",))},
+            messages={
+                "msg-1": raw_message(
+                    subject="Your weekly newsletter", body="unsubscribe"
+                )
+            },
+        )
+        fake_firestore_client = FakeFirestoreClient()
+        # Seed the cursor via the fake Firestore client directly so the
+        # push below takes the real history-walk path (PUSH), not the
+        # INITIAL_CURSOR no-op -- proving FirestoreDispatcherStorage is
+        # genuinely read/written through, not bypassed.
+        fake_firestore_client.collection("a2_cursor").document("gmail_cursor").set(
+            {"processing_history_id": "100"}
+        )
+
+        def token_verifier_factory():
+            def verify(token: str, audience: str) -> dict[str, object]:
+                return {
+                    "email": "pubsub@example.iam.gserviceaccount.com",
+                    "email_verified": True,
+                }
+
+            return verify
+
+        with mock.patch.dict(os.environ, _WIRING_ENV, clear=False):
+            app = create_app_from_env(
+                gmail_reader_factory=lambda: fake_gmail,
+                firestore_client_factory=lambda: fake_firestore_client,
+                token_verifier_factory=token_verifier_factory,
+            )
+
+        client = app.test_client()
+        with self.assertLogs("approval_dispatcher", level="INFO") as captured:
+            response = client.post(
+                "/pubsub",
+                json=pubsub_envelope(history_id="200"),
+                headers={"Authorization": "Bearer super-secret-oidc-token"},
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["status"], "ACKNOWLEDGED")
+
+        # The intended Gmail reader was selected: this exact fake instance
+        # observed the call, not some other default.
+        self.assertEqual(fake_gmail.get_message_calls, ["msg-1"])
+
+        # FirestoreDispatcherStorage was selected: the fake Firestore
+        # client's own backing collection was written through it.
+        observations = fake_firestore_client._collections.get(
+            "a2_shadow_observations", {}
+        )
+        self.assertEqual(len(observations), 1)
+        [record] = observations.values()
+        self.assertEqual(record["classification"], "UNRELATED")
+
+        # No credential/secret material was logged.
+        joined = "\n".join(captured.output)
+        self.assertNotIn("super-secret-oidc-token", joined)
+
+    def test_missing_configuration_fails_closed(self):
+        incomplete_env = dict(_WIRING_ENV)
+        del incomplete_env["A2_MAILBOX_IDENTITY"]
+        with mock.patch.dict(os.environ, incomplete_env, clear=False):
+            os.environ.pop("A2_MAILBOX_IDENTITY", None)
+            with self.assertRaises(ConfigurationError):
+                create_app_from_env(
+                    gmail_reader_factory=lambda: FakeGmailReader(),
+                    firestore_client_factory=lambda: FakeFirestoreClient(),
+                    token_verifier_factory=lambda: (lambda token, audience: {}),
+                )
 
 
 if __name__ == "__main__":
