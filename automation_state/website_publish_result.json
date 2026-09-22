@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-09-22T06:48:05.980292+00:00",
+  "issue_date": "2026-09-22",
+  "image": "assets/ducks/2026-09-22-the-festival-duck.png",
+  "page": "ducks/2026-09-22/index.html",
+  "title": "Johnson Space Center Sparks Curiosity at Houston’s 33rd Annual Japan Festival",
+  "duck_name": "The Festival Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
