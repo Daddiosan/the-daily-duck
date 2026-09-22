@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-22",
-  "generated_at": "2026-09-22T01:45:04.548199+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-22T06:47:45.973285+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-22",
     "issue_date": "2026-09-22",
     "phase": 2,
@@ -561,64 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-22T00:42:44.774366+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 3,
-    "title": "Johnson Space Center Sparks Curiosity at Houston’s 33rd Annual Japan Festival",
-    "source": "NASA",
-    "url": "https://www.nasa.gov/centers-and-facilities/johnson/johnson-space-center-sparks-curiosity-at-houstons-33rd-annual-japan-festival/",
-    "category": "community",
-    "happiness": 8,
-    "hope": 8,
-    "general_interest": 8,
-    "surprise": 7,
-    "duck_visual": 8,
-    "source_quality": 9,
-    "freshness": 7,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 8,
-    "total_score": 79,
-    "reason": "A lively festival blending Japanese food, dance, martial arts, music, and space curiosity provides colorful community appeal without relying on technical detail.",
-    "candidate_number": 4,
-    "title_en": "Japan Festival Sparks Curiosity in Houston",
-    "reason_en": "A lively festival brings together Japanese food, dance, martial arts, music, and space curiosity for a colorful celebration of community.",
-    "en_copy": "Houston’s 33rd Annual Japan Festival brought together Japanese food, dance, martial arts, music, and curiosity about space. With so many ways to enjoy and explore, the festival offered a colorful reminder that community celebrations can open the door to new interests.",
-    "duck_name": "The Festival Duck",
-    "duck_en": "A great festival serves up culture, curiosity, and plenty to celebrate.",
-    "x_en": "Houston’s 33rd Annual Japan Festival blended Japanese food, dance, martial arts, music, and space curiosity into one colorful community celebration.",
-    "title_ja": "ヒューストンの日本祭りが好奇心をかき立てる",
-    "reason_ja": "日本食、ダンス、武道、音楽、宇宙への好奇心が集まる活気ある祭りが、地域のつながりを色鮮やかに祝いました。",
-    "jp_copy": "ヒューストンの第33回日本祭りには、日本食、ダンス、武道、音楽、そして宇宙への好奇心が集まりました。楽しみながら新しいことを知る機会が数多くあり、地域の祭りが新たな興味への扉を開くことを、色鮮やかに感じさせてくれました。",
-    "duck_jp": "すてきなお祭りには、文化と好奇心、そして祝う理由がたっぷり詰まっています。",
-    "x_jp": "ヒューストンの第33回日本祭りで、日本食、ダンス、武道、音楽、宇宙への好奇心がひとつの色鮮やかな地域イベントに集まりました。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "A Festival Full of Possibilities",
-      "concept_en": "The Festival Duck welcomes viewers into a colorful community celebration where Japanese food, dance, martial arts, music, and curiosity about space come together.",
-      "composition_en": "Landscape hero composition in a bright outdoor festival setting. Place the recognizable friendly yellow duck in the foreground, centered slightly left, holding a small plate of Japanese food while smiling warmly. In the softly layered background, show separate visual hints of a dancer, a martial arts demonstration, musical performers, and a simple starry space-curiosity display without identifiable people or logos. Use colorful festival accents, open space on the right, clean modern editorial styling, and a joyful community mood.",
-      "generation_prompt_en": "Create one premium editorial landscape hero image, 16:9, for a warm community-news story about Houston’s 33rd Annual Japan Festival. Feature the consistent Daily Duck mascot: a recognizable friendly yellow duck with bright yellow feathers, orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Place the duck in the foreground at a lively but uncluttered festival celebration, holding a small plate of Japanese food. In the background, use softly separated illustrative glimpses of Japanese dance, martial arts, music, and curiosity about space, with subtle stars and a clean abstract cosmic display. Bright harmonious colors, modern polished illustration, strong focal point, generous negative space on the right, premium magazine-art direction, welcoming community atmosphere. No logos, no watermarks, no UI, no readable text, no headline, no invented named people, no flags or unsupported specific venue details.",
-      "alt_en": "A friendly yellow duck enjoys Japanese food at a colorful festival with hints of dance, martial arts, music, and space curiosity in the background.",
-      "title_ja": "可能性に満ちたフェスティバル",
-      "concept_ja": "日本食、ダンス、武道、音楽、そして宇宙への好奇心がひとつになる、色鮮やかな地域の祭りに、フェスティバル・ダックが訪れるコンセプトです。",
-      "composition_ja": "明るい屋外の祭りを舞台にした横長のヒーロー構図。手前のやや左に、おなじみの黄色いダックを配置し、小さな日本食の皿を持って温かく微笑ませます。背景には、ダンス、武道の実演、音楽、宇宙への好奇心を示すシンプルな星空の展示を、人物やロゴを特定できない柔らかなレイヤーとして描きます。右側には余白を残し、現代的で洗練された楽しい地域イベントの雰囲気にします。",
-      "alt_ja": "色鮮やかな祭りで日本食を楽しむ親しみやすい黄色いアヒル。背景にはダンス、武道、音楽、宇宙への好奇心を示す要素が見える。"
-    },
-    {
-      "number": 2,
-      "title_en": "A Gateway to Curiosity",
-      "concept_en": "The Festival Duck stands at a playful visual crossroads where cultural celebration leads toward new interests and space curiosity.",
-      "composition_en": "Use a clean, symbolic landscape composition with the duck at the center of a bright festival pathway. The left side suggests Japanese culture through a food stall, flowing dance ribbons, and musical shapes; the right side opens into a deep blue, star-filled curiosity zone with a simple glowing doorway motif. Include a small martial-arts-inspired practice silhouette only as a general illustrative gesture, not a specific person or event. The duck looks from the colorful festival side toward the stars, creating a clear visual story of discovery.",
-      "generation_prompt_en": "Create one publishable premium editorial illustration in a clean 16:9 landscape format. Show the consistent Daily Duck mascot, a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Build a symbolic visual crossroads: on the left, a colorful Japanese festival atmosphere with a small food stall, flowing dance ribbons, musical forms, and subtle hints of martial arts movement; on the right, an open deep-blue space of stars and gentle light, representing curiosity and new interests. Place the duck at the center looking toward the starry side, with a softly glowing gateway shape connecting both worlds. Modern charming design, restrained details, strong focal point, warm optimistic palette, sophisticated magazine illustration. No logos, no watermarks, no UI, no readable text, no headline, no named people, no unsupported factual venue or equipment.",
-      "alt_en": "A friendly yellow duck looks from a colorful Japanese festival toward a glowing starry gateway symbolizing curiosity and new interests.",
-      "title_ja": "好奇心への入り口",
-      "concept_ja": "文化の祭りが新しい興味や宇宙への好奇心へとつながっていく様子を、視覚的な交差点として表現するコンセプトです。",
-      "composition_ja": "ダックを明るい祭りの道の中央に置く、クリーンで象徴的な横長構図です。左側には、屋台、舞うリボン、音楽的な形、武道を思わせる一般的な動きで日本文化を示します。右側には、星が浮かぶ濃い青の空間と、柔らかく光る入り口を配置します。ダックが色鮮やかな祭りから星空の方向を見つめることで、発見の物語を明確にします。",
-      "alt_ja": "色鮮やかな日本祭りから、新しい興味を象徴する光る星空の入り口を見つめる黄色いアヒル。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "Culture Takes Off",
       "concept_en": "A dynamic celebratory tableau turns the festival’s many activities into a warm upward surge of shared energy and curiosity.",
@@ -629,84 +574,10 @@
       "concept_ja": "祭りの食、ダンス、武道、音楽が共有された活気となって上昇し、宇宙への好奇心へ広がる様子を、ポスターのような勢いで描くコンセプトです。",
       "composition_ja": "ポスター性のある横長構図で、下部中央にダックを置き、楽しそうに上を見上げさせます。食、ダンス、武道、音楽を表すカラフルで抽象的な弧やリズムを、左下から右上の明るい星の集まりへ向かって配置します。文化的要素は認識できる範囲で様式化し、記録写真のようにはしません。活気がありながら温かく包摂的で、文字のない洗練されたビジュアルにします。",
       "alt_ja": "祭りを思わせる色鮮やかな形が輝く星へ向かって舞い上がる中、楽しそうに見上げる黄色いアヒル。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IN CURIOSITY!",
-      "meaning_ja": "「好奇心を信じよう！」という意味です。英語の “believe” を、アヒルのくちばしを表す “bill” に置き換えて “bill-ieve” としたダック関連の語呂合わせです。元の単語が明確で、祭りが好奇心をかき立てるという話にも自然につながります。"
     },
-    {
-      "number": 2,
-      "title": "FROM TASTES TO TAKEOFF",
-      "meaning_ja": "「味わいから飛び立ちへ」というニュアンスです。日本食などの「味わい」と、宇宙への好奇心を示す「飛び立ち」を対比し、祭りの楽しみが新しい興味へ広がる流れを、短いリズムのある表現にしています。ダック語彙に頼らない、食と宇宙をつなぐスマートな言葉遊びです。"
-    },
-    {
-      "number": 3,
-      "title": "WHERE CULTURE TAKES OFF",
-      "meaning_ja": "「文化が飛び立つ場所」という意味です。文化の祭りが人々の好奇心や新しい関心を広げることを、宇宙への飛翔になぞらえています。短く力強く、雑誌の表紙やソーシャルカードにも使いやすい、前向きで印象的なポスターコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "A Festival Full of Possibilities",
-      "concept_title_ja": "可能性に満ちたフェスティバル",
-      "image_path": "automation_images/design_previews/2026-09-22/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "3dc134b114736968654b4d7edd3345f0641933d3b44970f598090604b48670fe",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Japan Festival Sparks Curiosity in Houston\nSummary: A lively festival brings together Japanese food, dance, martial arts, music, and space curiosity for a colorful celebration of community.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nA Festival Full of Possibilities\n\nCONCEPT:\nThe Festival Duck welcomes viewers into a colorful community celebration where Japanese food, dance, martial arts, music, and curiosity about space come together.\n\nCOMPOSITION:\nLandscape hero composition in a bright outdoor festival setting. Place the recognizable friendly yellow duck in the foreground, centered slightly left, holding a small plate of Japanese food while smiling warmly. In the softly layered background, show separate visual hints of a dancer, a martial arts demonstration, musical performers, and a simple starry space-curiosity display without identifiable people or logos. Use colorful festival accents, open space on the right, clean modern editorial styling, and a joyful community mood.\n\nPRODUCTION DIRECTION:\nCreate one premium editorial landscape hero image, 16:9, for a warm community-news story about Houston’s 33rd Annual Japan Festival. Feature the consistent Daily Duck mascot: a recognizable friendly yellow duck with bright yellow feathers, orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Place the duck in the foreground at a lively but uncluttered festival celebration, holding a small plate of Japanese food. In the background, use softly separated illustrative glimpses of Japanese dance, martial arts, music, and curiosity about space, with subtle stars and a clean abstract cosmic display. Bright harmonious colors, modern polished illustration, strong focal point, generous negative space on the right, premium magazine-art direction, welcoming community atmosphere. No logos, no watermarks, no UI, no readable text, no headline, no invented named people, no flags or unsupported specific venue details.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck enjoys Japanese food at a colorful festival with hints of dance, martial arts, music, and space curiosity in the background.",
-      "alt_ja": "色鮮やかな祭りで日本食を楽しむ親しみやすい黄色いアヒル。背景にはダンス、武道、音楽、宇宙への好奇心を示す要素が見える。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "A Gateway to Curiosity",
-      "concept_title_ja": "好奇心への入り口",
-      "image_path": "automation_images/design_previews/2026-09-22/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "12c123f3257cedd84be63a6fe4e2e2086121102a443b1285279fc7e2deeda81f",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Japan Festival Sparks Curiosity in Houston\nSummary: A lively festival brings together Japanese food, dance, martial arts, music, and space curiosity for a colorful celebration of community.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nA Gateway to Curiosity\n\nCONCEPT:\nThe Festival Duck stands at a playful visual crossroads where cultural celebration leads toward new interests and space curiosity.\n\nCOMPOSITION:\nUse a clean, symbolic landscape composition with the duck at the center of a bright festival pathway. The left side suggests Japanese culture through a food stall, flowing dance ribbons, and musical shapes; the right side opens into a deep blue, star-filled curiosity zone with a simple glowing doorway motif. Include a small martial-arts-inspired practice silhouette only as a general illustrative gesture, not a specific person or event. The duck looks from the colorful festival side toward the stars, creating a clear visual story of discovery.\n\nPRODUCTION DIRECTION:\nCreate one publishable premium editorial illustration in a clean 16:9 landscape format. Show the consistent Daily Duck mascot, a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Build a symbolic visual crossroads: on the left, a colorful Japanese festival atmosphere with a small food stall, flowing dance ribbons, musical forms, and subtle hints of martial arts movement; on the right, an open deep-blue space of stars and gentle light, representing curiosity and new interests. Place the duck at the center looking toward the starry side, with a softly glowing gateway shape connecting both worlds. Modern charming design, restrained details, strong focal point, warm optimistic palette, sophisticated magazine illustration. No logos, no watermarks, no UI, no readable text, no headline, no named people, no unsupported factual venue or equipment.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck looks from a colorful Japanese festival toward a glowing starry gateway symbolizing curiosity and new interests.",
-      "alt_ja": "色鮮やかな日本祭りから、新しい興味を象徴する光る星空の入り口を見つめる黄色いアヒル。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Culture Takes Off",
-      "concept_title_ja": "文化が飛び立つ",
-      "image_path": "automation_images/design_previews/2026-09-22/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "5b8c8373aa50af6748e3ae992cf8d6e861ad01abd8a2c617aec98dac606902ea",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Japan Festival Sparks Curiosity in Houston\nSummary: A lively festival brings together Japanese food, dance, martial arts, music, and space curiosity for a colorful celebration of community.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nCulture Takes Off\n\nCONCEPT:\nA dynamic celebratory tableau turns the festival’s many activities into a warm upward surge of shared energy and curiosity.\n\nCOMPOSITION:\nCreate a bold poster-like landscape composition with the duck in the lower center, joyfully looking upward. Around it, arrange colorful abstract arcs and visual rhythms representing food, dance, martial arts, and music, all rising toward a luminous cluster of stars above. Keep the cultural elements recognizable but stylized and non-literal. Use a strong diagonal movement from the festival colors at the lower left toward the starry curiosity at the upper right. The mood is energetic, inclusive, and hopeful, with ample clean space and no embedded copy.\n\nPRODUCTION DIRECTION:\nCreate one bold premium editorial landscape image, 16:9, with poster-like visual energy but no text. Feature the consistent Daily Duck mascot prominently in the lower center: friendly yellow feathers, orange beak, large dark glossy eyes, small feather tuft, and a warm approachable expression. Build a joyful upward composition in which abstract colorful forms suggest Japanese food, dance, martial arts, and music, rising in a sweeping diagonal toward a luminous cluster of stars representing curiosity about space. Keep the cultural references tasteful, simple, and clearly illustrative rather than documentary. Use a warm festival palette with deep blue accents, strong focal point, clean modern shapes, polished magazine illustration, inclusive community feeling, and generous breathing room. No logos, no watermarks, no UI, no readable embedded text, no headline, no named people, no unsupported factual props.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A cheerful yellow duck looks upward as colorful festival-inspired forms rise toward glowing stars, suggesting culture and curiosity taking off together.",
-      "alt_ja": "祭りを思わせる色鮮やかな形が輝く星へ向かって舞い上がる中、楽しそうに見上げる黄色いアヒル。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-22/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "WHERE CULTURE TAKES OFF"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "WHERE CULTURE TAKES OFF",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "WHERE CULTURE TAKES OFF",
+    "meaning_ja": "「文化が飛び立つ場所」という意味です。文化の祭りが人々の好奇心や新しい関心を広げることを、宇宙への飛翔になぞらえています。短く力強く、雑誌の表紙やソーシャルカードにも使いやすい、前向きで印象的なポスターコピーです。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "Culture Takes Off",
+    "concept_title_ja": "文化が飛び立つ",
+    "image_path": "automation_images/design_previews/2026-09-22/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "5b8c8373aa50af6748e3ae992cf8d6e861ad01abd8a2c617aec98dac606902ea",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Japan Festival Sparks Curiosity in Houston\nSummary: A lively festival brings together Japanese food, dance, martial arts, music, and space curiosity for a colorful celebration of community.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nCulture Takes Off\n\nCONCEPT:\nA dynamic celebratory tableau turns the festival’s many activities into a warm upward surge of shared energy and curiosity.\n\nCOMPOSITION:\nCreate a bold poster-like landscape composition with the duck in the lower center, joyfully looking upward. Around it, arrange colorful abstract arcs and visual rhythms representing food, dance, martial arts, and music, all rising toward a luminous cluster of stars above. Keep the cultural elements recognizable but stylized and non-literal. Use a strong diagonal movement from the festival colors at the lower left toward the starry curiosity at the upper right. The mood is energetic, inclusive, and hopeful, with ample clean space and no embedded copy.\n\nPRODUCTION DIRECTION:\nCreate one bold premium editorial landscape image, 16:9, with poster-like visual energy but no text. Feature the consistent Daily Duck mascot prominently in the lower center: friendly yellow feathers, orange beak, large dark glossy eyes, small feather tuft, and a warm approachable expression. Build a joyful upward composition in which abstract colorful forms suggest Japanese food, dance, martial arts, and music, rising in a sweeping diagonal toward a luminous cluster of stars representing curiosity about space. Keep the cultural references tasteful, simple, and clearly illustrative rather than documentary. Use a warm festival palette with deep blue accents, strong focal point, clean modern shapes, polished magazine illustration, inclusive community feeling, and generous breathing room. No logos, no watermarks, no UI, no readable embedded text, no headline, no named people, no unsupported factual props.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A cheerful yellow duck looks upward as colorful festival-inspired forms rise toward glowing stars, suggesting culture and curiosity taking off together.",
+    "alt_ja": "祭りを思わせる色鮮やかな形が輝く星へ向かって舞い上がる中、楽しそうに見上げる黄色いアヒル。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-22.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-22 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-22 — Batch 1",
-  "final_email_sent_at": "2026-09-22T01:45:09.401149+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "WHERE CULTURE TAKES OFF",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-22T06:47:45.974050+00:00"
+    "translation_language": "ja"
+  }
 }
