@@ -66,6 +66,7 @@ from cloud.approval_relay.storage import (
     RELAY_EVENTS_COLLECTION,
     FirestoreRelayStorage,
     InMemoryCursorStore,
+    RelayStorageError,
 )
 
 
@@ -468,10 +469,29 @@ def pubsub_envelope(
 
 
 class PubSubEnvelopeTests(unittest.TestCase):
-    def test_valid_envelope(self):
-        value = decode_pubsub_envelope(pubsub_envelope())
-        self.assertEqual(value.email_address, "owner@example.com")
-        self.assertEqual(value.history_id, "101")
+    def test_valid_wire_forms_have_same_canonical_string(self):
+        from_string = decode_pubsub_envelope(pubsub_envelope(history_id="30538"))
+        from_integer = decode_pubsub_envelope(pubsub_envelope(history_id=30538))
+
+        self.assertEqual(from_string.email_address, "owner@example.com")
+        self.assertEqual(from_string.history_id, "30538")
+        self.assertEqual(from_integer.history_id, from_string.history_id)
+        self.assertIsInstance(from_string.history_id, str)
+        self.assertIsInstance(from_integer.history_id, str)
+
+    def test_zero_and_large_wire_history_ids_are_canonical_strings(self):
+        large = 1234567890123456789012345678901234567890
+        for wire_value, expected in (
+            ("0", "0"),
+            (0, "0"),
+            (large, format(large, "d")),
+        ):
+            with self.subTest(wire_value=wire_value):
+                notification = decode_pubsub_envelope(
+                    pubsub_envelope(history_id=wire_value)
+                )
+                self.assertEqual(notification.history_id, expected)
+                self.assertIsInstance(notification.history_id, str)
 
     def test_invalid_shapes_fail_closed(self):
         invalid = [
@@ -497,16 +517,22 @@ class PubSubEnvelopeTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(EnvelopeError):
                 decode_pubsub_envelope(value)
 
-    def test_history_id_requires_nonempty_decimal_string(self):
+    def test_history_id_rejects_non_decimal_or_non_integer_wire_values(self):
         for history_id in (
-            12345,
-            1.5,
             True,
+            False,
+            1.5,
+            -1,
             None,
             [],
             {},
             "",
             " ",
+            "+1",
+            "-1",
+            "1.0",
+            "1e3",
+            "abc",
             "12x",
             "１２３",
         ):
@@ -1052,6 +1078,21 @@ class FirestoreRelayStorageTests(unittest.TestCase):
             self.storage.compare_and_update_cursor(mailbox_hash, "100", "102")
         )
 
+    def test_cursor_history_id_schema_remains_string_only(self):
+        mailbox_hash = mailbox_hash_for("owner@example.com")
+        with self.assertRaises(RelayStorageError):
+            self.storage.compare_and_update_cursor(mailbox_hash, None, 30538)
+
+        self.client._collections.setdefault(RELAY_CURSOR_COLLECTION, {})[
+            mailbox_hash
+        ] = {
+            "mailbox_hash": mailbox_hash,
+            "history_id": 30538,
+            "updated_at": "cursor-time",
+        }
+        with self.assertRaises(RelayStorageError):
+            self.storage.read_cursor(mailbox_hash)
+
     def test_sdk_transaction_retry_is_safe_for_cursor_initialization(self):
         mailbox_hash = mailbox_hash_for("owner@example.com")
         self.client.conflicts_remaining = 1
@@ -1433,15 +1474,21 @@ class FlaskAppTests(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-    def test_non_string_history_id_is_rejected_before_gmail_access(self):
+    def test_integer_history_id_is_normalized_before_downstream_processing(self):
         reader = FakeGmailReader(history=HistoryBatch(()))
-        response = self._app(gmail=reader).test_client().post(
+        app = self._app(gmail=reader)
+        response = app.test_client().post(
             "/relay",
             json=pubsub_envelope(history_id=12345),
             headers={"Authorization": "Bearer token"},
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(reader.list_history_calls, [])
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(reader.list_history_calls, ["100"])
+        cursor = app.extensions["relay_components"]["cursor_store"].read_cursor(
+            mailbox_hash_for("owner@example.com")
+        )
+        self.assertEqual(cursor.history_id, "12345")
+        self.assertIsInstance(cursor.history_id, str)
 
     def test_duplicate_notification_is_acked_without_second_history_walk(self):
         reader = FakeGmailReader(history=HistoryBatch(()))

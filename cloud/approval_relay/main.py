@@ -193,6 +193,23 @@ def _configured_address(value: object) -> str:
     return text
 
 
+def _normalize_wire_history_id(value: object) -> str:
+    if isinstance(value, bool):
+        raise EnvelopeError("Gmail notification is missing a valid historyId.")
+    if isinstance(value, int):
+        if value < 0:
+            raise EnvelopeError("Gmail notification is missing a valid historyId.")
+        return format(value, "d")
+    if (
+        not isinstance(value, str)
+        or not value
+        or not value.isascii()
+        or not value.isdecimal()
+    ):
+        raise EnvelopeError("Gmail notification is missing a valid historyId.")
+    return value
+
+
 def decode_pubsub_envelope(envelope: object) -> PubSubNotification:
     if not isinstance(envelope, Mapping):
         raise EnvelopeError("Pub/Sub envelope must be a JSON object.")
@@ -210,16 +227,10 @@ def decode_pubsub_envelope(envelope: object) -> PubSubNotification:
     if not isinstance(payload, Mapping):
         raise EnvelopeError("Decoded Gmail notification must be a JSON object.")
     raw_email_address = payload.get("emailAddress")
-    history_id = payload.get("historyId")
+    raw_history_id = payload.get("historyId")
     if not isinstance(raw_email_address, str) or not raw_email_address.strip():
         raise EnvelopeError("Gmail notification is missing emailAddress.")
-    if (
-        not isinstance(history_id, str)
-        or not history_id
-        or not history_id.isascii()
-        or not history_id.isdecimal()
-    ):
-        raise EnvelopeError("Gmail notification is missing a valid historyId.")
+    history_id = _normalize_wire_history_id(raw_history_id)
     return PubSubNotification(
         email_address=raw_email_address.strip().casefold(), history_id=history_id
     )
