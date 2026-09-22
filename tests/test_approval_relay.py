@@ -64,6 +64,7 @@ from cloud.approval_relay.storage import (
     EVENT_PERSISTED_FIELDS,
     RELAY_CURSOR_COLLECTION,
     RELAY_EVENTS_COLLECTION,
+    RELAY_WATCH_STATE_COLLECTION,
     FirestoreRelayStorage,
     InMemoryCursorStore,
     RelayStorageError,
@@ -1093,6 +1094,27 @@ class FirestoreRelayStorageTests(unittest.TestCase):
         with self.assertRaises(RelayStorageError):
             self.storage.read_cursor(mailbox_hash)
 
+    def test_watch_state_is_strict_and_older_result_cannot_overwrite(self):
+        mailbox_hash = mailbox_hash_for("owner@example.com")
+        self.assertTrue(
+            self.storage.store_watch_state_if_newer(
+                mailbox_hash, "301", 1791000000000
+            )
+        )
+        self.assertFalse(
+            self.storage.store_watch_state_if_newer(
+                mailbox_hash, "999", 1790000000000
+            )
+        )
+        state = self.storage.read_watch_state(mailbox_hash)
+        self.assertEqual(state.history_id, "301")
+        self.assertIsInstance(state.history_id, str)
+        self.assertEqual(state.expiration, 1791000000000)
+        self.assertEqual(
+            set(self.client._collections[RELAY_WATCH_STATE_COLLECTION][mailbox_hash]),
+            {"expiration", "history_id", "mailbox_hash", "updated_at"},
+        )
+
     def test_sdk_transaction_retry_is_safe_for_cursor_initialization(self):
         mailbox_hash = mailbox_hash_for("owner@example.com")
         self.client.conflicts_remaining = 1
@@ -1348,6 +1370,9 @@ class FlaskAppTests(unittest.TestCase):
             "RELAY_GMAIL_OAUTH_CLIENT_JSON": "{}",
             "RELAY_GMAIL_OAUTH_REFRESH_TOKEN": "secret-not-used",
             "RELAY_FIRESTORE_PROJECT": "daily-duck-test",
+            "RELAY_GMAIL_WATCH_TOPIC": "projects/daily-duck-test/topics/gmail-events",
+            "RELAY_RENEWAL_OIDC_EXPECTED_AUDIENCE": "https://relay.example/renew-watch",
+            "RELAY_RENEWAL_OIDC_EXPECTED_PRINCIPALS": "renew@example.iam.gserviceaccount.com",
         }
         calls = []
 
@@ -1393,6 +1418,9 @@ class FlaskAppTests(unittest.TestCase):
             "RELAY_GMAIL_OAUTH_CLIENT_JSON": "{}",
             "RELAY_GMAIL_OAUTH_REFRESH_TOKEN": "secret-not-used",
             "RELAY_FIRESTORE_PROJECT": "daily-duck-test",
+            "RELAY_GMAIL_WATCH_TOPIC": "projects/daily-duck-test/topics/gmail-events",
+            "RELAY_RENEWAL_OIDC_EXPECTED_AUDIENCE": "https://relay.example/renew-watch",
+            "RELAY_RENEWAL_OIDC_EXPECTED_PRINCIPALS": "renew@example.iam.gserviceaccount.com",
             "RELAY_MODE": "LIVE",
         }
         with self.assertRaises(ConfigurationError):

@@ -19,7 +19,7 @@ exists.
 ```text
 authenticated Pub/Sub push
   -> verify Google OIDC issuer, audience, email_verified, exact principal
-  -> decode string emailAddress + decimal-string historyId
+  -> decode string emailAddress + decimal-string or non-negative integer historyId
   -> verify configured mailbox
   -> load or bootstrap durable mailbox cursor
   -> walk all Gmail history pages
@@ -31,10 +31,12 @@ authenticated Pub/Sub push
 ```
 
 Authentication runs before envelope decoding or Gmail access. Bearer tokens
-and raw Authorization headers are never logged. `historyId` must be a nonempty
-decimal string, matching Gmail's schema. Integers, floats, booleans, null,
-arrays, objects, empty strings, whitespace, and non-decimal strings are
-rejected before Gmail history access.
+and raw Authorization headers are never logged. At the notification wire
+boundary, `historyId` accepts a nonempty ASCII decimal string or a non-negative
+integer and canonicalizes either to a string. Floats, booleans, null, arrays,
+objects, negative integers, empty strings, whitespace, and non-decimal strings
+are rejected before Gmail history access. Persisted history IDs remain strict
+strings.
 
 The Gmail reader requests `gmail.readonly`, exhausts pagination, deduplicates
 message IDs in first-seen order, rejects repeated/cyclic page tokens, and never
@@ -49,16 +51,20 @@ both required for a candidate. The reply body is never parsed.
 
 ## Firestore layout
 
-M3C uses exactly two fixed, application-controlled collections:
+The Relay defines three fixed, application-controlled collections. The first
+two are used by normal ingress; the third is used only by the R1.3 watch
+renewal source implementation and is not evidence of deployment:
 
 - `relay_cursor`: document ID is the one-way mailbox hash. Fields are exactly
   `mailbox_hash`, `history_id`, and `updated_at`.
 - `relay_events`: document ID is the deterministic message event key. Fields
   are exactly `event_key`, `stage`, `workflow`, `attempt_count`, `state`,
   nullable `workflow_run_id`, `created_at`, and `updated_at`.
+- `relay_watch_state`: document ID is the one-way mailbox hash. Fields are
+  exactly `expiration`, `history_id`, `mailbox_hash`, and `updated_at`.
 
 Collection names are constants and cannot be supplied by a caller or changed
-through environment configuration. Neither collection stores a raw mailbox,
+through environment configuration. None of these collections stores a raw mailbox,
 sender, Subject, body, OAuth/OIDC token, Authorization header, or GitHub
 credential.
 

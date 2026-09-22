@@ -35,7 +35,10 @@ from cloud.approval_relay.storage import (
     EVENT_PERSISTED_FIELDS,
     RELAY_CURSOR_COLLECTION,
     RELAY_EVENTS_COLLECTION,
+    RELAY_WATCH_STATE_COLLECTION,
+    WATCH_STATE_PERSISTED_FIELDS,
     CursorRecord,
+    WatchStateRecord,
 )
 
 
@@ -96,6 +99,7 @@ class RelayFileBoundaryTests(unittest.TestCase):
             "gmail_reader.py",
             "auth.py",
             "storage.py",
+            "watch_renewal.py",
             "requirements.txt",
             "Dockerfile",
         }
@@ -114,6 +118,7 @@ class RelayFileBoundaryTests(unittest.TestCase):
         dockerfile = (RELAY / "Dockerfile").read_text(encoding="utf-8")
         self.assertIn("google-cloud-firestore>=2.0,<3", requirements)
         self.assertIn("storage.py", dockerfile)
+        self.assertIn("watch_renewal.py", dockerfile)
         self.assertIn('"--workers", "1"', dockerfile)
         for forbidden in ("automation_state", "automation_images", "secrets"):
             self.assertNotIn(forbidden, dockerfile)
@@ -283,7 +288,14 @@ class SanitizedDataContractTests(unittest.TestCase):
     def test_firestore_schemas_contain_only_sanitized_fields(self):
         self.assertEqual(CURSOR_PERSISTED_FIELDS, set(CursorRecord.__dataclass_fields__))
         self.assertEqual(EVENT_PERSISTED_FIELDS, ALLOWED_LEDGER_FIELDS)
-        for fields in (CURSOR_PERSISTED_FIELDS, EVENT_PERSISTED_FIELDS):
+        self.assertEqual(
+            WATCH_STATE_PERSISTED_FIELDS, set(WatchStateRecord.__dataclass_fields__)
+        )
+        for fields in (
+            CURSOR_PERSISTED_FIELDS,
+            EVENT_PERSISTED_FIELDS,
+            WATCH_STATE_PERSISTED_FIELDS,
+        ):
             for forbidden in (
                 "mailbox",
                 "sender",
@@ -298,6 +310,7 @@ class SanitizedDataContractTests(unittest.TestCase):
     def test_firestore_collection_names_are_fixed_application_constants(self):
         self.assertEqual(RELAY_CURSOR_COLLECTION, "relay_cursor")
         self.assertEqual(RELAY_EVENTS_COLLECTION, "relay_events")
+        self.assertEqual(RELAY_WATCH_STATE_COLLECTION, "relay_watch_state")
         storage_source = (RELAY / "storage.py").read_text(encoding="utf-8")
         self.assertNotIn("os.environ", storage_source)
 

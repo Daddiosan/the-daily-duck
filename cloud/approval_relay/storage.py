@@ -8,6 +8,7 @@ install a controlled fake Firestore module and never contact Google Cloud.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+import re
 from threading import Lock
 from typing import Any, Callable, Mapping, Protocol
 
@@ -23,6 +24,7 @@ from .ledger import (
 
 RELAY_CURSOR_COLLECTION = "relay_cursor"
 RELAY_EVENTS_COLLECTION = "relay_events"
+RELAY_WATCH_STATE_COLLECTION = "relay_watch_state"
 
 CURSOR_PERSISTED_FIELDS = frozenset({"mailbox_hash", "history_id", "updated_at"})
 EVENT_PERSISTED_FIELDS = frozenset(
@@ -37,6 +39,10 @@ EVENT_PERSISTED_FIELDS = frozenset(
         "updated_at",
     }
 )
+WATCH_STATE_PERSISTED_FIELDS = frozenset(
+    {"expiration", "history_id", "mailbox_hash", "updated_at"}
+)
+_MAILBOX_HASH_PATTERN = re.compile(r"[0-9a-f]{64}")
 
 
 class RelayStorageError(RuntimeError):
@@ -48,6 +54,22 @@ class CursorRecord:
     mailbox_hash: str
     history_id: str
     updated_at: str
+
+
+@dataclass(frozen=True)
+class WatchStateRecord:
+    expiration: int
+    history_id: str
+    mailbox_hash: str
+    updated_at: str
+
+
+class WatchStateStore(Protocol):
+    def read_watch_state(self, mailbox_hash: str) -> WatchStateRecord | None: ...
+
+    def store_watch_state_if_newer(
+        self, mailbox_hash: str, history_id: str, expiration: int
+    ) -> bool: ...
 
 
 class CursorStore(Protocol):
@@ -94,6 +116,41 @@ class InMemoryCursorStore:
             return True
 
 
+class InMemoryWatchStateStore:
+    """Thread-safe local/test store with monotonic successful-watch writes."""
+
+    def __init__(self, *, clock: Callable[[], str] = utc_now_iso) -> None:
+        self._records: dict[str, WatchStateRecord] = {}
+        self._lock = Lock()
+        self._clock = clock
+
+    def read_watch_state(self, mailbox_hash: str) -> WatchStateRecord | None:
+        _require_mailbox_hash(mailbox_hash)
+        with self._lock:
+            record = self._records.get(mailbox_hash)
+            return replace(record) if record is not None else None
+
+    def store_watch_state_if_newer(
+        self, mailbox_hash: str, history_id: str, expiration: int
+    ) -> bool:
+        _require_mailbox_hash(mailbox_hash)
+        _require_decimal_history_id(history_id)
+        _require_expiration(expiration)
+        with self._lock:
+            current = self._records.get(mailbox_hash)
+            if current is not None and not _watch_value_is_newer(
+                expiration, history_id, current
+            ):
+                return False
+            self._records[mailbox_hash] = WatchStateRecord(
+                expiration=expiration,
+                history_id=history_id,
+                mailbox_hash=mailbox_hash,
+                updated_at=self._clock(),
+            )
+            return True
+
+
 def _require_decimal_history_id(value: object) -> str:
     if (
         not isinstance(value, str)
@@ -103,6 +160,45 @@ def _require_decimal_history_id(value: object) -> str:
     ):
         raise RelayStorageError("Persisted Gmail history id is malformed.")
     return value
+
+
+def _require_mailbox_hash(value: object) -> str:
+    if not isinstance(value, str) or _MAILBOX_HASH_PATTERN.fullmatch(value) is None:
+        raise RelayStorageError("Persisted mailbox hash is malformed.")
+    return value
+
+
+def _require_expiration(value: object) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise RelayStorageError("Persisted watch expiration is malformed.")
+    return value
+
+
+def _watch_state_from_data(
+    mailbox_hash: str, data: Mapping[str, Any]
+) -> WatchStateRecord:
+    if set(data) != WATCH_STATE_PERSISTED_FIELDS:
+        raise RelayStorageError("Persisted watch state schema is malformed.")
+    if data.get("mailbox_hash") != mailbox_hash:
+        raise RelayStorageError("Persisted watch state mailbox hash mismatches.")
+    updated_at = data.get("updated_at")
+    if not isinstance(updated_at, str) or not updated_at:
+        raise RelayStorageError("Persisted watch state timestamp is malformed.")
+    return WatchStateRecord(
+        expiration=_require_expiration(data.get("expiration")),
+        history_id=_require_decimal_history_id(data.get("history_id")),
+        mailbox_hash=_require_mailbox_hash(mailbox_hash),
+        updated_at=updated_at,
+    )
+
+
+def _watch_value_is_newer(
+    expiration: int, history_id: str, current: WatchStateRecord
+) -> bool:
+    return (expiration, int(history_id)) > (
+        current.expiration,
+        int(current.history_id),
+    )
 
 
 def _cursor_from_data(
@@ -184,6 +280,7 @@ class FirestoreRelayStorage:
         self._client = client
         self._cursors = client.collection(RELAY_CURSOR_COLLECTION)
         self._events = client.collection(RELAY_EVENTS_COLLECTION)
+        self._watch_states = client.collection(RELAY_WATCH_STATE_COLLECTION)
         self._clock = clock
 
     def read_cursor(self, mailbox_hash: str) -> CursorRecord | None:
@@ -230,6 +327,58 @@ class FirestoreRelayStorage:
                 {
                     "mailbox_hash": mailbox_hash,
                     "history_id": new_history_id,
+                    "updated_at": self._clock(),
+                },
+            )
+            return True
+
+        return bool(update(transaction))
+
+    def read_watch_state(self, mailbox_hash: str) -> WatchStateRecord | None:
+        _require_mailbox_hash(mailbox_hash)
+        snapshot = self._watch_states.document(mailbox_hash).get()
+        if not snapshot.exists:
+            return None
+        return _watch_state_from_data(mailbox_hash, dict(snapshot.to_dict() or {}))
+
+    def store_watch_state_if_newer(
+        self, mailbox_hash: str, history_id: str, expiration: int
+    ) -> bool:
+        _require_mailbox_hash(mailbox_hash)
+        _require_decimal_history_id(history_id)
+        _require_expiration(expiration)
+        try:
+            from google.cloud import firestore
+        except ImportError as exc:  # pragma: no cover - container dependency
+            raise RelayStorageError("Firestore dependency is unavailable.") from exc
+        reference = self._watch_states.document(mailbox_hash)
+        transaction = self._client.transaction()
+
+        @firestore.transactional
+        def update(txn: Any) -> bool:
+            snapshot = reference.get(transaction=txn)
+            if snapshot.exists:
+                current = _watch_state_from_data(
+                    mailbox_hash, dict(snapshot.to_dict() or {})
+                )
+                if not _watch_value_is_newer(expiration, history_id, current):
+                    return False
+                txn.set(
+                    reference,
+                    {
+                        "expiration": expiration,
+                        "history_id": history_id,
+                        "mailbox_hash": mailbox_hash,
+                        "updated_at": self._clock(),
+                    },
+                )
+                return True
+            txn.create(
+                reference,
+                {
+                    "expiration": expiration,
+                    "history_id": history_id,
+                    "mailbox_hash": mailbox_hash,
                     "updated_at": self._clock(),
                 },
             )

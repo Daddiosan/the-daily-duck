@@ -191,8 +191,8 @@ class RealGmailReader:
         return metadata
 
 
-def build_gmail_reader_from_env(env: Mapping[str, str] | None = None) -> RealGmailReader:
-    """Create the Gmail API adapter; the first API request happens later."""
+def build_gmail_service_from_env(env: Mapping[str, str] | None = None) -> Any:
+    """Create one Gmail service from the existing read-only OAuth settings."""
 
     values = os.environ if env is None else env
     client_json = str(values.get("RELAY_GMAIL_OAUTH_CLIENT_JSON", "")).strip()
@@ -220,9 +220,13 @@ def build_gmail_reader_from_env(env: Mapping[str, str] | None = None) -> RealGma
         client_secret=client_secret,
         scopes=[GMAIL_READONLY_SCOPE],
     )
-    return RealGmailReader(
-        build("gmail", "v1", credentials=credentials, cache_discovery=False)
-    )
+    return build("gmail", "v1", credentials=credentials, cache_discovery=False)
+
+
+def build_gmail_reader_from_env(env: Mapping[str, str] | None = None) -> RealGmailReader:
+    """Create the Gmail API adapter; the first API request happens later."""
+
+    return RealGmailReader(build_gmail_service_from_env(env))
 
 
 class LazyGmailReader:

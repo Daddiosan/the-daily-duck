@@ -29,6 +29,7 @@ from .gmail_reader import (
     GmailReaderError,
     LazyGmailReader,
     build_gmail_reader_from_env,
+    build_gmail_service_from_env,
 )
 from .ledger import (
     InMemoryRelayLedger,
@@ -51,7 +52,15 @@ from .storage import (
     CursorStore,
     FirestoreRelayStorage,
     InMemoryCursorStore,
+    WatchStateStore,
     build_firestore_storage,
+)
+from .watch_renewal import (
+    GmailWatchClient,
+    RealGmailWatchClient,
+    RenewalOperationError,
+    WatchRenewalConfig,
+    WatchRenewalService,
 )
 
 
@@ -459,6 +468,10 @@ def create_app(
     cursor_store: CursorStore | None = None,
     ledger: RelayLedger | None = None,
     dispatcher: GitHubDispatcher | None = None,
+    renewal_config: WatchRenewalConfig | None = None,
+    renewal_authenticator: PushAuthenticator | None = None,
+    gmail_watch_factory: Callable[[], GmailWatchClient] | None = None,
+    watch_state_store: WatchStateStore | None = None,
 ) -> Any:
     """Create an authenticated app; missing dependencies fail closed."""
 
@@ -483,6 +496,27 @@ def create_app(
         cursor_store=actual_cursor_store,
         relay=relay_service,
     )
+    renewal_dependencies = (
+        renewal_config,
+        renewal_authenticator,
+        gmail_watch_factory,
+        watch_state_store,
+    )
+    if any(value is not None for value in renewal_dependencies) and not all(
+        value is not None for value in renewal_dependencies
+    ):
+        raise ConfigurationError("Watch renewal dependencies are incomplete.")
+    renewal_service = (
+        WatchRenewalService(
+            config=renewal_config,
+            gmail_factory=gmail_watch_factory,
+            state_store=watch_state_store,
+        )
+        if renewal_config is not None
+        and gmail_watch_factory is not None
+        and watch_state_store is not None
+        else None
+    )
     app = Flask(__name__)
     app.extensions["relay_components"] = {
         "config": config,
@@ -492,6 +526,8 @@ def create_app(
         "ledger": actual_ledger,
         "dispatcher": actual_dispatcher,
         "relay": relay_service,
+        "renewal": renewal_service,
+        "renewal_authenticator": renewal_authenticator,
     }
 
     @app.post("/relay")
@@ -515,6 +551,31 @@ def create_app(
     def health() -> Any:
         return jsonify({"status": "OK"}), 200
 
+    if renewal_service is not None and renewal_authenticator is not None:
+
+        @app.post("/renew-watch")
+        def renew_watch_route() -> Any:
+            try:
+                renewal_authenticator.verify(request.headers.get("Authorization"))
+                result = renewal_service.renew()
+                _log_event("watch_renewal_succeeded", {"status": result["status"]})
+                return jsonify(result), 200
+            except AuthenticationError:
+                return jsonify({"status": "REJECTED", "reason": "UNAUTHORIZED"}), 401
+            except RenewalOperationError as exc:
+                status = "REJECTED" if exc.http_status < 500 else "RETRY"
+                _log_event(
+                    "watch_renewal_failed",
+                    {"status": status, "error_category": exc.kind.value},
+                )
+                return jsonify({"status": status, "reason": exc.kind.value}), exc.http_status
+            except Exception as exc:  # noqa: BLE001 - fail closed, sanitized
+                _log_event(
+                    "watch_renewal_failed",
+                    {"status": "RETRY", "error_category": type(exc).__name__},
+                )
+                return jsonify({"status": "RETRY", "reason": "UNKNOWN"}), 500
+
     return app
 
 
@@ -525,23 +586,60 @@ def create_app_from_env(
     firestore_client_factory: Callable[[], Any] | None = None,
     token_verifier_factory: Callable[[], Callable[[str, str], Mapping[str, object]]]
     | None = None,
+    gmail_watch_factory: Callable[[], GmailWatchClient] | None = None,
 ) -> Any:
     """Construct production dependencies without a Firestore read or write."""
 
     values = os.environ if env is None else env
     config = RelayConfig.from_env(values)
+
+    def required(name: str) -> str:
+        value = str(values.get(name, "")).strip()
+        if not value:
+            raise ConfigurationError(f"{name} is required.")
+        return value
+
+    topic_name = required("RELAY_GMAIL_WATCH_TOPIC")
+    topic_parts = topic_name.split("/")
+    if (
+        len(topic_parts) != 4
+        or topic_parts[0] != "projects"
+        or not topic_parts[1]
+        or topic_parts[2] != "topics"
+        or not topic_parts[3]
+    ):
+        raise ConfigurationError("RELAY_GMAIL_WATCH_TOPIC is malformed.")
+    renewal_audience = required("RELAY_RENEWAL_OIDC_EXPECTED_AUDIENCE")
+    renewal_principals = frozenset(
+        _configured_address(item)
+        for item in required("RELAY_RENEWAL_OIDC_EXPECTED_PRINCIPALS").split(",")
+    )
+    renewal_config = WatchRenewalConfig(
+        mailbox_identity=config.mailbox_identity,
+        topic_name=topic_name,
+    )
     gmail_factory = gmail_reader_factory or (lambda: build_gmail_reader_from_env(values))
     gmail = LazyGmailReader(gmail_factory)
     if firestore_client_factory is not None:
         storage = FirestoreRelayStorage(firestore_client_factory())
     else:
         storage = build_firestore_storage(config.firestore_project)
-    verifier = (token_verifier_factory or google_oidc_token_verifier)()
+    verifier_factory = token_verifier_factory or google_oidc_token_verifier
+    verifier = verifier_factory()
     authenticator = PushAuthenticator(
         expected_issuer=config.oidc_expected_issuer,
         expected_audience=config.oidc_expected_audience,
         expected_principals=config.oidc_expected_principals,
         token_verifier=verifier,
+    )
+    renewal_authenticator = PushAuthenticator(
+        expected_issuer=config.oidc_expected_issuer,
+        expected_audience=renewal_audience,
+        expected_principals=renewal_principals,
+        token_verifier=verifier_factory(),
+    )
+    actual_watch_factory = gmail_watch_factory or (
+        lambda: RealGmailWatchClient(build_gmail_service_from_env(values))
     )
     return create_app(
         config=config,
@@ -549,4 +647,8 @@ def create_app_from_env(
         authenticator=authenticator,
         cursor_store=storage,
         ledger=storage,
+        renewal_config=renewal_config,
+        renewal_authenticator=renewal_authenticator,
+        gmail_watch_factory=actual_watch_factory,
+        watch_state_store=storage,
     )
