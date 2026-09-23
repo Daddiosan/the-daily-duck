@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-23",
-  "generated_at": "2026-09-23T06:42:53.658681+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-23T15:20:34.468642+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-23",
     "issue_date": "2026-09-23",
     "phase": 2,
@@ -561,40 +561,9 @@
       },
       "gate_a_package_created_at": "2026-09-23T00:16:16.836691+00:00"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 1,
-    "title": "What is your dog really saying? AI is helping researchers decode animal communication",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-09-dog-ai-decode-animal-communication.html",
-    "category": "technology",
-    "happiness": 8,
-    "hope": 7,
-    "general_interest": 9,
-    "surprise": 8,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 8,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 7,
-    "total_score": 76,
-    "reason": "The universal appeal of dogs combines with the playful possibility of understanding their sounds, making this approachable and conversation-starting.",
-    "candidate_number": 3,
-    "title_en": "AI Is Helping Researchers Listen More Closely to Dogs",
-    "reason_en": "The possibility of learning more about animal communication brings a playful, familiar subject into an approachable conversation about research.",
-    "en_copy": "What might your dog be trying to say? Researchers are using AI to help decode animal communication, including dogs’ sounds. The work brings a playful question into focus while encouraging us to listen more closely to the animals sharing our lives.",
-    "duck_name": "The Bark Decoder",
-    "duck_en": "Every bark may have a story—best ears forward.",
-    "x_en": "What is your dog really saying? AI is helping researchers decode animal communication, bringing us one curious step closer to understanding dogs’ sounds.",
-    "title_ja": "AIが犬の声をより深く理解する研究を後押し",
-    "reason_ja": "動物のコミュニケーションを知る可能性を、身近で親しみやすい犬の声を通して楽しく考えられる研究です。",
-    "jp_copy": "あなたの犬は、何を伝えようとしているのでしょうか。研究者たちはAIを使い、犬の声を含む動物のコミュニケーションの解読を進めています。身近で楽しい疑問をきっかけに、私たちと暮らす動物の声にもっと耳を澄ませたくなる研究です。",
-    "duck_jp": "どの鳴き声にも物語があるかも。耳を澄ませて。",
-    "x_jp": "あなたの犬は本当は何を伝えているのでしょうか。AIが動物のコミュニケーションの解読を助け、犬の声を理解するための好奇心あふれる一歩になっています。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "THE LISTENING LAB",
       "concept_en": "A warm editorial visualization of AI helping researchers listen more closely to dogs’ sounds, with the Daily Duck mascot observing the process as a friendly guide.",
@@ -606,107 +575,9 @@
       "composition_ja": "横長のヒーロー構図。手前右に、オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の tuft を持つ、親しみやすい黄色いダックを配置します。左側には穏やかな犬を置き、両者の間に金色の抽象的な音波を描きます。音波は、AIによる研究を象徴する控えめな光る点と線のネットワークへと変化させます。クリーム色を基調に、ティールと琥珀色をアクセントにした、現代的で温かな研究空間です。文字、ロゴ、透かし、UIは入れません。",
       "alt_ja": "ダックが犬の声に耳を澄まし、抽象的な音波がAIを思わせる光のパターンへ変化している、動物コミュニケーション研究のイメージ。"
     },
-    {
-      "number": 2,
-      "title_en": "THE BARK MYSTERY",
-      "concept_en": "A playful visual metaphor for the question of what a dog is trying to say, presented as a gentle mystery that AI may help researchers explore.",
-      "composition_en": "Landscape composition built around a large circular listening window or sound-map motif in the center, without readable symbols or text. A friendly dog appears on the left side of the circle, while the Daily Duck mascot leans in from the lower right with a curious, welcoming expression. Inside the circle, use layered abstract bark-like waveforms, softly glowing dots, and branching paths that suggest a mystery being explored rather than a solved translation. Use a deep indigo-to-teal background with warm yellow and orange highlights, creating contrast while remaining approachable. The visual should feel like a charming editorial investigation, not a literal laboratory or surveillance scene.",
-      "generation_prompt_en": "Create one publishable landscape editorial illustration with a clean, modern, premium storybook-meets-science aesthetic. Center the composition on a large abstract circular listening window made of soft rings, flowing waveform shapes, glowing dots, and branching paths, with no letters, numbers, or readable symbols. Place a calm friendly dog to the left of the circle and the recognizable Daily Duck mascot at the lower right, leaning forward with a curious warm expression. The duck is bright yellow with an orange beak, large dark glossy eyes, and a small feather tuft. Make the circle suggest the mystery of understanding what a dog may be communicating and the possibility of AI-assisted research, without showing a literal translation or invented data. Use a sophisticated indigo and teal background with warm yellow and orange highlights, strong focal point, gentle depth, landscape hero framing, generous clean edges. No text, no logos, no watermark, no UI, no headline.",
-      "alt_en": "A curious Daily Duck and a dog face an abstract glowing sound map, representing the mystery of decoding animal communication with AI.",
-      "title_ja": "吠え声の謎を追う",
-      "concept_ja": "犬が何を伝えようとしているのかという身近な疑問を、AI研究によって探っていく楽しい謎解きとして表現します。",
-      "composition_ja": "横長構図の中央に、文字や数字を含まない大きな円形のリスニング・ウィンドウを配置します。柔らかな輪、波形、光る点、枝分かれする経路で、まだ解明の途中にある謎を表現します。左側には穏やかな犬、右下には好奇心に満ちた表情の黄色いDaily Duckを置きます。背景はインディゴからティールへの上品なグラデーションとし、黄色とオレンジをアクセントにします。文字どおりの翻訳結果や架空のデータは描かず、親しみやすい編集ビジュアルにします。",
-      "alt_ja": "ダックと犬が抽象的に光る音のマップに向き合い、AIによる動物コミュニケーション解読の謎を表現している。"
-    },
-    {
-      "number": 3,
-      "title_en": "BARKS INTO SIGNALS",
-      "concept_en": "A bright, optimistic transformation scene showing a dog’s sound becoming an abstract signal that researchers can study with AI, guided by the Daily Duck mascot.",
-      "composition_en": "Use a dynamic left-to-right landscape composition. On the far left, show a friendly dog making a gentle, non-aggressive bark represented by a single colorful abstract sound burst. Let the burst travel across the image as ribbons of color and resolve into an organized but still abstract pattern of connected points near the right side. Place the Daily Duck prominently in the center, happily following the transformation with an open-wing gesture and a warm expression. Keep the setting minimal and luminous, with a soft sunrise-like gradient from peach to pale blue, suggesting curiosity and possibility. Avoid depicting a specific machine, laboratory, headset, or factual measurement; the transformation is an editorial metaphor.",
-      "generation_prompt_en": "Create a single polished landscape hero image in a warm, modern premium editorial illustration style. Compose the scene from left to right: a friendly calm dog at the far left, a single colorful abstract sound burst emerging near its mouth, flowing ribbons of sound and light across the frame, and an organized abstract network of connected glowing points toward the right. Place the recognizable friendly yellow Daily Duck mascot prominently in the center, with orange beak, large dark glossy eyes, small feather tuft, and a warm approachable expression, following the flowing signal with one wing open in delighted curiosity. Use a luminous peach-to-pale-blue gradient background, elegant shapes, soft depth, strong focal point, optimistic mood, and generous landscape framing. The sound-to-signal transformation is a symbolic representation of AI-assisted research into animal communication, not a literal device or measurement. No readable text, no logos, no watermark, no UI, no headline.",
-      "alt_en": "The Daily Duck follows colorful abstract sound waves as a dog’s bark transforms into an organized pattern, symbolizing AI-assisted research into animal communication.",
-      "title_ja": "鳴き声が信号になるまで",
-      "concept_ja": "犬の声が抽象的な信号へ変化し、研究者がAIを使って調べていく可能性を、明るく前向きな変化の場面として描きます。",
-      "composition_ja": "横長の画面を左から右へ流れる構成にします。左端に穏やかな犬を置き、その口元からカラフルで抽象的な音のバーストが生まれます。音は画面を横切る光と色のリボンとなり、右側でつながった光る点の抽象パターンへと整っていきます。中央には、翼を広げて変化を追う黄色いDaily Duckを大きく配置します。桃色から淡い青へ移る明るい背景で、好奇心と可能性を表現します。特定の機器や測定結果は描かず、編集的な比喩としてまとめます。",
-      "alt_ja": "ダックが、犬の鳴き声からカラフルな抽象信号へ変化する波を追い、AIによる動物コミュニケーション研究を象徴している。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BARK TO THE FUTURE!",
-      "meaning_ja": "「未来へ戻る」を意味する有名な英語表現 “BACK TO THE FUTURE” を、犬の鳴き声を表す “BARK” に置き換えたダジャレです。AIによって犬の声の理解に一歩近づく、未来志向の研究というニュアンスを、Daily Duckらしく楽しく表現しています。"
-    },
-    {
-      "number": 2,
-      "title": "READING BETWEEN THE BARKS",
-      "meaning_ja": "「行間を読む」を意味する “READING BETWEEN THE LINES” を、犬の鳴き声を表す “BARKS” に置き換えた言葉遊びです。犬の声の表面だけでなく、その奥にある意味を読み取ろうとする研究内容に結びついています。"
-    },
-    {
-      "number": 3,
-      "title": "WHAT’S BEHIND THE BARK?",
-      "meaning_ja": "「その鳴き声の裏には何があるの？」という、好奇心を直接引き出すポスターコピーです。短く視認性が高く、犬の身近な鳴き声に隠れた意味を知りたいという驚きと期待を、新聞見出しではなく印象的なキャッチフレーズとして伝えます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "THE LISTENING LAB",
-      "concept_title_ja": "耳を澄ます研究室",
-      "image_path": "automation_images/design_previews/2026-09-23/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "477ba4486f8b6395bd8157d5449916bd4d4cec6ab6e415f27bdb64c2a01cc7e9",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Is Helping Researchers Listen More Closely to Dogs\nSummary: The possibility of learning more about animal communication brings a playful, familiar subject into an approachable conversation about research.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nTHE LISTENING LAB\n\nCONCEPT:\nA warm editorial visualization of AI helping researchers listen more closely to dogs’ sounds, with the Daily Duck mascot observing the process as a friendly guide.\n\nCOMPOSITION:\nLandscape hero composition. Place the recognizable friendly yellow duck in the foreground at the lower right, wearing no accessories and holding a simple oversized listening dish or cupped wing toward a calm dog at the left. Between them, show elegant abstract sound waves flowing into a small glowing, non-branded AI-inspired constellation of dots and lines. Use a bright, modern research-room atmosphere with soft cream, teal, and golden accents. Keep the dog relaxed and expressive, the duck warm and curious, and the sound waves clearly symbolic rather than literal data. Leave generous clean negative space around the central interaction. No text, logos, screens with readable content, watermarks, or UI.\n\nPRODUCTION DIRECTION:\nCreate one polished landscape editorial hero image in a clean, modern, charming premium illustration style. Show a friendly yellow Daily Duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, positioned in the lower-right foreground and listening attentively with one wing raised. Show a calm friendly dog on the left. Between the duck and dog, use graceful abstract golden sound waves that gently transform into a subtle glowing network of dots and lines, symbolizing AI-assisted research into animal communication. Warm cream background, soft teal and amber accents, excellent visual hierarchy, strong focal point, inviting scientific curiosity, soft studio lighting, refined shapes, landscape composition with generous negative space. The duck must remain clearly recognizable and consistent. No readable text, no headline, no logos, no watermark, no user interface, no realistic claims of a specific device.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck listens as abstract sound waves from a dog flow into a glowing AI-inspired pattern, symbolizing research into animal communication.",
-      "alt_ja": "ダックが犬の声に耳を澄まし、抽象的な音波がAIを思わせる光のパターンへ変化している、動物コミュニケーション研究のイメージ。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "THE BARK MYSTERY",
-      "concept_title_ja": "吠え声の謎を追う",
-      "image_path": "automation_images/design_previews/2026-09-23/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "b0f019e38f3fae5b3de2605f97c01da21d60ba12b166d4e97180942358283833",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Is Helping Researchers Listen More Closely to Dogs\nSummary: The possibility of learning more about animal communication brings a playful, familiar subject into an approachable conversation about research.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nTHE BARK MYSTERY\n\nCONCEPT:\nA playful visual metaphor for the question of what a dog is trying to say, presented as a gentle mystery that AI may help researchers explore.\n\nCOMPOSITION:\nLandscape composition built around a large circular listening window or sound-map motif in the center, without readable symbols or text. A friendly dog appears on the left side of the circle, while the Daily Duck mascot leans in from the lower right with a curious, welcoming expression. Inside the circle, use layered abstract bark-like waveforms, softly glowing dots, and branching paths that suggest a mystery being explored rather than a solved translation. Use a deep indigo-to-teal background with warm yellow and orange highlights, creating contrast while remaining approachable. The visual should feel like a charming editorial investigation, not a literal laboratory or surveillance scene.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration with a clean, modern, premium storybook-meets-science aesthetic. Center the composition on a large abstract circular listening window made of soft rings, flowing waveform shapes, glowing dots, and branching paths, with no letters, numbers, or readable symbols. Place a calm friendly dog to the left of the circle and the recognizable Daily Duck mascot at the lower right, leaning forward with a curious warm expression. The duck is bright yellow with an orange beak, large dark glossy eyes, and a small feather tuft. Make the circle suggest the mystery of understanding what a dog may be communicating and the possibility of AI-assisted research, without showing a literal translation or invented data. Use a sophisticated indigo and teal background with warm yellow and orange highlights, strong focal point, gentle depth, landscape hero framing, generous clean edges. No text, no logos, no watermark, no UI, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A curious Daily Duck and a dog face an abstract glowing sound map, representing the mystery of decoding animal communication with AI.",
-      "alt_ja": "ダックと犬が抽象的に光る音のマップに向き合い、AIによる動物コミュニケーション解読の謎を表現している。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "BARKS INTO SIGNALS",
-      "concept_title_ja": "鳴き声が信号になるまで",
-      "image_path": "automation_images/design_previews/2026-09-23/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "93d045a17151f65162b87672897d66b92a42d386f13732e124248b1aedc37f56",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Is Helping Researchers Listen More Closely to Dogs\nSummary: The possibility of learning more about animal communication brings a playful, familiar subject into an approachable conversation about research.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nBARKS INTO SIGNALS\n\nCONCEPT:\nA bright, optimistic transformation scene showing a dog’s sound becoming an abstract signal that researchers can study with AI, guided by the Daily Duck mascot.\n\nCOMPOSITION:\nUse a dynamic left-to-right landscape composition. On the far left, show a friendly dog making a gentle, non-aggressive bark represented by a single colorful abstract sound burst. Let the burst travel across the image as ribbons of color and resolve into an organized but still abstract pattern of connected points near the right side. Place the Daily Duck prominently in the center, happily following the transformation with an open-wing gesture and a warm expression. Keep the setting minimal and luminous, with a soft sunrise-like gradient from peach to pale blue, suggesting curiosity and possibility. Avoid depicting a specific machine, laboratory, headset, or factual measurement; the transformation is an editorial metaphor.\n\nPRODUCTION DIRECTION:\nCreate a single polished landscape hero image in a warm, modern premium editorial illustration style. Compose the scene from left to right: a friendly calm dog at the far left, a single colorful abstract sound burst emerging near its mouth, flowing ribbons of sound and light across the frame, and an organized abstract network of connected glowing points toward the right. Place the recognizable friendly yellow Daily Duck mascot prominently in the center, with orange beak, large dark glossy eyes, small feather tuft, and a warm approachable expression, following the flowing signal with one wing open in delighted curiosity. Use a luminous peach-to-pale-blue gradient background, elegant shapes, soft depth, strong focal point, optimistic mood, and generous landscape framing. The sound-to-signal transformation is a symbolic representation of AI-assisted research into animal communication, not a literal device or measurement. No readable text, no logos, no watermark, no UI, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck follows colorful abstract sound waves as a dog’s bark transforms into an organized pattern, symbolizing AI-assisted research into animal communication.",
-      "alt_ja": "ダックが、犬の鳴き声からカラフルな抽象信号へ変化する波を追い、AIによる動物コミュニケーション研究を象徴している。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-23/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "BARK TO THE FUTURE!"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -722,45 +593,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "BARK TO THE FUTURE!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "BARK TO THE FUTURE!",
+    "meaning_ja": "「未来へ戻る」を意味する有名な英語表現 “BACK TO THE FUTURE” を、犬の鳴き声を表す “BARK” に置き換えたダジャレです。AIによって犬の声の理解に一歩近づく、未来志向の研究というニュアンスを、Daily Duckらしく楽しく表現しています。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "THE LISTENING LAB",
+    "concept_title_ja": "耳を澄ます研究室",
+    "image_path": "automation_images/design_previews/2026-09-23/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "477ba4486f8b6395bd8157d5449916bd4d4cec6ab6e415f27bdb64c2a01cc7e9",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: AI Is Helping Researchers Listen More Closely to Dogs\nSummary: The possibility of learning more about animal communication brings a playful, familiar subject into an approachable conversation about research.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nTHE LISTENING LAB\n\nCONCEPT:\nA warm editorial visualization of AI helping researchers listen more closely to dogs’ sounds, with the Daily Duck mascot observing the process as a friendly guide.\n\nCOMPOSITION:\nLandscape hero composition. Place the recognizable friendly yellow duck in the foreground at the lower right, wearing no accessories and holding a simple oversized listening dish or cupped wing toward a calm dog at the left. Between them, show elegant abstract sound waves flowing into a small glowing, non-branded AI-inspired constellation of dots and lines. Use a bright, modern research-room atmosphere with soft cream, teal, and golden accents. Keep the dog relaxed and expressive, the duck warm and curious, and the sound waves clearly symbolic rather than literal data. Leave generous clean negative space around the central interaction. No text, logos, screens with readable content, watermarks, or UI.\n\nPRODUCTION DIRECTION:\nCreate one polished landscape editorial hero image in a clean, modern, charming premium illustration style. Show a friendly yellow Daily Duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, positioned in the lower-right foreground and listening attentively with one wing raised. Show a calm friendly dog on the left. Between the duck and dog, use graceful abstract golden sound waves that gently transform into a subtle glowing network of dots and lines, symbolizing AI-assisted research into animal communication. Warm cream background, soft teal and amber accents, excellent visual hierarchy, strong focal point, inviting scientific curiosity, soft studio lighting, refined shapes, landscape composition with generous negative space. The duck must remain clearly recognizable and consistent. No readable text, no headline, no logos, no watermark, no user interface, no realistic claims of a specific device.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck listens as abstract sound waves from a dog flow into a glowing AI-inspired pattern, symbolizing research into animal communication.",
+    "alt_ja": "ダックが犬の声に耳を澄まし、抽象的な音波がAIを思わせる光のパターンへ変化している、動物コミュニケーション研究のイメージ。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-23.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "final_email_subject": "The Daily Duck — Choose Image + Title — 2026-09-23 — Batch 1",
-  "email_subject": "The Daily Duck — Choose Image + Title — 2026-09-23 — Batch 1",
-  "final_email_sent_at": "2026-09-23T06:42:57.498305+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "BARK TO THE FUTURE!",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-23T15:20:34.469762+00:00"
+    "translation_language": "ja"
+  }
 }
