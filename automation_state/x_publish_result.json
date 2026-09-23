@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-09-23T15:21:32.257061+00:00",
+  "issue_date": "2026-09-23",
+  "x_post_id": "2102780408974684355",
+  "x_post_url": "https://x.com/i/web/status/2102780408974684355",
+  "x_media_id": "2102780406512689152",
+  "image_path": "automation_images/x/2026-09-23-x-card.png",
+  "post_text": "What is your dog really saying? AI is helping researchers decode animal communication, bringing us one curious step closer to understanding dogs’ sounds.\n\nhttps://www.thedailyduck.ai/ducks/2026-09-23/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 178
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2102780408974684355",
+      "text": "What is your dog really saying? AI is helping researchers decode animal communication, bringing us one curious step closer to understanding dogs’ sounds.\n\nhttps://t.co/IlqTsqAj48 https://t.co/hSZ4EiTQQK"
+    }
+  }
+}
