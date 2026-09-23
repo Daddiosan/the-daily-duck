@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-23",
+    "displayDate": "September 23, 2026",
+    "slug": "the-bark-decoder",
+    "title": "THE BARK DECODER",
+    "duckName": "The Bark Decoder",
+    "storyTitleEn": "What is your dog really saying? AI is helping researchers decode animal communication",
+    "storyTitleJa": "What is your dog really saying? AI is helping researchers decode animal communication",
+    "image": "assets/ducks/2026-09-23-the-bark-decoder.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Bark Decoder",
+    "imageAltJa": "The Bark DecoderをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "What might your dog be trying to say? Researchers are using AI to help decode animal communication, including dogs’ sounds. The work brings a playful question into focus while encouraging us to listen more closely to the animals sharing our lives.",
+    "storyJa": "あなたの犬は、何を伝えようとしているのでしょうか。研究者たちはAIを使い、犬の声を含む動物のコミュニケーションの解読を進めています。身近で楽しい疑問をきっかけに、私たちと暮らす動物の声にもっと耳を澄ませたくなる研究です。",
+    "duckEn": "Every bark may have a story—best ears forward.",
+    "duckJa": "どの鳴き声にも物語があるかも。耳を澄ませて。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-dog-ai-decode-animal-communication.html",
+    "archiveSummaryEn": "What is your dog really saying? AI is helping researchers decode animal communication, bringing us one curious step closer to understanding dogs’ sounds.",
+    "archiveSummaryJa": "あなたの犬は本当は何を伝えているのでしょうか。AIが動物のコミュニケーションの解読を助け、犬の声を理解するための好奇心あふれる一歩になっています。",
+    "reasonEn": "What is your dog really saying? AI is helping researchers decode animal communication, bringing us one curious step closer to understanding dogs’ sounds.",
+    "reasonJa": "あなたの犬は本当は何を伝えているのでしょうか。AIが動物のコミュニケーションの解読を助け、犬の声を理解するための好奇心あふれる一歩になっています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-22",
     "displayDate": "September 22, 2026",
     "slug": "the-festival-duck",
