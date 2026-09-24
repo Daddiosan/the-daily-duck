@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-24",
+    "displayDate": "September 24, 2026",
+    "slug": "the-plastic-cookie",
+    "title": "THE PLASTIC COOKIE",
+    "duckName": "The Plastic Cookie",
+    "storyTitleEn": "NASA-backed scientists turn plastic waste into edible cookies",
+    "storyTitleJa": "NASA-backed scientists turn plastic waste into edible cookies",
+    "image": "assets/ducks/2026-09-24-the-plastic-cookie.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Plastic Cookie",
+    "imageAltJa": "The Plastic CookieをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "NASA-backed scientists have turned plastic waste into edible cookies. The idea sounds astonishing, but it points to an imaginative possibility: transforming pollution into something people can eat. It is an unusual reminder that creative thinking can make even the strangest problems look newly solvable.",
+    "storyJa": "NASAの支援を受けた科学者たちが、プラスチック廃棄物を食べられるクッキーに変えました。驚くような発想ですが、汚染を人が食べられるものへと変えるという、想像力豊かな可能性を示しています。どんなに奇妙な問題でも、創造的に考えれば新たな解決の形が見えてくるのかもしれません。",
+    "duckEn": "The strangest ingredient list may lead to the biggest surprise.",
+    "duckJa": "いちばん意外な材料が、いちばん大きな驚きを生むのかも。",
+    "sourceLabel": "ScienceDaily Society",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/09/260912220033.htm",
+    "archiveSummaryEn": "NASA-backed scientists have turned plastic waste into edible cookies—a bizarre, imaginative idea with an optimistic twist on tackling pollution and producing food.",
+    "archiveSummaryJa": "NASAの支援を受けた科学者たちが、プラスチック廃棄物を食べられるクッキーに変えました。汚染対策と食料生産を結びつける、驚きと希望に満ちた発想です。",
+    "reasonEn": "NASA-backed scientists have turned plastic waste into edible cookies—a bizarre, imaginative idea with an optimistic twist on tackling pollution and producing food.",
+    "reasonJa": "NASAの支援を受けた科学者たちが、プラスチック廃棄物を食べられるクッキーに変えました。汚染対策と食料生産を結びつける、驚きと希望に満ちた発想です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-23",
     "displayDate": "September 23, 2026",
     "slug": "the-bark-decoder",

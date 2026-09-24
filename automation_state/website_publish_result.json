@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-09-24T12:27:03.771217+00:00",
+  "issue_date": "2026-09-24",
+  "image": "assets/ducks/2026-09-24-the-plastic-cookie.png",
+  "page": "ducks/2026-09-24/index.html",
+  "title": "NASA-backed scientists turn plastic waste into edible cookies",
+  "duck_name": "The Plastic Cookie",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
