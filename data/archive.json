@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-25",
+    "displayDate": "September 25, 2026",
+    "slug": "bubbly-mars",
+    "title": "BUBBLY MARS",
+    "duckName": "Bubbly Mars",
+    "storyTitleEn": "NASA’s Machines for Mars Make Beer Bubbly",
+    "storyTitleJa": "NASA’s Machines for Mars Make Beer Bubbly",
+    "image": "assets/ducks/2026-09-25-bubbly-mars.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Bubbly Mars",
+    "imageAltJa": "Bubbly MarsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Technology built with Mars in mind is helping make beer bubbly. It is an amusing reminder that tools created for ambitious space goals can also find an unexpected and cheerful role in everyday life.",
+    "storyJa": "火星を意識して作られた技術が、ビールを泡立たせるのに役立っています。大きな宇宙開発のために生まれた道具が、日常の中で思いがけず楽しい役割を見つけることがある。そんなことを教えてくれる、愉快なニュースです。",
+    "duckEn": "One small sip for a duck, one giant fizz for beer.",
+    "duckJa": "一口の泡は小さくても、ビールにとっては大きな一歩！",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://www.nasa.gov/technology/tech-transfer-spinoffs/nasas-machines-for-mars-make-beer-bubbly/",
+    "archiveSummaryEn": "NASA’s machines for Mars are helping make beer bubbly. A wonderfully unexpected second life for space technology.",
+    "archiveSummaryJa": "NASAの火星向けマシンが、ビールを泡立たせるのに活躍中。宇宙技術の、なんとも意外で楽しい第二の人生です。",
+    "reasonEn": "NASA’s machines for Mars are helping make beer bubbly. A wonderfully unexpected second life for space technology.",
+    "reasonJa": "NASAの火星向けマシンが、ビールを泡立たせるのに活躍中。宇宙技術の、なんとも意外で楽しい第二の人生です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-24",
     "displayDate": "September 24, 2026",
     "slug": "the-plastic-cookie",

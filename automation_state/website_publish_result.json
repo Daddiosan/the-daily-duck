@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-09-25T14:04:36.465546+00:00",
+  "issue_date": "2026-09-25",
+  "image": "assets/ducks/2026-09-25-bubbly-mars.png",
+  "page": "ducks/2026-09-25/index.html",
+  "title": "NASA’s Machines for Mars Make Beer Bubbly",
+  "duck_name": "Bubbly Mars",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
