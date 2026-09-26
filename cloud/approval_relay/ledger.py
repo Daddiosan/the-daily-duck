@@ -21,7 +21,8 @@ there is one transaction against the deterministic event-key document.
 
 Persisted fields are exactly the minimum the task spec lists: event_key,
 stage, workflow, attempt_count, state, workflow_run_id, created_at,
-updated_at. Never the Gmail message subject, body, or sender address.
+updated_at, dispatch_eligible. Never the Gmail message subject, body, or
+sender address.
 
 State machine
 -------------
@@ -128,6 +129,7 @@ class RelayLedgerRecord:
     attempt_count: int
     state: RelayLedgerState
     workflow_run_id: str | None
+    dispatch_eligible: bool
     created_at: str
     updated_at: str
 
@@ -140,20 +142,28 @@ class RelayLedger(Protocol):
     def get(self, event_key: str) -> RelayLedgerRecord | None: ...
 
     def reserve_new(
-        self, event_key: str, *, stage: str, workflow: str | None, now: str
+        self,
+        event_key: str,
+        *,
+        stage: str,
+        workflow: str | None,
+        dispatch_eligible: bool,
+        now: str,
     ) -> RelayLedgerRecord | None:
         """Atomic create-if-absent. On success, creates a record with
-        state=RECEIVED, attempt_count=1, workflow_run_id=None, and returns
-        it. If a record for event_key already exists, performs no write
-        and returns None -- the caller must call get() to inspect the
-        existing record; this method never overwrites one."""
+        state=RECEIVED, attempt_count=1, workflow_run_id=None, and the
+        immutable dispatch_eligible value supplied by the caller. If a
+        record for event_key already exists, performs no write and returns
+        None -- the caller must call get() to inspect the existing record;
+        this method never overwrites or upgrades eligibility."""
 
     def begin_attempt(
         self, event_key: str, *, now: str
     ) -> RelayLedgerRecord | None:
         """Atomic CAS: succeeds only if the record's current state is in
         ATTEMPT_ELIGIBLE_STATES (RECEIVED or SAFE_TO_RETRY). On success:
-        state -> DISPATCH_ATTEMPTING; attempt_count is incremented by 1
+        record is dispatch_eligible, then state -> DISPATCH_ATTEMPTING;
+        attempt_count is incremented by 1
         only when the prior state was SAFE_TO_RETRY (RECEIVED already
         carries attempt_count=1 from reserve_new, representing the first
         attempt). Returns the updated record, or None if no record exists
@@ -204,7 +214,13 @@ class InMemoryRelayLedger:
             return replace(record) if record is not None else None
 
     def reserve_new(
-        self, event_key: str, *, stage: str, workflow: str | None, now: str
+        self,
+        event_key: str,
+        *,
+        stage: str,
+        workflow: str | None,
+        dispatch_eligible: bool,
+        now: str,
     ) -> RelayLedgerRecord | None:
         with self._lock:
             if event_key in self._records:
@@ -216,6 +232,7 @@ class InMemoryRelayLedger:
                 attempt_count=1,
                 state=RelayLedgerState.RECEIVED,
                 workflow_run_id=None,
+                dispatch_eligible=dispatch_eligible,
                 created_at=now,
                 updated_at=now,
             )
@@ -225,7 +242,11 @@ class InMemoryRelayLedger:
     def begin_attempt(self, event_key: str, *, now: str) -> RelayLedgerRecord | None:
         with self._lock:
             record = self._records.get(event_key)
-            if record is None or record.state not in ATTEMPT_ELIGIBLE_STATES:
+            if (
+                record is None
+                or not record.dispatch_eligible
+                or record.state not in ATTEMPT_ELIGIBLE_STATES
+            ):
                 return None
             next_attempt_count = (
                 record.attempt_count + 1

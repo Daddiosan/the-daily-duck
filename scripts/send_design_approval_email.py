@@ -11,6 +11,19 @@ from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.approval_token import (
+        approval_token_digest,
+        generate_approval_token,
+        subject_with_approval_token,
+    )
+except ImportError:
+    from approval_token import (  # type: ignore[no-redef]
+        approval_token_digest,
+        generate_approval_token,
+        subject_with_approval_token,
+    )
+
 
 OPTIONS_PATH = Path(
     "automation_state/design_options.json"
@@ -218,6 +231,7 @@ TITLE {title["number"]}
 
 def build_email(
     package: dict[str, Any],
+    approval_token: str,
 ) -> tuple[str, str]:
     issue_date = issue_date_from(
         package
@@ -248,11 +262,12 @@ def build_email(
         or 1
     )
 
-    subject = (
+    subject_prefix = (
         "The Daily Duck — "
         "Choose Image + Title — "
         f"{issue_date} — Batch {batch_number}"
     )
+    subject = subject_with_approval_token(subject_prefix, approval_token)
 
     body = f"""
 The Daily Duck — Design Selection
@@ -465,8 +480,26 @@ def main() -> int:
         OPTIONS_PATH
     )
 
+    issue_date = issue_date_from(package)
+    batch_number = int(package.get("preview_batch_number", 1) or 1)
+    approval_token = generate_approval_token()
+    subject_prefix = (
+        "The Daily Duck — Choose Image + Title — "
+        f"{issue_date} — Batch {batch_number}"
+    )
+    package["approval_token_digest"] = approval_token_digest(
+        stage="DESIGN_SELECTION",
+        issue_date=issue_date,
+        batch=batch_number,
+        token=approval_token,
+    )
+    package["final_email_subject_prefix"] = subject_prefix
+    package.pop("final_email_subject", None)
+    package.pop("email_subject", None)
+
     subject, body = build_email(
-        package
+        package,
+        approval_token,
     )
 
     _, _, previews = validate_package(
@@ -488,8 +521,6 @@ def main() -> int:
     )
 
     package["state"] = "WAITING_FINAL_SELECTION"
-    package["final_email_subject"] = subject
-    package["email_subject"] = subject
     package["final_email_sent_at"] = datetime.now(
         timezone.utc
     ).isoformat()
@@ -532,9 +563,7 @@ def main() -> int:
     print(
         f"Recipients: {recipient_count}"
     )
-    print(
-        f"Subject: {subject}"
-    )
+    print("Subject: tokenized design approval subject generated")
     print(
         "STATE: WAITING_FINAL_SELECTION"
     )

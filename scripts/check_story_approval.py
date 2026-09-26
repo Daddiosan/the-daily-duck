@@ -36,6 +36,14 @@ from email.utils import parseaddr
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.approval_token import extract_approval_token, validate_approval_token
+except ImportError:
+    from approval_token import (  # type: ignore[no-redef]
+        extract_approval_token,
+        validate_approval_token,
+    )
+
 
 PACKAGE_PATH = Path("gate_a_package.json")
 
@@ -329,12 +337,15 @@ def authorized_senders() -> set[str]:
         "EMAIL_TO"
     )
 
-    return {
+    senders = {
         address.strip().lower()
         for address
         in email_to.split(",")
         if address.strip()
     }
+    if not senders:
+        raise ValueError("EMAIL_TO must contain at least one authorized sender.")
+    return senders
 
 
 def get_issue_date(
@@ -522,11 +533,17 @@ def find_valid_approval(
         ):
             continue
 
-        if (
-            allowed_senders
-            and sender
-            not in allowed_senders
+        token = extract_approval_token(subject)
+        if not validate_approval_token(
+            stored_digest=package.get("approval_token_digest"),
+            stage="GATE_A",
+            issue_date=issue_date,
+            batch=None,
+            token=token,
         ):
+            continue
+
+        if sender not in allowed_senders:
             continue
 
         body = message_text(

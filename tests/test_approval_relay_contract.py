@@ -1,5 +1,5 @@
 """Governance/security contract for cloud/approval_relay (Thin Relay,
-Phase M3C), mirroring the protection style of
+through local-only R2A), mirroring the protection style of
 tests/test_approval_dispatcher_contract.py (A2) and
 tests/test_approval_receiver_contract.py (A1) without importing from
 either or from cloud.approval_receiver / cloud.approval_dispatcher at all.
@@ -64,6 +64,7 @@ ALLOWED_LEDGER_FIELDS = frozenset(
         "attempt_count",
         "state",
         "workflow_run_id",
+        "dispatch_eligible",
         "created_at",
         "updated_at",
     }
@@ -96,6 +97,7 @@ class RelayFileBoundaryTests(unittest.TestCase):
             "router.py",
             "ledger.py",
             "github_dispatch.py",
+            "github_app_dispatch.py",
             "gmail_reader.py",
             "auth.py",
             "storage.py",
@@ -119,6 +121,9 @@ class RelayFileBoundaryTests(unittest.TestCase):
         self.assertIn("google-cloud-firestore>=2.0,<3", requirements)
         self.assertIn("storage.py", dockerfile)
         self.assertIn("watch_renewal.py", dockerfile)
+        self.assertIn("github_app_dispatch.py", dockerfile)
+        self.assertIn("PyJWT[crypto]>=2.10,<3", requirements)
+        self.assertIn("requests>=2.32,<3", requirements)
         self.assertIn('"--workers", "1"', dockerfile)
         for forbidden in ("automation_state", "automation_images", "secrets"):
             self.assertNotIn(forbidden, dockerfile)
@@ -215,23 +220,32 @@ class RelayIndependenceImportTests(unittest.TestCase):
                 self.assertNotIn(forbidden, defined_names)
 
 
-class NoRealGitHubNetworkCapabilityTests(unittest.TestCase):
-    def test_no_real_http_or_github_client_library(self):
-        source = _source().lower()
-        for marker in (
-            "import httpx",
-            "urllib.request",
-            "pygithub",
-            "import jwt",
-            "api.github.com",
-        ):
-            self.assertNotIn(marker, source)
+class IsolatedGitHubNetworkCapabilityTests(unittest.TestCase):
+    def test_only_isolated_adapter_contains_github_network_code(self):
+        adapter = (RELAY / "github_app_dispatch.py").read_text(encoding="utf-8").lower()
+        other_files = tuple(
+            path for path in PYTHON_FILES if path.name != "github_app_dispatch.py"
+        )
+        other_source = _source(other_files).lower()
+        for marker in ("import jwt", "api.github.com"):
+            self.assertIn(marker, adapter)
+            self.assertNotIn(marker, other_source)
+        self.assertIn("import requests", adapter)
+        for path in other_files:
+            tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Import):
+                    self.assertNotIn("requests", {alias.name for alias in node.names})
+                elif isinstance(node, ast.ImportFrom):
+                    self.assertNotEqual(node.module, "requests")
+        for forbidden in ("httpx", "urllib.request", "pygithub"):
+            self.assertNotIn(forbidden, _source().lower())
 
-    def test_only_fake_dispatcher_is_wired_by_default(self):
+    def test_dry_run_uses_fake_and_live_uses_approved_builder(self):
         main_source = (RELAY / "main.py").read_text(encoding="utf-8")
         self.assertIn("FakeGitHubDispatcher()", main_source)
-        self.assertNotIn("RealGitHubDispatcher", main_source)
-        self.assertNotIn("GitHubAppDispatcher", main_source)
+        self.assertIn("build_github_dispatcher_from_env", main_source)
+        self.assertIn("config.mode is RelayMode.LIVE", main_source)
 
     def test_no_contents_write_capability(self):
         source = _source().lower()
@@ -443,11 +457,13 @@ class HumanGateDocumentationTests(unittest.TestCase):
         self.assertIn("Human Gate", runbook)
         self.assertIn("cron", runbook.lower())
 
-    def test_real_dispatch_and_cron_removal_are_not_authorized_by_this_phase(self):
+    def test_r2a_does_not_authorize_live_activation_or_cron_removal(self):
         runbook = (ROOT / "docs" / "phase3b2" / "THIN_RELAY_RUNBOOK.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("NOT authorized by this", runbook)
+        self.assertIn("R2A", runbook)
+        self.assertIn("LIVE activation", runbook)
+        self.assertIn("not authorized", runbook.lower())
 
 
 if __name__ == "__main__":

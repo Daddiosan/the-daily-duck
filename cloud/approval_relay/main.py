@@ -1,9 +1,9 @@
-"""M3B thin relay: authenticated Gmail push to sanitized wake-up intent.
+"""Thin relay: authenticated Gmail push to sanitized wake-up intent.
 
-The relay does not parse approval commands and has no real GitHub adapter.
-Its production-shaped route authenticates Pub/Sub, walks Gmail history,
-fetches only Subject/From metadata, applies exact sender authorization, and
-records DRY_RUN routing intent in the configured transactional ledger.
+The relay never parses approval commands. It authenticates Pub/Sub, walks
+Gmail history, fetches only Subject/From metadata, applies exact sender
+authorization, records durable routing intent, and may wake one of two fixed
+GitHub workflows when explicitly configured for LIVE mode.
 """
 
 from __future__ import annotations
@@ -23,6 +23,10 @@ from .github_dispatch import (
     DispatchOutcome,
     FakeGitHubDispatcher,
     GitHubDispatcher,
+)
+from .github_app_dispatch import (
+    GitHubAppConfigurationError,
+    build_github_dispatcher_from_env,
 )
 from .gmail_reader import (
     GmailReader,
@@ -101,6 +105,10 @@ class CursorConflictError(RuntimeError):
     """A cursor CAS lost and no completed concurrent advance explains it."""
 
 
+class RetryableRelayDelivery(RuntimeError):
+    """At least one event needs Pub/Sub redelivery before cursor advance."""
+
+
 class RelayMode(str, Enum):
     DRY_RUN = "DRY_RUN"
     LIVE = "LIVE"
@@ -109,6 +117,7 @@ class RelayMode(str, Enum):
 class RelayStatus(str, Enum):
     DISPATCHED = "DISPATCHED"
     DRY_RUN_ROUTED = "DRY_RUN_ROUTED"
+    PRE_LIVE_EVENT_NO_DISPATCH = "PRE_LIVE_EVENT_NO_DISPATCH"
     ALREADY_IN_PROGRESS = "ALREADY_IN_PROGRESS"
     DUPLICATE_TERMINAL_NO_OP = "DUPLICATE_TERMINAL_NO_OP"
     UNRELATED_NO_DISPATCH = "UNRELATED_NO_DISPATCH"
@@ -170,9 +179,11 @@ class RelayConfig:
         initial_history_id = required("RELAY_GMAIL_INITIAL_HISTORY_ID")
         if not initial_history_id.isascii() or not initial_history_id.isdecimal():
             raise ConfigurationError("RELAY_GMAIL_INITIAL_HISTORY_ID is malformed.")
-        raw_mode = str(values.get("RELAY_MODE", RelayMode.DRY_RUN.value)).strip()
-        if raw_mode != RelayMode.DRY_RUN.value:
-            raise ConfigurationError("M3C production wiring permits DRY_RUN only.")
+        raw_mode = str(values.get("RELAY_MODE", RelayMode.DRY_RUN.value))
+        try:
+            mode = RelayMode(raw_mode)
+        except ValueError as exc:
+            raise ConfigurationError("RELAY_MODE must be DRY_RUN or LIVE.") from exc
         # Validate secret presence now, but defer credential/client creation.
         required("RELAY_GMAIL_OAUTH_CLIENT_JSON")
         required("RELAY_GMAIL_OAUTH_REFRESH_TOKEN")
@@ -188,6 +199,7 @@ class RelayConfig:
             oidc_expected_principals=principals,
             initial_history_id=initial_history_id,
             firestore_project=required("RELAY_FIRESTORE_PROJECT"),
+            mode=mode,
         )
 
 
@@ -276,7 +288,11 @@ class RelayService:
         event_key = event_key_for(event.mailbox_identity, event.gmail_message_id)
         if stage is RelayStage.AMBIGUOUS:
             self.ledger.reserve_new(
-                event_key, stage=stage.value, workflow=None, now=self.clock()
+                event_key,
+                stage=stage.value,
+                workflow=None,
+                dispatch_eligible=False,
+                now=self.clock(),
             )
             return RelayResult(
                 RelayStatus.AMBIGUOUS_NO_DISPATCH, stage, None, event_key
@@ -285,7 +301,11 @@ class RelayService:
         workflow = workflow_for_stage(stage)
         assert workflow is not None
         created = self.ledger.reserve_new(
-            event_key, stage=stage.value, workflow=workflow, now=self.clock()
+            event_key,
+            stage=stage.value,
+            workflow=workflow,
+            dispatch_eligible=self.mode is RelayMode.LIVE,
+            now=self.clock(),
         )
         existing = created if created is not None else self.ledger.get(event_key)
         assert existing is not None
@@ -302,6 +322,24 @@ class RelayService:
             )
             return RelayResult(
                 RelayStatus.DRY_RUN_ROUTED,
+                stage,
+                workflow,
+                event_key,
+                existing.attempt_count,
+            )
+
+        if not existing.dispatch_eligible:
+            _log_event(
+                "relay_pre_live_event_suppressed",
+                {
+                    "stage": stage.value,
+                    "workflow": workflow,
+                    "event_key_prefix": event_key[:12],
+                    "mode": self.mode.value,
+                },
+            )
+            return RelayResult(
+                RelayStatus.PRE_LIVE_EVENT_NO_DISPATCH,
                 stage,
                 workflow,
                 event_key,
@@ -435,6 +473,22 @@ class RelayIngressService:
                     )
                 )
             )
+        blocking_statuses = {
+            RelayStatus.SAFE_TO_RETRY,
+            RelayStatus.ALREADY_IN_PROGRESS,
+        }
+        if any(result.status in blocking_statuses for result in results):
+            _log_event(
+                "relay_notification_retry_required",
+                {
+                    "notification_key_prefix": notification_key[:12],
+                    "processed": len(results),
+                    "mode": self.relay.mode.value,
+                },
+            )
+            raise RetryableRelayDelivery(
+                "At least one relay event requires redelivery."
+            )
         if not self.cursor_store.compare_and_update_cursor(
             mailbox_hash, start_history_id, notification.history_id
         ):
@@ -482,7 +536,9 @@ def create_app(
     if config is None or gmail is None or authenticator is None:
         raise ConfigurationError("config, gmail, and authenticator are required.")
     actual_ledger = ledger or InMemoryRelayLedger()
-    actual_dispatcher = dispatcher or FakeGitHubDispatcher()
+    if config.mode is RelayMode.LIVE and dispatcher is None:
+        raise ConfigurationError("LIVE mode requires an explicit GitHub dispatcher.")
+    actual_dispatcher = dispatcher if dispatcher is not None else FakeGitHubDispatcher()
     actual_cursor_store = cursor_store or InMemoryCursorStore()
     relay_service = RelayService(
         ledger=actual_ledger,
@@ -540,6 +596,8 @@ def create_app(
             return jsonify({"status": "REJECTED", "reason": str(exc)}), 401
         except EnvelopeError as exc:
             return jsonify({"status": "REJECTED", "reason": str(exc)}), 400
+        except RetryableRelayDelivery:
+            return jsonify({"status": "RETRY", "reason": "DISPATCH_RETRY"}), 503
         except (GmailReaderError, RuntimeError) as exc:
             _log_event("relay_retryable_failure", {"error_category": type(exc).__name__})
             return jsonify({"status": "RETRY", "reason": type(exc).__name__}), 500
@@ -587,6 +645,8 @@ def create_app_from_env(
     token_verifier_factory: Callable[[], Callable[[str, str], Mapping[str, object]]]
     | None = None,
     gmail_watch_factory: Callable[[], GmailWatchClient] | None = None,
+    github_dispatcher_factory: Callable[[Mapping[str, str]], GitHubDispatcher]
+    | None = None,
 ) -> Any:
     """Construct production dependencies without a Firestore read or write."""
 
@@ -641,12 +701,23 @@ def create_app_from_env(
     actual_watch_factory = gmail_watch_factory or (
         lambda: RealGmailWatchClient(build_gmail_service_from_env(values))
     )
+    if config.mode is RelayMode.LIVE:
+        dispatcher_factory = (
+            github_dispatcher_factory or build_github_dispatcher_from_env
+        )
+        try:
+            dispatcher = dispatcher_factory(values)
+        except GitHubAppConfigurationError as exc:
+            raise ConfigurationError(str(exc)) from exc
+    else:
+        dispatcher = FakeGitHubDispatcher()
     return create_app(
         config=config,
         gmail=gmail,
         authenticator=authenticator,
         cursor_store=storage,
         ledger=storage,
+        dispatcher=dispatcher,
         renewal_config=renewal_config,
         renewal_authenticator=renewal_authenticator,
         gmail_watch_factory=actual_watch_factory,

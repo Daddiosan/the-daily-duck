@@ -435,11 +435,19 @@ class GmailWatchAdapterTests(unittest.TestCase):
 
 
 class RenewalCapabilityBoundaryTests(unittest.TestCase):
-    def test_no_github_email_send_or_periodic_loop_capability_added(self):
+    def test_github_is_isolated_and_no_email_or_periodic_loop_is_added(self):
         relay = Path(__file__).resolve().parents[1] / "cloud" / "approval_relay"
-        source = "\n".join(path.read_text(encoding="utf-8") for path in relay.glob("*.py"))
+        sources = {
+            path.name: path.read_text(encoding="utf-8")
+            for path in relay.glob("*.py")
+        }
+        source = "\n".join(sources.values())
         lowered = source.lower()
-        for marker in ("api.github.com", "smtplib", "messages().send", "sendmail"):
+        github_network_owners = {
+            name for name, text in sources.items() if "api.github.com" in text.lower()
+        }
+        self.assertEqual(github_network_owners, {"github_app_dispatch.py"})
+        for marker in ("smtplib", "messages().send", "sendmail"):
             self.assertNotIn(marker, lowered)
         for marker in ("time.sleep(", "apscheduler", "croniter", "while True:"):
             self.assertNotIn(marker, source)

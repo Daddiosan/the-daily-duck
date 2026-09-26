@@ -21,6 +21,19 @@ except ImportError:
     # existing import pattern for the same module).
     import llm_provider
 
+try:
+    from scripts.approval_token import (
+        approval_token_digest,
+        generate_approval_token,
+        subject_with_approval_token,
+    )
+except ImportError:
+    from approval_token import (  # type: ignore[no-redef]
+        approval_token_digest,
+        generate_approval_token,
+        subject_with_approval_token,
+    )
+
 
 RANKED_PATH = Path("ai_ranked_news.json")
 PACKAGE_PATH = Path("gate_a_package.json")
@@ -841,16 +854,18 @@ URL:
 
 def build_email(
     package: dict[str, Any],
+    approval_token: str,
 ) -> tuple[
     str,
     str,
 ]:
 
-    subject = (
+    subject_prefix = (
         "The Daily Duck — "
         "Choose Today's Story — "
         f"{package['issue_date']}"
     )
+    subject = subject_with_approval_token(subject_prefix, approval_token)
 
     sections: list[
         str
@@ -1072,6 +1087,14 @@ def main() -> int:
         recommended_id,
     )
 
+    approval_token = generate_approval_token()
+    package["approval_token_digest"] = approval_token_digest(
+        stage="GATE_A",
+        issue_date=str(package["issue_date"]),
+        batch=None,
+        token=approval_token,
+    )
+
     PACKAGE_PATH.write_text(
         json.dumps(
             package,
@@ -1084,7 +1107,8 @@ def main() -> int:
 
     subject, body = (
         build_email(
-            package
+            package,
+            approval_token,
         )
     )
 
@@ -1125,9 +1149,7 @@ def main() -> int:
         "recipient(s)."
     )
 
-    print(
-        f"Subject: {subject}"
-    )
+    print("Subject: tokenized Gate A approval subject generated")
 
     print(
         "Valid replies: "

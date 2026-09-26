@@ -454,6 +454,32 @@ class DryRunTests(unittest.TestCase):
         service.process_event(event)
         self.assertEqual(len(dispatcher.calls), 0)
 
+    def test_dry_run_event_never_becomes_live_eligible(self):
+        dispatcher = FakeGitHubDispatcher()
+        ledger = InMemoryRelayLedger()
+        event = make_event(subject=GATE_A_PATTERN)
+        dry = make_service(
+            dispatcher=dispatcher, ledger=ledger, mode=RelayMode.DRY_RUN
+        )
+        live = make_service(
+            dispatcher=dispatcher, ledger=ledger, mode=RelayMode.LIVE
+        )
+
+        observed = dry.process_event(event)
+        replayed = live.process_event(event)
+
+        self.assertEqual(observed.status, RelayStatus.DRY_RUN_ROUTED)
+        self.assertEqual(replayed.status, RelayStatus.PRE_LIVE_EVENT_NO_DISPATCH)
+        self.assertFalse(ledger.get(observed.event_key).dispatch_eligible)
+        self.assertEqual(dispatcher.calls, [])
+
+    def test_ambiguous_event_is_permanently_ineligible(self):
+        ledger = InMemoryRelayLedger()
+        result = make_service(ledger=ledger).process_event(
+            make_event(subject=f"{GATE_A_PATTERN} {DESIGN_PATTERN}")
+        )
+        self.assertFalse(ledger.get(result.event_key).dispatch_eligible)
+
 
 # ---------------------------------------------------------------------------
 # Malformed events
@@ -563,7 +589,7 @@ class LedgerStateMachineTests(unittest.TestCase):
 
     def test_set_state_rejects_illegal_transition(self):
         ledger = InMemoryRelayLedger()
-        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0")
+        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, dispatch_eligible=True, now="t0")
         with self.assertRaises(LedgerStateConflict):
             ledger.set_state(
                 "k1",
@@ -574,7 +600,7 @@ class LedgerStateMachineTests(unittest.TestCase):
 
     def test_set_state_rejects_mismatched_expected_state(self):
         ledger = InMemoryRelayLedger()
-        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0")
+        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, dispatch_eligible=True, now="t0")
         ledger.begin_attempt("k1", now="t1")
         with self.assertRaises(LedgerStateConflict):
             ledger.set_state(
@@ -586,13 +612,13 @@ class LedgerStateMachineTests(unittest.TestCase):
 
     def test_begin_attempt_from_received_keeps_attempt_count_one(self):
         ledger = InMemoryRelayLedger()
-        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0")
+        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, dispatch_eligible=True, now="t0")
         record = ledger.begin_attempt("k1", now="t1")
         self.assertEqual(record.attempt_count, 1)
 
     def test_begin_attempt_from_safe_to_retry_increments(self):
         ledger = InMemoryRelayLedger()
-        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0")
+        ledger.reserve_new("k1", stage="GATE_A", workflow=GATE_A_WORKFLOW, dispatch_eligible=True, now="t0")
         ledger.begin_attempt("k1", now="t1")
         ledger.set_state(
             "k1",
@@ -671,7 +697,8 @@ class RealConcurrencyTests(unittest.TestCase):
     def test_ledger_begin_attempt_concurrent_only_one_winner(self):
         ledger = InMemoryRelayLedger()
         ledger.reserve_new(
-            "race-key", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0"
+            "race-key", stage="GATE_A", workflow=GATE_A_WORKFLOW,
+            dispatch_eligible=True, now="t0"
         )
 
         barrier = threading.Barrier(4)
@@ -1162,7 +1189,8 @@ class FirestoreRelayStorageTests(unittest.TestCase):
         def reserve(storage):
             barrier.wait(timeout=5)
             value = storage.reserve_new(
-                "event-1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0"
+                "event-1", stage="GATE_A", workflow=GATE_A_WORKFLOW,
+                dispatch_eligible=True, now="t0"
             )
             with result_lock:
                 results.append(value is not None)
@@ -1215,7 +1243,8 @@ class FirestoreRelayStorageTests(unittest.TestCase):
     def test_attempt_budget_terminal_states_and_independent_keys(self):
         for key in ("retry", "unknown", "confirmed", "independent"):
             self.storage.reserve_new(
-                key, stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0"
+                key, stage="GATE_A", workflow=GATE_A_WORKFLOW,
+                dispatch_eligible=True, now="t0"
             )
 
         attempt = None
@@ -1257,7 +1286,8 @@ class FirestoreRelayStorageTests(unittest.TestCase):
         mailbox_hash = mailbox_hash_for("owner@example.com")
         self.storage.compare_and_update_cursor(mailbox_hash, None, "100")
         self.storage.reserve_new(
-            "event-1", stage="GATE_A", workflow=GATE_A_WORKFLOW, now="t0"
+            "event-1", stage="GATE_A", workflow=GATE_A_WORKFLOW,
+            dispatch_eligible=True, now="t0"
         )
         cursor_data = self.client._collections[RELAY_CURSOR_COLLECTION][mailbox_hash]
         event_data = self.client._collections[RELAY_EVENTS_COLLECTION]["event-1"]
@@ -1271,13 +1301,50 @@ class FirestoreRelayStorageTests(unittest.TestCase):
             {RELAY_CURSOR_COLLECTION, RELAY_EVENTS_COLLECTION},
         )
 
+    def test_legacy_event_without_eligibility_is_fail_closed(self):
+        self.client._collections.setdefault(RELAY_EVENTS_COLLECTION, {})[
+            "legacy-event"
+        ] = {
+            "event_key": "legacy-event",
+            "stage": "GATE_A",
+            "workflow": GATE_A_WORKFLOW,
+            "attempt_count": 1,
+            "state": RelayLedgerState.RECEIVED.value,
+            "workflow_run_id": None,
+            "created_at": "t0",
+            "updated_at": "t0",
+        }
+        record = self.storage.get("legacy-event")
+        self.assertFalse(record.dispatch_eligible)
+        self.assertIsNone(self.storage.begin_attempt("legacy-event", now="t1"))
+
+    def test_duplicate_reservation_cannot_upgrade_eligibility(self):
+        first = self.storage.reserve_new(
+            "pre-live",
+            stage="GATE_A",
+            workflow=GATE_A_WORKFLOW,
+            dispatch_eligible=False,
+            now="t0",
+        )
+        duplicate = self.storage.reserve_new(
+            "pre-live",
+            stage="GATE_A",
+            workflow=GATE_A_WORKFLOW,
+            dispatch_eligible=True,
+            now="t1",
+        )
+        self.assertIsNotNone(first)
+        self.assertIsNone(duplicate)
+        self.assertFalse(self.storage.get("pre-live").dispatch_eligible)
+        self.assertIsNone(self.storage.begin_attempt("pre-live", now="t2"))
+
 
 # ---------------------------------------------------------------------------
 # Authenticated Flask ingress
 # ---------------------------------------------------------------------------
 
 
-def make_config() -> RelayConfig:
+def make_config(mode: RelayMode = RelayMode.DRY_RUN) -> RelayConfig:
     return RelayConfig(
         mailbox_identity="owner@example.com",
         allowed_senders=frozenset({"owner@example.com"}),
@@ -1287,6 +1354,7 @@ def make_config() -> RelayConfig:
         oidc_expected_principals=frozenset({"push@example.iam.gserviceaccount.com"}),
         initial_history_id="100",
         firestore_project="daily-duck-test",
+        mode=mode,
     )
 
 
@@ -1405,7 +1473,7 @@ class FlaskAppTests(unittest.TestCase):
                 token_verifier_factory=lambda: (lambda token, audience: claims()),
             )
 
-    def test_production_constructor_rejects_live_mode(self):
+    def test_production_constructor_live_requires_github_app_configuration(self):
         env = {
             "RELAY_MAILBOX_IDENTITY": "owner@example.com",
             "RELAY_ALLOWED_SENDERS": "owner@example.com",
@@ -1429,6 +1497,53 @@ class FlaskAppTests(unittest.TestCase):
                 gmail_reader_factory=lambda: FakeGmailReader(),
                 firestore_client_factory=lambda: FakeFirestoreClient(),
                 token_verifier_factory=lambda: (lambda token, audience: claims()),
+            )
+
+        supplied = []
+
+        def dispatcher_factory(values):
+            supplied.append(values["RELAY_MODE"])
+            return FakeGitHubDispatcher()
+
+        app = create_app_from_env(
+            env=env,
+            gmail_reader_factory=lambda: FakeGmailReader(),
+            firestore_client_factory=lambda: FakeFirestoreClient(),
+            token_verifier_factory=lambda: (lambda token, audience: claims()),
+            github_dispatcher_factory=dispatcher_factory,
+        )
+        self.assertEqual(supplied, ["LIVE"])
+        self.assertEqual(
+            app.extensions["relay_components"]["relay"].mode, RelayMode.LIVE
+        )
+
+        invalid = dict(env)
+        invalid["RELAY_MODE"] = "live"
+        with self.assertRaises(ConfigurationError):
+            create_app_from_env(
+                env=invalid,
+                gmail_reader_factory=lambda: FakeGmailReader(),
+                firestore_client_factory=lambda: FakeFirestoreClient(),
+                token_verifier_factory=lambda: (lambda token, audience: claims()),
+                github_dispatcher_factory=dispatcher_factory,
+            )
+
+        whitespace = dict(env)
+        whitespace["RELAY_MODE"] = " LIVE "
+        with self.assertRaises(ConfigurationError):
+            create_app_from_env(
+                env=whitespace,
+                gmail_reader_factory=lambda: FakeGmailReader(),
+                firestore_client_factory=lambda: FakeFirestoreClient(),
+                token_verifier_factory=lambda: (lambda token, audience: claims()),
+                github_dispatcher_factory=dispatcher_factory,
+            )
+
+        with self.assertRaises(ConfigurationError):
+            create_app(
+                config=make_config(RelayMode.LIVE),
+                gmail=FakeGmailReader(),
+                authenticator=make_auth(),
             )
 
     def test_auth_runs_before_event_processing(self):
@@ -1583,6 +1698,160 @@ class FlaskAppTests(unittest.TestCase):
         self.assertEqual(response.get_json()["status"], "RETRY")
         cursor = cursor_store.read_cursor(mailbox_hash_for("owner@example.com"))
         self.assertEqual(cursor.history_id, "100")
+
+    def test_safe_to_retry_does_not_advance_and_redelivery_succeeds(self):
+        reader = FakeGmailReader(
+            history=HistoryBatch(("m1",)),
+            messages={"m1": MessageMetadata("m1", GATE_A_PATTERN, "owner@example.com")},
+        )
+        cursor_store = InMemoryCursorStore(clock=lambda: "t0")
+        dispatcher = FakeGitHubDispatcher(
+            scripted_outcomes={
+                GATE_A_WORKFLOW: [
+                    DispatchOutcome.CLEAR_RETRYABLE_FAILURE,
+                    DispatchOutcome.SUCCESS,
+                ]
+            }
+        )
+        app = create_app(
+            config=make_config(RelayMode.LIVE),
+            gmail=reader,
+            authenticator=make_auth(),
+            cursor_store=cursor_store,
+            ledger=InMemoryRelayLedger(),
+            dispatcher=dispatcher,
+        )
+        client = app.test_client()
+
+        first = client.post(
+            "/relay",
+            json=pubsub_envelope(),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(first.status_code, 503)
+        self.assertEqual(
+            cursor_store.read_cursor(mailbox_hash_for("owner@example.com")).history_id,
+            "100",
+        )
+
+        second = client.post(
+            "/relay",
+            json=pubsub_envelope(),
+            headers={"Authorization": "Bearer token"},
+        )
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(
+            cursor_store.read_cursor(mailbox_hash_for("owner@example.com")).history_id,
+            "101",
+        )
+        self.assertEqual(len(dispatcher.calls), 2)
+
+    def test_mixed_batch_retry_blocks_cursor_and_completed_event_is_no_op(self):
+        reader = FakeGmailReader(
+            history=HistoryBatch(("m1", "m2")),
+            messages={
+                "m1": MessageMetadata("m1", GATE_A_PATTERN, "owner@example.com"),
+                "m2": MessageMetadata("m2", DESIGN_PATTERN, "owner@example.com"),
+            },
+        )
+        cursor_store = InMemoryCursorStore(clock=lambda: "t0")
+        dispatcher = FakeGitHubDispatcher(
+            scripted_outcomes={
+                DESIGN_SELECTION_WORKFLOW: [
+                    DispatchOutcome.CLEAR_RETRYABLE_FAILURE,
+                    DispatchOutcome.SUCCESS,
+                ]
+            }
+        )
+        app = create_app(
+            config=make_config(RelayMode.LIVE),
+            gmail=reader,
+            authenticator=make_auth(),
+            cursor_store=cursor_store,
+            ledger=InMemoryRelayLedger(),
+            dispatcher=dispatcher,
+        )
+        client = app.test_client()
+        first = client.post(
+            "/relay", json=pubsub_envelope(), headers={"Authorization": "Bearer token"}
+        )
+        self.assertEqual(first.status_code, 503)
+        self.assertEqual(
+            cursor_store.read_cursor(mailbox_hash_for("owner@example.com")).history_id,
+            "100",
+        )
+        second = client.post(
+            "/relay", json=pubsub_envelope(), headers={"Authorization": "Bearer token"}
+        )
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(len(dispatcher.calls), 3)
+        self.assertEqual(
+            cursor_store.read_cursor(mailbox_hash_for("owner@example.com")).history_id,
+            "101",
+        )
+
+    def test_in_progress_event_does_not_advance_cursor(self):
+        ledger = InMemoryRelayLedger()
+        key = event_key_for("owner@example.com", "m1")
+        ledger.reserve_new(
+            key,
+            stage=RelayStage.GATE_A.value,
+            workflow=GATE_A_WORKFLOW,
+            dispatch_eligible=True,
+            now="t0",
+        )
+        ledger.begin_attempt(key, now="t1")
+        cursor_store = InMemoryCursorStore(clock=lambda: "t0")
+        app = create_app(
+            config=make_config(RelayMode.LIVE),
+            gmail=FakeGmailReader(
+                history=HistoryBatch(("m1",)),
+                messages={
+                    "m1": MessageMetadata("m1", GATE_A_PATTERN, "owner@example.com")
+                },
+            ),
+            authenticator=make_auth(),
+            cursor_store=cursor_store,
+            ledger=ledger,
+            dispatcher=FakeGitHubDispatcher(),
+        )
+        response = app.test_client().post(
+            "/relay", json=pubsub_envelope(), headers={"Authorization": "Bearer token"}
+        )
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(
+            cursor_store.read_cursor(mailbox_hash_for("owner@example.com")).history_id,
+            "100",
+        )
+
+    def test_unknown_outcome_advances_but_never_redispatches(self):
+        cursor_store = InMemoryCursorStore(clock=lambda: "t0")
+        dispatcher = FakeGitHubDispatcher(
+            default_outcome=DispatchOutcome.UNKNOWN_OUTCOME
+        )
+        app = create_app(
+            config=make_config(RelayMode.LIVE),
+            gmail=FakeGmailReader(
+                history=HistoryBatch(("m1",)),
+                messages={
+                    "m1": MessageMetadata("m1", GATE_A_PATTERN, "owner@example.com")
+                },
+            ),
+            authenticator=make_auth(),
+            cursor_store=cursor_store,
+            ledger=InMemoryRelayLedger(),
+            dispatcher=dispatcher,
+        )
+        client = app.test_client()
+        first = client.post(
+            "/relay", json=pubsub_envelope(), headers={"Authorization": "Bearer token"}
+        )
+        second = client.post(
+            "/relay", json=pubsub_envelope(), headers={"Authorization": "Bearer token"}
+        )
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(len(dispatcher.calls), 1)
 
     def test_health_endpoint(self):
         response = self._app().test_client().get("/health")
