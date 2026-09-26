@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import argparse, json, os, subprocess
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 JST = timezone(timedelta(hours=9))
 TIMEOUT = timedelta(minutes=60)
+POLL_SCHEDULE_TIMEOUT = timedelta(hours=8)
+DAILY_SCHEDULE_TIME_JST = time(hour=7, minute=7)
+DAILY_SCHEDULE_GRACE = timedelta(hours=3)
 WORKFLOWS = {
     "The Daily Duck Automation": ("daily-duck.yml", "Daily Automation"),
     "The Daily Duck - Gate A Approval Check": ("approval-check-phase2.yml", "Gate A Approval Check"),
@@ -17,6 +20,11 @@ WORKFLOWS = {
     "The Daily Duck - Design Selection Check": ("design-selection-check.yml", "Design Selection Check"),
     "The Daily Duck - Website Publish": ("website-publish.yml", "Website Publish"),
     "The Daily Duck - X Publish": ("x-publish.yml", "X Publish"),
+}
+SCHEDULED_WORKFLOWS = {
+    "The Daily Duck Automation",
+    "The Daily Duck - Gate A Approval Check",
+    "The Daily Duck - Design Selection Check",
 }
 
 @dataclass(frozen=True)
@@ -68,33 +76,61 @@ def state_time(data: Any) -> datetime | None:
             return value
     return None
 
-def latest(runs: dict[str, list[dict[str, Any]]], workflow: str) -> dict[str, Any] | None:
+def latest(
+    runs: dict[str, list[dict[str, Any]]], workflow: str, event: str | None = None
+) -> dict[str, Any] | None:
     items = runs.get(workflow, [])
+    if event:
+        items = [run for run in items if run.get("event") == event]
     return max(items, key=lambda r: str(r.get("created_at") or "")) if items else None
+
+
+def daily_schedule_deadline(now: datetime) -> datetime:
+    local_now = now.astimezone(JST)
+    scheduled = datetime.combine(local_now.date(), DAILY_SCHEDULE_TIME_JST, tzinfo=JST)
+    return (scheduled + DAILY_SCHEDULE_GRACE).astimezone(timezone.utc)
 
 def problem(stage: str, date: str, now: datetime, run: dict[str, Any] | None, status: str, action: str) -> Problem:
     run = run or {}
     return Problem(stage, date, str(run.get("name") or stage), int(run.get("id") or 0), str(run.get("html_url") or run.get("url") or ""), status, int(run.get("run_attempt") or run.get("attempt") or 0), now.astimezone(JST).isoformat(), action)
 
-def evaluate(runs: dict[str, list[dict[str, Any]]], states: dict[str, Any], now: datetime, timeout: timedelta = TIMEOUT) -> list[Problem]:
+def evaluate(
+    runs: dict[str, list[dict[str, Any]]],
+    states: dict[str, Any],
+    now: datetime,
+    timeout: timedelta = TIMEOUT,
+    poll_schedule_timeout: timedelta = POLL_SCHEDULE_TIMEOUT,
+) -> list[Problem]:
     """Return current problems; a successful current retry clears its failed run."""
     date, found = issue_date_from(states, now), []
     for workflow, (_, stage) in WORKFLOWS.items():
         run = latest(runs, workflow)
-        if not run:
-            if stage in ("Daily Automation", "Gate A Approval Check", "Design Selection Check"):
-                found.append(problem(stage, date, now, None, "MISSING", "Check the workflow trigger and Actions availability."))
-            continue
-        status, conclusion = str(run.get("status") or ""), str(run.get("conclusion") or "")
-        if status == "completed" and conclusion not in ("success", "neutral", "skipped"):
-            found.append(problem(stage, date, now, run, f"completed/{conclusion}", f"Inspect and safely rerun {stage}; do not bypass approval gates."))
-        created = parse_time(run.get("created_at"))
-        if stage in ("Design Options", "Design Selection Check", "Website Publish", "X Publish") and status in ("queued", "in_progress") and created and now - created > timeout:
-            found.append(problem(f"{stage} completion timeout", date, now, run, status.upper(), f"Inspect the stalled {stage} run before considering a safe rerun."))
-        if stage == "Daily Automation" and created and created.astimezone(JST).date().isoformat() != now.astimezone(JST).date().isoformat():
-            found.append(problem("Daily Automation scheduled trigger", date, now, run, "NO_RUN_TODAY", "Check the daily schedule and Actions availability."))
-        if stage in ("Gate A Approval Check", "Design Selection Check") and created and now - created > timeout:
-            found.append(problem(f"{stage} scheduled trigger", date, now, run, "SCHEDULE_STALE", "Check the frequent poller schedule and Actions availability."))
+        if run:
+            status = str(run.get("status") or "")
+            conclusion = str(run.get("conclusion") or "")
+            if status == "completed" and conclusion not in ("success", "neutral", "skipped"):
+                found.append(problem(stage, date, now, run, f"completed/{conclusion}", f"Inspect and safely rerun {stage}; do not bypass approval gates."))
+            created = parse_time(run.get("created_at"))
+            if stage in ("Design Options", "Design Selection Check", "Website Publish", "X Publish") and status in ("queued", "in_progress") and created and now - created > timeout:
+                found.append(problem(f"{stage} completion timeout", date, now, run, status.upper(), f"Inspect the stalled {stage} run before considering a safe rerun."))
+
+        scheduled_run = latest(runs, workflow, event="schedule")
+        scheduled_created = (
+            parse_time(scheduled_run.get("created_at")) if scheduled_run else None
+        )
+        if stage == "Daily Automation" and now >= daily_schedule_deadline(now):
+            ran_today = bool(
+                scheduled_created
+                and scheduled_created.astimezone(JST).date()
+                == now.astimezone(JST).date()
+            )
+            if not ran_today:
+                found.append(problem("Daily Automation scheduled trigger", date, now, scheduled_run or {"name": workflow}, "NO_RUN_TODAY", "Check the daily schedule and Actions availability."))
+        if stage in ("Gate A Approval Check", "Design Selection Check"):
+            if not scheduled_created:
+                found.append(problem(f"{stage} scheduled trigger", date, now, {"name": workflow}, "MISSING", "Check the frequent poller schedule and Actions availability."))
+            elif now - scheduled_created > poll_schedule_timeout:
+                found.append(problem(f"{stage} scheduled trigger", date, now, scheduled_run, "SCHEDULE_STALE", "Check the frequent poller schedule and Actions availability."))
 
     approved, design = states.get("approved_story"), states.get("design_options")
     selection, ready = states.get("design_selection_result"), states.get("ready_to_publish")
@@ -133,7 +169,12 @@ def gh_json(endpoint: str) -> Any:
 def live_inputs(repository: str, state_dir: Path) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
     runs = {}
     for workflow, (filename, _) in WORKFLOWS.items():
-        runs[workflow] = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?per_page=20").get("workflow_runs", [])
+        workflow_runs = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?per_page=20").get("workflow_runs", [])
+        if workflow in SCHEDULED_WORKFLOWS:
+            scheduled_runs = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?event=schedule&per_page=1").get("workflow_runs", [])
+            known_ids = {run.get("id") for run in workflow_runs}
+            workflow_runs.extend(run for run in scheduled_runs if run.get("id") not in known_ids)
+        runs[workflow] = workflow_runs
     names = ("approved_story", "design_options", "design_selection_result", "ready_to_publish", "website_publish_result", "x_publish_result")
     return runs, {name: read_json(state_dir / f"{name}.json") for name in names}
 

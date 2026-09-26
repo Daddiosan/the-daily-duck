@@ -1,14 +1,39 @@
 import unittest
 from datetime import datetime, timezone
+from pathlib import Path
+from unittest.mock import patch
 
-from scripts.automation_chain_audit import WORKFLOWS, evaluate, pending_alerts
+from scripts.automation_chain_audit import (
+    SCHEDULED_WORKFLOWS,
+    WORKFLOWS,
+    evaluate,
+    live_inputs,
+    pending_alerts,
+)
 
 NOW = datetime(2026, 9, 4, 12, 0, tzinfo=timezone.utc)
 DATE = "2026-09-04"
 
 
-def run(name, run_id, conclusion="success", attempt=1):
-    return {"id": run_id, "name": name, "status": "completed", "conclusion": conclusion, "run_attempt": attempt, "created_at": "2026-09-04T11:00:00Z", "html_url": f"https://example.test/runs/{run_id}"}
+def run(
+    name,
+    run_id,
+    conclusion="success",
+    attempt=1,
+    event=None,
+    created_at="2026-09-04T11:00:00Z",
+):
+    return {
+        "id": run_id,
+        "name": name,
+        "status": "completed",
+        "conclusion": conclusion,
+        "run_attempt": attempt,
+        "event": event
+        or ("schedule" if name in SCHEDULED_WORKFLOWS else "workflow_dispatch"),
+        "created_at": created_at,
+        "html_url": f"https://example.test/runs/{run_id}",
+    }
 
 
 def healthy_runs():
@@ -56,6 +81,60 @@ class AuditTests(unittest.TestCase):
         stalled.update(status="in_progress", conclusion=None, created_at="2026-09-04T10:00:00Z")
         runs[name] = [stalled]
         self.assertIn("Design Options completion timeout", {p.failure_stage for p in evaluate(runs, healthy_states(), NOW)})
+
+    def test_recent_production_schedule_delays_are_not_stale(self):
+        runs = healthy_runs()
+        gate = "The Daily Duck - Gate A Approval Check"
+        design = "The Daily Duck - Design Selection Check"
+        runs[gate] = [run(gate, 36205052920, created_at="2026-09-26T00:29:42Z")]
+        runs[design] = [run(design, 36204231949, created_at="2026-09-26T00:16:33Z")]
+        now = datetime(2026, 9, 26, 1, 34, 57, tzinfo=timezone.utc)
+        stages = {p.failure_stage for p in evaluate(runs, {}, now)}
+        self.assertNotIn("Gate A Approval Check scheduled trigger", stages)
+        self.assertNotIn("Design Selection Check scheduled trigger", stages)
+
+    def test_poller_schedule_is_stale_after_bounded_scheduler_tolerance(self):
+        name = "The Daily Duck - Gate A Approval Check"
+        runs = healthy_runs()
+        runs[name] = [run(name, 99, created_at="2026-09-04T03:59:59Z")]
+        stages = {p.failure_stage for p in evaluate(runs, healthy_states(), NOW)}
+        self.assertIn("Gate A Approval Check scheduled trigger", stages)
+
+    def test_manual_run_does_not_mask_stale_schedule(self):
+        name = "The Daily Duck - Design Selection Check"
+        runs = healthy_runs()
+        runs[name] = [
+            run(name, 98, event="schedule", created_at="2026-09-04T03:00:00Z"),
+            run(name, 99, event="workflow_dispatch", created_at="2026-09-04T11:59:00Z"),
+        ]
+        problems = evaluate(runs, healthy_states(), NOW)
+        incident = next(p for p in problems if p.failure_stage == "Design Selection Check scheduled trigger")
+        self.assertEqual(incident.run_id, 98)
+
+    def test_daily_schedule_waits_for_scheduler_grace(self):
+        name = "The Daily Duck Automation"
+        runs = healthy_runs()
+        runs[name] = [run(name, 99, created_at="2026-09-03T12:00:00Z")]
+        before_deadline = datetime(2026, 9, 4, 1, 6, tzinfo=timezone.utc)
+        after_deadline = datetime(2026, 9, 4, 1, 8, tzinfo=timezone.utc)
+        before = {p.run_status for p in evaluate(runs, {}, before_deadline)}
+        after = {p.run_status for p in evaluate(runs, {}, after_deadline)}
+        self.assertNotIn("NO_RUN_TODAY", before)
+        self.assertIn("NO_RUN_TODAY", after)
+
+    @patch("scripts.automation_chain_audit.gh_json")
+    def test_live_inputs_fetches_latest_scheduled_run_separately(self, gh_json):
+        def response(endpoint):
+            if "event=schedule" in endpoint:
+                return {"workflow_runs": [{"id": 2, "event": "schedule"}]}
+            return {"workflow_runs": [{"id": 1, "event": "workflow_dispatch"}]}
+
+        gh_json.side_effect = response
+        runs, _ = live_inputs("owner/repo", Path("missing"))
+        for name in SCHEDULED_WORKFLOWS:
+            self.assertEqual({run["id"] for run in runs[name]}, {1, 2})
+        expected_calls = len(WORKFLOWS) + len(SCHEDULED_WORKFLOWS)
+        self.assertEqual(gh_json.call_count, expected_calls)
 
     def test_2026_09_04_failed_attempt_then_successful_retry(self):
         name = "The Daily Duck - Design Options"
