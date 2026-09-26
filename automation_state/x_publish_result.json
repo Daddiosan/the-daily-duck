@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-09-26T10:02:21.507904+00:00",
+  "issue_date": "2026-09-26",
+  "x_post_id": "2103787248218935580",
+  "x_post_url": "https://x.com/i/web/status/2103787248218935580",
+  "x_media_id": "2103787245949841408",
+  "image_path": "automation_images/x/2026-09-26-x-card.png",
+  "post_text": "A strange circle spotted while looking for a camping spot turned out to be a 390-million-year-old impact crater. Curiosity can lead to huge discoveries.\n\nhttps://www.thedailyduck.ai/ducks/2026-09-26/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 177
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2103787248218935580",
+      "text": "A strange circle spotted while looking for a camping spot turned out to be a 390-million-year-old impact crater. Curiosity can lead to huge discoveries.\n\nhttps://t.co/CnJM72pIlm https://t.co/W8nx0T6Nwg"
+    }
+  }
+}
