@@ -1,13 +1,9 @@
 """GitHub Actions dispatch abstraction for cloud/approval_relay (Thin
 Relay, Phase M3A).
 
-Only a Protocol and FakeGitHubDispatcher exist in this module during
-Phase M3A. There is NO real GitHub network implementation here -- no
-GitHub App/JWT/PAT code, no real `workflow_dispatch` REST call. That is
-explicitly out of scope for this phase (see
-docs/phase3b2/THIN_RELAY_RUNBOOK.md's Deployment Progression and Security
-sections) and requires its own separately approved design and credential
-review (a Human Gate) before it is added.
+The protocol and test fake live here. The separately isolated production
+GitHub App implementation lives in github_app_dispatch.py so the network and
+credential boundary is easy to audit. No PAT or GITHUB_TOKEN fallback exists.
 
 The workflow/ref allowlist below is the ONLY thing this relay is ever
 permitted to dispatch. Both router.py's stage -> workflow mapping and this

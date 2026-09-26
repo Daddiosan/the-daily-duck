@@ -35,10 +35,12 @@ EVENT_PERSISTED_FIELDS = frozenset(
         "attempt_count",
         "state",
         "workflow_run_id",
+        "dispatch_eligible",
         "created_at",
         "updated_at",
     }
 )
+LEGACY_EVENT_PERSISTED_FIELDS = EVENT_PERSISTED_FIELDS - {"dispatch_eligible"}
 WATCH_STATE_PERSISTED_FIELDS = frozenset(
     {"expiration", "history_id", "mailbox_hash", "updated_at"}
 )
@@ -226,13 +228,18 @@ def _event_to_data(record: RelayLedgerRecord) -> dict[str, Any]:
         "attempt_count": record.attempt_count,
         "state": record.state.value,
         "workflow_run_id": record.workflow_run_id,
+        "dispatch_eligible": record.dispatch_eligible,
         "created_at": record.created_at,
         "updated_at": record.updated_at,
     }
 
 
 def _event_from_data(event_key: str, data: Mapping[str, Any]) -> RelayLedgerRecord:
-    if set(data) != EVENT_PERSISTED_FIELDS or data.get("event_key") != event_key:
+    fields = set(data)
+    if (
+        fields not in {EVENT_PERSISTED_FIELDS, LEGACY_EVENT_PERSISTED_FIELDS}
+        or data.get("event_key") != event_key
+    ):
         raise RelayStorageError("Persisted relay event schema is malformed.")
     stage = data.get("stage")
     workflow = data.get("workflow")
@@ -240,6 +247,7 @@ def _event_from_data(event_key: str, data: Mapping[str, Any]) -> RelayLedgerReco
     run_id = data.get("workflow_run_id")
     created_at = data.get("created_at")
     updated_at = data.get("updated_at")
+    dispatch_eligible = data.get("dispatch_eligible", False)
     if not isinstance(stage, str) or not stage:
         raise RelayStorageError("Persisted relay event stage is malformed.")
     if workflow is not None and not isinstance(workflow, str):
@@ -250,6 +258,8 @@ def _event_from_data(event_key: str, data: Mapping[str, Any]) -> RelayLedgerReco
         raise RelayStorageError("Persisted relay attempt count is malformed.")
     if run_id is not None and not isinstance(run_id, str):
         raise RelayStorageError("Persisted relay run id is malformed.")
+    if not isinstance(dispatch_eligible, bool):
+        raise RelayStorageError("Persisted relay dispatch eligibility is malformed.")
     if not isinstance(created_at, str) or not isinstance(updated_at, str):
         raise RelayStorageError("Persisted relay timestamps are malformed.")
     try:
@@ -263,6 +273,7 @@ def _event_from_data(event_key: str, data: Mapping[str, Any]) -> RelayLedgerReco
         attempt_count=attempt_count,
         state=state,
         workflow_run_id=run_id,
+        dispatch_eligible=dispatch_eligible,
         created_at=created_at,
         updated_at=updated_at,
     )
@@ -393,7 +404,13 @@ class FirestoreRelayStorage:
         return _event_from_data(event_key, dict(snapshot.to_dict() or {}))
 
     def reserve_new(
-        self, event_key: str, *, stage: str, workflow: str | None, now: str
+        self,
+        event_key: str,
+        *,
+        stage: str,
+        workflow: str | None,
+        dispatch_eligible: bool,
+        now: str,
     ) -> RelayLedgerRecord | None:
         try:
             from google.cloud import firestore
@@ -408,6 +425,7 @@ class FirestoreRelayStorage:
             attempt_count=1,
             state=RelayLedgerState.RECEIVED,
             workflow_run_id=None,
+            dispatch_eligible=dispatch_eligible,
             created_at=now,
             updated_at=now,
         )
@@ -435,7 +453,10 @@ class FirestoreRelayStorage:
             if not snapshot.exists:
                 return None
             record = _event_from_data(event_key, dict(snapshot.to_dict() or {}))
-            if record.state not in ATTEMPT_ELIGIBLE_STATES:
+            if (
+                not record.dispatch_eligible
+                or record.state not in ATTEMPT_ELIGIBLE_STATES
+            ):
                 return None
             updated = replace(
                 record,

@@ -18,6 +18,14 @@ from typing import Any
 
 from openai import OpenAI
 
+try:
+    from scripts.approval_token import extract_approval_token, validate_approval_token
+except ImportError:
+    from approval_token import (  # type: ignore[no-redef]
+        extract_approval_token,
+        validate_approval_token,
+    )
+
 
 STATE_DIR = Path("automation_state")
 
@@ -309,17 +317,24 @@ def save_result(
 
 
 def allowed_senders() -> set[str]:
-    return {
+    senders = {
         x.strip().lower()
         for x in required_env(
             "EMAIL_TO"
         ).split(",")
         if x.strip()
     }
+    if not senders:
+        raise ValueError("EMAIL_TO must contain at least one authorized sender.")
+    return senders
 
 
 def find_reply(
-    subject: str,
+    subject_prefix: str,
+    *,
+    issue_date: str,
+    batch_number: int,
+    token_digest: object,
 ) -> tuple[
     str,
     int | None,
@@ -382,13 +397,20 @@ def find_reply(
                 )
             )[1].lower()
 
-            if subject not in msg_subject:
+            if subject_prefix not in msg_subject:
                 continue
 
-            if (
-                allowed
-                and sender not in allowed
+            token = extract_approval_token(msg_subject)
+            if not validate_approval_token(
+                stored_digest=token_digest,
+                stage="DESIGN_SELECTION",
+                issue_date=issue_date,
+                batch=batch_number,
+                token=token,
             ):
+                continue
+
+            if sender not in allowed:
                 continue
 
             command = extract_command(
@@ -1051,18 +1073,21 @@ def main() -> int:
     ).upper()
 
     if state == "WAITING_FINAL_SELECTION":
-        subject = first_text(
-            package.get("final_email_subject"),
-            package.get("email_subject"),
-        )
+        subject = first_text(package.get("final_email_subject_prefix"))
 
         if not subject:
             raise ValueError(
-                "final_email_subject is missing."
+                "final_email_subject_prefix is missing."
             )
 
+        issue_date = first_text(package.get("issue_date"))
+        batch_number = int(package.get("preview_batch_number", 1) or 1)
+
         found = find_reply(
-            subject
+            subject,
+            issue_date=issue_date,
+            batch_number=batch_number,
+            token_digest=package.get("approval_token_digest"),
         )
 
         if found is None:

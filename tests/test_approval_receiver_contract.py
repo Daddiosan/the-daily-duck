@@ -148,8 +148,13 @@ class ApprovalReceiverContractTests(unittest.TestCase):
         self.assertNotIn("X-Forwarded-Email", source)
 
     def test_existing_protected_files_match_baseline(self):
-        """Phase 3B-2A1 must never modify these already-committed, protected
-        paths. This is checked against PHASE_3B_2A1_APPROVED_BASELINE, a
+        """Phase 3B-2A1 must not modify its still-owned protected paths.
+
+        R2A deliberately moved ``check_story_approval.py`` and
+        ``check_design_selection.py`` into the one-time-token authorization
+        boundary.  Their new invariants are enforced by
+        ``test_approval_token.py``; the remaining A1-owned paths stay pinned
+        here. This is checked against PHASE_3B_2A1_APPROVED_BASELINE, a
         fixed, named, human-approved commit -- never against "current
         HEAD". Comparing against HEAD would make a protected-file change
         invisible the moment it is committed, since HEAD and the change
@@ -175,8 +180,6 @@ class ApprovalReceiverContractTests(unittest.TestCase):
             "--",
             ".github/workflows",
             "scripts/approval_domain.py",
-            "scripts/check_story_approval.py",
-            "scripts/check_design_selection.py",
             "scripts/approval_shadow.py",
             "scripts/approval_shadow_compare.py",
         ]
