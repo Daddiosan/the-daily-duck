@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-27",
+    "displayDate": "September 27, 2026",
+    "slug": "the-idea-flock",
+    "title": "THE IDEA FLOCK",
+    "duckName": "The Idea Flock",
+    "storyTitleEn": "2026-2027 DWU: Middle School Design Challenge",
+    "storyTitleJa": "2026-2027 DWU: Middle School Design Challenge",
+    "image": "assets/ducks/2026-09-27-the-idea-flock.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Idea Flock",
+    "imageAltJa": "The Idea FlockをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A 2026–2027 middle school design challenge is inviting young people to create solutions focused on flight and energy. It is a constructive chance for students to explore ideas, tackle a challenge and imagine what they can design.",
+    "storyJa": "2026～2027年の中学生向けデザインチャレンジで、若者たちが飛行とエネルギーをテーマに解決策を考えます。アイデアを広げ、課題に取り組み、自分たちが何をデザインできるのかを思い描く、建設的な機会です。",
+    "duckEn": "Big ideas can take flight when curious students get the chance to design.",
+    "duckJa": "好奇心いっぱいの中学生にデザインの機会があれば、大きなアイデアも飛び立てるね。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://www.nasa.gov/aeronautics/aeronautics-stem/2026-2027-dwu-middle-school-design-challenge/",
+    "archiveSummaryEn": "A 2026–2027 middle school design challenge is inviting students to create solutions around flight and energy. A hopeful prompt for young designers with big ideas.",
+    "archiveSummaryJa": "2026～2027年の中学生向けデザインチャレンジで、飛行とエネルギーに関する解決策を考える機会が生まれます。大きなアイデアを持つ若いデザイナーへの、希望に満ちた問いかけです。",
+    "reasonEn": "A 2026–2027 middle school design challenge is inviting students to create solutions around flight and energy. A hopeful prompt for young designers with big ideas.",
+    "reasonJa": "2026～2027年の中学生向けデザインチャレンジで、飛行とエネルギーに関する解決策を考える機会が生まれます。大きなアイデアを持つ若いデザイナーへの、希望に満ちた問いかけです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-26",
     "displayDate": "September 26, 2026",
     "slug": "the-crater-camper",
