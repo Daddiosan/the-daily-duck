@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-28",
+    "displayDate": "September 28, 2026",
+    "slug": "the-many-sided-vikings",
+    "title": "THE MANY-SIDED VIKINGS",
+    "duckName": "The Many-Sided Vikings",
+    "storyTitleEn": "Why Viking museums still can’t escape the warrior myth",
+    "storyTitleJa": "Why Viking museums still can’t escape the warrior myth",
+    "image": "assets/ducks/2026-09-28-the-many-sided-vikings.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Many-Sided Vikings",
+    "imageAltJa": "The Many-Sided VikingsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Viking museums still have to reckon with the warrior myth. A lively cultural rethink is bringing more attention to women, farmers and traders, offering a broader view of Viking life.",
+    "storyJa": "バイキング博物館はいまも、戦士という神話と向き合っています。文化的な見直しが進むなか、女性や農民、交易商にも注目が集まり、バイキングの暮らしをより幅広く見る視点が生まれています。",
+    "duckEn": "There is more to a Viking story than a helmet and a battle.",
+    "duckJa": "バイキングの物語は、ヘルメットと戦いだけではありません。",
+    "sourceLabel": "ScienceDaily Society",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/09/260922005805.htm",
+    "archiveSummaryEn": "Viking museums are rethinking the warrior myth, bringing women, farmers and traders into a broader picture of Viking life.",
+    "archiveSummaryJa": "バイキング博物館が、戦士という神話を見直しています。女性や農民、交易商にも光を当て、バイキングの暮らしをより幅広く描きます。",
+    "reasonEn": "Viking museums are rethinking the warrior myth, bringing women, farmers and traders into a broader picture of Viking life.",
+    "reasonJa": "バイキング博物館が、戦士という神話を見直しています。女性や農民、交易商にも光を当て、バイキングの暮らしをより幅広く描きます。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-27",
     "displayDate": "September 27, 2026",
     "slug": "the-idea-flock",
