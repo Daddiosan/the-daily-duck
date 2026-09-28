@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-28",
-  "generated_at": "2026-09-28T01:55:44.061913+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-28T11:46:21.331922+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-28",
     "issue_date": "2026-09-28",
     "phase": 2,
@@ -562,52 +562,9 @@
       "gate_a_package_created_at": "2026-09-28T00:30:57.529486+00:00",
       "approval_token_digest": "e7a763fbd80a6ffb7fc3003ef256fcaa4290d65b1004c1805e138a4249507034"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 55,
-    "title": "Why Viking museums still can’t escape the warrior myth",
-    "source": "ScienceDaily Society",
-    "url": "https://www.sciencedaily.com/releases/2026/09/260922005805.htm",
-    "category": "culture",
-    "happiness": 6,
-    "hope": 7,
-    "general_interest": 8,
-    "surprise": 7,
-    "duck_visual": 8,
-    "source_quality": 8,
-    "freshness": 8,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 8,
-    "total_score": 75,
-    "reason": "A familiar Viking image gets a lively cultural rethink, spotlighting women, farmers and traders while offering plenty of visual museum appeal.",
-    "candidate_number": 4,
-    "title_en": "Viking Museums Rethink the Warrior Myth",
-    "reason_en": "This lively cultural rethink broadens the familiar Viking image by highlighting women, farmers and traders.",
-    "en_copy": "Viking museums still have to reckon with the warrior myth. A lively cultural rethink is bringing more attention to women, farmers and traders, offering a broader view of Viking life.",
-    "duck_name": "The Many-Sided Vikings",
-    "duck_en": "There is more to a Viking story than a helmet and a battle.",
-    "x_en": "Viking museums are rethinking the warrior myth, bringing women, farmers and traders into a broader picture of Viking life.",
-    "title_ja": "バイキング博物館、戦士の神話を見直す",
-    "reason_ja": "女性や農民、交易商にも光を当てることで、親しみのあるバイキング像をより幅広く捉え直す、活気ある文化的な再考だからです。",
-    "jp_copy": "バイキング博物館はいまも、戦士という神話と向き合っています。文化的な見直しが進むなか、女性や農民、交易商にも注目が集まり、バイキングの暮らしをより幅広く見る視点が生まれています。",
-    "duck_jp": "バイキングの物語は、ヘルメットと戦いだけではありません。",
-    "x_jp": "バイキング博物館が、戦士という神話を見直しています。女性や農民、交易商にも光を当て、バイキングの暮らしをより幅広く描きます。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Gallery Gets Bigger",
-      "concept_en": "A warm museum-gallery scene that visually expands the familiar Viking warrior image into a broader view of Viking life.",
-      "composition_en": "Landscape hero composition inside a clean modern museum gallery. Place the friendly yellow Daily Duck mascot in the foreground as a cheerful curator, with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Behind the duck, arrange a balanced group of simple display tableaux: a central warrior-themed exhibit receding into the background, while larger side displays suggest women, farming, and trading through understated silhouettes and generic everyday objects. Keep the exhibits symbolic and non-specific, with the duck guiding the eye from the narrow central myth toward the wider gallery. Premium editorial lighting, warm neutrals, strong focal point, generous negative space, no readable text.",
-      "generation_prompt_en": "Create a clean, modern, charming premium editorial landscape hero image about Viking museums broadening the familiar warrior myth. Show a recognizable friendly yellow duck mascot in the foreground acting as a museum curator: orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Set the scene in a softly lit contemporary museum gallery. In the background, use a restrained central warrior-themed display, flanked by broader symbolic displays suggesting women, farming, and trading without depicting specific real people or unsupported historical details. The visual story should move from a narrow warrior image toward a richer, many-sided view of Viking life. Warm Scandinavian-inspired neutral palette, elegant shapes, crisp focal hierarchy, subtle depth of field, landscape composition, sophisticated magazine illustration, no logos, no watermark, no UI, no readable embedded text, no headline, no labels.",
-      "alt_en": "A friendly yellow duck curator stands in a modern museum gallery as a narrow warrior display gives way to broader symbolic scenes of women, farming, and trading.",
-      "title_ja": "展示室が広げるバイキング像",
-      "concept_ja": "おなじみの戦士中心のバイキング像が、より幅広い暮らしの姿へと広がっていく様子を、温かな博物館の展示空間で表現します。",
-      "composition_ja": "清潔で現代的な博物館の展示室を横長の主役構図で描きます。手前には、オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の tuft、親しみやすい表情を持つ黄色いデイリー・ダックのマスコットを、明るい学芸員として配置します。背景には中央奥へ退く戦士中心の展示と、その両側に女性、農業、交易をほのめかす控えめな象徴展示を置きます。具体的な人物や裏付けのない歴史的細部は避け、狭い神話から幅広い展示へ視線が導かれる構成にします。",
-      "alt_ja": "黄色いアヒルの学芸員が現代的な博物館に立ち、戦士中心の展示から女性、農業、交易を示す幅広い展示へ視線を導いている。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "A Wider Viking Story",
       "concept_en": "A lively three-part visual panorama showing that Viking life extends beyond battle into everyday roles represented by women, farmers, and traders.",
@@ -619,95 +576,9 @@
       "composition_ja": "横長のパノラマとして、三つの場面をゆるやかにつなげます。中央には、オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の tuft、温かな表情を持つ黄色いマスコットを大きく配置し、両翼を広げて全体へ視線を導かせます。左にはおなじみの神話を示す控えめで一般化した戦士のシルエット、中央には耕された土や簡素な農具で農業、右には一般的な品物の交換と旅を思わせる形で交易を示します。",
       "alt_ja": "黄色いアヒルが幅広いパノラマの中央に立ち、戦士のイメージから農業や交易を示す場面へ視線をつないでいる。"
     },
-    {
-      "number": 3,
-      "title_en": "The Myth Comes Apart",
-      "concept_en": "A playful visual metaphor in which the oversized warrior myth is a museum backdrop that opens to reveal a fuller, more human-scale picture of Viking life.",
-      "composition_en": "Landscape hero image with a large, simplified museum backdrop shaped like a dramatic warrior-themed display screen, visibly opening in the middle like curtains or folding panels. The duck mascot stands in the opening, facing the viewer with a confident friendly smile. Beyond the opening, reveal a bright, calm ensemble of symbolic everyday scenes: a woman, a farmer, and a trader represented as non-specific silhouettes or figurative display forms, with no invented identities or detailed costumes. Keep the warrior imagery secondary and clearly framed as a familiar myth, not the whole story. Use bold geometric design, warm light, soft shadows, premium cultural-magazine style, strong contrast between closed myth and open perspective.",
-      "generation_prompt_en": "Create a single clean modern landscape hero illustration using a visual metaphor for museums moving beyond the Viking warrior myth. Show a large simplified museum backdrop inspired by a dramatic warrior display, opening in the center like folding panels. A recognizable friendly yellow Daily Duck mascot stands in the opening, with orange beak, large dark glossy eyes, small feather tuft, and warm confident expression. Through the opening, reveal a brighter broader scene suggesting women, farmers, and traders through non-specific silhouettes and simple symbolic forms, without invented names, costumes, artifacts, or historical claims. Make the warrior display clearly secondary and framed as a familiar myth rather than the complete story. Premium cultural-magazine art direction, bold geometric composition, warm approachable palette, soft shadows, crisp focal point, no logos, no watermark, no UI, no readable embedded text, no headline, landscape format.",
-      "alt_en": "A friendly yellow duck stands in an opening warrior-themed museum backdrop, revealing a broader scene symbolizing women, farmers, and traders.",
-      "title_ja": "神話の向こう側",
-      "concept_ja": "大きく描かれた戦士の神話が開き、その向こうから女性、農民、交易商を含む、より豊かなバイキング像が現れる視覚的なたとえです。",
-      "composition_ja": "横長の主役画像として、劇的な戦士展示を思わせる大きく簡略化した博物館の背景を置き、中央をカーテンや折りたたみ式パネルのように開きます。開口部には、オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の tuft、親しみと自信のある表情を持つ黄色いデイリー・ダックを立たせます。その奥には、具体的な身元や衣装を設定しない象徴的な人物や形で、女性、農民、交易商を示す明るく穏やかな場面を見せます。",
-      "alt_ja": "黄色いアヒルが戦士をテーマにした博物館の背景の開口部に立ち、その向こうに女性、農民、交易商を象徴する幅広い場面が現れている。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IT OR NOT: MORE THAN WARRIORS",
-      "meaning_ja": "「戦士だけではない、信じられる？」というニュアンスです。元の英語表現は「BELIEVE IT OR NOT」。BELIEVE の冒頭を duck の特徴である BILL（くちばし）に置き換えた、発音を生かしたブランド向けの語呂合わせです。"
-    },
-    {
-      "number": 2,
-      "title": "THE SAGA GETS A WIDER CAST",
-      "meaning_ja": "「そのサガの登場人物が、より幅広くなる」という意味です。CAST は物語の出演者という意味と、内容・顔ぶれの構成という意味を持つため、戦士だけでなく女性、農民、交易商にも光を当てる今回の見直しを、物語の配役が広がるように表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "VIKINGS WERE NEVER JUST WARRIORS",
-      "meaning_ja": "「バイキングは決して戦士だけではなかった」という意味です。短く断定的なリズムがあり、ポスターやソーシャルカードで一目で内容が伝わります。おなじみのイメージをひっくり返し、知られざる幅広い暮らしへ誘う、力強く温かなコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Gallery Gets Bigger",
-      "concept_title_ja": "展示室が広げるバイキング像",
-      "image_path": "automation_images/design_previews/2026-09-28/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "174c65f293a37beb2e4f7cddaf17df78737138c9be4d43fcee818d778658d74c",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Viking Museums Rethink the Warrior Myth\nSummary: This lively cultural rethink broadens the familiar Viking image by highlighting women, farmers and traders.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Gallery Gets Bigger\n\nCONCEPT:\nA warm museum-gallery scene that visually expands the familiar Viking warrior image into a broader view of Viking life.\n\nCOMPOSITION:\nLandscape hero composition inside a clean modern museum gallery. Place the friendly yellow Daily Duck mascot in the foreground as a cheerful curator, with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Behind the duck, arrange a balanced group of simple display tableaux: a central warrior-themed exhibit receding into the background, while larger side displays suggest women, farming, and trading through understated silhouettes and generic everyday objects. Keep the exhibits symbolic and non-specific, with the duck guiding the eye from the narrow central myth toward the wider gallery. Premium editorial lighting, warm neutrals, strong focal point, generous negative space, no readable text.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, charming premium editorial landscape hero image about Viking museums broadening the familiar warrior myth. Show a recognizable friendly yellow duck mascot in the foreground acting as a museum curator: orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Set the scene in a softly lit contemporary museum gallery. In the background, use a restrained central warrior-themed display, flanked by broader symbolic displays suggesting women, farming, and trading without depicting specific real people or unsupported historical details. The visual story should move from a narrow warrior image toward a richer, many-sided view of Viking life. Warm Scandinavian-inspired neutral palette, elegant shapes, crisp focal hierarchy, subtle depth of field, landscape composition, sophisticated magazine illustration, no logos, no watermark, no UI, no readable embedded text, no headline, no labels.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck curator stands in a modern museum gallery as a narrow warrior display gives way to broader symbolic scenes of women, farming, and trading.",
-      "alt_ja": "黄色いアヒルの学芸員が現代的な博物館に立ち、戦士中心の展示から女性、農業、交易を示す幅広い展示へ視線を導いている。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "A Wider Viking Story",
-      "concept_title_ja": "広がるバイキングの物語",
-      "image_path": "automation_images/design_previews/2026-09-28/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "ad2fc7a0e66c2f96c0f006fc33349f782e67f016b5da9804c66672cbaf7a84b5",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Viking Museums Rethink the Warrior Myth\nSummary: This lively cultural rethink broadens the familiar Viking image by highlighting women, farmers and traders.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nA Wider Viking Story\n\nCONCEPT:\nA lively three-part visual panorama showing that Viking life extends beyond battle into everyday roles represented by women, farmers, and traders.\n\nCOMPOSITION:\nLandscape panorama divided into three softly connected zones rather than separate panels. Place the duck mascot prominently at the center, smiling and opening its wings toward the wider scene. On the left, use a restrained warrior silhouette as the familiar starting point; in the center, suggest farming through cultivated earth and simple tools; on the right, suggest trading through a calm exchange of generic goods and travel shapes. Include a subtle museum-display atmosphere through clean plinths and lighting, but avoid factual labels or specific artifacts. Make the transition from narrow myth to broad social picture clear, balanced, warm, and editorial.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration showing a wider view of Viking life beyond the warrior myth. Use a recognizable friendly yellow Daily Duck mascot at the center, with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, opening its wings toward a broad three-part panorama. At left, show only a restrained, generic warrior silhouette as the familiar myth; in the middle, use simple cultivated ground and understated farming shapes; at right, use generic goods and an abstract exchange to suggest trading. Let the zones blend naturally in a clean contemporary museum-like setting with warm premium lighting. Do not imply specific named people, dates, locations, or archaeological artifacts. Strong focal point, charming but sophisticated, modern editorial illustration, landscape hero framing, no logos, no watermark, no UI, no readable text, no headline inside the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck stands at the center of a broad panorama linking a familiar warrior image with symbolic scenes of farming and trading.",
-      "alt_ja": "黄色いアヒルが幅広いパノラマの中央に立ち、戦士のイメージから農業や交易を示す場面へ視線をつないでいる。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Myth Comes Apart",
-      "concept_title_ja": "神話の向こう側",
-      "image_path": "automation_images/design_previews/2026-09-28/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "ccb28042ea6e9189a06663e1e9d92ba69af1fccf7fa002e1b4b0254cdd0d8d02",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Viking Museums Rethink the Warrior Myth\nSummary: This lively cultural rethink broadens the familiar Viking image by highlighting women, farmers and traders.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Myth Comes Apart\n\nCONCEPT:\nA playful visual metaphor in which the oversized warrior myth is a museum backdrop that opens to reveal a fuller, more human-scale picture of Viking life.\n\nCOMPOSITION:\nLandscape hero image with a large, simplified museum backdrop shaped like a dramatic warrior-themed display screen, visibly opening in the middle like curtains or folding panels. The duck mascot stands in the opening, facing the viewer with a confident friendly smile. Beyond the opening, reveal a bright, calm ensemble of symbolic everyday scenes: a woman, a farmer, and a trader represented as non-specific silhouettes or figurative display forms, with no invented identities or detailed costumes. Keep the warrior imagery secondary and clearly framed as a familiar myth, not the whole story. Use bold geometric design, warm light, soft shadows, premium cultural-magazine style, strong contrast between closed myth and open perspective.\n\nPRODUCTION DIRECTION:\nCreate a single clean modern landscape hero illustration using a visual metaphor for museums moving beyond the Viking warrior myth. Show a large simplified museum backdrop inspired by a dramatic warrior display, opening in the center like folding panels. A recognizable friendly yellow Daily Duck mascot stands in the opening, with orange beak, large dark glossy eyes, small feather tuft, and warm confident expression. Through the opening, reveal a brighter broader scene suggesting women, farmers, and traders through non-specific silhouettes and simple symbolic forms, without invented names, costumes, artifacts, or historical claims. Make the warrior display clearly secondary and framed as a familiar myth rather than the complete story. Premium cultural-magazine art direction, bold geometric composition, warm approachable palette, soft shadows, crisp focal point, no logos, no watermark, no UI, no readable embedded text, no headline, landscape format.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck stands in an opening warrior-themed museum backdrop, revealing a broader scene symbolizing women, farmers, and traders.",
-      "alt_ja": "黄色いアヒルが戦士をテーマにした博物館の背景の開口部に立ち、その向こうに女性、農民、交易商を象徴する幅広い場面が現れている。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-28/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "THE SAGA GETS A WIDER CAST"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE SAGA GETS A WIDER CAST",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "THE SAGA GETS A WIDER CAST",
+    "meaning_ja": "「そのサガの登場人物が、より幅広くなる」という意味です。CAST は物語の出演者という意味と、内容・顔ぶれの構成という意味を持つため、戦士だけでなく女性、農民、交易商にも光を当てる今回の見直しを、物語の配役が広がるように表現しています。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "A Wider Viking Story",
+    "concept_title_ja": "広がるバイキングの物語",
+    "image_path": "automation_images/design_previews/2026-09-28/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "ad2fc7a0e66c2f96c0f006fc33349f782e67f016b5da9804c66672cbaf7a84b5",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Viking Museums Rethink the Warrior Myth\nSummary: This lively cultural rethink broadens the familiar Viking image by highlighting women, farmers and traders.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nA Wider Viking Story\n\nCONCEPT:\nA lively three-part visual panorama showing that Viking life extends beyond battle into everyday roles represented by women, farmers, and traders.\n\nCOMPOSITION:\nLandscape panorama divided into three softly connected zones rather than separate panels. Place the duck mascot prominently at the center, smiling and opening its wings toward the wider scene. On the left, use a restrained warrior silhouette as the familiar starting point; in the center, suggest farming through cultivated earth and simple tools; on the right, suggest trading through a calm exchange of generic goods and travel shapes. Include a subtle museum-display atmosphere through clean plinths and lighting, but avoid factual labels or specific artifacts. Make the transition from narrow myth to broad social picture clear, balanced, warm, and editorial.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration showing a wider view of Viking life beyond the warrior myth. Use a recognizable friendly yellow Daily Duck mascot at the center, with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, opening its wings toward a broad three-part panorama. At left, show only a restrained, generic warrior silhouette as the familiar myth; in the middle, use simple cultivated ground and understated farming shapes; at right, use generic goods and an abstract exchange to suggest trading. Let the zones blend naturally in a clean contemporary museum-like setting with warm premium lighting. Do not imply specific named people, dates, locations, or archaeological artifacts. Strong focal point, charming but sophisticated, modern editorial illustration, landscape hero framing, no logos, no watermark, no UI, no readable text, no headline inside the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A friendly yellow duck stands at the center of a broad panorama linking a familiar warrior image with symbolic scenes of farming and trading.",
+    "alt_ja": "黄色いアヒルが幅広いパノラマの中央に立ち、戦士のイメージから農業や交易を示す場面へ視線をつないでいる。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-28.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "b3fa3db4192e7c3485141353d7dbc9e4882ff476a833c838c2f9a20f5fd885d4",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-09-28 — Batch 1",
-  "final_email_sent_at": "2026-09-28T01:55:49.908400+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE SAGA GETS A WIDER CAST",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-28T11:46:21.333063+00:00"
+    "translation_language": "ja"
+  }
 }
