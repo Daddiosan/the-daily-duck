@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-09-30",
-  "generated_at": "2026-09-30T10:54:28.910474+00:00",
-  "approved_story": {
+  "ready_at": "2026-09-30T13:31:35.204829+00:00",
+  "gate_a_approved_story": {
     "date": "2026-09-30",
     "issue_date": "2026-09-30",
     "phase": 2,
@@ -562,64 +562,9 @@
       "gate_a_package_created_at": "2026-09-30T01:13:10.576498+00:00",
       "approval_token_digest": "f34552d64c6220f0435cd33dabc440e51076f3a87b9bfa1ac1e58c37b9e5d3c8"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 49,
-    "title": "Nine generations of virtual dating reveal how fish shape their ideal mates",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-09-generations-virtual-dating-reveal-fish.html",
-    "category": "animals",
-    "happiness": 8,
-    "hope": 6,
-    "general_interest": 8,
-    "surprise": 9,
-    "duck_visual": 9,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 9,
-    "total_score": 84,
-    "reason": "A funny and highly accessible animal story that turns mate choice into a lively underwater dating experiment. The concept is surprising, memorable and easy to illustrate.",
-    "candidate_number": 1,
-    "title_en": "Nine Generations of Virtual Dating Show How Fish Choose Mates",
-    "reason_en": "It turns mate choice into a surprising and amusing underwater dating experiment, making animal behavior easy to imagine and remember.",
-    "en_copy": "Across nine generations of virtual dating, fish revealed clues about how they shape their ideal mates. The unusual experiment turns underwater romance into a lively story about preference, choice and the surprising ways animals make decisions.",
-    "duck_name": "The Fish Matchmaker",
-    "duck_en": "Apparently, even fish have a type.",
-    "x_en": "Nine generations of virtual dating reveal how fish shape their ideal mates. Apparently, even fish have a type.",
-    "title_ja": "9世代のバーチャル恋愛が明らかにした、魚の理想の相手",
-    "reason_ja": "魚の相手選びを、驚きとユーモアのある水中のデート実験として描く、想像しやすく記憶に残る動物の話題です。",
-    "jp_copy": "9世代にわたるバーチャルなデートを通して、魚がどのように理想の相手を形づくっていくのか、その手がかりが明らかになりました。風変わりな実験が、水中の恋愛を、好みや選択、そして動物が意思決定を行う意外な方法についての生き生きとした物語に変えています。",
-    "duck_jp": "どうやら魚にも、好みのタイプがあるようです。",
-    "x_jp": "9世代にわたるバーチャルなデートで、魚がどのように理想の相手を形づくるのかが明らかに。どうやら魚にも、好みのタイプがあるようです。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Underwater Matchmaker",
-      "concept_en": "A charming underwater dating scene in which the Daily Duck mascot playfully guides fish toward their preferred mates, turning the virtual dating experiment into a warm visual story about attraction and choice.",
-      "composition_en": "Landscape hero composition. Place the recognizable friendly yellow duck in the foreground beside a simple underwater matchmaking board made of glowing coral-like shapes, with no readable symbols or text. Several generic fish swim through separate softly illuminated arches toward different fish silhouettes in the middle distance. Use blue-green water, gentle shafts of light, sparse bubbles and a clear focal hierarchy centered on the duck and the approaching fish. Premium editorial illustration, warm, clean and modern.",
-      "generation_prompt_en": "Create a clean, modern, charming premium editorial landscape illustration about fish revealing their ideal mates through nine generations of virtual dating. Feature one recognizable friendly yellow Daily Duck mascot with bright yellow feathers, orange beak, large dark glossy eyes, a small feather tuft and a warm approachable expression. The duck is an underwater matchmaker in the foreground, gently gesturing toward several generic fish moving through softly glowing coral-like arches toward different fish silhouettes. Use a luminous blue-green underwater environment, subtle bubbles, soft volumetric light, restrained detail, polished shapes, strong focal point, warm playful mood, sophisticated magazine hero-image composition. Keep the fish generic and avoid unsupported species details. No logos, no watermarks, no UI, no readable text, no headline, no letters or numbers embedded in the image.",
-      "alt_en": "The Daily Duck mascot playfully guides fish through an underwater matchmaking scene toward different potential mates.",
-      "title_ja": "水中のマッチメーカー",
-      "concept_ja": "デイリー・ダックのマスコットが、魚たちを理想の相手へ導く水中のデート実験を、親しみやすく描くコンセプトです。好みと選択という物語の核を、温かい視覚表現にしています。",
-      "composition_ja": "横長のヒーロー構図。手前に、黄色いアヒルのマスコットと、文字や記号のない、光るサンゴのような簡素なマッチングボードを配置します。中景では、複数の一般的な魚が、淡く光るアーチを通り、それぞれ異なる魚のシルエットへ向かいます。青緑色の水中、柔らかな光の筋、控えめな泡を使い、アヒルと魚を明確な焦点にします。",
-      "alt_ja": "デイリー・ダックのマスコットが、水中で魚たちをそれぞれの相手候補へ導いている。"
-    },
-    {
-      "number": 2,
-      "title_en": "Nine Waves Of Choice",
-      "concept_en": "A visual metaphor for nine generations of virtual dating: a flowing underwater sequence of nine softly separated stages, showing preference patterns developing across time while the duck observes like a curious editorial guide.",
-      "composition_en": "Landscape composition with a sweeping diagonal current moving from left to right. Along the current, show nine distinct but connected circular underwater scenes, each containing simple paired fish silhouettes in varied arrangements. Keep the progression abstract and elegant rather than diagrammatic. Place the friendly yellow duck at the lower right on a small rocky ledge, looking thoughtfully across the sequence. Use layered aquatic blues, coral accents and glowing transitions to suggest generations and development without any labels, numbers or interface elements.",
-      "generation_prompt_en": "Create a premium modern editorial landscape illustration visualizing nine generations of virtual dating among generic fish. Show a sweeping underwater current flowing diagonally from left to right, containing nine distinct connected circular aquatic vignettes with simple fish pairs arranged in changing preference patterns. Make the sequence feel poetic and illustrative, not like a scientific chart, and do not include labels, numbers, screens or readable symbols. Place one recognizable friendly yellow Daily Duck mascot at the lower right on a small rocky ledge, with orange beak, large dark glossy eyes, small feather tuft and warm thoughtful expression, observing the progression. Use elegant blue and teal water, restrained coral accents, soft glow, subtle bubbles, clean shapes, generous negative space and sophisticated magazine-cover composition. No logos, no watermarks, no UI, no embedded text, no headline.",
-      "alt_en": "The Daily Duck watches a flowing sequence of nine abstract underwater stages representing generations of fish mate preferences.",
-      "title_ja": "9つの波、9世代の選択",
-      "concept_ja": "9世代にわたるバーチャルなデートを、魚の好みが時間の流れの中で変化・形成されていくように見える水中の連続 दृश्यとして表現する視覚的メタファーです。",
-      "composition_ja": "横長の構図で、左から右へ流れる斜めの水流を大きく描きます。その流れに沿って、9つのつながった円形の水中場面を配置し、それぞれに異なる組み合わせの簡素な魚のシルエットを入れます。図表ではなく詩的で洗練された表現にし、数字やラベルは使いません。右下の岩場には、流れを考察する黄色いアヒルを置きます。",
-      "alt_ja": "デイリー・ダックが、魚の好みの変化を示す9つの抽象的な水中場面を見つめている。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "Finding The Type",
       "concept_en": "An intimate underwater choice moment: one fish approaches a softly glowing idealized partner while the Daily Duck watches from the foreground, emphasizing the surprising idea that fish can have preferences.",
@@ -630,84 +575,10 @@
       "concept_ja": "魚にも好みのタイプがあるという意外な発見を、ひと組の魚が向き合う親密な水中の瞬間として描きます。手前のアヒルが、温かい好奇心をもってその選択を見守ります。",
       "composition_ja": "映画的な横長の中近景構図。左手前に大きくアヒルを置き、水中の場面へ顔を向けさせます。中央右の余白には、2匹の一般的な魚が向き合い、そのうち1匹を淡い光で囲み、理想の相手を抽象的に示します。深い青の水、少数の浮遊粒子、柔らかな光だけで環境を簡潔に整え、感情的で即時性のある焦点を作ります。",
       "alt_ja": "デイリー・ダックが、淡い光に包まれた理想の相手へ近づく魚を静かな水中で見守っている。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IT OR NOT: FISH HAVE A TYPE",
-      "meaning_ja": "「魚にも好みのタイプがあるなんて、信じられる？」という意味です。元の英語表現は「Believe it or not（信じられないかもしれませんが）」で、「believe」の冒頭をアヒルのくちばしを意味する「bill」に置き換えています。アヒルらしさが明確な、音の近さを使ったダジャレです。"
     },
-    {
-      "number": 2,
-      "title": "THE FINER POINTS OF ATTRACTION",
-      "meaning_ja": "「惹かれ合いの細かなポイント」という意味です。「finer（より細かな、より優れた）」が魚のひれを意味する「fin」を連想させるため、魚の相手選びと魅力の判断をさりげなく重ねています。ダック語彙に頼らない、魚に結びついた上品な言葉遊びです。"
-    },
-    {
-      "number": 3,
-      "title": "NINE GENERATIONS. ONE BIG QUESTION.",
-      "meaning_ja": "「9世代。ひとつの大きな問い。」という意味です。短い断片を並べることで、長期にわたるバーチャルデート実験の規模と、魚はどんな相手を選ぶのかという好奇心を強調しています。ポスターやソーシャルカードで視線を止めやすい、余韻のあるコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Underwater Matchmaker",
-      "concept_title_ja": "水中のマッチメーカー",
-      "image_path": "automation_images/design_previews/2026-09-30/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "ef362a6d1f32bf37b7c937ebdad1becbfa82f59413d3fcbc816afc03eff16586",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Nine Generations of Virtual Dating Show How Fish Choose Mates\nSummary: It turns mate choice into a surprising and amusing underwater dating experiment, making animal behavior easy to imagine and remember.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Underwater Matchmaker\n\nCONCEPT:\nA charming underwater dating scene in which the Daily Duck mascot playfully guides fish toward their preferred mates, turning the virtual dating experiment into a warm visual story about attraction and choice.\n\nCOMPOSITION:\nLandscape hero composition. Place the recognizable friendly yellow duck in the foreground beside a simple underwater matchmaking board made of glowing coral-like shapes, with no readable symbols or text. Several generic fish swim through separate softly illuminated arches toward different fish silhouettes in the middle distance. Use blue-green water, gentle shafts of light, sparse bubbles and a clear focal hierarchy centered on the duck and the approaching fish. Premium editorial illustration, warm, clean and modern.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, charming premium editorial landscape illustration about fish revealing their ideal mates through nine generations of virtual dating. Feature one recognizable friendly yellow Daily Duck mascot with bright yellow feathers, orange beak, large dark glossy eyes, a small feather tuft and a warm approachable expression. The duck is an underwater matchmaker in the foreground, gently gesturing toward several generic fish moving through softly glowing coral-like arches toward different fish silhouettes. Use a luminous blue-green underwater environment, subtle bubbles, soft volumetric light, restrained detail, polished shapes, strong focal point, warm playful mood, sophisticated magazine hero-image composition. Keep the fish generic and avoid unsupported species details. No logos, no watermarks, no UI, no readable text, no headline, no letters or numbers embedded in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck mascot playfully guides fish through an underwater matchmaking scene toward different potential mates.",
-      "alt_ja": "デイリー・ダックのマスコットが、水中で魚たちをそれぞれの相手候補へ導いている。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "Nine Waves Of Choice",
-      "concept_title_ja": "9つの波、9世代の選択",
-      "image_path": "automation_images/design_previews/2026-09-30/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "b030b416bbae9d56b3e25f4b368d6e1ee2c87931b2a4739be83266cd7adbb36f",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Nine Generations of Virtual Dating Show How Fish Choose Mates\nSummary: It turns mate choice into a surprising and amusing underwater dating experiment, making animal behavior easy to imagine and remember.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nNine Waves Of Choice\n\nCONCEPT:\nA visual metaphor for nine generations of virtual dating: a flowing underwater sequence of nine softly separated stages, showing preference patterns developing across time while the duck observes like a curious editorial guide.\n\nCOMPOSITION:\nLandscape composition with a sweeping diagonal current moving from left to right. Along the current, show nine distinct but connected circular underwater scenes, each containing simple paired fish silhouettes in varied arrangements. Keep the progression abstract and elegant rather than diagrammatic. Place the friendly yellow duck at the lower right on a small rocky ledge, looking thoughtfully across the sequence. Use layered aquatic blues, coral accents and glowing transitions to suggest generations and development without any labels, numbers or interface elements.\n\nPRODUCTION DIRECTION:\nCreate a premium modern editorial landscape illustration visualizing nine generations of virtual dating among generic fish. Show a sweeping underwater current flowing diagonally from left to right, containing nine distinct connected circular aquatic vignettes with simple fish pairs arranged in changing preference patterns. Make the sequence feel poetic and illustrative, not like a scientific chart, and do not include labels, numbers, screens or readable symbols. Place one recognizable friendly yellow Daily Duck mascot at the lower right on a small rocky ledge, with orange beak, large dark glossy eyes, small feather tuft and warm thoughtful expression, observing the progression. Use elegant blue and teal water, restrained coral accents, soft glow, subtle bubbles, clean shapes, generous negative space and sophisticated magazine-cover composition. No logos, no watermarks, no UI, no embedded text, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck watches a flowing sequence of nine abstract underwater stages representing generations of fish mate preferences.",
-      "alt_ja": "デイリー・ダックが、魚の好みの変化を示す9つの抽象的な水中場面を見つめている。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Finding The Type",
-      "concept_title_ja": "理想のタイプを見つける",
-      "image_path": "automation_images/design_previews/2026-09-30/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "6d5d0dc8ad0c6ecc7212ebd87c90d74ba7e5730d974bce6b7043d944fd8878cb",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Nine Generations of Virtual Dating Show How Fish Choose Mates\nSummary: It turns mate choice into a surprising and amusing underwater dating experiment, making animal behavior easy to imagine and remember.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nFinding The Type\n\nCONCEPT:\nAn intimate underwater choice moment: one fish approaches a softly glowing idealized partner while the Daily Duck watches from the foreground, emphasizing the surprising idea that fish can have preferences.\n\nCOMPOSITION:\nUse a cinematic landscape close-to-medium composition with the duck large in the left foreground, turned toward the water. In the open space at center-right, show two generic fish facing one another, with one surrounded by a subtle luminous outline that suggests an ideal match without inventing physical traits. Keep the environment minimal: deep blue gradient water, a few floating particles and a soft pool of light. The duck remains clearly recognizable and warmly curious. The visual focus is emotional and immediate, distinct from the broader matchmaking scene and the nine-stage sequence.\n\nPRODUCTION DIRECTION:\nCreate a clean, cinematic premium editorial landscape illustration about fish having preferences in virtual dating. In the left foreground, feature one recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft and warm curious expression, watching the scene. At center-right, show two generic fish facing each other in open deep-blue water; one fish is surrounded by a subtle soft glow suggesting an ideal match, using only abstract visual metaphor and no invented species traits. Minimal floating particles, a gentle pool of light, elegant negative space, polished modern shapes, warm approachable mood, strong single focal moment, sophisticated magazine hero image. No screens, no interface, no readable text, no logos, no watermarks, no headline, no letters or numbers embedded in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck watches as one fish approaches a softly glowing ideal mate in a quiet underwater scene.",
-      "alt_ja": "デイリー・ダックが、淡い光に包まれた理想の相手へ近づく魚を静かな水中で見守っている。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-09-30/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "NINE GENERATIONS. ONE BIG QUESTION."
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "NINE GENERATIONS. ONE BIG QUESTION.",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "NINE GENERATIONS. ONE BIG QUESTION.",
+    "meaning_ja": "「9世代。ひとつの大きな問い。」という意味です。短い断片を並べることで、長期にわたるバーチャルデート実験の規模と、魚はどんな相手を選ぶのかという好奇心を強調しています。ポスターやソーシャルカードで視線を止めやすい、余韻のあるコピーです。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "Finding The Type",
+    "concept_title_ja": "理想のタイプを見つける",
+    "image_path": "automation_images/design_previews/2026-09-30/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "6d5d0dc8ad0c6ecc7212ebd87c90d74ba7e5730d974bce6b7043d944fd8878cb",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Nine Generations of Virtual Dating Show How Fish Choose Mates\nSummary: It turns mate choice into a surprising and amusing underwater dating experiment, making animal behavior easy to imagine and remember.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nFinding The Type\n\nCONCEPT:\nAn intimate underwater choice moment: one fish approaches a softly glowing idealized partner while the Daily Duck watches from the foreground, emphasizing the surprising idea that fish can have preferences.\n\nCOMPOSITION:\nUse a cinematic landscape close-to-medium composition with the duck large in the left foreground, turned toward the water. In the open space at center-right, show two generic fish facing one another, with one surrounded by a subtle luminous outline that suggests an ideal match without inventing physical traits. Keep the environment minimal: deep blue gradient water, a few floating particles and a soft pool of light. The duck remains clearly recognizable and warmly curious. The visual focus is emotional and immediate, distinct from the broader matchmaking scene and the nine-stage sequence.\n\nPRODUCTION DIRECTION:\nCreate a clean, cinematic premium editorial landscape illustration about fish having preferences in virtual dating. In the left foreground, feature one recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft and warm curious expression, watching the scene. At center-right, show two generic fish facing each other in open deep-blue water; one fish is surrounded by a subtle soft glow suggesting an ideal match, using only abstract visual metaphor and no invented species traits. Minimal floating particles, a gentle pool of light, elegant negative space, polished modern shapes, warm approachable mood, strong single focal moment, sophisticated magazine hero image. No screens, no interface, no readable text, no logos, no watermarks, no headline, no letters or numbers embedded in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck watches as one fish approaches a softly glowing ideal mate in a quiet underwater scene.",
+    "alt_ja": "デイリー・ダックが、淡い光に包まれた理想の相手へ近づく魚を静かな水中で見守っている。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-09-30.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "c1ec81e3e2ef45ea4541f03b2f1ee1a0d9757f0283c03559ff90c1ac6ca2ada0",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-09-30 — Batch 1",
-  "final_email_sent_at": "2026-09-30T10:54:32.194521+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "NINE GENERATIONS. ONE BIG QUESTION.",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-09-30T13:31:35.205945+00:00"
+    "translation_language": "ja"
+  }
 }
