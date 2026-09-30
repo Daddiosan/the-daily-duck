@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-09-30",
+    "displayDate": "September 30, 2026",
+    "slug": "the-fish-matchmaker",
+    "title": "THE FISH MATCHMAKER",
+    "duckName": "The Fish Matchmaker",
+    "storyTitleEn": "Nine generations of virtual dating reveal how fish shape their ideal mates",
+    "storyTitleJa": "Nine generations of virtual dating reveal how fish shape their ideal mates",
+    "image": "assets/ducks/2026-09-30-the-fish-matchmaker.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Fish Matchmaker",
+    "imageAltJa": "The Fish MatchmakerをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Across nine generations of virtual dating, fish revealed clues about how they shape their ideal mates. The unusual experiment turns underwater romance into a lively story about preference, choice and the surprising ways animals make decisions.",
+    "storyJa": "9世代にわたるバーチャルなデートを通して、魚がどのように理想の相手を形づくっていくのか、その手がかりが明らかになりました。風変わりな実験が、水中の恋愛を、好みや選択、そして動物が意思決定を行う意外な方法についての生き生きとした物語に変えています。",
+    "duckEn": "Apparently, even fish have a type.",
+    "duckJa": "どうやら魚にも、好みのタイプがあるようです。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-generations-virtual-dating-reveal-fish.html",
+    "archiveSummaryEn": "Nine generations of virtual dating reveal how fish shape their ideal mates. Apparently, even fish have a type.",
+    "archiveSummaryJa": "9世代にわたるバーチャルなデートで、魚がどのように理想の相手を形づくるのかが明らかに。どうやら魚にも、好みのタイプがあるようです。",
+    "reasonEn": "Nine generations of virtual dating reveal how fish shape their ideal mates. Apparently, even fish have a type.",
+    "reasonJa": "9世代にわたるバーチャルなデートで、魚がどのように理想の相手を形づくるのかが明らかに。どうやら魚にも、好みのタイプがあるようです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-29",
     "displayDate": "September 29, 2026",
     "slug": "spooky-sky-duck",
