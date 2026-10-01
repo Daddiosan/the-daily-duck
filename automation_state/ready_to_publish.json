@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-01",
-  "generated_at": "2026-10-01T06:36:16.356624+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-01T12:27:07.648992+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-01",
     "issue_date": "2026-10-01",
     "phase": 2,
@@ -562,64 +562,9 @@
       "gate_a_package_created_at": "2026-10-01T01:12:36.320149+00:00",
       "approval_token_digest": "21bc7e156b08c6b57cde71d08270e3f097c1d1c8045b2fb3d53ea15b4fa000ce"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 3,
-    "title": "Scientists develop 'floating scarecrow' to protect threatened seabirds",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-09-scientists-scarecrow-threatened-seabirds.html",
-    "category": "conservation",
-    "happiness": 8,
-    "hope": 9,
-    "general_interest": 8,
-    "surprise": 9,
-    "duck_visual": 10,
-    "source_quality": 8,
-    "freshness": 10,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 9,
-    "total_score": 88,
-    "reason": "An ingenious, easy-to-grasp solution protecting seabirds from fishing nets, with excellent visual potential and a strong hopeful conservation angle.",
-    "candidate_number": 1,
-    "title_en": "A Floating Scarecrow Gives Threatened Seabirds a Safer Passage",
-    "reason_en": "This clever, easy-to-understand idea offers a hopeful way to protect threatened seabirds from fishing nets.",
-    "en_copy": "A new kind of scarecrow is taking to the water. Scientists have developed a floating design intended to help protect threatened seabirds from fishing nets. It is a simple-sounding idea with a wonderfully hopeful aim: making the sea safer for birds.",
-    "duck_name": "The Sea Scarecrow",
-    "duck_en": "A little floating help can make a big difference for seabirds.",
-    "x_en": "A floating scarecrow could help protect threatened seabirds from fishing nets—a wonderfully simple idea with a hopeful purpose.",
-    "title_ja": "浮かぶ「かかし」が絶滅の危機にある海鳥を守る",
-    "reason_ja": "わかりやすく巧みなアイデアで、絶滅の危機にある海鳥を漁網から守ろうとする希望に満ちた取り組みです。",
-    "jp_copy": "新しいタイプのかかしが、水上へ進出しています。科学者たちは、絶滅の危機にある海鳥を漁網から守ることを目指した、浮かぶ仕組みを開発しました。シンプルに聞こえるアイデアですが、その目的はとても希望に満ちています。海を鳥たちにとってより安全な場所にすることです。",
-    "duck_jp": "浮かぶ小さな助けが、海鳥に大きな違いをもたらすかも。",
-    "x_jp": "浮かぶ「かかし」が、絶滅の危機にある海鳥を漁網から守るかもしれません。シンプルで希望に満ちたアイデアです。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Sea Scarecrow",
-      "concept_en": "A hopeful editorial hero image showing the floating scarecrow as a gentle guardian of the open sea, helping threatened seabirds avoid fishing nets.",
-      "composition_en": "Landscape composition with the friendly yellow Daily Duck mascot in the foreground, floating beside a simple non-specific scarecrow silhouette mounted on a buoyant platform. Several seabirds cross the bright open water in the middle distance, while a fishing net is visible below the surface as a quiet hazard being avoided. Use a low water-level viewpoint, generous sky, soft morning light, clean modern styling, and a warm hopeful mood. Keep the scarecrow design generic and avoid depicting unsupported technical details.",
-      "generation_prompt_en": "Create one premium editorial landscape hero image in a clean, modern, charming style. Show a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, floating in the foreground beside a simple generic scarecrow on a buoyant platform in the sea. Threatened seabirds pass safely across the open water in the background, while a fishing net is subtly visible beneath the surface as a hazard they are avoiding. Low water-level perspective, strong focal point on the duck and floating scarecrow, bright calm sky, soft hopeful morning light, refined color palette, gentle conservation mood, polished magazine illustration with realistic water and expressive character design. Landscape hero framing with clear negative space. No logos, no watermark, no UI, no readable text, no headline, no invented technical equipment, no dramatic danger.",
-      "alt_en": "A friendly yellow duck floats beside a simple sea scarecrow while seabirds pass above a fishing net.",
-      "title_ja": "海のかかし",
-      "concept_ja": "浮かぶかかしを、海鳥たちを漁網から守るやさしい海の守り手として描く、希望に満ちたエディトリアル・ヒーローイメージ。",
-      "composition_ja": "横長構図。手前に、オレンジ色のくちばし、大きくつややかな黒い目、小さな羽毛の冠を持つ親しみやすい黄色いデイリー・ダックのマスコットを配置し、浮力のある台に載ったシンプルで具体化しすぎないかかしの隣に浮かべる。中景では数羽の海鳥が明るい海面を横切り、水面下には、避けられている危険として漁網を控えめに見せる。低い水面の目線、広い空、柔らかな朝の光、クリーンで現代的な表現、温かく希望に満ちた雰囲気。技術的な詳細は創作しない。",
-      "alt_ja": "黄色い親しみやすいアヒルが、海のかかしのそばに浮かび、海鳥たちが漁網の上を安全に通過している。"
-    },
-    {
-      "number": 2,
-      "title_en": "The Safe Passage",
-      "concept_en": "A visual metaphor of protection and choice: the Daily Duck guides seabirds through a clear, sunlit route across the sea while a fishing net fades into the darker water below.",
-      "composition_en": "Use a wide, slightly elevated landscape view divided naturally by light and color. Place the duck mascot prominently at the front of a bright open-water passage, gently gesturing toward the safe route. In the lower and more distant water, show the fishing net as a subdued geometric pattern, while the floating scarecrow appears farther ahead as a small visual marker. Seabirds follow the illuminated route. Prioritize visual storytelling, simplicity, and optimism rather than technical realism.",
-      "generation_prompt_en": "Create one publishable landscape editorial illustration with a clean, modern, premium conservation aesthetic. Show the recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression at the front of a bright safe passage across the sea, gently guiding seabirds forward. Use a slightly elevated wide view: sunlight creates a clear open-water route, while a fishing net appears only as a subdued geometric pattern in darker water below and behind them. Place a simple generic floating scarecrow farther ahead as a quiet marker of protection. Strong focal point, elegant layered composition, airy sky, soft blue and warm gold palette, hopeful and reassuring mood. No logos, no watermark, no UI, no readable text, no headline, no invented people, no unsupported device details, no perilous action.",
-      "alt_en": "A yellow duck guides seabirds along a sunlit sea route above a subdued fishing net, with a floating scarecrow ahead.",
-      "title_ja": "安全な海の道",
-      "concept_ja": "デイリー・ダックが海鳥たちを明るく安全な海の通り道へ導く、保護と選択の視覚的メタファー。",
-      "composition_ja": "横長でやや高い視点の構図。光と色の変化によって、海面上に自然な道筋をつくる。手前にはデイリー・ダックのマスコットを大きく配置し、安全な方向をやさしく示させる。下方と遠方の暗い海には、漁網を控えめな幾何学模様として見せ、さらに先には浮かぶかかしを小さな目印として置く。海鳥たちは明るい道に沿って進む。技術的な正確さより、シンプルで前向きな物語性を重視する。",
-      "alt_ja": "黄色いアヒルが、海鳥たちを漁網の上に伸びる陽光の道へ導き、その先には浮かぶかかしが見えている。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "A Floating Idea",
       "concept_en": "A playful conceptual portrait of an ordinary-looking scarecrow transformed into a small, uplifting ocean protector, with the duck mascot celebrating the idea beside it.",
@@ -630,84 +575,10 @@
       "concept_ja": "普通のかかしが小さな海の守り手へと変わる、発想の力を祝うグラフィカルで心温まるコンセプト。",
       "composition_ja": "横長で、よりグラフィカルな構成。穏やかな海の中央に、シンプルで具体的な機械装置には見えない浮かぶかかしを大きく配置し、暖かな日の出を背景に希望の象徴として描く。隣には、親しみやすい黄色いデイリー・ダックのマスコットを浮かべるか立たせ、歓迎するポーズにする。空には海鳥の優雅な弧を描き、漁網の脅威は画面端の水中に淡いパターンとしてのみ示す。余白を活かし、温かな金色と海の青、上質な雑誌イラストの雰囲気にする。",
       "alt_ja": "黄色いアヒルが、日の出の海で浮かぶシンプルなかかしを歓迎し、空を海鳥が横切っている。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "WADDLE IT TAKE?",
-      "meaning_ja": "「何が必要だろう？」という自然な意味の “WHAT’LL IT TAKE?” を、アヒルの歩き方を表す “WADDLE” に置き換えたダジャレです。海を海鳥にとって安全にするには何が必要か、という物語の問いにもつながります。"
     },
-    {
-      "number": 2,
-      "title": "A NET GAIN FOR SEABIRDS",
-      "meaning_ja": "「海鳥にとっての大きなプラス」という意味です。英語の表現 “net gain”（差し引きの利益・純増）を、漁網を意味する “net” と重ねています。漁網から海鳥を守ろうとする話に、前向きな二重の意味を加えています。"
-    },
-    {
-      "number": 3,
-      "title": "A LITTLE HELP ON THE HIGH SEAS",
-      "meaning_ja": "「大海原での小さな助け」という意味です。浮かぶかかしという小さな仕組みが、海鳥に大きな違いをもたらすという希望を、冒険映画やポスターのような温かく印象的なコピーに仕立てています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Sea Scarecrow",
-      "concept_title_ja": "海のかかし",
-      "image_path": "automation_images/design_previews/2026-10-01/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "591dbe085d2ec0f9183c3cddafb9c439ea6279dedf0b64e6ead2b7fbe27e4af2",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Floating Scarecrow Gives Threatened Seabirds a Safer Passage\nSummary: This clever, easy-to-understand idea offers a hopeful way to protect threatened seabirds from fishing nets.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Sea Scarecrow\n\nCONCEPT:\nA hopeful editorial hero image showing the floating scarecrow as a gentle guardian of the open sea, helping threatened seabirds avoid fishing nets.\n\nCOMPOSITION:\nLandscape composition with the friendly yellow Daily Duck mascot in the foreground, floating beside a simple non-specific scarecrow silhouette mounted on a buoyant platform. Several seabirds cross the bright open water in the middle distance, while a fishing net is visible below the surface as a quiet hazard being avoided. Use a low water-level viewpoint, generous sky, soft morning light, clean modern styling, and a warm hopeful mood. Keep the scarecrow design generic and avoid depicting unsupported technical details.\n\nPRODUCTION DIRECTION:\nCreate one premium editorial landscape hero image in a clean, modern, charming style. Show a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, floating in the foreground beside a simple generic scarecrow on a buoyant platform in the sea. Threatened seabirds pass safely across the open water in the background, while a fishing net is subtly visible beneath the surface as a hazard they are avoiding. Low water-level perspective, strong focal point on the duck and floating scarecrow, bright calm sky, soft hopeful morning light, refined color palette, gentle conservation mood, polished magazine illustration with realistic water and expressive character design. Landscape hero framing with clear negative space. No logos, no watermark, no UI, no readable text, no headline, no invented technical equipment, no dramatic danger.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck floats beside a simple sea scarecrow while seabirds pass above a fishing net.",
-      "alt_ja": "黄色い親しみやすいアヒルが、海のかかしのそばに浮かび、海鳥たちが漁網の上を安全に通過している。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Safe Passage",
-      "concept_title_ja": "安全な海の道",
-      "image_path": "automation_images/design_previews/2026-10-01/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "4a2b27c3471fca74e68d248b8f212e099fd0c8376386abf038eff6a80455b7a3",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Floating Scarecrow Gives Threatened Seabirds a Safer Passage\nSummary: This clever, easy-to-understand idea offers a hopeful way to protect threatened seabirds from fishing nets.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Safe Passage\n\nCONCEPT:\nA visual metaphor of protection and choice: the Daily Duck guides seabirds through a clear, sunlit route across the sea while a fishing net fades into the darker water below.\n\nCOMPOSITION:\nUse a wide, slightly elevated landscape view divided naturally by light and color. Place the duck mascot prominently at the front of a bright open-water passage, gently gesturing toward the safe route. In the lower and more distant water, show the fishing net as a subdued geometric pattern, while the floating scarecrow appears farther ahead as a small visual marker. Seabirds follow the illuminated route. Prioritize visual storytelling, simplicity, and optimism rather than technical realism.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration with a clean, modern, premium conservation aesthetic. Show the recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression at the front of a bright safe passage across the sea, gently guiding seabirds forward. Use a slightly elevated wide view: sunlight creates a clear open-water route, while a fishing net appears only as a subdued geometric pattern in darker water below and behind them. Place a simple generic floating scarecrow farther ahead as a quiet marker of protection. Strong focal point, elegant layered composition, airy sky, soft blue and warm gold palette, hopeful and reassuring mood. No logos, no watermark, no UI, no readable text, no headline, no invented people, no unsupported device details, no perilous action.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A yellow duck guides seabirds along a sunlit sea route above a subdued fishing net, with a floating scarecrow ahead.",
-      "alt_ja": "黄色いアヒルが、海鳥たちを漁網の上に伸びる陽光の道へ導き、その先には浮かぶかかしが見えている。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "A Floating Idea",
-      "concept_title_ja": "浮かぶアイデア",
-      "image_path": "automation_images/design_previews/2026-10-01/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "7189b7081a0cd56e7a9be6963e8cf918ee2949d2472775f7403049c0bbeaafa1",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Floating Scarecrow Gives Threatened Seabirds a Safer Passage\nSummary: This clever, easy-to-understand idea offers a hopeful way to protect threatened seabirds from fishing nets.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nA Floating Idea\n\nCONCEPT:\nA playful conceptual portrait of an ordinary-looking scarecrow transformed into a small, uplifting ocean protector, with the duck mascot celebrating the idea beside it.\n\nCOMPOSITION:\nCreate a distinct, more graphic landscape composition centered on the floating scarecrow as a charming object of ingenuity. Place it large in the middle of a calm sea, silhouetted against a warm sunrise, with the duck mascot perched or floating beside it in a welcoming pose. Keep seabirds in a graceful arc across the sky and suggest the fishing-net threat only through a faint submerged pattern at the edge of the frame. Use clean shapes, premium editorial illustration, restrained detail, and a sense of wonder without adding factual apparatus.\n\nPRODUCTION DIRECTION:\nCreate one premium landscape editorial image with a clean contemporary illustration style and a strong graphic focal point. Center a simple generic scarecrow floating on calm sea water, silhouetted against a warm sunrise, presenting it as an uplifting ocean-protection idea rather than a detailed machine. Beside it, include the recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, proudly welcoming the viewer. A graceful arc of seabirds crosses the sky, while a faint submerged fishing-net pattern appears only near the edge as a subtle conservation context. Elegant shapes, warm gold and ocean-blue palette, charming but sophisticated, spacious landscape framing, premium magazine-art direction. No logos, no watermark, no UI, no readable text, no headline, no invented technical components, no named people or locations, no dramatic threat.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A cheerful yellow duck welcomes a simple floating scarecrow at sunrise as seabirds cross the sky above the sea.",
-      "alt_ja": "黄色いアヒルが、日の出の海で浮かぶシンプルなかかしを歓迎し、空を海鳥が横切っている。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-01/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "A LITTLE HELP ON THE HIGH SEAS"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "A LITTLE HELP ON THE HIGH SEAS",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "A LITTLE HELP ON THE HIGH SEAS",
+    "meaning_ja": "「大海原での小さな助け」という意味です。浮かぶかかしという小さな仕組みが、海鳥に大きな違いをもたらすという希望を、冒険映画やポスターのような温かく印象的なコピーに仕立てています。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "A Floating Idea",
+    "concept_title_ja": "浮かぶアイデア",
+    "image_path": "automation_images/design_previews/2026-10-01/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "7189b7081a0cd56e7a9be6963e8cf918ee2949d2472775f7403049c0bbeaafa1",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Floating Scarecrow Gives Threatened Seabirds a Safer Passage\nSummary: This clever, easy-to-understand idea offers a hopeful way to protect threatened seabirds from fishing nets.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nA Floating Idea\n\nCONCEPT:\nA playful conceptual portrait of an ordinary-looking scarecrow transformed into a small, uplifting ocean protector, with the duck mascot celebrating the idea beside it.\n\nCOMPOSITION:\nCreate a distinct, more graphic landscape composition centered on the floating scarecrow as a charming object of ingenuity. Place it large in the middle of a calm sea, silhouetted against a warm sunrise, with the duck mascot perched or floating beside it in a welcoming pose. Keep seabirds in a graceful arc across the sky and suggest the fishing-net threat only through a faint submerged pattern at the edge of the frame. Use clean shapes, premium editorial illustration, restrained detail, and a sense of wonder without adding factual apparatus.\n\nPRODUCTION DIRECTION:\nCreate one premium landscape editorial image with a clean contemporary illustration style and a strong graphic focal point. Center a simple generic scarecrow floating on calm sea water, silhouetted against a warm sunrise, presenting it as an uplifting ocean-protection idea rather than a detailed machine. Beside it, include the recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, proudly welcoming the viewer. A graceful arc of seabirds crosses the sky, while a faint submerged fishing-net pattern appears only near the edge as a subtle conservation context. Elegant shapes, warm gold and ocean-blue palette, charming but sophisticated, spacious landscape framing, premium magazine-art direction. No logos, no watermark, no UI, no readable text, no headline, no invented technical components, no named people or locations, no dramatic threat.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A cheerful yellow duck welcomes a simple floating scarecrow at sunrise as seabirds cross the sky above the sea.",
+    "alt_ja": "黄色いアヒルが、日の出の海で浮かぶシンプルなかかしを歓迎し、空を海鳥が横切っている。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-01.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "b549a8f51542a13b7bd866ae6c90994f9799d1f1fbd978e203e8faff86c8bd12",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-01 — Batch 1",
-  "final_email_sent_at": "2026-10-01T06:36:28.519103+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "A LITTLE HELP ON THE HIGH SEAS",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-01T12:27:07.649993+00:00"
+    "translation_language": "ja"
+  }
 }
