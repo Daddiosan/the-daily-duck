@@ -1,129 +1,101 @@
-# R1 Gmail Watch Renewal Runbook
+# Gmail Watch Renewal and OAuth Canary Runbook
 
-Status: source implementation and local tests only. Nothing in this document
-authorizes deployment, a live `users.watch` call, IAM changes, or Cloud
-Scheduler creation.
+Status: deployed production configuration documented from read-only discovery
+on 2026-10-01. This document does not authorize a live `users.watch`, OAuth,
+secret, IAM, Scheduler, or Cloud Run mutation.
 
-## Architecture
+## Production source of truth
 
-The existing Relay service contains an authenticated `POST /renew-watch`
-endpoint. A future dedicated Cloud Scheduler identity will invoke it with a
-Google OIDC token. After application-level issuer, audience, verified-email,
-and exact-principal checks, one request-local Gmail client makes exactly one
-`users.watch` call. A successful result is written transactionally to the
-dedicated `relay_watch_state` collection.
+| Setting | Production value |
+| --- | --- |
+| Project | `the-daily-duck` (`424584128509`) |
+| Region | `asia-northeast1` |
+| Cloud Run service | `daily-duck-approval-relay` |
+| Renewal endpoint | `POST /renew-watch` |
+| Scheduler job | `daily-duck-watch-renewal` |
+| Schedule | `17 3 * * *`, `Asia/Tokyo` |
+| Scheduler identity | `daily-duck-watch-renewal@the-daily-duck.iam.gserviceaccount.com` |
+| Gmail topic | `projects/the-daily-duck/topics/daily-duck-gmail-events` |
+
+The older planned name `daily-duck-gmail-watch-renewal` was never the deployed
+resource name. Operators must use `daily-duck-watch-renewal`.
 
 ```text
-Cloud Scheduler (future, daily)
-  -> Cloud Run IAM authentication
+Cloud Scheduler (daily, deployed)
+  -> Cloud Run IAM and application OIDC authentication
   -> POST /renew-watch
-  -> application OIDC issuer/audience/principal verification
-  -> request-local Gmail client using gmail.readonly OAuth
   -> users.watch(existing topic, INBOX, include)
-  -> monotonic Firestore watch-state transaction
+  -> monotonic relay_watch_state transaction
 ```
 
-The renewal principal is configured separately from the Pub/Sub push
-principal. Deployment must grant only the dedicated Scheduler service account
-permission to invoke Cloud Run and must put that exact identity in
-`RELAY_RENEWAL_OIDC_EXPECTED_PRINCIPALS`. The application audience is supplied
-by `RELAY_RENEWAL_OIDC_EXPECTED_AUDIENCE`. The Pub/Sub principal is not
-automatically accepted.
+The dedicated Scheduler principal is separate from the Pub/Sub push principal.
+The application verifies issuer, audience, `email_verified`, and the exact
+principal before Gmail access.
 
-## Gmail contract and credentials
+## OAuth credential contract
 
-Renewal reuses the Relay's existing OAuth parsing and the exact
-`gmail.readonly` scope. It does not request another scope. Every endpoint
-invocation constructs its own Gmail service/transport; it does not share the
-thread-unsafe Gmail transport used by another request.
+The Relay uses only `gmail.readonly`. Production injects Secret Manager values
+as environment variables, not mounted files:
 
-The topic comes from `RELAY_GMAIL_WATCH_TOPIC` and, at deployment review, must
-be checked against the existing R1 Gmail events topic. The call uses:
+- `RELAY_GMAIL_OAUTH_CLIENT_JSON=relay-gmail-oauth-client-json:<version>`
+- `RELAY_GMAIL_OAUTH_REFRESH_TOKEN=relay-gmail-oauth-refresh-token:<version>`
 
-- `userId=me`
-- `labelIds=[INBOX]`
-- `labelFilterBehavior=include` (the Gmail API wire value for INCLUDE)
+Production recovery must pin explicit versions rather than continuing to rely
+on `latest`. Never print or place the client secret or refresh token in a file,
+log, command history, repository secret, or issue.
 
-There is one Gmail call per endpoint invocation and no in-application retry
-loop. Scheduler retries provide the outer retry boundary.
+The OAuth app must be `External / In production` before an operational offline
+refresh token is granted. Publishing status is a Human Gate and must be checked
+in Google Auth Platform; do not infer it from a token error.
+
+## OAuth canary
+
+The Relay exposes authenticated `POST /oauth-canary`. It calls only
+`users.getProfile(userId=me)`, validates the metadata shape, discards the
+response, and logs only a fixed category. It never reads message bodies or
+message metadata.
+
+Recommended Scheduler configuration after Human Gate:
+
+| Setting | Value |
+| --- | --- |
+| Job | `daily-duck-oauth-canary` |
+| Schedule | `43 */6 * * *`, `Asia/Tokyo` |
+| Target | Relay URL plus `/oauth-canary` |
+| OIDC identity/audience | same reviewed renewal identity and service audience |
+| Success | HTTP 200 |
+
+Alert on any non-2xx. Fixed categories are `AUTH_FAILURE`, `TIMEOUT`,
+`RATE_LIMITED`, `RETRYABLE`, `MALFORMED_RESPONSE`, and `UNKNOWN`.
 
 ## Watch state and cursor safety
 
-The document ID is the SHA-256 mailbox hash. The exact persisted schema is:
+`relay_watch_state` stores only `expiration`, `history_id`, `mailbox_hash`, and
+`updated_at`. `users.watch` renewal never initializes, resets, or advances
+`relay_cursor`; the returned history ID and processing cursor have different
+roles. The transaction accepts only a strictly newer `(expiration, history_id)`.
 
-| Field | Representation | Rule |
-| --- | --- | --- |
-| `expiration` | integer epoch milliseconds | positive integer |
-| `history_id` | decimal string | non-negative, ASCII decimal |
-| `mailbox_hash` | lowercase SHA-256 hex | never the raw mailbox |
-| `updated_at` | nonempty UTC timestamp string | write time |
+No mailbox, sender, Subject, body, OAuth token, client secret, Authorization
+header, or Gmail provider payload is stored or logged.
 
-No raw mailbox, sender, Subject, body, OAuth token, client secret,
-Authorization header, or Gmail error payload is stored or logged.
+## HTTP behavior
 
-The returned watch `historyId` and `relay_cursor.history_id` have different
-responsibilities. Renewal persists the returned value only in watch state. It
-never initializes, resets, or advances `relay_cursor`, so renewing a watch
-cannot skip the history interval between the processing cursor and the new
-watch value.
+- `200`: renewal/canary succeeded.
+- `400`: non-retryable Gmail renewal rejection or malformed watch response.
+- `401`: OIDC authentication rejected.
+- `503`: sanitized retryable Gmail or canary failure.
+- `500`: unexpected or storage failure; fail closed and investigate.
 
-Repeated renewal is idempotent. The Firestore transaction compares
-`(expiration, numeric history_id)` and writes only a strictly newer successful
-result. If two calls overlap and the later watch completes first, an older
-result that completes afterward cannot overwrite it. A Gmail failure or
-malformed response performs no state write.
+## Incident check and recovery
 
-## HTTP and retry behavior
+On 2026-09-30 the watch remained valid, but the OAuth refresh token returned
+`invalid_grant`. Renewal and Relay Gmail history reads therefore both failed.
+The recovery sequence is in `OAUTH_RECOVERY_RUNBOOK.md`.
 
-- `200`: Gmail renewal succeeded. `RENEWED_STATE_RETAINED` is also success; a
-  concurrent or repeated result was not newer than the stored state.
-- `401`: missing, invalid, or unauthorized OIDC identity. Do not retry until
-  authentication is corrected.
-- `400`: Gmail returned 400/401/403, or its success response was malformed.
-  Treat as configuration/authorization failure and require investigation.
-- `503`: Gmail 429/500/502/503/504 or a temporary network/connectivity failure.
-  A later Scheduler retry is safe.
-- `500`: unclassified Gmail or storage failure. Inspect sanitized category
-  logs; retry remains safe, but investigate repeated failures.
+Before replacing credentials, pause `daily-duck-watch-renewal` if the next
+03:17 execution could cross the users.watch Human Gate. After credential and
+revision validation, explicitly approve one live renewal, verify a newer
+Firestore watch state, and only then resume the job.
 
-Responses and logs contain only fixed status/reason categories. They do not
-echo provider payloads, tokens, mailbox identity, topic, history ID, or
-expiration.
-
-## Future Cloud Scheduler plan — document only
-
-This plan is not deployed by R1.3:
-
-| Setting | Planned value |
-| --- | --- |
-| Job name | `daily-duck-gmail-watch-renewal` |
-| Region | `asia-northeast1` |
-| Schedule | `17 03 * * *` (once daily) |
-| Time zone | `Asia/Tokyo` |
-| HTTP method | `POST` |
-| Target | exact deployed Relay URL plus `/renew-watch` |
-| OIDC service account | dedicated renewal-only service account |
-| OIDC audience | exact reviewed Cloud Run service audience |
-| Success | HTTP 200 |
-| Retry | bounded exponential retry for 5xx/429-class outcomes; no retry for 4xx |
-
-Daily renewal is comfortably inside Gmail's normal watch expiration window.
-Before deployment, a Human Gate must review the concrete service URL,
-audience, service-account identity, existing topic, retry limits, and schedule.
-No secret is placed in the Scheduler configuration.
-
-## Operations, emergency action, and rollback
-
-Manual emergency renewal uses the same authenticated endpoint and dedicated
-principal after a Human Gate; operators must not call Gmail directly with
-printed credentials. A successful call may safely be repeated. Persistent
-4xx responses require correcting identity, OAuth authorization, or topic
-configuration before retrying. Persistent 5xx responses require reviewing
-sanitized Cloud Run logs and Firestore availability.
-
-To disable renewal after a future deployment, pause the Scheduler job. To
-roll back the application, route Cloud Run traffic to the prior reviewed R1
-revision. Do not delete watch state or change `relay_cursor`; the existing R1
-push path and legacy 15-minute polling remain untouched. Any deployment,
-Scheduler/IAM creation, live watch renewal, or rollback requires a separate
-Human Gate.
+Rollback routes traffic to the last known-good revision and restores the prior
+explicit secret version. Never delete watch state or edit `relay_cursor`.

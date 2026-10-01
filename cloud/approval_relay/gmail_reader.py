@@ -7,6 +7,7 @@ import os
 from dataclasses import dataclass
 from email.header import decode_header, make_header
 from email.utils import parseaddr
+from enum import Enum
 from typing import Any, Callable, Mapping, Protocol
 
 
@@ -15,6 +16,23 @@ GMAIL_READONLY_SCOPE = "https://www.googleapis.com/auth/gmail.readonly"
 
 class GmailReaderError(RuntimeError):
     """A Gmail history or message read could not safely complete."""
+
+
+class GmailCanaryFailureKind(str, Enum):
+    AUTH_FAILURE = "AUTH_FAILURE"
+    TIMEOUT = "TIMEOUT"
+    RATE_LIMITED = "RATE_LIMITED"
+    RETRYABLE = "RETRYABLE"
+    MALFORMED_RESPONSE = "MALFORMED_RESPONSE"
+    UNKNOWN = "UNKNOWN"
+
+
+class GmailCanaryError(RuntimeError):
+    """Sanitized OAuth canary failure with no provider payload or credential."""
+
+    def __init__(self, kind: GmailCanaryFailureKind) -> None:
+        super().__init__(kind.value)
+        self.kind = kind
 
 
 @dataclass(frozen=True)
@@ -33,6 +51,8 @@ class GmailReader(Protocol):
     def list_history(self, start_history_id: str) -> HistoryBatch: ...
 
     def get_message_metadata(self, message_id: str) -> MessageMetadata: ...
+
+    def check_profile(self) -> None: ...
 
 
 def _decoded_header(value: object) -> str | None:
@@ -91,11 +111,17 @@ class FakeGmailReader:
         *,
         history: HistoryBatch | Exception | None = None,
         messages: Mapping[str, MessageMetadata | Exception] | None = None,
+        profile: Mapping[str, Any] | Exception | None = None,
     ) -> None:
         self.history = history or HistoryBatch(())
         self.messages = dict(messages or {})
+        self.profile = profile or {
+            "emailAddress": "fake@example.com",
+            "historyId": "1",
+        }
         self.list_history_calls: list[str] = []
         self.get_message_calls: list[str] = []
+        self.profile_calls = 0
 
     def list_history(self, start_history_id: str) -> HistoryBatch:
         self.list_history_calls.append(start_history_id)
@@ -109,6 +135,33 @@ class FakeGmailReader:
         if isinstance(value, Exception):
             raise value
         return value
+
+    def check_profile(self) -> None:
+        self.profile_calls += 1
+        if isinstance(self.profile, Exception):
+            raise self.profile
+
+
+def _classify_canary_failure(exc: BaseException) -> GmailCanaryFailureKind:
+    # google.auth RefreshError is deliberately recognized by class name so the
+    # provider's error text (which may contain sensitive details) is never used.
+    if type(exc).__name__ == "RefreshError":
+        return GmailCanaryFailureKind.AUTH_FAILURE
+    if isinstance(exc, (TimeoutError, ConnectionError)):
+        return GmailCanaryFailureKind.TIMEOUT
+    response = getattr(exc, "resp", None)
+    raw_status = getattr(response, "status", None)
+    try:
+        status = int(raw_status) if raw_status is not None else None
+    except (TypeError, ValueError):
+        status = None
+    if status in {400, 401, 403}:
+        return GmailCanaryFailureKind.AUTH_FAILURE
+    if status == 429:
+        return GmailCanaryFailureKind.RATE_LIMITED
+    if status in {408, 500, 502, 503, 504}:
+        return GmailCanaryFailureKind.RETRYABLE
+    return GmailCanaryFailureKind.UNKNOWN
 
 
 class RealGmailReader:
@@ -190,6 +243,26 @@ class RealGmailReader:
             raise GmailReaderError("Gmail returned metadata for an unexpected message.")
         return metadata
 
+    def check_profile(self) -> None:
+        """Perform the smallest Gmail read used to prove OAuth refresh health."""
+
+        try:
+            response = self._service.users().getProfile(userId="me").execute()
+        except Exception as exc:  # noqa: BLE001 - sanitize provider failures
+            raise GmailCanaryError(_classify_canary_failure(exc)) from exc
+        if not isinstance(response, Mapping):
+            raise GmailCanaryError(GmailCanaryFailureKind.MALFORMED_RESPONSE)
+        history_id = response.get("historyId")
+        email_address = response.get("emailAddress")
+        if (
+            not isinstance(history_id, str)
+            or not history_id.isascii()
+            or not history_id.isdecimal()
+            or not isinstance(email_address, str)
+            or "@" not in email_address
+        ):
+            raise GmailCanaryError(GmailCanaryFailureKind.MALFORMED_RESPONSE)
+
 
 def build_gmail_service_from_env(env: Mapping[str, str] | None = None) -> Any:
     """Create one Gmail service from the existing read-only OAuth settings."""
@@ -246,3 +319,6 @@ class LazyGmailReader:
 
     def get_message_metadata(self, message_id: str) -> MessageMetadata:
         return self._get().get_message_metadata(message_id)
+
+    def check_profile(self) -> None:
+        self._get().check_profile()

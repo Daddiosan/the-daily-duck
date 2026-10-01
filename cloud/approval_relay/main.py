@@ -29,6 +29,7 @@ from .github_app_dispatch import (
     build_github_dispatcher_from_env,
 )
 from .gmail_reader import (
+    GmailCanaryError,
     GmailReader,
     GmailReaderError,
     LazyGmailReader,
@@ -69,6 +70,7 @@ from .watch_renewal import (
 
 
 LOGGER = logging.getLogger("approval_relay")
+LOGGER.setLevel(logging.INFO)
 _LOG_ALLOWED_FIELDS = frozenset(
     {
         "event_key_prefix",
@@ -610,6 +612,28 @@ def create_app(
         return jsonify({"status": "OK"}), 200
 
     if renewal_service is not None and renewal_authenticator is not None:
+
+        @app.post("/oauth-canary")
+        def oauth_canary_route() -> Any:
+            try:
+                renewal_authenticator.verify(request.headers.get("Authorization"))
+                gmail.check_profile()
+                _log_event("oauth_canary_succeeded", {"status": "OK"})
+                return jsonify({"status": "OK"}), 200
+            except AuthenticationError:
+                return jsonify({"status": "REJECTED", "reason": "UNAUTHORIZED"}), 401
+            except GmailCanaryError as exc:
+                _log_event(
+                    "oauth_canary_failed",
+                    {"status": "RETRY", "error_category": exc.kind.value},
+                )
+                return jsonify({"status": "RETRY", "reason": exc.kind.value}), 503
+            except Exception as exc:  # noqa: BLE001 - fail closed, sanitized
+                _log_event(
+                    "oauth_canary_failed",
+                    {"status": "RETRY", "error_category": type(exc).__name__},
+                )
+                return jsonify({"status": "RETRY", "reason": "UNKNOWN"}), 500
 
         @app.post("/renew-watch")
         def renew_watch_route() -> Any:
