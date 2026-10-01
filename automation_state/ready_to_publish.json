@@ -1,5 +1,5 @@
 {
-  "state": "READY_TO_PUBLISH",
+  "state": "PUBLISHED",
   "issue_date": "2026-10-01",
   "ready_at": "2026-10-01T12:27:07.648992+00:00",
   "gate_a_approved_story": {
@@ -622,10 +622,19 @@
   "canonical_image_path": "automation_images/canonical/2026-10-01.png",
   "design_approval_reply": "3 3",
   "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "publish_started": false,
+  "publish_started": true,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
     "translation_language": "ja"
+  },
+  "published_at": "2026-10-01T12:27:23.974935+00:00",
+  "published_image_path": "assets/ducks/2026-10-01-the-sea-scarecrow.png",
+  "published_page_path": "ducks/2026-10-01/index.html",
+  "website_language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja",
+    "translation_source": "english_master"
   }
 }

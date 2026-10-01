@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-01T12:27:23.975681+00:00",
+  "issue_date": "2026-10-01",
+  "image": "assets/ducks/2026-10-01-the-sea-scarecrow.png",
+  "page": "ducks/2026-10-01/index.html",
+  "title": "Scientists develop 'floating scarecrow' to protect threatened seabirds",
+  "duck_name": "The Sea Scarecrow",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

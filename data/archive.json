@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-01",
+    "displayDate": "October 1, 2026",
+    "slug": "the-sea-scarecrow",
+    "title": "THE SEA SCARECROW",
+    "duckName": "The Sea Scarecrow",
+    "storyTitleEn": "Scientists develop 'floating scarecrow' to protect threatened seabirds",
+    "storyTitleJa": "Scientists develop 'floating scarecrow' to protect threatened seabirds",
+    "image": "assets/ducks/2026-10-01-the-sea-scarecrow.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Sea Scarecrow",
+    "imageAltJa": "The Sea ScarecrowをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A new kind of scarecrow is taking to the water. Scientists have developed a floating design intended to help protect threatened seabirds from fishing nets. It is a simple-sounding idea with a wonderfully hopeful aim: making the sea safer for birds.",
+    "storyJa": "新しいタイプのかかしが、水上へ進出しています。科学者たちは、絶滅の危機にある海鳥を漁網から守ることを目指した、浮かぶ仕組みを開発しました。シンプルに聞こえるアイデアですが、その目的はとても希望に満ちています。海を鳥たちにとってより安全な場所にすることです。",
+    "duckEn": "A little floating help can make a big difference for seabirds.",
+    "duckJa": "浮かぶ小さな助けが、海鳥に大きな違いをもたらすかも。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-09-scientists-scarecrow-threatened-seabirds.html",
+    "archiveSummaryEn": "A floating scarecrow could help protect threatened seabirds from fishing nets—a wonderfully simple idea with a hopeful purpose.",
+    "archiveSummaryJa": "浮かぶ「かかし」が、絶滅の危機にある海鳥を漁網から守るかもしれません。シンプルで希望に満ちたアイデアです。",
+    "reasonEn": "A floating scarecrow could help protect threatened seabirds from fishing nets—a wonderfully simple idea with a hopeful purpose.",
+    "reasonJa": "浮かぶ「かかし」が、絶滅の危機にある海鳥を漁網から守るかもしれません。シンプルで希望に満ちたアイデアです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-09-30",
     "displayDate": "September 30, 2026",
     "slug": "the-fish-matchmaker",
