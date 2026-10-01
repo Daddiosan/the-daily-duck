@@ -10,10 +10,11 @@ interpret the reply body, decide whether content is approved, write production
 remain the approval authority and continue to validate commands through
 `scripts/approval_domain.py`.
 
-The deployed R1 service remains locked operationally to `DRY_RUN`. R2A adds a
-local, reviewable GitHub App adapter and fail-closed `LIVE` wiring, but R2A
-does not authorize GitHub App creation, secret/IAM changes, deployment, or
-LIVE activation.
+Production read-only discovery on 2026-10-01 confirmed revision
+`daily-duck-approval-relay-r2c-live-664fc15` in `LIVE` mode with 100% traffic.
+The GitHub App adapter, Firestore stores, authenticated Pub/Sub route, and
+watch-renewal endpoint are deployed. This runbook records that observed state;
+it does not authorize further secret/IAM changes, deployment, or live calls.
 
 ## Authenticated ingress
 
@@ -53,9 +54,9 @@ both required for a candidate. The reply body is never parsed.
 
 ## Firestore layout
 
-The Relay defines three fixed, application-controlled collections. The first
-two are used by normal ingress; the third is used only by the R1.3 watch
-renewal source implementation and is not evidence of deployment:
+The deployed Relay defines three fixed, application-controlled collections.
+The first two are used by normal ingress and the third by deployed watch
+renewal:
 
 - `relay_cursor`: document ID is the one-way mailbox hash. Fields are exactly
   `mailbox_hash`, `history_id`, and `updated_at`.
@@ -188,8 +189,35 @@ Successful dispatch stores GitHub's returned workflow run ID. A proven
 pre-send failure or explicit rate-limit rejection is safe to retry. A timeout,
 reset, 5xx, or malformed success response after the request may have reached
 GitHub and is therefore `UNKNOWN_OUTCOME`; it is never automatically
-redispatched. Existing polling remains the recovery authority while R2 is in
-coexistence.
+redispatched.
+
+`UNKNOWN_OUTCOME` reconciliation remains manual. Inspect the sanitized event
+state and GitHub runs around `updated_at`. If a matching run exists, do not
+redispatch. If no run exists and no run is still queued/in progress, an
+operator may use the fixed workflow's manual dispatch after approval; the
+checker concurrency group and terminal state guard provide the final business
+dedupe. Never edit the Firestore event to guess an outcome.
+
+## Recovery authority hierarchy
+
+Production recovery no longer treats GitHub `on.schedule` as a 15-minute SLA:
+
+```text
+PRIMARY    Gmail Push -> Pub/Sub -> Approval Relay -> GitHub App dispatch
+SECONDARY  Cloud Scheduler -> approval fallback -> GitHub App dispatch
+TERTIARY   GitHub Actions on.schedule (best effort only)
+```
+
+The secondary component is `cloud/approval_fallback/`. It cannot read Gmail or
+approval content. Its two authenticated routes each select one compile-time
+workflow, while owner, repository and `main` ref remain constants in the
+reviewed GitHub App adapter. `UNKNOWN_OUTCOME` is acknowledged rather than
+blindly retried; the next scheduled tick provides bounded recovery.
+
+Concurrent Push, external fallback, and GitHub schedule wake-ups are safe
+because each downstream workflow has a stage-specific concurrency group with
+`cancel-in-progress: false`. Gate A exits when the same issue is already
+approved; Design Selection returns `ALREADY_SELECTED` after the terminal state.
 
 ## R2A cutover and approval-token boundary
 
@@ -230,9 +258,11 @@ repository-scoped GitHub App and private-key secret, verify DRY_RUN with the new
 image, approve an `UNKNOWN_OUTCOME` operator procedure, set quota policy, and
 approve any catch-up/backfill. Each requires a Human Gate.
 
-The existing polling cron schedules remain unchanged. Real GitHub dispatch and
-cron removal are not authorized by R2A. LIVE activation is not authorized by
-R2A.
+The existing GitHub polling schedules remain enabled as a tertiary safety net.
+They must not be removed when the independent fallback is deployed.
+Removing either GitHub cron remains a separate Human Gate. R2A documentation
+and repository preparation are not authorized for LIVE activation or cron
+removal.
 
 Merging R2A changes the scheduled approval checkers even while the Cloud Run
 relay remains in DRY_RUN. Merge only at a clean issue boundary with no
@@ -253,5 +283,7 @@ it does not copy the repository root, `automation_state`, images, or secrets.
 It runs non-root with one Gunicorn worker. Firestore now provides cross-instance
 correctness, while one worker remains a conservative runtime setting.
 
-R1 rollback is disabling relay subscription traffic or the service. Existing
-polling workflows remain the system of record.
+Production rollback routes traffic to the previously reviewed revision and
+restores the prior explicit secret version. Do not delete Firestore state.
+The external fallback can be stopped by pausing its two Scheduler jobs without
+changing the Primary relay or GitHub tertiary schedules.
