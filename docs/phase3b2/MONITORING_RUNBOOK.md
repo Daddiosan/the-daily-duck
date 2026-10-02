@@ -1,7 +1,9 @@
 # Approval Pipeline Monitoring and Pub/Sub Recovery
 
-Status: repository evaluator and thresholds ready; production alert policies,
-Scheduler jobs, IAM, retention, and DLQ are Human-gated and not deployed.
+Status: `READY_FOR_DEPLOYMENT`. Repository evaluator, thresholds, native-metric
+alert design, OAuth-canary schedule, and rollback plan are ready. Production
+alert policies, notification channels, Scheduler jobs, IAM, retention, and DLQ
+remain Human-gated and are not deployed.
 
 ## Sanitized health contract
 
@@ -56,13 +58,79 @@ The collector must use read-only permissions for Firestore/GitHub and must not
 read Gmail messages. Alert-policy creation, notification-channel binding, and
 the collector's deployment are production mutations.
 
+### Read-only production precheck (2026-10-02)
+
+- Existing alert policies: none.
+- Existing notification channels: none.
+- Existing user-defined logs-based metrics: none.
+- `daily-duck-oauth-canary`: not deployed.
+- Existing watch renewal: enabled at `17 3 * * *`, `Asia/Tokyo`; its first
+  automatic recovered execution returned HTTP 200.
+- Pub/Sub backlog and oldest-unacked age: both zero at the latest sample.
+- Recommended operator email channel: `daily-duck-ops-email`, targeting the
+  existing project operator account. Channel creation and destination review
+  are part of the Human Gate.
+
+### Concrete alert contract
+
+| Policy | Source | Condition | Window | False-positive expectation | Rollback |
+| --- | --- | --- | --- | --- | --- |
+| `daily-duck-relay-5xx-critical` | `run.googleapis.com/request_count`, service `daily-duck-approval-relay`, response class `5xx` | sum > 0 | 5 min | A single real 5xx pages; intentional negative canary tests must not target `/relay` | delete policy |
+| `daily-duck-oauth-canary-failure` | Cloud Scheduler failure log for `daily-duck-oauth-canary` | any non-2xx attempt | 5 min | transient provider failures can page once; do not auto-rotate credentials | pause canary job, then delete policy/metric |
+| `daily-duck-oauth-canary-absence` | successful Scheduler completion counter | no success | 7 hours | one delayed six-hour tick is tolerated for one hour | delete absence policy |
+| `daily-duck-watch-renewal-failure` | Cloud Scheduler failure log for `daily-duck-watch-renewal` | any non-2xx attempt | 5 min | retries can produce repeated matching logs; incident grouping should deduplicate | delete policy/metric; do not pause the healthy job merely to silence alerts |
+| `daily-duck-watch-renewal-absence` | successful Scheduler completion counter | no success | 26 hours | two-hour grace around the daily schedule | delete absence policy |
+| `daily-duck-pubsub-backlog-critical` | `pubsub.googleapis.com/subscription/num_undelivered_messages` for `daily-duck-relay-r1` | > 5 | 5 min | short bursts of five or fewer are ignored | delete policy |
+| `daily-duck-pubsub-oldest-critical` | `pubsub.googleapis.com/subscription/oldest_unacked_message_age` for `daily-duck-relay-r1` | > 900 s | 5 min | a short cold start does not page | delete policy |
+| `daily-duck-watch-expiration-critical` | sanitized collector field `watch_expiration_ms` | < 48 h remaining or missing | two consecutive 5-min evaluations | provider timestamp skew below one interval is tolerated | pause collector, then delete policy |
+| `daily-duck-pending-wake-critical` | sanitized evaluator fixed codes | pending stage and no matching successful checker wake > 30 min | two consecutive 5-min evaluations | terminal/non-pending stages never alert, regardless of cron age | pause collector, then delete policy |
+
+The business-aware policies are driven by the existing
+`approval_operations_monitor.py` contract. A collector may read sanitized
+Firestore cursor/watch fields, repository business-state names, and GitHub run
+timestamps only. It must not read Gmail or emit provider payloads. Native
+Cloud Monitoring policies do not depend on the GitHub scheduler.
+
+### OAuth canary production command plan
+
+The existing renewal identity already has `roles/run.invoker` on the Relay and
+is accepted by the application OIDC boundary. No new Gmail scope is required.
+
+```powershell
+$PROJECT_ID = 'the-daily-duck'
+$REGION = 'asia-northeast1'
+$RELAY_URL = 'https://daily-duck-approval-relay-s5qi3b7igq-an.a.run.app'
+$RENEWAL_SA = 'daily-duck-watch-renewal@the-daily-duck.iam.gserviceaccount.com'
+
+gcloud scheduler jobs create http daily-duck-oauth-canary `
+  --project $PROJECT_ID --location $REGION `
+  --schedule '43 */6 * * *' --time-zone 'Asia/Tokyo' `
+  --uri "$RELAY_URL/oauth-canary" --http-method POST `
+  --attempt-deadline 60s --max-retry-attempts 0 `
+  --oidc-service-account-email $RENEWAL_SA `
+  --oidc-token-audience $RELAY_URL
+```
+
+Immediate rollback is:
+
+```powershell
+gcloud scheduler jobs pause daily-duck-oauth-canary --project the-daily-duck --location asia-northeast1
+```
+
+Each Monitoring API create call must retain the returned full policy name.
+Rollback deletes that exact name with an authenticated
+`DELETE https://monitoring.googleapis.com/v3/<policy-name>` request. Each
+logs-based metric is then removed with
+`gcloud logging metrics delete <metric-name> --quiet --project the-daily-duck`.
+Never delete a metric while a retained policy still references it.
+
 ## Current Pub/Sub state and proposed hardening
 
-Read-only discovery on 2026-10-01 found subscription
+Read-only discovery on 2026-10-02 confirms subscription
 `daily-duck-relay-r1` on topic `daily-duck-gmail-events`, one-day retention,
-retry backoff 10--600 seconds, authenticated push, and no dead-letter topic.
-At 00:58 JST it had 8 undelivered messages and an oldest-unacked age of 52,917
-seconds, consistent with the OAuth outage.
+retry backoff 10--600 seconds, authenticated push, no dead-letter topic, no
+maximum-delivery-attempt policy, zero backlog, and zero oldest-unacked age. The
+earlier 8-message outage backlog drained through the repaired primary Relay.
 
 Proposed initial policy:
 
@@ -124,3 +192,26 @@ For a future DLQ event:
    business side effect.
 
 Automatic blind DLQ republish is intentionally out of scope.
+
+Pub/Sub hardening rollback, after pausing any replay and verifying that the DLQ
+is empty, is:
+
+```powershell
+$PROJECT_ID = 'the-daily-duck'
+$PROJECT_NUMBER = '424584128509'
+$PUBSUB_AGENT = "service-$PROJECT_NUMBER@gcp-sa-pubsub.iam.gserviceaccount.com"
+
+gcloud pubsub subscriptions update daily-duck-relay-r1 `
+  --project $PROJECT_ID --message-retention-duration 86400s `
+  --clear-dead-letter-policy
+gcloud pubsub subscriptions remove-iam-policy-binding daily-duck-relay-r1 `
+  --project $PROJECT_ID --member "serviceAccount:$PUBSUB_AGENT" `
+  --role roles/pubsub.subscriber
+gcloud pubsub topics remove-iam-policy-binding daily-duck-gmail-events-dlq `
+  --project $PROJECT_ID --member "serviceAccount:$PUBSUB_AGENT" `
+  --role roles/pubsub.publisher
+gcloud pubsub subscriptions delete daily-duck-gmail-events-dlq-ops `
+  --quiet --project $PROJECT_ID
+gcloud pubsub topics delete daily-duck-gmail-events-dlq `
+  --quiet --project $PROJECT_ID
+```

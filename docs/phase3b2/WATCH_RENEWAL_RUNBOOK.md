@@ -1,8 +1,8 @@
 # Gmail Watch Renewal and OAuth Canary Runbook
 
-Status: deployed production configuration documented from read-only discovery
-on 2026-10-01. This document does not authorize a live `users.watch`, OAuth,
-secret, IAM, Scheduler, or Cloud Run mutation.
+Status: deployed and recovered. The first automatic execution after OAuth
+recovery passed on 2026-10-02. This document does not authorize a live
+`users.watch`, OAuth, secret, IAM, Scheduler, or Cloud Run mutation.
 
 ## Production source of truth
 
@@ -16,6 +16,20 @@ secret, IAM, Scheduler, or Cloud Run mutation.
 | Schedule | `17 3 * * *`, `Asia/Tokyo` |
 | Scheduler identity | `daily-duck-watch-renewal@the-daily-duck.iam.gserviceaccount.com` |
 | Gmail topic | `projects/the-daily-duck/topics/daily-duck-gmail-events` |
+
+Latest accepted automatic execution:
+
+| Evidence | Value |
+| --- | --- |
+| Scheduled time | 2026-10-02 03:17 JST |
+| Scheduler result | HTTP 200 |
+| Cloud Run `/renew-watch` | HTTP 200 |
+| Expiration before | 2026-10-08 21:33:04.807 JST |
+| Expiration after | 2026-10-09 03:17:05.559 JST |
+| Processing cursor before / after | `37076` / `37076` |
+
+The Scheduler remains `ENABLED`. Renewal changed only `relay_watch_state` and
+did not reset or advance `relay_cursor`.
 
 The older planned name `daily-duck-gmail-watch-renewal` was never the deployed
 resource name. Operators must use `daily-duck-watch-renewal`.

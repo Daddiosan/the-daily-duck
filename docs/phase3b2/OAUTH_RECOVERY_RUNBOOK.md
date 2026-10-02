@@ -1,16 +1,17 @@
 # Gmail OAuth Production Recovery Runbook
 
-Status: command plan ready; no OAuth, secret, Cloud Run, Scheduler, or Gmail
-mutation has been performed.
+Status: production recovery completed on 2026-10-01; the first automatic watch
+renewal and a real natural-fire approval were accepted on 2026-10-02. The
+command plan remains below for incident response only.
 
-## Confirmed failure and current state
+## Confirmed failure and recovered state
 
 The 2026-09-30 natural-fire failure occurred when the Relay attempted Gmail
 API access and refresh failed with the sanitized category `invalid_grant`
 (expired or revoked refresh token). Gmail Push and Pub/Sub delivery were
 working. The watch was still valid and the downstream checker was healthy.
 
-Read-only discovery on 2026-10-01 found:
+Initial read-only discovery on 2026-10-01 found:
 
 - project `the-daily-duck`, region `asia-northeast1`;
 - service `daily-duck-approval-relay`;
@@ -20,6 +21,29 @@ Read-only discovery on 2026-10-01 found:
 - Scheduler `daily-duck-watch-renewal`, `17 3 * * *`, `Asia/Tokyo`;
 - watch history ID `35154`, expiration `2026-10-06 03:17:10 JST`;
 - processing cursor history ID `35115`.
+
+The reviewed recovery then completed with these production facts:
+
+- OAuth app: `External / In production` (human-confirmed);
+- active revision: `daily-duck-approval-relay-oauth-v2-e377414`, 100% traffic;
+- OAuth client secret reference: explicit version `1`;
+- OAuth refresh-token reference: explicit version `2`;
+- authenticated `/oauth-canary`: HTTP 200;
+- retained Pub/Sub backlog: drained to zero without a manual cursor edit;
+- one approved live `/renew-watch`: HTTP 200;
+- first resumed automatic renewal at 2026-10-02 03:17 JST: HTTP 200;
+- watch expiration advanced from 2026-10-08 21:33:04.807 JST to
+  2026-10-09 03:17:05.559 JST while the processing cursor stayed `37076`;
+- real Design Selection reply at 2026-10-02 19:29:11 JST traversed Gmail Push,
+  Pub/Sub, Relay, Gmail history, GitHub App dispatch, and the downstream checker;
+- processing cursor advanced monotonically from `37680` to `37830`;
+- Relay event reached `DISPATCH_CONFIRMED` in one attempt and GitHub run
+  `36995749123` completed successfully on `main`;
+- downstream state reached `READY_TO_PUBLISH`; Website and X each ran once;
+- no duplicate business side effect and no 2026-09-30 replay occurred.
+
+The production refresh-token value is never recorded here; version metadata is
+the only repository evidence.
 
 Do not edit or reset the cursor. Retained Pub/Sub delivery is the recovery
 source after Gmail access is restored.
