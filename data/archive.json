@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-02",
+    "displayDate": "October 2, 2026",
+    "slug": "the-friendship-duck",
+    "title": "THE FRIENDSHIP DUCK",
+    "duckName": "The Friendship Duck",
+    "storyTitleEn": "Bridging generations: Early findings suggest shared spaces may benefit both children and nursing home residents",
+    "storyTitleJa": "Bridging generations: Early findings suggest shared spaces may benefit both children and nursing home residents",
+    "image": "assets/ducks/2026-10-02-the-friendship-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Friendship Duck",
+    "imageAltJa": "The Friendship DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Early findings suggest that shared spaces can bring children and nursing home residents meaningful benefits. When children visit their senior friends at school and breakfast, an everyday routine becomes an opportunity for friendship, belonging, and community. It is a heartening reminder that connection can bridge generations.",
+    "storyJa": "初期の調査結果から、共有の場が子どもたちと高齢者施設の入居者に、意義ある良い影響をもたらす可能性が示されています。子どもたちが学校や朝食の場で年長の友人たちを訪ねることで、日常のひとときが友情や居場所、地域のつながりを育む機会になります。世代を超えたつながりの力を思い出させてくれる、心温まる話です。",
+    "duckEn": "This duck believes every generation has a story—and a seat at the table.",
+    "duckJa": "どの世代にも物語があり、食卓にはみんなの席がある——とアヒルは思っています。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-bridging-generations-early-spaces-benefit.html",
+    "archiveSummaryEn": "Early findings suggest shared spaces can benefit children and nursing home residents. Visits at school and breakfast are creating friendship, belonging, and a beautiful bridge between generations.",
+    "archiveSummaryJa": "共有の場は、子どもたちと高齢者施設の入居者の双方に良い影響をもたらす可能性があるそうです。学校や朝食の場での交流が、友情と居場所を育み、世代をつなぐ美しい架け橋になっています。",
+    "reasonEn": "Early findings suggest shared spaces can benefit children and nursing home residents. Visits at school and breakfast are creating friendship, belonging, and a beautiful bridge between generations.",
+    "reasonJa": "共有の場は、子どもたちと高齢者施設の入居者の双方に良い影響をもたらす可能性があるそうです。学校や朝食の場での交流が、友情と居場所を育み、世代をつなぐ美しい架け橋になっています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-01",
     "displayDate": "October 1, 2026",
     "slug": "the-sea-scarecrow",
