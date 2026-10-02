@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-02",
-  "generated_at": "2026-10-02T03:36:49.260014+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-02T10:29:52.292561+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-02",
     "issue_date": "2026-10-02",
     "phase": 2,
@@ -562,52 +562,9 @@
       "gate_a_package_created_at": "2026-10-02T01:33:12.083646+00:00",
       "approval_token_digest": "4e45b7b0a0e98390d4e4794857a27466b84dd22b6ce43d606435f44626a37766"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 6,
-    "title": "Bridging generations: Early findings suggest shared spaces may benefit both children and nursing home residents",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-10-bridging-generations-early-spaces-benefit.html",
-    "category": "community",
-    "happiness": 10,
-    "hope": 9,
-    "general_interest": 9,
-    "surprise": 7,
-    "duck_visual": 9,
-    "source_quality": 8,
-    "freshness": 10,
-    "broad_appeal": 10,
-    "novelty_vs_archive": 9,
-    "total_score": 91,
-    "reason": "Children visiting their senior friends at school and breakfast creates an unusually warm, human story about friendship, belonging, and community.",
-    "candidate_number": 1,
-    "title_en": "Shared Spaces Bring Children and Nursing Home Residents Together",
-    "reason_en": "Early findings point to the warmth and belonging created when children and nursing home residents share time together at school and breakfast.",
-    "en_copy": "Early findings suggest that shared spaces can bring children and nursing home residents meaningful benefits. When children visit their senior friends at school and breakfast, an everyday routine becomes an opportunity for friendship, belonging, and community. It is a heartening reminder that connection can bridge generations.",
-    "duck_name": "The Friendship Duck",
-    "duck_en": "This duck believes every generation has a story—and a seat at the table.",
-    "x_en": "Early findings suggest shared spaces can benefit children and nursing home residents. Visits at school and breakfast are creating friendship, belonging, and a beautiful bridge between generations.",
-    "title_ja": "共有の場が子どもたちと高齢者施設の入居者をつなぐ",
-    "reason_ja": "初期の調査結果から、子どもたちと高齢者施設の入居者が学校や朝食の場で一緒に過ごすことが、温かな交流や居場所づくりにつながる可能性が示されています。",
-    "jp_copy": "初期の調査結果から、共有の場が子どもたちと高齢者施設の入居者に、意義ある良い影響をもたらす可能性が示されています。子どもたちが学校や朝食の場で年長の友人たちを訪ねることで、日常のひとときが友情や居場所、地域のつながりを育む機会になります。世代を超えたつながりの力を思い出させてくれる、心温まる話です。",
-    "duck_jp": "どの世代にも物語があり、食卓にはみんなの席がある——とアヒルは思っています。",
-    "x_jp": "共有の場は、子どもたちと高齢者施設の入居者の双方に良い影響をもたらす可能性があるそうです。学校や朝食の場での交流が、友情と居場所を育み、世代をつなぐ美しい架け橋になっています。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "A Seat at the Shared Table",
-      "concept_en": "A warm breakfast-table scene symbolizing friendship and belonging between children and nursing home residents, with The Friendship Duck as the welcoming centerpiece.",
-      "composition_en": "Landscape hero composition. Place the recognizable friendly yellow duck in the foreground at the center of a warmly lit shared breakfast table, with an orange beak, large dark glossy eyes, a small feather tuft, and an approachable smile. Show a child and an older adult seated together on opposite sides of the table, presented respectfully without identifiable facial detail. Include simple breakfast dishes and mugs as ordinary breakfast context, with soft morning light and a welcoming communal room in the background. Keep the table and duck as the strong focal point, leaving clean negative space around the upper edges. Premium modern editorial illustration, warm colors, gentle depth of field, no readable text.",
-      "generation_prompt_en": "Create one polished landscape editorial hero image in a clean, modern, charming premium illustration style. Show The Daily Duck mascot as a recognizable friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, seated or standing at the center of a shared breakfast table. A child and an older nursing home resident sit together at the table, shown respectfully and generically with no identifiable real-person features. Use simple breakfast dishes and mugs, warm morning light, and a welcoming communal interior to suggest friendship, belonging, and connection across generations. Strong focal point on the duck and shared table, balanced landscape composition, soft natural colors, subtle depth of field, emotionally uplifting. No logos, no watermark, no UI, no readable embedded text, no headline, no medical equipment, no invented signage.",
-      "alt_en": "The Friendship Duck welcomes a child and an older adult at a warm shared breakfast table, illustrating belonging across generations.",
-      "title_ja": "みんなの食卓にある席",
-      "concept_ja": "子どもたちと高齢者施設の入居者が、朝食を囲む共有の場で友情と居場所を育む様子を、フレンドシップ・ダックを中心に温かく描くコンセプトです。",
-      "composition_ja": "横長のヒーロー構図。手前中央に、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の冠、親しみやすい表情を持つ黄色いアヒルを配置します。テーブルの向かい側には子どもと高齢者施設の入居者が座り、個人を特定できない自然な表現にします。簡素な朝食の皿やマグカップ、朝の柔らかな光、温かな共有スペースを添え、食卓とアヒルを主役にします。上部には余白を残し、現代的で上質なエディトリアル・イラストにします。",
-      "alt_ja": "フレンドシップ・ダックが、温かな共有の朝食テーブルで子どもと高齢者を迎え、世代を超えた居場所を表現している。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "The Welcome Bridge",
       "concept_en": "A school visit visualized as a welcoming passage between generations, showing how a shared school space can become a bridge to friendship and community.",
@@ -619,95 +576,9 @@
       "composition_ja": "横長構図の中央に、明るい学校の出入口や共有スペースの入口を、世代をつなぐ視覚的なゲートとして配置します。入口の内側には、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の冠、温かな表情を持つ黄色いアヒルを置きます。手前から子どもが訪れ、室内側から高齢者施設の入居者が迎える構成にします。床のゆるやかな曲線や光のアーチで架け橋を暗示しますが、実在の設備とは見せません。",
       "alt_ja": "子どもが明るい学校の共有スペースに入り、高齢者とフレンドシップ・ダックに迎えられる、世代間のつながりを表す光景。"
     },
-    {
-      "number": 3,
-      "title_en": "Many Generations, One Circle",
-      "concept_en": "A simple visual metaphor for community: children, older residents, and The Friendship Duck form one welcoming circle, showing that shared spaces can create belonging.",
-      "composition_en": "Landscape hero composition built around a large circular arrangement of simple chairs in a bright communal room. Place the friendly yellow duck prominently in the open front of the circle, with yellow feathers, orange beak, large glossy dark eyes, small feather tuft, and warm expression. Around the circle, show a few children and older nursing home residents seated together in relaxed conversation, using varied silhouettes and non-identifiable faces. Keep the center open and luminous, with soft connecting shadows and warm colors suggesting inclusion. Avoid literal bridges, breakfast details, or school-specific props so this concept is visually distinct from the others.",
-      "generation_prompt_en": "Create one polished landscape editorial hero image in a clean, modern, charming premium illustration style. Show a bright communal room with children and older nursing home residents arranged in a welcoming circle of simple chairs, expressing belonging and community across generations. Place The Daily Duck mascot prominently at the front of the circle: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Portray people respectfully with generic, non-identifiable faces and relaxed body language. Make the open center of the circle luminous, with subtle visual rhythm and warm connecting shadows. Use a simple uncluttered composition and strong focal point. Do not include breakfast details, literal bridges, school signage, logos, watermarks, UI, readable text, or a headline.",
-      "alt_en": "The Friendship Duck joins children and older adults in a welcoming circle, symbolizing community and belonging across generations.",
-      "title_ja": "ひとつの輪に集う世代",
-      "concept_ja": "子どもたち、高齢者施設の入居者、そしてフレンドシップ・ダックがひとつの輪をつくり、共有の場が生む居場所と地域のつながりを象徴的に表現します。",
-      "composition_ja": "横長のヒーロー構図。明るい共有スペースに、シンプルな椅子を大きな円形に並べます。円の手前の開いた位置に、黄色い羽、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の冠、親しみやすい表情を持つアヒルを目立つように配置します。円の周囲には、数人の子どもと高齢者施設の入居者を座らせ、顔は特定できない表現にします。中央は明るく開かれた空間にし、包摂性を感じさせる温かな色調にします。",
-      "alt_ja": "フレンドシップ・ダックが子どもたちと高齢者の輪に加わり、世代を超えた地域のつながりと居場所を象徴している。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "EGG-CELLENT COMPANY!",
-      "meaning_ja": "「とても良い仲間」「素晴らしい一緒の時間」という自然な意味です。英語の “excellent” を “egg-cellent” に置き換えた、明確な音の置換によるアヒル関連の語呂合わせです。子どもたちと高齢者施設の入居者が友情を育む、良い仲間との時間を表します。"
-    },
-    {
-      "number": 2,
-      "title": "BREAKFAST, BREAKING BARRIERS",
-      "meaning_ja": "「朝食が、壁を越えていく」という意味です。“breakfast” と “breaking” の反復音を活かし、朝食の場が世代間の隔たりを越えるという内容に結びつけています。アヒル語に頼らない、リズミカルなスマート・ワードプレイです。"
-    },
-    {
-      "number": 3,
-      "title": "FRIENDSHIP HAS NO AGE LIMIT",
-      "meaning_ja": "「友情に年齢制限はない」という意味です。短く強いポスターコピーとして、世代を超えた友情と温かな可能性をまっすぐに伝えます。前向きで覚えやすく、新聞見出しよりも雑誌の表紙やソーシャルカードに向いた力強いニュアンスです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "A Seat at the Shared Table",
-      "concept_title_ja": "みんなの食卓にある席",
-      "image_path": "automation_images/design_previews/2026-10-02/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "caed5907f3440ae14eeacd4a1074a519e8c36190f92b5c63bc1bef7c411afaed",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Shared Spaces Bring Children and Nursing Home Residents Together\nSummary: Early findings point to the warmth and belonging created when children and nursing home residents share time together at school and breakfast.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nA Seat at the Shared Table\n\nCONCEPT:\nA warm breakfast-table scene symbolizing friendship and belonging between children and nursing home residents, with The Friendship Duck as the welcoming centerpiece.\n\nCOMPOSITION:\nLandscape hero composition. Place the recognizable friendly yellow duck in the foreground at the center of a warmly lit shared breakfast table, with an orange beak, large dark glossy eyes, a small feather tuft, and an approachable smile. Show a child and an older adult seated together on opposite sides of the table, presented respectfully without identifiable facial detail. Include simple breakfast dishes and mugs as ordinary breakfast context, with soft morning light and a welcoming communal room in the background. Keep the table and duck as the strong focal point, leaving clean negative space around the upper edges. Premium modern editorial illustration, warm colors, gentle depth of field, no readable text.\n\nPRODUCTION DIRECTION:\nCreate one polished landscape editorial hero image in a clean, modern, charming premium illustration style. Show The Daily Duck mascot as a recognizable friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, seated or standing at the center of a shared breakfast table. A child and an older nursing home resident sit together at the table, shown respectfully and generically with no identifiable real-person features. Use simple breakfast dishes and mugs, warm morning light, and a welcoming communal interior to suggest friendship, belonging, and connection across generations. Strong focal point on the duck and shared table, balanced landscape composition, soft natural colors, subtle depth of field, emotionally uplifting. No logos, no watermark, no UI, no readable embedded text, no headline, no medical equipment, no invented signage.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Friendship Duck welcomes a child and an older adult at a warm shared breakfast table, illustrating belonging across generations.",
-      "alt_ja": "フレンドシップ・ダックが、温かな共有の朝食テーブルで子どもと高齢者を迎え、世代を超えた居場所を表現している。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Welcome Bridge",
-      "concept_title_ja": "世代をつなぐウェルカム・ブリッジ",
-      "image_path": "automation_images/design_previews/2026-10-02/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "0666e61d468ad8236218a32c8079610096e3a3b272d78b646503f0812e08ad30",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Shared Spaces Bring Children and Nursing Home Residents Together\nSummary: Early findings point to the warmth and belonging created when children and nursing home residents share time together at school and breakfast.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Welcome Bridge\n\nCONCEPT:\nA school visit visualized as a welcoming passage between generations, showing how a shared school space can become a bridge to friendship and community.\n\nCOMPOSITION:\nLandscape composition with a bright school doorway or common-room entrance forming the central visual gateway. Place the friendly yellow duck just inside the entrance, clearly recognizable with orange beak, glossy dark eyes, feather tuft, and warm expression. In the foreground, show a child arriving from one side while an older nursing home resident welcomes them from the shared room on the other side. Use a subtle curved floor pattern or arch of light as an illustrative bridge, not a literal infrastructure claim. Keep the environment simple, open, and welcoming, with warm daylight and clear visual movement from child to older friend.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration in a clean, modern, warm premium style. Depict a bright school common-room entrance as a symbolic welcoming bridge between generations. The recognizable Daily Duck mascot stands near the center of the doorway: friendly yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Show a child arriving at the school space and an older nursing home resident welcoming the child from inside, both generic and respectfully portrayed, with no identifiable real-person features. Suggest connection with a gentle curved floor motif or arch of warm light, clearly as visual metaphor rather than literal architecture. Use uncluttered composition, soft daylight, inviting colors, strong focal point, landscape hero framing. No logos, no watermark, no UI, no readable text, no headline, no invented signage.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A child enters a bright shared school space where an older resident and the Friendship Duck welcome them, forming a visual bridge between generations.",
-      "alt_ja": "子どもが明るい学校の共有スペースに入り、高齢者とフレンドシップ・ダックに迎えられる、世代間のつながりを表す光景。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Many Generations, One Circle",
-      "concept_title_ja": "ひとつの輪に集う世代",
-      "image_path": "automation_images/design_previews/2026-10-02/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "d76c2b236b8272bc8a0e626515356d10cbace88afe6479006b3f276f2e5c047d",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Shared Spaces Bring Children and Nursing Home Residents Together\nSummary: Early findings point to the warmth and belonging created when children and nursing home residents share time together at school and breakfast.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nMany Generations, One Circle\n\nCONCEPT:\nA simple visual metaphor for community: children, older residents, and The Friendship Duck form one welcoming circle, showing that shared spaces can create belonging.\n\nCOMPOSITION:\nLandscape hero composition built around a large circular arrangement of simple chairs in a bright communal room. Place the friendly yellow duck prominently in the open front of the circle, with yellow feathers, orange beak, large glossy dark eyes, small feather tuft, and warm expression. Around the circle, show a few children and older nursing home residents seated together in relaxed conversation, using varied silhouettes and non-identifiable faces. Keep the center open and luminous, with soft connecting shadows and warm colors suggesting inclusion. Avoid literal bridges, breakfast details, or school-specific props so this concept is visually distinct from the others.\n\nPRODUCTION DIRECTION:\nCreate one polished landscape editorial hero image in a clean, modern, charming premium illustration style. Show a bright communal room with children and older nursing home residents arranged in a welcoming circle of simple chairs, expressing belonging and community across generations. Place The Daily Duck mascot prominently at the front of the circle: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Portray people respectfully with generic, non-identifiable faces and relaxed body language. Make the open center of the circle luminous, with subtle visual rhythm and warm connecting shadows. Use a simple uncluttered composition and strong focal point. Do not include breakfast details, literal bridges, school signage, logos, watermarks, UI, readable text, or a headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Friendship Duck joins children and older adults in a welcoming circle, symbolizing community and belonging across generations.",
-      "alt_ja": "フレンドシップ・ダックが子どもたちと高齢者の輪に加わり、世代を超えた地域のつながりと居場所を象徴している。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-02/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "BREAKFAST, BREAKING BARRIERS"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "BREAKFAST, BREAKING BARRIERS",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "BREAKFAST, BREAKING BARRIERS",
+    "meaning_ja": "「朝食が、壁を越えていく」という意味です。“breakfast” と “breaking” の反復音を活かし、朝食の場が世代間の隔たりを越えるという内容に結びつけています。アヒル語に頼らない、リズミカルなスマート・ワードプレイです。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "The Welcome Bridge",
+    "concept_title_ja": "世代をつなぐウェルカム・ブリッジ",
+    "image_path": "automation_images/design_previews/2026-10-02/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "0666e61d468ad8236218a32c8079610096e3a3b272d78b646503f0812e08ad30",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Shared Spaces Bring Children and Nursing Home Residents Together\nSummary: Early findings point to the warmth and belonging created when children and nursing home residents share time together at school and breakfast.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Welcome Bridge\n\nCONCEPT:\nA school visit visualized as a welcoming passage between generations, showing how a shared school space can become a bridge to friendship and community.\n\nCOMPOSITION:\nLandscape composition with a bright school doorway or common-room entrance forming the central visual gateway. Place the friendly yellow duck just inside the entrance, clearly recognizable with orange beak, glossy dark eyes, feather tuft, and warm expression. In the foreground, show a child arriving from one side while an older nursing home resident welcomes them from the shared room on the other side. Use a subtle curved floor pattern or arch of light as an illustrative bridge, not a literal infrastructure claim. Keep the environment simple, open, and welcoming, with warm daylight and clear visual movement from child to older friend.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration in a clean, modern, warm premium style. Depict a bright school common-room entrance as a symbolic welcoming bridge between generations. The recognizable Daily Duck mascot stands near the center of the doorway: friendly yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Show a child arriving at the school space and an older nursing home resident welcoming the child from inside, both generic and respectfully portrayed, with no identifiable real-person features. Suggest connection with a gentle curved floor motif or arch of warm light, clearly as visual metaphor rather than literal architecture. Use uncluttered composition, soft daylight, inviting colors, strong focal point, landscape hero framing. No logos, no watermark, no UI, no readable text, no headline, no invented signage.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A child enters a bright shared school space where an older resident and the Friendship Duck welcome them, forming a visual bridge between generations.",
+    "alt_ja": "子どもが明るい学校の共有スペースに入り、高齢者とフレンドシップ・ダックに迎えられる、世代間のつながりを表す光景。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-02.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "da681877cb930c1653b27d9049ae4d487280e1c414946a8f82bba3d793f239df",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-02 — Batch 1",
-  "final_email_sent_at": "2026-10-02T03:36:55.588392+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "BREAKFAST, BREAKING BARRIERS",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-02T10:29:52.293388+00:00"
+    "translation_language": "ja"
+  }
 }
