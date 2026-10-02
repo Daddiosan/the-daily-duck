@@ -1,10 +1,9 @@
 # Independent Approval Fallback Runbook
 
-Status: `READY_FOR_DEPLOYMENT`. Repository implementation, duplicate-safety
-tests, local container build, health smoke test, and authentication-negative
-test pass. As of 2026-10-02, the production service, dedicated identities,
-Scheduler jobs, and Artifact Registry image do not exist. Every cloud write in
-the deployment and rollback sections is behind the Production Human Gate.
+Status: `DEPLOYED_AND_VALIDATED` on 2026-10-02. The production service uses an
+immutable Artifact Registry digest, is authenticated-only, and is invoked by
+two dedicated 15-minute Scheduler jobs. Both routes completed a production
+terminal-state validation without Website or X side effects.
 
 ## Purpose and boundary
 
@@ -46,9 +45,9 @@ The fallback returns `202` for an ambiguous GitHub transport outcome. It does
 not blindly retry within the same request. The next scheduled tick is the next
 bounded wake-up, and the downstream state guard remains authoritative.
 
-## Proposed production resources
+## Production resources
 
-| Resource | Proposed value |
+| Resource | Current value |
 | --- | --- |
 | Cloud Run service | `daily-duck-approval-fallback` |
 | Region | `asia-northeast1` |
@@ -63,36 +62,38 @@ The runtime identity needs only access to the GitHub App private-key secret.
 It needs no Gmail, Firestore, Pub/Sub, or approval-secret access. The Scheduler
 identity needs only `roles/run.invoker` on this service.
 
-## Read-only production precheck (2026-10-02)
+## Production deployment record (2026-10-02)
 
 | Check | Result |
 | --- | --- |
 | Project / number | `the-daily-duck` / `424584128509` |
 | Region | `asia-northeast1` |
 | Artifact Registry repository | `daily-duck` exists (Docker) |
-| Fallback image | absent from Artifact Registry; local image only |
-| Fallback Cloud Run service | absent |
-| Runtime service account | absent |
-| Scheduler service account | absent |
-| Gate A Scheduler job | absent |
-| Design Scheduler job | absent |
+| Source revision | `a168e1d6c877d460bd56cb2eb2b9b449f4561747` |
+| Fallback image index digest | `sha256:39673b672b70c8c899b886d2a7a32ef87534893fa12cd81856e7e895a92bd3bb` |
+| Cloud Run resolved amd64 digest | `sha256:6054fcdf21dda794d499c75845a154be7698d9dd7d163034bfbcdad9fcf3d369` |
+| Fallback Cloud Run service | `daily-duck-approval-fallback`; revision `daily-duck-approval-fallback-a168e1d`; Ready; 100% |
+| Runtime service account | deployed; no project-level roles |
+| Scheduler service account | deployed; no project-level roles |
+| Gate A Scheduler job | `ENABLED`; last validation HTTP 200; GitHub run `37001526785` |
+| Design Scheduler job | `ENABLED`; last validation HTTP 200; GitHub run `37001983230` |
 | GitHub App client ID | `Iv23livuEEqUrwEkLfdw` |
 | GitHub App installation ID | `165176453` |
 | GitHub App private-key secret | `relay-github-app-private-key:1` (enabled) |
-| Existing secret access | primary Relay runtime only |
-| Existing fallback IAM bindings | none |
+| Secret access | fallback runtime has accessor on this secret only |
+| Cloud Run invoker | fallback Scheduler identity only; no public principal |
 
-The local image built from source baseline `bcca41c533d1` has image ID
-`sha256:3482125dd56c65000da21122653954376fc9de1e39b6f97bd952ea2fcee38557`.
-This is not an Artifact Registry digest and is not deployable until the gated
-push resolves the remote immutable digest.
+The registry index is an immutable OCI digest. Cloud Run correctly resolved its
+Linux/amd64 child manifest to the digest recorded above. Gate A returned the
+existing `APPROVED_STORY` state, Design Selection returned
+`ALREADY_SELECTED`, and the prior Website/X run IDs did not change.
 
-## Human-gated deployment sequence
+## Deployment sequence and command record
 
 Build from the repository root because the container intentionally copies the
 reviewed Relay authentication and GitHub App adapters. Resolve the pushed tag
-to a digest before deployment; never deploy the floating tag. The following
-PowerShell is a command plan, not authorization:
+to a digest before deployment; never deploy the floating tag. The following is
+the reproducible command shape used after the 2026-10-02 Human Gate:
 
 ```powershell
 $PROJECT_ID = 'the-daily-duck'

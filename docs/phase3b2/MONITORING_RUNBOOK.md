@@ -1,9 +1,10 @@
 # Approval Pipeline Monitoring and Pub/Sub Recovery
 
-Status: `READY_FOR_DEPLOYMENT`. Repository evaluator, thresholds, native-metric
-alert design, OAuth-canary schedule, and rollback plan are ready. Production
-alert policies, notification channels, Scheduler jobs, IAM, retention, and DLQ
-remain Human-gated and are not deployed.
+Status: `CORE_DEPLOYED_AND_VALIDATED` on 2026-10-02. OAuth canary, the operator
+notification channel, four log-based metrics, six native alert policies, and
+Pub/Sub retention/DLQ hardening are deployed. A synthetic warning opened an
+alert and produced a normal Gmail Push that the primary Relay acknowledged with
+HTTP 200. The temporary smoke policy was then deleted.
 
 ## Sanitized health contract
 
@@ -58,18 +59,25 @@ The collector must use read-only permissions for Firestore/GitHub and must not
 read Gmail messages. Alert-policy creation, notification-channel binding, and
 the collector's deployment are production mutations.
 
-### Read-only production precheck (2026-10-02)
+### Production state (2026-10-02)
 
-- Existing alert policies: none.
-- Existing notification channels: none.
-- Existing user-defined logs-based metrics: none.
-- `daily-duck-oauth-canary`: not deployed.
+- Enabled persistent alert policies: six.
+- Notification channel: `daily-duck-ops-email`, enabled.
+- User-defined logs-based metrics: four Scheduler success/failure counters.
+- `daily-duck-oauth-canary`: enabled at `43 */6 * * *`, `Asia/Tokyo`; validated
+  with HTTP 200 and a visible success metric time series.
 - Existing watch renewal: enabled at `17 3 * * *`, `Asia/Tokyo`; its first
   automatic recovered execution returned HTTP 200.
-- Pub/Sub backlog and oldest-unacked age: both zero at the latest sample.
+- Pub/Sub source and DLQ backlog and oldest-unacked age: all zero at the latest
+  post-deployment sample.
 - Recommended operator email channel: `daily-duck-ops-email`, targeting the
-  existing project operator account. Channel creation and destination review
-  are part of the Human Gate.
+  existing project operator account.
+
+The following reviewed extensions remain deliberately undeployed because no
+reviewed production collector exists: watch-expiration and business-aware
+pending-wake alerts. The proposed 26-hour native watch-renewal absence policy
+also exceeds Cloud Monitoring's metric-absence window; failure alerting is
+active, but an absence design must be revised before deployment.
 
 ### Concrete alert contract
 
@@ -91,7 +99,7 @@ Firestore cursor/watch fields, repository business-state names, and GitHub run
 timestamps only. It must not read Gmail or emit provider payloads. Native
 Cloud Monitoring policies do not depend on the GitHub scheduler.
 
-### OAuth canary production command plan
+### OAuth canary production configuration
 
 The existing renewal identity already has `roles/run.invoker` on the Relay and
 is accepted by the application OIDC boundary. No new Gmail scope is required.
@@ -124,15 +132,17 @@ logs-based metric is then removed with
 `gcloud logging metrics delete <metric-name> --quiet --project the-daily-duck`.
 Never delete a metric while a retained policy still references it.
 
-## Current Pub/Sub state and proposed hardening
+## Current Pub/Sub hardened state
 
-Read-only discovery on 2026-10-02 confirms subscription
-`daily-duck-relay-r1` on topic `daily-duck-gmail-events`, one-day retention,
-retry backoff 10--600 seconds, authenticated push, no dead-letter topic, no
-maximum-delivery-attempt policy, zero backlog, and zero oldest-unacked age. The
-earlier 8-message outage backlog drained through the repaired primary Relay.
+Post-deployment validation on 2026-10-02 confirms subscription
+`daily-duck-relay-r1` on topic `daily-duck-gmail-events`, seven-day retention,
+retry backoff 10--600 seconds, authenticated push, DLQ max delivery attempts
+10, zero backlog, and zero oldest-unacked age. The dedicated DLQ ops
+subscription also has seven-day retention and zero backlog. Required Pub/Sub
+service-agent publisher/subscriber IAM was verified before the DLQ was
+attached. No message was pulled or replayed.
 
-Proposed initial policy:
+Deployed initial policy:
 
 - extend retention from one day to seven days;
 - add `daily-duck-gmail-events-dlq` with max delivery attempts 10;
@@ -142,7 +152,7 @@ Proposed initial policy:
   the source subscription;
 - alert before delivery attempts or retention are exhausted.
 
-Command plan (do not execute without Human Gate):
+Reproducible deployment command record (the 2026-10-02 Human Gate was used):
 
 ```powershell
 $PROJECT_ID = 'the-daily-duck'

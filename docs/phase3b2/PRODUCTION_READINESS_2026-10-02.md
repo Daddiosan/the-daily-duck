@@ -1,11 +1,12 @@
 # Approval Recovery and Hardening Readiness — 2026-10-02
 
-Status: recovery acceptance complete; hardening is ready for one consolidated
-Production Human Gate.
+Status: production recovery complete; consolidated hardening deployed and
+validated on 2026-10-02, with the explicitly listed monitoring extensions
+still requiring a reviewed collector/design.
 
-- External Fallback: `READY_FOR_DEPLOYMENT`.
-- Monitoring: `READY_FOR_DEPLOYMENT`.
-- Pub/Sub hardening: `HUMAN_GATE_REQUIRED`.
+- External Fallback: `DEPLOYED_AND_VALIDATED`.
+- Monitoring core: `DEPLOYED_AND_VALIDATED`.
+- Pub/Sub hardening: `DEPLOYED_AND_VALIDATED`.
 - GitHub `on.schedule`: retained as a tertiary best-effort safety net.
 
 ## Accepted production evidence
@@ -39,25 +40,26 @@ edit is part of this evidence.
 | Region | `asia-northeast1` |
 | Primary Relay | Ready; IAM-authenticated; dedicated runtime SA |
 | Artifact Registry | Docker repository `daily-duck` exists |
-| Fallback Cloud Run | absent |
-| Fallback runtime SA | absent |
-| Fallback Scheduler SA | absent |
-| Fallback Scheduler jobs | absent |
-| Fallback registry image | absent |
-| GitHub App key | existing secret version `1`; Relay runtime is the only accessor |
-| OAuth canary Scheduler | absent |
-| Monitoring policies/channels/log metrics | none |
-| Pub/Sub source | retention 86400s; retry 10--600s; no DLQ |
+| Fallback Cloud Run | Ready; revision `daily-duck-approval-fallback-a168e1d`; 100%; authenticated-only |
+| Fallback runtime SA | deployed; no project roles; GitHub App key accessor only |
+| Fallback Scheduler SA | deployed; no project roles; service-level invoker only |
+| Fallback Scheduler jobs | both enabled; both validated HTTP 200 |
+| Fallback registry image | immutable index digest `sha256:39673b672b70c8c899b886d2a7a32ef87534893fa12cd81856e7e895a92bd3bb` |
+| GitHub App key | explicit secret version `1` |
+| OAuth canary Scheduler | enabled; HTTP 200 validated |
+| Monitoring policies/channels/log metrics | six / one / four; notification smoke passed |
+| Pub/Sub source | retention 604800s; retry 10--600s; DLQ max attempts 10 |
+| Pub/Sub DLQ | topic plus seven-day ops subscription; service-agent IAM verified |
 | GitHub checker schedules | both active; retained as tertiary best-effort paths |
 
 ## Repository validation
 
-- Application source baseline for the local fallback image: `bcca41c533d1`.
+- Application source baseline for the deployed fallback image: `a168e1d6c877`.
 - Full test suite: 694/694 PASS.
 - Focused duplicate/fallback safety tests: 108/108 PASS.
-- Local image: `approval-fallback:bcca41c533d1`.
+- Local image: `approval-fallback:a168e1d6c877`.
 - Local image ID:
-  `sha256:3482125dd56c65000da21122653954376fc9de1e39b6f97bd952ea2fcee38557`.
+  `sha256:39673b672b70c8c899b886d2a7a32ef87534893fa12cd81856e7e895a92bd3bb`.
 - Container user: `fallback` (non-root).
 - Local health: HTTP 200.
 - Unauthenticated fixed route: HTTP 401.
@@ -66,10 +68,11 @@ edit is part of this evidence.
   only tracked candidate was a test assertion containing a PEM marker string,
   not a key.
 
-The local image ID is not a deployable registry digest. Artifact Registry push
-is the first cloud write and remains Human-gated.
+The recorded digest is the immutable Artifact Registry OCI index used for the
+deployment. Cloud Run resolved it to the Linux/amd64 child digest documented in
+`EXTERNAL_FALLBACK_RUNBOOK.md`.
 
-## Gated hardening package
+## Deployed hardening package
 
 The consolidated gate covers:
 
@@ -84,4 +87,7 @@ The consolidated gate covers:
 
 Exact deployment and rollback commands are maintained in
 `EXTERNAL_FALLBACK_RUNBOOK.md`, `MONITORING_RUNBOOK.md`, and
-`WATCH_RENEWAL_RUNBOOK.md`. No production hardening mutation has been executed.
+`WATCH_RENEWAL_RUNBOOK.md`. The production mutations above are complete. The
+undeployed monitoring extensions are watch-expiration and business-aware
+pending-wake collectors, plus a revised watch-renewal absence design that fits
+platform limits.
