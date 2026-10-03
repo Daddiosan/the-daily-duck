@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-03",
+    "displayDate": "October 3, 2026",
+    "slug": "the-twig-trickster",
+    "title": "THE TWIG TRICKSTER",
+    "duckName": "The Twig Trickster",
+    "storyTitleEn": "This giant stick insect fooled scientists for decades",
+    "storyTitleJa": "This giant stick insect fooled scientists for decades",
+    "image": "assets/ducks/2026-10-03-the-twig-trickster.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Twig Trickster",
+    "imageAltJa": "The Twig TricksterをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A giant stick insect managed to fool scientists for decades, turning an unusual wildlife discovery into a genuine identification mystery. Its unusual eggs add another curious detail to a story that proves nature can still surprise the experts.",
+    "storyJa": "巨大なナナフシが何十年にもわたって科学者たちをだまし続け、珍しい野生生物の発見が本格的な同定の謎へと発展しました。珍しい卵も、この物語に加わる興味深い要素です。自然は今も専門家たちを驚かせることがあるようです。",
+    "duckEn": "This insect really knows how to keep a secret.",
+    "duckJa": "この虫、本当に秘密を隠すのが上手ですね。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/09/260930020315.htm",
+    "archiveSummaryEn": "A giant stick insect fooled scientists for decades—and its unusual eggs made the mystery even more surprising. Nature has a few tricks left up its sleeves.",
+    "archiveSummaryJa": "巨大なナナフシが何十年も科学者たちをだまし続けていました。珍しい卵が、その謎をさらに驚くものにしています。自然にはまだまだ奥の手がありそうです。",
+    "reasonEn": "A giant stick insect fooled scientists for decades—and its unusual eggs made the mystery even more surprising. Nature has a few tricks left up its sleeves.",
+    "reasonJa": "巨大なナナフシが何十年も科学者たちをだまし続けていました。珍しい卵が、その謎をさらに驚くものにしています。自然にはまだまだ奥の手がありそうです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-02",
     "displayDate": "October 2, 2026",
     "slug": "the-friendship-duck",
