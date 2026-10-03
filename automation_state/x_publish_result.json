@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-10-03T07:08:38.707632+00:00",
+  "issue_date": "2026-10-03",
+  "x_post_id": "2106280247381422357",
+  "x_post_url": "https://x.com/i/web/status/2106280247381422357",
+  "x_media_id": "2106280244822839296",
+  "image_path": "automation_images/x/2026-10-03-x-card.png",
+  "post_text": "A giant stick insect fooled scientists for decades—and its unusual eggs made the mystery even more surprising. Nature has a few tricks left up its sleeves.\n\nhttps://www.thedailyduck.ai/ducks/2026-10-03/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 180
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2106280247381422357",
+      "text": "A giant stick insect fooled scientists for decades—and its unusual eggs made the mystery even more surprising. Nature has a few tricks left up its sleeves.\n\nhttps://t.co/KAnvF0fnfh https://t.co/KY6tGiSgnI"
+    }
+  }
+}
