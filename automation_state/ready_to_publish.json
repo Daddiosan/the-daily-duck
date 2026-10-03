@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-03",
-  "generated_at": "2026-10-03T07:03:35.683654+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-03T07:07:28.667980+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-03",
     "issue_date": "2026-10-03",
     "phase": 2,
@@ -562,64 +562,9 @@
       "gate_a_package_created_at": "2026-10-03T01:03:17.871905+00:00",
       "approval_token_digest": "7ae9c724e4c2747428f4b5e35438a77fc807c4d2e2ae1d6c75e203da110eb74b"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 18,
-    "title": "This giant stick insect fooled scientists for decades",
-    "source": "ScienceDaily Offbeat",
-    "url": "https://www.sciencedaily.com/releases/2026/09/260930020315.htm",
-    "category": "animals",
-    "happiness": 8,
-    "hope": 7,
-    "general_interest": 8,
-    "surprise": 9,
-    "duck_visual": 9,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 8,
-    "total_score": 82,
-    "reason": "A highly visual and genuinely surprising wildlife discovery, with unusual eggs and a decades-long identification mystery.",
-    "candidate_number": 1,
-    "title_en": "The Giant Stick Insect That Fooled Scientists for Decades",
-    "reason_en": "A visually striking wildlife mystery involving unusual eggs and a decades-long identification puzzle makes this a wonderfully surprising story.",
-    "en_copy": "A giant stick insect managed to fool scientists for decades, turning an unusual wildlife discovery into a genuine identification mystery. Its unusual eggs add another curious detail to a story that proves nature can still surprise the experts.",
-    "duck_name": "The Twig Trickster",
-    "duck_en": "This insect really knows how to keep a secret.",
-    "x_en": "A giant stick insect fooled scientists for decades—and its unusual eggs made the mystery even more surprising. Nature has a few tricks left up its sleeves.",
-    "title_ja": "何十年も科学者をだまし続けた巨大ナナフシ",
-    "reason_ja": "珍しい卵と、何十年にもわたる同定の謎が絡む、見た目にも印象的で本当に驚きのある野生生物の物語です。",
-    "jp_copy": "巨大なナナフシが何十年にもわたって科学者たちをだまし続け、珍しい野生生物の発見が本格的な同定の謎へと発展しました。珍しい卵も、この物語に加わる興味深い要素です。自然は今も専門家たちを驚かせることがあるようです。",
-    "duck_jp": "この虫、本当に秘密を隠すのが上手ですね。",
-    "x_jp": "巨大なナナフシが何十年も科学者たちをだまし続けていました。珍しい卵が、その謎をさらに驚くものにしています。自然にはまだまだ奥の手がありそうです。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Twig Trickster",
-      "concept_en": "A visual mystery scene showing the giant stick insect nearly disappearing among natural twigs while the friendly Daily Duck mascot searches for the hidden subject.",
-      "composition_en": "Landscape hero composition in a clean, softly lit woodland setting. Place the recognizable friendly yellow duck with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression in the lower-left foreground, holding a simple magnifying glass. Make the giant stick insect the strong focal point at center-right, carefully aligned with a cluster of twigs so its disguise is visually clear but discoverable. Use layered earthy greens and warm browns, shallow depth of field, generous negative space, and a charming premium editorial mood. No people, logos, labels, or readable text.",
-      "generation_prompt_en": "Create a clean, modern, charming premium editorial landscape hero image about a giant stick insect that fooled scientists for decades. Show one recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression in the lower-left foreground, using a simple magnifying glass to search a woodland cluster. At center-right, show one giant stick insect blending convincingly among natural twigs, still clearly visible to a careful viewer. Warm natural light, elegant earthy palette, strong focal point, soft background blur, polished storybook realism, spacious composition, landscape aspect ratio. No people, no logos, no watermarks, no UI, no embedded text, no headline.",
-      "alt_en": "A friendly yellow duck searches with a magnifying glass as a giant stick insect blends into a cluster of twigs.",
-      "title_ja": "小枝のトリックスター",
-      "concept_ja": "巨大なナナフシが小枝の中にほとんど姿を消し、親しみやすいデイリー・ダックのマスコットがその正体を探す、視覚的なミステリーです。",
-      "composition_ja": "清潔感のある柔らかな光の森を舞台にした横長のヒーロー構図。左下に、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の房、親しみやすい表情を持つ黄色いアヒルのマスコットを配置し、シンプルな虫眼鏡を持たせます。右中央には、自然な小枝に巧みに紛れ込む巨大なナナフシを配置し、注意深く見ると見つけられるようにします。緑と温かな茶色を基調に、背景は浅い被写界深度でぼかし、上質で魅力的な雰囲気にします。人物、ロゴ、ラベル、読める文字は入れません。",
-      "alt_ja": "黄色いアヒルが虫眼鏡で探す中、小枝の集まりに巨大なナナフシが紛れ込んでいる。"
-    },
-    {
-      "number": 2,
-      "title_en": "The Egg That Raised Questions",
-      "concept_en": "A curious discovery tableau centered on the giant stick insect’s unusual eggs, with the duck mascot examining the unexpected shapes as a symbol of a decades-long identification puzzle.",
-      "composition_en": "Landscape composition with a softly illuminated natural surface filling the lower half of the frame. Place a small group of unusual stick-insect eggs in the center as the primary focal point, presented without labels or invented scientific equipment. On the right, the friendly yellow duck mascot leans in with a warm, astonished expression, preserving the orange beak, large dark glossy eyes, and small feather tuft. In the softly blurred background, include a subtle silhouette of the giant stick insect among twigs, making the eggs feel connected to the mystery. Use creamy natural light, restrained botanical colors, clean editorial styling, and a sense of wonder.",
-      "generation_prompt_en": "Create a single clean, modern, premium editorial landscape image about a giant stick insect identification mystery. Make a small group of unusual stick-insect eggs the central focal point on a softly lit natural surface. Include one recognizable friendly yellow duck mascot beside them, with bright yellow feathers, an orange beak, large dark glossy eyes, a small feather tuft, and a warm curious expression, gently inspecting the eggs without touching them. In the softly blurred background, show a subtle giant stick insect silhouette among twigs. Natural botanical palette, elegant macro-inspired detail, warm wonder, uncluttered composition, landscape hero-image framing. No people, no logos, no watermarks, no UI, no labels, no readable text, no headline.",
-      "alt_en": "A curious yellow duck examines unusual stick-insect eggs while a giant stick insect is softly visible among twigs behind them.",
-      "title_ja": "謎を呼ぶナナフシの卵",
-      "concept_ja": "巨大なナナフシの珍しい卵を中心に据え、黄色いアヒルのマスコットがその意外な形を調べる、何十年にもわたる同定の謎を象徴する発見の場面です。",
-      "composition_ja": "画面下半分を柔らかな光の自然な地面が占める横長構図。中央に珍しいナナフシの卵を小さなまとまりとして配置し、主役にします。右側には、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の房を備えた黄色いアヒルのマスコットを置き、温かな驚きと好奇心を表す表情で卵を見つめさせます。背景は小枝の間にいる巨大なナナフシをほのかなシルエットとしてぼかし、卵と謎のつながりを示します。植物を思わせる落ち着いた色調と上質な編集デザインにします。",
-      "alt_ja": "好奇心いっぱいの黄色いアヒルが珍しいナナフシの卵を調べ、背後の小枝の間に巨大なナナフシがぼんやり見えている。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 3,
+    "selected_image_concept": {
       "number": 3,
       "title_en": "The Secret in Plain Sight",
       "concept_en": "A playful reveal image in which the giant stick insect occupies the center of an apparently simple twig scene, while the duck mascot presents the hidden discovery with delighted surprise.",
@@ -630,84 +575,10 @@
       "concept_ja": "一見すると単純な小枝の風景の中央に巨大なナナフシが姿を現し、黄色いアヒルのマスコットが驚きと喜びを込めてその発見を示す、発見の瞬間です。",
       "composition_ja": "前景と穏やかな自然の背景を視覚的に分けた、力強くミニマルな横長構図。中央には巨大なナナフシを縦に配置し、目立つ一本の小枝に紛れ込ませながらも、主役として認識できるようにします。右下には黄色いアヒルのマスコットを置き、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の房、喜びに満ちた表情を保ちます。片方の翼を上げ、驚きの発見を紹介するように見せます。クリーム色、苔色、樹皮の茶色を基調に、すっきりした形と柔らかな昼光で仕上げます。",
       "alt_ja": "黄色いアヒルが、中央の小枝にほとんど見えないように立つ巨大なナナフシを指し示している。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "EGG-CELLENT CAMOUFLAGE",
-      "meaning_ja": "「Excellent（すばらしい）」を「Egg-cellent」に置き換えた、卵を意味する egg を使った明確なダジャレです。珍しいナナフシの卵と、見事に正体を隠したナナフシの両方に結び付き、日本語では「すばらしい卵」や「見事な擬態」といったニュアンスになります。"
     },
-    {
-      "number": 2,
-      "title": "THE LONG CON IN NATURE",
-      "meaning_ja": "「自然界の長期的なだまし」という意味です。英語の慣用的な表現「the long con（長期間にわたる巧妙な詐欺・だまし）」を使い、ナナフシが科学者を何十年も欺いたという物語に重ねています。duck vocabulary に頼らず、長年続いた同定の謎を少し大胆に表現しています。"
-    },
-    {
-      "number": 3,
-      "title": "THE SECRET WAS A STICK",
-      "meaning_ja": "「その秘密は、一本の小枝だった」という意味です。ナナフシが小枝のように見える意外性を、短く印象的なポスターコピーにしています。秘密が目の前にありながら見抜けなかったという驚きと、物語の視覚的な発見感が伝わります。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Twig Trickster",
-      "concept_title_ja": "小枝のトリックスター",
-      "image_path": "automation_images/design_previews/2026-10-03/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "199195e7769aaa34b6c4e9f2f9cbc100d51d60c61c55c0d3282a45b1a7ba21d1",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: The Giant Stick Insect That Fooled Scientists for Decades\nSummary: A visually striking wildlife mystery involving unusual eggs and a decades-long identification puzzle makes this a wonderfully surprising story.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Twig Trickster\n\nCONCEPT:\nA visual mystery scene showing the giant stick insect nearly disappearing among natural twigs while the friendly Daily Duck mascot searches for the hidden subject.\n\nCOMPOSITION:\nLandscape hero composition in a clean, softly lit woodland setting. Place the recognizable friendly yellow duck with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression in the lower-left foreground, holding a simple magnifying glass. Make the giant stick insect the strong focal point at center-right, carefully aligned with a cluster of twigs so its disguise is visually clear but discoverable. Use layered earthy greens and warm browns, shallow depth of field, generous negative space, and a charming premium editorial mood. No people, logos, labels, or readable text.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, charming premium editorial landscape hero image about a giant stick insect that fooled scientists for decades. Show one recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression in the lower-left foreground, using a simple magnifying glass to search a woodland cluster. At center-right, show one giant stick insect blending convincingly among natural twigs, still clearly visible to a careful viewer. Warm natural light, elegant earthy palette, strong focal point, soft background blur, polished storybook realism, spacious composition, landscape aspect ratio. No people, no logos, no watermarks, no UI, no embedded text, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck searches with a magnifying glass as a giant stick insect blends into a cluster of twigs.",
-      "alt_ja": "黄色いアヒルが虫眼鏡で探す中、小枝の集まりに巨大なナナフシが紛れ込んでいる。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Egg That Raised Questions",
-      "concept_title_ja": "謎を呼ぶナナフシの卵",
-      "image_path": "automation_images/design_previews/2026-10-03/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "51dc428684bf4e93c6d7cfd8f03ef0f2171ea34d478139e1b0ff0453f9ca31df",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: The Giant Stick Insect That Fooled Scientists for Decades\nSummary: A visually striking wildlife mystery involving unusual eggs and a decades-long identification puzzle makes this a wonderfully surprising story.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Egg That Raised Questions\n\nCONCEPT:\nA curious discovery tableau centered on the giant stick insect’s unusual eggs, with the duck mascot examining the unexpected shapes as a symbol of a decades-long identification puzzle.\n\nCOMPOSITION:\nLandscape composition with a softly illuminated natural surface filling the lower half of the frame. Place a small group of unusual stick-insect eggs in the center as the primary focal point, presented without labels or invented scientific equipment. On the right, the friendly yellow duck mascot leans in with a warm, astonished expression, preserving the orange beak, large dark glossy eyes, and small feather tuft. In the softly blurred background, include a subtle silhouette of the giant stick insect among twigs, making the eggs feel connected to the mystery. Use creamy natural light, restrained botanical colors, clean editorial styling, and a sense of wonder.\n\nPRODUCTION DIRECTION:\nCreate a single clean, modern, premium editorial landscape image about a giant stick insect identification mystery. Make a small group of unusual stick-insect eggs the central focal point on a softly lit natural surface. Include one recognizable friendly yellow duck mascot beside them, with bright yellow feathers, an orange beak, large dark glossy eyes, a small feather tuft, and a warm curious expression, gently inspecting the eggs without touching them. In the softly blurred background, show a subtle giant stick insect silhouette among twigs. Natural botanical palette, elegant macro-inspired detail, warm wonder, uncluttered composition, landscape hero-image framing. No people, no logos, no watermarks, no UI, no labels, no readable text, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A curious yellow duck examines unusual stick-insect eggs while a giant stick insect is softly visible among twigs behind them.",
-      "alt_ja": "好奇心いっぱいの黄色いアヒルが珍しいナナフシの卵を調べ、背後の小枝の間に巨大なナナフシがぼんやり見えている。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Secret in Plain Sight",
-      "concept_title_ja": "目の前にあった秘密",
-      "image_path": "automation_images/design_previews/2026-10-03/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "cb4c87b1942ff7461601fe2a3056b0d8b8fbd55c7114c2f2bebf0b1c613e3a0d",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: The Giant Stick Insect That Fooled Scientists for Decades\nSummary: A visually striking wildlife mystery involving unusual eggs and a decades-long identification puzzle makes this a wonderfully surprising story.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Secret in Plain Sight\n\nCONCEPT:\nA playful reveal image in which the giant stick insect occupies the center of an apparently simple twig scene, while the duck mascot presents the hidden discovery with delighted surprise.\n\nCOMPOSITION:\nUse a bold, minimal landscape composition divided visually into a clear foreground and a calm natural background. Place the giant stick insect vertically at the center, blending into one prominent twig yet remaining readable as the hero subject. Position the friendly yellow duck mascot in the lower-right corner, facing the insect with an open, delighted expression and one wing raised as if presenting a surprising discovery. Preserve the mascot’s yellow body, orange beak, large dark glossy eyes, and small feather tuft. Use warm cream, moss green, and bark brown, clean geometry, soft studio-like daylight, and strong visual contrast around the insect. No literal detective props, no people, no text or branding.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape hero image with playful premium editorial styling about a giant stick insect that remained unidentified and fooled scientists for decades. Place one giant stick insect vertically at the center, blending into a single prominent twig in plain sight while remaining clearly recognizable. In the lower-right corner, show one consistent friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm delighted expression, raising one wing as if revealing the hidden insect. Minimal natural background, warm cream, moss green, and bark brown palette, clean shapes, soft daylight, strong focal point, elegant visual storytelling, landscape aspect ratio. No people, no logos, no watermarks, no UI, no readable embedded text, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A delighted yellow duck gestures toward a giant stick insect standing almost invisibly among the twigs at center.",
-      "alt_ja": "黄色いアヒルが、中央の小枝にほとんど見えないように立つ巨大なナナフシを指し示している。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-03/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 3,
+    "selected_title": "THE SECRET WAS A STICK"
+  },
   "selected_image_concept_number": 3,
   "selected_image_concept": {
     "number": 3,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 3,
   "selected_title_number": 3,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE SECRET WAS A STICK",
+  "selected_title_detail": {
+    "number": 3,
+    "title": "THE SECRET WAS A STICK",
+    "meaning_ja": "「その秘密は、一本の小枝だった」という意味です。ナナフシが小枝のように見える意外性を、短く印象的なポスターコピーにしています。秘密が目の前にありながら見抜けなかったという驚きと、物語の視覚的な発見感が伝わります。"
   },
+  "selected_preview": {
+    "number": 3,
+    "concept_number": 3,
+    "concept_title_en": "The Secret in Plain Sight",
+    "concept_title_ja": "目の前にあった秘密",
+    "image_path": "automation_images/design_previews/2026-10-03/batch_01/preview_3.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "cb4c87b1942ff7461601fe2a3056b0d8b8fbd55c7114c2f2bebf0b1c613e3a0d",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: The Giant Stick Insect That Fooled Scientists for Decades\nSummary: A visually striking wildlife mystery involving unusual eggs and a decades-long identification puzzle makes this a wonderfully surprising story.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Secret in Plain Sight\n\nCONCEPT:\nA playful reveal image in which the giant stick insect occupies the center of an apparently simple twig scene, while the duck mascot presents the hidden discovery with delighted surprise.\n\nCOMPOSITION:\nUse a bold, minimal landscape composition divided visually into a clear foreground and a calm natural background. Place the giant stick insect vertically at the center, blending into one prominent twig yet remaining readable as the hero subject. Position the friendly yellow duck mascot in the lower-right corner, facing the insect with an open, delighted expression and one wing raised as if presenting a surprising discovery. Preserve the mascot’s yellow body, orange beak, large dark glossy eyes, and small feather tuft. Use warm cream, moss green, and bark brown, clean geometry, soft studio-like daylight, and strong visual contrast around the insect. No literal detective props, no people, no text or branding.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape hero image with playful premium editorial styling about a giant stick insect that remained unidentified and fooled scientists for decades. Place one giant stick insect vertically at the center, blending into a single prominent twig in plain sight while remaining clearly recognizable. In the lower-right corner, show one consistent friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm delighted expression, raising one wing as if revealing the hidden insect. Minimal natural background, warm cream, moss green, and bark brown palette, clean shapes, soft daylight, strong focal point, elegant visual storytelling, landscape aspect ratio. No people, no logos, no watermarks, no UI, no readable embedded text, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A delighted yellow duck gestures toward a giant stick insect standing almost invisibly among the twigs at center.",
+    "alt_ja": "黄色いアヒルが、中央の小枝にほとんど見えないように立つ巨大なナナフシを指し示している。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-03.png",
+  "design_approval_reply": "3 3",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "6e991e71b26173adea10139d2f4c6b9dcbbb1c4ed48e9bf7c6a5390da2665838",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-03 — Batch 1",
-  "final_email_sent_at": "2026-10-03T07:03:38.879714+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE SECRET WAS A STICK",
-  "final_selection_reply": "3 3",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-03T07:07:28.668873+00:00"
+    "translation_language": "ja"
+  }
 }
