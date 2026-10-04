@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-04",
+    "displayDate": "October 4, 2026",
+    "slug": "the-popcorn-explorer",
+    "title": "THE POPCORN EXPLORER",
+    "duckName": "The Popcorn Explorer",
+    "storyTitleEn": "10 Things: Movie Night",
+    "storyTitleJa": "10 Things: Movie Night",
+    "image": "assets/ducks/2026-10-04-the-popcorn-explorer.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Popcorn Explorer",
+    "imageAltJa": "The Popcorn ExplorerをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Movie night can be a simple way to enjoy science and exploration. Free on-demand documentaries and a bowl of popcorn turn discovery into an easy, entertaining evening at home.",
+    "storyJa": "映画の夜は、科学や探検を楽しむシンプルな方法になります。無料のオンデマンド・ドキュメンタリーとポップコーンがあれば、発見の時間を自宅で気軽に、楽しく過ごせます。",
+    "duckEn": "A little popcorn can make room for a big adventure.",
+    "duckJa": "ポップコーンが少しあれば、大きな冒険が始まるかも。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/solar-system/10-things-movie-night/",
+    "archiveSummaryEn": "Make it a movie night: free on-demand documentaries, popcorn, and an easygoing way to enjoy science and exploration from home.",
+    "archiveSummaryJa": "映画の夜にしませんか。無料のオンデマンド・ドキュメンタリーとポップコーンで、自宅から気軽に科学や探検を楽しめます。",
+    "reasonEn": "Make it a movie night: free on-demand documentaries, popcorn, and an easygoing way to enjoy science and exploration from home.",
+    "reasonJa": "映画の夜にしませんか。無料のオンデマンド・ドキュメンタリーとポップコーンで、自宅から気軽に科学や探検を楽しめます。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-03",
     "displayDate": "October 3, 2026",
     "slug": "the-twig-trickster",
