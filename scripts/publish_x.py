@@ -35,6 +35,7 @@ ME_URL = "https://api.x.com/2/users/me"
 X_MAX_WEIGHTED_LENGTH = 280
 X_TCO_URL_WEIGHT = 23
 X_SAFETY_MARGIN = 4
+MAX_POST_TERMINAL_OBSERVATIONS = 20
 
 
 def required_env(name: str) -> str:
@@ -66,11 +67,40 @@ def now_iso() -> str:
 
 
 def write_result(action: str, **extra: Any) -> None:
+    timestamp = now_iso()
+    issue_date = first_text(extra.get("issue_date"))
+    if action != "X_POSTED" and X_RESULT_PATH.exists():
+        try:
+            existing = load_json(X_RESULT_PATH)
+        except (OSError, ValueError, json.JSONDecodeError):
+            existing = {}
+        if (
+            existing.get("action") == "X_POSTED"
+            and bool(issue_date)
+            and first_text(existing.get("issue_date")) == issue_date
+        ):
+            observation = {
+                "action": action,
+                "at": timestamp,
+                **extra,
+            }
+            previous = existing.get("post_terminal_observations")
+            observations = (
+                [item for item in previous if isinstance(item, dict)]
+                if isinstance(previous, list)
+                else []
+            )
+            existing["post_terminal_observations"] = (
+                observations[-(MAX_POST_TERMINAL_OBSERVATIONS - 1):]
+                + [observation]
+            )
+            write_json(X_RESULT_PATH, existing)
+            return
     write_json(
         X_RESULT_PATH,
         {
             "action": action,
-            "at": now_iso(),
+            "at": timestamp,
             **extra,
         },
     )
@@ -81,6 +111,17 @@ def first_text(*values: Any) -> str:
         if isinstance(value, str) and value.strip():
             return value.strip()
     return ""
+
+
+def canonical_issue_date(value: object, *, field: str) -> str:
+    text = first_text(value)
+    try:
+        parsed = datetime.strptime(text, "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError(f"{field} must be YYYY-MM-DD.") from exc
+    if parsed.strftime("%Y-%m-%d") != text:
+        raise ValueError(f"{field} must be YYYY-MM-DD.")
+    return text
 
 
 def x_weighted_length(text: str) -> int:
@@ -495,13 +536,66 @@ def main() -> int:
         READY_PATH
     )
 
+    issue_date = canonical_issue_date(
+        ready.get("issue_date"),
+        field="ready_to_publish issue_date",
+    )
+
+    # The result file is an independent terminal publication record. It must
+    # guard publication even if a companion ready_to_publish file regresses.
+    if X_RESULT_PATH.exists():
+        existing_result = load_json(X_RESULT_PATH)
+        if existing_result.get("action") == "X_POSTED":
+            terminal_issue_date = canonical_issue_date(
+                existing_result.get("issue_date"),
+                field="x_publish_result issue_date",
+            )
+            terminal_post_id = first_text(existing_result.get("x_post_id"))
+            if not terminal_post_id:
+                raise ValueError(
+                    "x_publish_result X_POSTED record is missing x_post_id."
+                )
+            if terminal_issue_date == issue_date:
+                write_result(
+                    "ALREADY_POSTED_TERMINAL_BLOCKED",
+                    issue_date=issue_date,
+                    ready_state=ready.get("state"),
+                    x_post_id=terminal_post_id,
+                )
+                print(
+                    "X POST BLOCKED: authoritative same-issue "
+                    "X_POSTED result already exists."
+                )
+                return 0
+
     website = load_json(
         WEBSITE_RESULT_PATH
     )
-
-    issue_date = first_text(
-        ready.get("issue_date")
+    website_issue_date = canonical_issue_date(
+        website.get("issue_date"),
+        field="website_publish_result issue_date",
     )
+    if website_issue_date != issue_date:
+        raise ValueError(
+            "Publication state issue mismatch: ready_to_publish and "
+            "website_publish_result disagree."
+        )
+
+    approved = ready.get("gate_a_approved_story")
+    if isinstance(approved, dict):
+        for approved_field in ("issue_date", "date"):
+            approved_value = approved.get(approved_field)
+            if approved_value is None:
+                continue
+            approved_issue_date = canonical_issue_date(
+                approved_value,
+                field=f"gate_a_approved_story {approved_field}",
+            )
+            if approved_issue_date != issue_date:
+                raise ValueError(
+                    "Publication state issue mismatch: ready_to_publish and "
+                    "gate_a_approved_story disagree."
+                )
 
     if (
         website.get("action")

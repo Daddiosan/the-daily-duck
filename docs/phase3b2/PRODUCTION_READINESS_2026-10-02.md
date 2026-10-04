@@ -4,6 +4,13 @@ Status: production recovery complete; consolidated hardening deployed and
 validated on 2026-10-02, with the explicitly listed monitoring extensions
 still requiring a reviewed collector/design.
 
+Post-R2 incidents and the local-only P1 remediation candidate are recorded in
+`STABILITY_REMEDIATION_2026-10-04.md`. A fresh reviewed stability window is
+required before any reduction or removal of fallback or scheduled polling.
+The historical three-issue and seven-day stability gates both failed and
+cannot be retroactively repaired; this local candidate is not deployment
+evidence and does not begin the new window.
+
 - External Fallback: `DEPLOYED_AND_VALIDATED`.
 - Monitoring core: `DEPLOYED_AND_VALIDATED`.
 - Pub/Sub hardening: `DEPLOYED_AND_VALIDATED`.
