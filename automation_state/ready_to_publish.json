@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-04",
-  "generated_at": "2026-10-04T04:16:26.958027+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-04T08:13:13.426650+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-04",
     "issue_date": "2026-10-04",
     "phase": 2,
@@ -562,52 +562,9 @@
       "gate_a_package_created_at": "2026-10-04T00:29:29.538614+00:00",
       "approval_token_digest": "043c488047427466dcf38507ff13c971196dfbcf139d1edba47cb1c4ece2d351"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 10,
-    "title": "10 Things: Movie Night",
-    "source": "NASA",
-    "url": "https://science.nasa.gov/solar-system/10-things-movie-night/",
-    "category": "entertainment",
-    "happiness": 8,
-    "hope": 6,
-    "general_interest": 8,
-    "surprise": 5,
-    "duck_visual": 7,
-    "source_quality": 9,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 7,
-    "total_score": 73,
-    "reason": "A friendly, low-pressure invitation to enjoy free on-demand documentaries with popcorn, making science and exploration feel accessible and entertaining.",
-    "candidate_number": 5,
-    "title_en": "Movie Night Makes Science and Exploration Easy to Enjoy",
-    "reason_en": "It is a friendly, low-pressure invitation to enjoy free on-demand documentaries with popcorn, making science and exploration feel accessible and entertaining.",
-    "en_copy": "Movie night can be a simple way to enjoy science and exploration. Free on-demand documentaries and a bowl of popcorn turn discovery into an easy, entertaining evening at home.",
-    "duck_name": "The Popcorn Explorer",
-    "duck_en": "A little popcorn can make room for a big adventure.",
-    "x_en": "Make it a movie night: free on-demand documentaries, popcorn, and an easygoing way to enjoy science and exploration from home.",
-    "title_ja": "映画の夜で、科学と探検を気軽に楽しもう",
-    "reason_ja": "無料のオンデマンド・ドキュメンタリーをポップコーンと楽しむ、気軽で親しみやすいお誘いです。科学や探検を身近で楽しいものにしてくれます。",
-    "jp_copy": "映画の夜は、科学や探検を楽しむシンプルな方法になります。無料のオンデマンド・ドキュメンタリーとポップコーンがあれば、発見の時間を自宅で気軽に、楽しく過ごせます。",
-    "duck_jp": "ポップコーンが少しあれば、大きな冒険が始まるかも。",
-    "x_jp": "映画の夜にしませんか。無料のオンデマンド・ドキュメンタリーとポップコーンで、自宅から気軽に科学や探検を楽しめます。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "The Cozy Discovery Screening",
-      "concept_en": "A warm at-home movie night turns a simple bowl of popcorn into a gateway to science and exploration.",
-      "composition_en": "Landscape hero composition in a softly lit living room. The friendly yellow Daily Duck mascot sits in the foreground on a comfortable sofa, holding a small bowl of popcorn, with a large blank projection glow behind it showing abstract, text-free imagery of stars, a distant planet-like horizon, and ocean-blue exploration colors. Keep the duck sharply recognizable with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Use generous negative space, clean modern styling, gentle cinematic light, and a premium editorial mood.",
-      "generation_prompt_en": "Create one clean, modern, charming premium editorial landscape hero image for a family-friendly science-and-exploration movie-night story. Show the recognizable friendly yellow Daily Duck mascot in the foreground on a cozy sofa, with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck holds a small bowl of popcorn. Behind it, a softly glowing home projection screen displays only abstract, text-free visual impressions of stars, a distant planetary horizon, and ocean-blue exploration colors; do not show readable text, logos, interfaces, or recognizable copyrighted film imagery. Warm evening lighting, tasteful contemporary living room, strong focal point on the duck and popcorn, uncluttered landscape framing, subtle depth of field, polished magazine illustration, no watermark, no headline, no embedded text.",
-      "alt_en": "The friendly yellow Daily Duck enjoys popcorn in front of a home projection filled with abstract stars and exploration colors.",
-      "title_ja": "くつろぎの発見ムービーナイト",
-      "concept_ja": "自宅での映画の夜とポップコーンが、科学や探検への入り口になる温かなイメージです。",
-      "composition_ja": "やわらかな照明のリビングを舞台にした横長のヒーロー構図。手前のソファに、オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の房、親しみやすい表情を持つ黄色いデイリー・ダックを座らせ、ポップコーンの小さなボウルを持たせます。背後の投影には、文字のない星空、遠い惑星の地平線、海を思わせる青い色彩を抽象的に描きます。",
-      "alt_ja": "自宅の投影画面に星と探検を思わせる抽象的な光景が広がる中、黄色いデイリー・ダックがポップコーンを楽しんでいる。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "The Popcorn Explorer Fort",
       "concept_en": "The Daily Duck transforms a small blanket-fort movie setup into an inviting expedition from home.",
@@ -619,95 +576,9 @@
       "composition_ja": "横長の構図で、画面の一方に居心地のよい毛布のテントを置き、もう一方には余白を残します。テントの中から、オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の房を持つ黄色いダックが、ポップコーンのボウルのそばで顔をのぞかせます。小型プロジェクターが、夜空や海、遠い風景を思わせる文字のない抽象的な光をテント内に投影します。",
       "alt_ja": "ポップコーンのそばで、プロジェクターが映す探検を思わせる光景を毛布のテントからのぞくデイリー・ダック。"
     },
-    {
-      "number": 3,
-      "title_en": "Popcorn Launches a Big Adventure",
-      "concept_en": "A bold tabletop still life turns ordinary movie-night popcorn into a playful launch point for discovery.",
-      "composition_en": "Landscape overhead-to-three-quarter tabletop composition. Place a large bowl of popcorn as the visual anchor, with a few kernels leading toward the friendly yellow Daily Duck mascot at the edge of the frame. Around the bowl, arrange tasteful abstract light shapes suggesting film frames, stars, and a sweeping horizon, without readable marks or literal scientific instruments. The duck should face the popcorn and glowing path with large glossy eyes, orange beak, small feather tuft, and an inviting smile. Use a warm cream-and-deep-blue palette, crisp forms, simple premium editorial design, and dramatic but friendly lighting.",
-      "generation_prompt_en": "Create one clean, premium landscape editorial image for a story about an easy movie night with popcorn, free documentaries, science, and exploration. Use a bold overhead-to-three-quarter tabletop composition with a large bowl of popcorn as the central focal point. Show the recognizable friendly yellow Daily Duck mascot at the edge of the frame, following a playful trail of popcorn toward abstract glowing shapes that suggest film frames, stars, and a distant horizon. Preserve the mascot identity: yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable smile. Keep the visual metaphor clearly playful and non-factual. Warm cream and deep navy palette, crisp contemporary shapes, polished magazine illustration, strong focal point, no logos, no watermarks, no readable embedded text, no UI, no headline.",
-      "alt_en": "A bowl of popcorn forms a playful path toward the smiling Daily Duck and abstract glowing shapes suggesting films, stars, and discovery.",
-      "title_ja": "ポップコーンから大冒険へ",
-      "concept_ja": "ポップコーンを、映画と発見の時間へつながる遊び心のある出発点として描く大胆な静物イメージです。",
-      "composition_ja": "横長の俯瞰と斜め上からの視点を組み合わせたテーブル構図。大きなポップコーンのボウルを主役にし、いくつかのポップコーンが画面端の黄色いデイリー・ダックへ向かう道のように並びます。周囲には、フィルムのコマ、星、遠い地平線を思わせる抽象的な光の形を置きます。ダックは大きく光沢のある目、オレンジ色のくちばし、小さな羽毛の房、親しみやすい笑顔で、光る道を見つめます。",
-      "alt_ja": "ポップコーンの道が、映画や星、発見を思わせる光の形と、笑顔のデイリー・ダックへ続いている。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IT OR NOT: MOVIE NIGHT!",
-      "meaning_ja": "「信じられないかもしれないが」というおなじみの表現「BELIEVE IT OR NOT!」を元に、「BELIEVE」の冒頭にアヒルのくちばしを表す「BILL」を重ねて「BILL-IEVE」にしたダック・パ punです。映画の夜に、科学や探検の驚きを楽しむニュアンスです。"
-    },
-    {
-      "number": 2,
-      "title": "DISCOVERY, IN THE COMFORT ZONE",
-      "meaning_ja": "「自宅で気軽に楽しむ発見」という意味です。「IN THE COMFORT ZONE（快適な場所で）」という表現を、科学や探検という本来は遠くへ出かける印象のある言葉と組み合わせています。家から一歩も出ずに大きな発見を楽しめる、という意外性のある言葉遊びです。"
-    },
-    {
-      "number": 3,
-      "title": "POPCORN. BIG ADVENTURE. PRESS PLAY.",
-      "meaning_ja": "「ポップコーン。大きな冒険。再生ボタンを押そう。」という意味です。短いフレーズを3つ並べるポスター調のリズムが、気軽さと期待感を強めます。小さな自宅の映画時間から、大きな科学と探検の世界へ出発できるという、明るく視覚的なコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Cozy Discovery Screening",
-      "concept_title_ja": "くつろぎの発見ムービーナイト",
-      "image_path": "automation_images/design_previews/2026-10-04/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "c7123ebd8889f438517f7a2197b8e38b29ad5a418e72e666990c3097099844fd",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Movie Night Makes Science and Exploration Easy to Enjoy\nSummary: It is a friendly, low-pressure invitation to enjoy free on-demand documentaries with popcorn, making science and exploration feel accessible and entertaining.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Cozy Discovery Screening\n\nCONCEPT:\nA warm at-home movie night turns a simple bowl of popcorn into a gateway to science and exploration.\n\nCOMPOSITION:\nLandscape hero composition in a softly lit living room. The friendly yellow Daily Duck mascot sits in the foreground on a comfortable sofa, holding a small bowl of popcorn, with a large blank projection glow behind it showing abstract, text-free imagery of stars, a distant planet-like horizon, and ocean-blue exploration colors. Keep the duck sharply recognizable with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Use generous negative space, clean modern styling, gentle cinematic light, and a premium editorial mood.\n\nPRODUCTION DIRECTION:\nCreate one clean, modern, charming premium editorial landscape hero image for a family-friendly science-and-exploration movie-night story. Show the recognizable friendly yellow Daily Duck mascot in the foreground on a cozy sofa, with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck holds a small bowl of popcorn. Behind it, a softly glowing home projection screen displays only abstract, text-free visual impressions of stars, a distant planetary horizon, and ocean-blue exploration colors; do not show readable text, logos, interfaces, or recognizable copyrighted film imagery. Warm evening lighting, tasteful contemporary living room, strong focal point on the duck and popcorn, uncluttered landscape framing, subtle depth of field, polished magazine illustration, no watermark, no headline, no embedded text.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The friendly yellow Daily Duck enjoys popcorn in front of a home projection filled with abstract stars and exploration colors.",
-      "alt_ja": "自宅の投影画面に星と探検を思わせる抽象的な光景が広がる中、黄色いデイリー・ダックがポップコーンを楽しんでいる。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Popcorn Explorer Fort",
-      "concept_title_ja": "ポップコーン探検基地",
-      "image_path": "automation_images/design_previews/2026-10-04/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "d095c70b43bd8e880c1e18fe172d03da43793283d75fb6faf586c410181d1153",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Movie Night Makes Science and Exploration Easy to Enjoy\nSummary: It is a friendly, low-pressure invitation to enjoy free on-demand documentaries with popcorn, making science and exploration feel accessible and entertaining.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Popcorn Explorer Fort\n\nCONCEPT:\nThe Daily Duck transforms a small blanket-fort movie setup into an inviting expedition from home.\n\nCOMPOSITION:\nLandscape composition with a cozy blanket fort occupying one side of the frame and open negative space on the other. The recognizable yellow duck mascot peeks out from the fort beside a bowl of popcorn, wearing a warm curious expression. A simple portable projector casts a soft, text-free beam containing abstract bands of night sky, ocean, and distant landscape colors onto the inside of the fort. Emphasize the feeling of imaginative exploration without depicting a specific real expedition or invented factual scene.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration for a warm story about enjoying free science and exploration documentaries at home. Feature the recognizable friendly yellow Daily Duck mascot inside a cozy blanket fort, with an orange beak, large dark glossy eyes, a small feather tuft, and a warm curious expression. Place a bowl of popcorn beside the duck and a small generic projector nearby. The projector casts a gentle text-free glow onto the fort interior using abstract night-sky, ocean, and distant-landscape colors, suggesting exploration without showing a specific factual location or event. Clean contemporary styling, charming premium magazine art direction, warm home atmosphere, strong focal point, balanced negative space, no logos, no watermark, no readable text, no user interface, no headline in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck peers from a cozy blanket fort beside popcorn while a projector suggests an at-home exploration adventure.",
-      "alt_ja": "ポップコーンのそばで、プロジェクターが映す探検を思わせる光景を毛布のテントからのぞくデイリー・ダック。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "Popcorn Launches a Big Adventure",
-      "concept_title_ja": "ポップコーンから大冒険へ",
-      "image_path": "automation_images/design_previews/2026-10-04/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "82f8a05a640f73c47cf3c221503d92d575965568ec6d10036cdaa0d09d854f48",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Movie Night Makes Science and Exploration Easy to Enjoy\nSummary: It is a friendly, low-pressure invitation to enjoy free on-demand documentaries with popcorn, making science and exploration feel accessible and entertaining.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nPopcorn Launches a Big Adventure\n\nCONCEPT:\nA bold tabletop still life turns ordinary movie-night popcorn into a playful launch point for discovery.\n\nCOMPOSITION:\nLandscape overhead-to-three-quarter tabletop composition. Place a large bowl of popcorn as the visual anchor, with a few kernels leading toward the friendly yellow Daily Duck mascot at the edge of the frame. Around the bowl, arrange tasteful abstract light shapes suggesting film frames, stars, and a sweeping horizon, without readable marks or literal scientific instruments. The duck should face the popcorn and glowing path with large glossy eyes, orange beak, small feather tuft, and an inviting smile. Use a warm cream-and-deep-blue palette, crisp forms, simple premium editorial design, and dramatic but friendly lighting.\n\nPRODUCTION DIRECTION:\nCreate one clean, premium landscape editorial image for a story about an easy movie night with popcorn, free documentaries, science, and exploration. Use a bold overhead-to-three-quarter tabletop composition with a large bowl of popcorn as the central focal point. Show the recognizable friendly yellow Daily Duck mascot at the edge of the frame, following a playful trail of popcorn toward abstract glowing shapes that suggest film frames, stars, and a distant horizon. Preserve the mascot identity: yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable smile. Keep the visual metaphor clearly playful and non-factual. Warm cream and deep navy palette, crisp contemporary shapes, polished magazine illustration, strong focal point, no logos, no watermarks, no readable embedded text, no UI, no headline.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A bowl of popcorn forms a playful path toward the smiling Daily Duck and abstract glowing shapes suggesting films, stars, and discovery.",
-      "alt_ja": "ポップコーンの道が、映画や星、発見を思わせる光の形と、笑顔のデイリー・ダックへ続いている。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-04/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "DISCOVERY, IN THE COMFORT ZONE"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "DISCOVERY, IN THE COMFORT ZONE",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "DISCOVERY, IN THE COMFORT ZONE",
+    "meaning_ja": "「自宅で気軽に楽しむ発見」という意味です。「IN THE COMFORT ZONE（快適な場所で）」という表現を、科学や探検という本来は遠くへ出かける印象のある言葉と組み合わせています。家から一歩も出ずに大きな発見を楽しめる、という意外性のある言葉遊びです。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "The Popcorn Explorer Fort",
+    "concept_title_ja": "ポップコーン探検基地",
+    "image_path": "automation_images/design_previews/2026-10-04/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "d095c70b43bd8e880c1e18fe172d03da43793283d75fb6faf586c410181d1153",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Movie Night Makes Science and Exploration Easy to Enjoy\nSummary: It is a friendly, low-pressure invitation to enjoy free on-demand documentaries with popcorn, making science and exploration feel accessible and entertaining.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Popcorn Explorer Fort\n\nCONCEPT:\nThe Daily Duck transforms a small blanket-fort movie setup into an inviting expedition from home.\n\nCOMPOSITION:\nLandscape composition with a cozy blanket fort occupying one side of the frame and open negative space on the other. The recognizable yellow duck mascot peeks out from the fort beside a bowl of popcorn, wearing a warm curious expression. A simple portable projector casts a soft, text-free beam containing abstract bands of night sky, ocean, and distant landscape colors onto the inside of the fort. Emphasize the feeling of imaginative exploration without depicting a specific real expedition or invented factual scene.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration for a warm story about enjoying free science and exploration documentaries at home. Feature the recognizable friendly yellow Daily Duck mascot inside a cozy blanket fort, with an orange beak, large dark glossy eyes, a small feather tuft, and a warm curious expression. Place a bowl of popcorn beside the duck and a small generic projector nearby. The projector casts a gentle text-free glow onto the fort interior using abstract night-sky, ocean, and distant-landscape colors, suggesting exploration without showing a specific factual location or event. Clean contemporary styling, charming premium magazine art direction, warm home atmosphere, strong focal point, balanced negative space, no logos, no watermark, no readable text, no user interface, no headline in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck peers from a cozy blanket fort beside popcorn while a projector suggests an at-home exploration adventure.",
+    "alt_ja": "ポップコーンのそばで、プロジェクターが映す探検を思わせる光景を毛布のテントからのぞくデイリー・ダック。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-04.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "63c53f213ec958e51886fe410f2e09d92e6ece1ec12d723e90ee8022f309916a",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-04 — Batch 1",
-  "final_email_sent_at": "2026-10-04T04:16:32.438523+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "DISCOVERY, IN THE COMFORT ZONE",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-04T08:13:13.427644+00:00"
+    "translation_language": "ja"
+  }
 }
