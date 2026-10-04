@@ -50,6 +50,14 @@ IGNORED_RUNTIME_ENTRIES = {"__pycache__"}
 # updated to it; the mechanism itself -- and its requirement that any
 # further change to a protected path past this new baseline be surfaced
 # for the same explicit human review -- is unchanged.
+#
+# POST-R2 P1 REAPPROVAL RECORD (2026-10-04): the stability remediation
+# explicitly owns only the former section 4 of approval-check-phase2.yml so it
+# can synchronize current main, establish the authoritative issue day, and
+# replace the blind latest-success lookup with validated artifact selection.
+# The generic workflow diff below excludes that one file, while the dedicated
+# test immediately below compares its prefix and post-fetch suffix byte-for-byte
+# with this baseline. The exception therefore does not permit unrelated edits.
 PHASE_3B_2A1_APPROVED_BASELINE = "23f54a4234bcb332f8f0b97bedb255b749235dd0"
 
 
@@ -179,6 +187,7 @@ class ApprovalReceiverContractTests(unittest.TestCase):
             PHASE_3B_2A1_APPROVED_BASELINE,
             "--",
             ".github/workflows",
+            ":(exclude).github/workflows/approval-check-phase2.yml",
             "scripts/approval_domain.py",
             "scripts/approval_shadow.py",
             "scripts/approval_shadow_compare.py",
@@ -191,6 +200,35 @@ class ApprovalReceiverContractTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.stdout.strip(), "")
+
+    def test_gate_a_workflow_change_is_limited_to_artifact_fetch_section(self):
+        path = ".github/workflows/approval-check-phase2.yml"
+        result = subprocess.run(
+            ["git", "show", f"{PHASE_3B_2A1_APPROVED_BASELINE}:{path}"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        baseline = result.stdout
+        current = (ROOT / path).read_text(encoding="utf-8")
+        baseline_start = "      # 4. Find the latest successful Daily Duck Gate A run"
+        current_start = (
+            "      # 4. Synchronize authoritative state and determine the expected issue"
+        )
+        common_end = "      - name: Prepare Gate A package"
+        self.assertIn(baseline_start, baseline)
+        self.assertIn(current_start, current)
+        self.assertIn(common_end, baseline)
+        self.assertIn(common_end, current)
+        self.assertEqual(
+            baseline.split(baseline_start, 1)[0],
+            current.split(current_start, 1)[0],
+        )
+        self.assertEqual(
+            baseline.split(common_end, 1)[1],
+            current.split(common_end, 1)[1],
+        )
 
     def test_dockerfile_runs_as_non_root(self):
         source = (RECEIVER / "Dockerfile").read_text(encoding="utf-8")

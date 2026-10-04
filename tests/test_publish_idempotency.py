@@ -132,7 +132,24 @@ class XPublishIdempotencyTests(unittest.TestCase):
         ) as find_existing, patch.object(
             publish_x, "upload_image"
         ) as upload, patch.object(publish_x, "create_post") as create:
+            upload.return_value = "media-2"
+            create.return_value = ("post-2", {"data": {"id": "post-2"}})
             return publish_x.main(), find_existing, upload, create
+
+    def test_first_x_publish_succeeds(self):
+        result, find_existing, upload, create = self.run_main(
+            {"state": "PUBLISHED", "issue_date": ISSUE}
+        )
+        self.assertEqual(result, 0)
+        find_existing.assert_called_once()
+        upload.assert_called_once()
+        create.assert_called_once()
+        ready = json.loads(self.ready.read_text(encoding="utf-8"))
+        saved = json.loads(self.result.read_text(encoding="utf-8"))
+        self.assertEqual(ready["state"], "X_POSTED")
+        self.assertEqual(ready["x_post_id"], "post-2")
+        self.assertEqual(saved["action"], "X_POSTED")
+        self.assertEqual(saved["x_post_id"], "post-2")
 
     def test_already_posted_local_state_blocks_all_x_calls(self):
         result, find_existing, upload, create = self.run_main(
@@ -149,6 +166,208 @@ class XPublishIdempotencyTests(unittest.TestCase):
         create.assert_not_called()
         saved = json.loads(self.result.read_text(encoding="utf-8"))
         self.assertEqual(saved["action"], "ALREADY_POSTED_BLOCKED")
+
+    def test_terminal_x_result_survives_later_duplicate_noop(self):
+        terminal = {
+            "action": "X_POSTED",
+            "at": "2026-09-30T12:00:00+00:00",
+            "issue_date": ISSUE,
+            "x_post_id": "post-1",
+            "x_post_url": "https://x.com/i/web/status/post-1",
+        }
+        write_json(self.result, terminal)
+        with patch.object(
+            publish_x, "now_iso", return_value="2026-09-30T12:05:00+00:00"
+        ):
+            result, find_existing, upload, create = self.run_main(
+                {
+                    "state": "X_POSTED",
+                    "issue_date": ISSUE,
+                    "x_posted": True,
+                    "x_post_id": "post-1",
+                }
+            )
+        self.assertEqual(result, 0)
+        find_existing.assert_not_called()
+        upload.assert_not_called()
+        create.assert_not_called()
+        saved = json.loads(self.result.read_text(encoding="utf-8"))
+        self.assertEqual(saved["action"], "X_POSTED")
+        self.assertEqual(saved["at"], terminal["at"])
+        self.assertEqual(saved["x_post_id"], "post-1")
+        self.assertEqual(
+            saved["post_terminal_observations"],
+            [
+                {
+                    "action": "ALREADY_POSTED_TERMINAL_BLOCKED",
+                    "at": "2026-09-30T12:05:00+00:00",
+                    "issue_date": ISSUE,
+                    "ready_state": "X_POSTED",
+                    "x_post_id": "post-1",
+                }
+            ],
+        )
+
+    def test_terminal_x_result_survives_local_duplicate_guard(self):
+        write_json(
+            self.result,
+            {
+                "action": "X_POSTED",
+                "at": "2026-09-30T12:00:00+00:00",
+                "issue_date": ISSUE,
+                "x_post_id": "post-1",
+            },
+        )
+        result, find_existing, upload, create = self.run_main(
+            {
+                "state": "PUBLISHED",
+                "issue_date": ISSUE,
+                "x_posted": False,
+            }
+        )
+        self.assertEqual(result, 0)
+        find_existing.assert_not_called()
+        upload.assert_not_called()
+        create.assert_not_called()
+        saved = json.loads(self.result.read_text(encoding="utf-8"))
+        self.assertEqual(saved["action"], "X_POSTED")
+        self.assertEqual(
+            saved["post_terminal_observations"][-1]["action"],
+            "ALREADY_POSTED_TERMINAL_BLOCKED",
+        )
+        self.assertEqual(saved["x_post_id"], "post-1")
+
+    def test_terminal_x_result_blocks_corrupted_weaker_ready_state(self):
+        write_json(
+            self.result,
+            {
+                "action": "X_POSTED",
+                "at": "2026-09-30T12:00:00+00:00",
+                "issue_date": ISSUE,
+                "x_post_id": "post-1",
+            },
+        )
+        result, find_existing, upload, create = self.run_main(
+            {"state": "CORRUPTED_WEAKER_STATE", "issue_date": ISSUE}
+        )
+        self.assertEqual(result, 0)
+        find_existing.assert_not_called()
+        upload.assert_not_called()
+        create.assert_not_called()
+        saved = json.loads(self.result.read_text(encoding="utf-8"))
+        self.assertEqual(saved["action"], "X_POSTED")
+        self.assertEqual(saved["x_post_id"], "post-1")
+
+    def test_corrupted_terminal_missing_post_id_fails_closed(self):
+        write_json(
+            self.result,
+            {
+                "action": "X_POSTED",
+                "at": "2026-09-30T12:00:00+00:00",
+                "issue_date": ISSUE,
+            },
+        )
+        write_json(self.ready, {"state": "PUBLISHED", "issue_date": ISSUE})
+        with patch.multiple(
+            publish_x,
+            READY_PATH=self.ready,
+            WEBSITE_RESULT_PATH=self.website,
+            X_RESULT_PATH=self.result,
+        ), patch.object(publish_x, "find_existing_post") as find_existing, patch.object(
+            publish_x, "upload_image"
+        ) as upload, patch.object(publish_x, "create_post") as create:
+            with self.assertRaises(ValueError):
+                publish_x.main()
+        find_existing.assert_not_called()
+        upload.assert_not_called()
+        create.assert_not_called()
+
+    def test_old_terminal_result_does_not_block_new_issue(self):
+        write_json(
+            self.result,
+            {
+                "action": "X_POSTED",
+                "at": "2026-09-18T12:00:00+00:00",
+                "issue_date": "2026-09-18",
+                "x_post_id": "post-old",
+            },
+        )
+        result, find_existing, upload, create = self.run_main(
+            {"state": "PUBLISHED", "issue_date": ISSUE}
+        )
+        self.assertEqual(result, 0)
+        find_existing.assert_called_once()
+        upload.assert_called_once()
+        create.assert_called_once()
+        saved = json.loads(self.result.read_text(encoding="utf-8"))
+        self.assertEqual(saved["issue_date"], ISSUE)
+        self.assertEqual(saved["x_post_id"], "post-2")
+
+    def test_website_issue_mismatch_fails_closed_before_x_calls(self):
+        write_json(
+            self.website,
+            {"action": "PUBLISHED", "issue_date": "2026-09-18"},
+        )
+        write_json(self.ready, {"state": "PUBLISHED", "issue_date": ISSUE})
+        with patch.multiple(
+            publish_x,
+            READY_PATH=self.ready,
+            WEBSITE_RESULT_PATH=self.website,
+            X_RESULT_PATH=self.result,
+        ), patch.object(publish_x, "find_existing_post") as find_existing, patch.object(
+            publish_x, "upload_image"
+        ) as upload, patch.object(publish_x, "create_post") as create:
+            with self.assertRaises(ValueError):
+                publish_x.main()
+        find_existing.assert_not_called()
+        upload.assert_not_called()
+        create.assert_not_called()
+
+    def test_nested_approved_issue_mismatch_fails_closed_before_x_calls(self):
+        ready = {
+            "state": "PUBLISHED",
+            "issue_date": ISSUE,
+            "gate_a_approved_story": {"issue_date": "2026-09-18"},
+        }
+        write_json(self.ready, ready)
+        with patch.multiple(
+            publish_x,
+            READY_PATH=self.ready,
+            WEBSITE_RESULT_PATH=self.website,
+            X_RESULT_PATH=self.result,
+        ), patch.object(publish_x, "find_existing_post") as find_existing, patch.object(
+            publish_x, "upload_image"
+        ) as upload, patch.object(publish_x, "create_post") as create:
+            with self.assertRaises(ValueError):
+                publish_x.main()
+        find_existing.assert_not_called()
+        upload.assert_not_called()
+        create.assert_not_called()
+
+    def test_terminal_observations_are_bounded_and_preserve_original_post(self):
+        write_json(
+            self.result,
+            {
+                "action": "X_POSTED",
+                "at": "2026-09-30T12:00:00+00:00",
+                "issue_date": ISSUE,
+                "x_post_id": "post-1",
+            },
+        )
+        with patch.object(publish_x, "X_RESULT_PATH", self.result):
+            for sequence in range(25):
+                publish_x.write_result(
+                    "DUPLICATE_OBSERVED",
+                    issue_date=ISSUE,
+                    sequence=sequence,
+                )
+        saved = json.loads(self.result.read_text(encoding="utf-8"))
+        observations = saved["post_terminal_observations"]
+        self.assertEqual(len(observations), 20)
+        self.assertEqual(observations[0]["sequence"], 5)
+        self.assertEqual(observations[-1]["sequence"], 24)
+        self.assertEqual(saved["action"], "X_POSTED")
+        self.assertEqual(saved["x_post_id"], "post-1")
 
     def test_remote_duplicate_detection_finds_canonical_url(self):
         me = Mock(status_code=200)
