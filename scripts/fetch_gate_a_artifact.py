@@ -253,11 +253,10 @@ class GitHubReadClient:
         operation: str,
         max_bytes: int = MAX_ARCHIVE_RESPONSE_BYTES,
     ) -> bytes:
-        response = self.get(
-            path,
-            operation=operation,
-            accept="application/octet-stream",
-        )
+        # GitHub's artifact archive endpoint only accepts the JSON media type
+        # and answers with a 302 to a short-lived archive URL. Requesting
+        # application/octet-stream is rejected with HTTP 415 before redirect.
+        response = self.get(path, operation=operation)
         headers_map = {
             str(key).lower(): str(value)
             for key, value in response.headers.items()

@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import contextlib
 import io
 import json
+import os
+import runpy
 import stat
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -10,8 +14,11 @@ from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
 from unittest.mock import patch
+from urllib.parse import urlsplit
 
 import requests
+from requests.adapters import BaseAdapter
+from requests.structures import CaseInsensitiveDict
 
 from scripts import fetch_gate_a_artifact as artifact_fetch
 from scripts.fetch_gate_a_artifact import (
@@ -106,6 +113,126 @@ def artifact_data(artifact_id, **changes):
     }
     value.update(changes)
     return value
+
+
+API_HOST = "api.github.com"
+ARCHIVE_HOST = "productionresultssa8.blob.core.windows.net"
+SENTINEL_TOKEN = "sentinel-token-must-never-be-logged"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parents[1] / "scripts" / "fetch_gate_a_artifact.py"
+)
+RUNS_ROUTE = f"{API_HOST}/repos/{REPOSITORY}/actions/workflows/daily-duck.yml/runs"
+
+
+def artifacts_route(run_id):
+    return f"{API_HOST}/repos/{REPOSITORY}/actions/runs/{run_id}/artifacts"
+
+
+def zip_route(artifact_id):
+    return f"{API_HOST}/repos/{REPOSITORY}/actions/artifacts/{artifact_id}/zip"
+
+
+def archive_route(artifact_id):
+    return f"{ARCHIVE_HOST}/artifact-{artifact_id}.zip"
+
+
+def iso(value):
+    return value.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def api_json(body, status=200, headers=None):
+    return (
+        status,
+        {"Content-Type": "application/json; charset=utf-8", **(headers or {})},
+        json.dumps(body).encode("utf-8"),
+    )
+
+
+def api_redirect(artifact_id, signature="signed"):
+    return (
+        302,
+        {"Location": f"https://{archive_route(artifact_id)}?sig={signature}"},
+        b"",
+    )
+
+
+def archive_download(content, headers=None):
+    return (
+        200,
+        {
+            "Content-Type": "application/zip",
+            "Content-Length": str(len(content)),
+            **(headers or {}),
+        },
+        content,
+    )
+
+
+def _accepts_json(accept):
+    for item in (accept or "*/*").split(","):
+        media = item.split(";", 1)[0].strip().lower()
+        if media in {"*/*", "application/*", "application/json"}:
+            return True
+        if media.startswith("application/vnd.github"):
+            return True
+    return False
+
+
+class FakeGitHubTransport(BaseAdapter):
+    """Offline model of GitHub's artifact archive download contract.
+
+    Like the live API, the archive endpoint rejects a client that does not
+    accept JSON with HTTP 415 before any redirect. Every other request is
+    answered from the scripted routes, keyed by host and path.
+    """
+
+    def __init__(self, routes):
+        super().__init__()
+        self.routes = {key: list(values) for key, values in routes.items()}
+        self.sent = []
+
+    def send(self, request, **kwargs):
+        self.sent.append(request)
+        parts = urlsplit(request.url)
+        accept = request.headers.get("Accept")
+        if (
+            parts.netloc == API_HOST
+            and "/actions/artifacts/" in parts.path
+            and not _accepts_json(accept)
+        ):
+            status, headers, body = api_json(
+                {
+                    "message": (
+                        f"Unsupported 'Accept' header: '{accept}'. "
+                        "Must accept 'application/json'."
+                    ),
+                    "status": "415",
+                },
+                status=415,
+            )
+        else:
+            status, headers, body = self.routes[parts.netloc + parts.path].pop(0)
+        response = requests.Response()
+        response.status_code = status
+        response.headers = CaseInsensitiveDict(headers)
+        response._content = body
+        response._content_consumed = True
+        response.url = request.url
+        response.request = request
+        response.connection = self
+        return response
+
+    def close(self):
+        pass
+
+
+def github_session(routes):
+    transport = FakeGitHubTransport(routes)
+    session = requests.Session()
+    session.trust_env = False
+    session.mount("https://", transport)
+    session.mount("http://", transport)
+    return session, transport
 
 
 class GitHubReadClientTests(unittest.TestCase):
@@ -731,6 +858,344 @@ class ArtifactSelectionTests(unittest.TestCase):
                     expected_issue_date="2026-10-04",
                     now=NOW,
                 )
+
+
+class GitHubArtifactDownloadContractTests(unittest.TestCase):
+    """Regression coverage for the 2026-10-05 Gate A HTTP 415 incident."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.output = Path(self.temp.name) / "artifact"
+        self.sleeps = []
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def client(self, routes):
+        session, transport = github_session(routes)
+        client = GitHubReadClient(
+            token=SENTINEL_TOKEN,
+            session=session,
+            sleep=self.sleeps.append,
+            clock=lambda: NOW,
+        )
+        return client, transport
+
+    def download(self, client, artifact_id=901):
+        return client.get_bytes(
+            f"repos/{REPOSITORY}/actions/artifacts/{artifact_id}/zip",
+            operation="download candidate artifact",
+        )
+
+    def select(self, client):
+        return fetch_gate_a_artifact(
+            client=client,
+            repository=REPOSITORY,
+            output_dir=self.output,
+            expected_issue_date="2026-10-04",
+            now=NOW,
+        )
+
+    def run_cli(self, routes, *, issue_date, github_output=None):
+        session, transport = github_session(routes)
+        argv = [
+            str(SCRIPT_PATH),
+            "--repository",
+            REPOSITORY,
+            "--output-dir",
+            str(self.output),
+            "--expected-issue-date",
+            issue_date,
+        ]
+        if github_output is not None:
+            argv.extend(["--github-output", str(github_output)])
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with (
+            patch.dict(os.environ, {"GH_TOKEN": SENTINEL_TOKEN}),
+            patch.object(sys, "argv", argv),
+            patch("requests.Session", return_value=session),
+            contextlib.redirect_stdout(stdout),
+            contextlib.redirect_stderr(stderr),
+            self.assertRaises(SystemExit) as exited,
+        ):
+            runpy.run_path(str(SCRIPT_PATH), run_name="__main__")
+        return exited.exception.code, stdout.getvalue(), stderr.getvalue(), transport
+
+    def test_archive_download_requests_github_json_media_type(self):
+        session = ScriptedSession(FakeResponse(content=b"archive"))
+        client = GitHubReadClient(
+            token="not-logged", session=session, sleep=lambda _: None
+        )
+        self.assertEqual(self.download(client), b"archive")
+        [(url, kwargs)] = session.calls
+        self.assertEqual(
+            url, f"https://{API_HOST}/repos/{REPOSITORY}/actions/artifacts/901/zip"
+        )
+        self.assertEqual(kwargs["headers"]["Accept"], "application/vnd.github+json")
+        self.assertEqual(
+            kwargs["headers"]["X-GitHub-Api-Version"],
+            artifact_fetch.GITHUB_API_VERSION,
+        )
+        self.assertTrue(kwargs["allow_redirects"])
+
+    def test_api_redirect_is_followed_to_archive_bytes(self):
+        payload = archive()
+        client, transport = self.client(
+            {
+                zip_route(901): [api_redirect(901)],
+                archive_route(901): [archive_download(payload)],
+            }
+        )
+        self.assertEqual(self.download(client), payload)
+        self.assertEqual(
+            [urlsplit(request.url).netloc for request in transport.sent],
+            [API_HOST, ARCHIVE_HOST],
+        )
+        self.assertEqual([request.method for request in transport.sent], ["GET", "GET"])
+        self.assertEqual(
+            transport.sent[0].headers["Accept"], "application/vnd.github+json"
+        )
+        self.assertEqual(self.sleeps, [])
+
+    def test_archive_redirect_does_not_forward_authorization(self):
+        client, transport = self.client(
+            {
+                zip_route(901): [api_redirect(901)],
+                archive_route(901): [archive_download(archive())],
+            }
+        )
+        self.download(client)
+        api_request, archive_request = transport.sent
+        self.assertTrue("Authorization" in api_request.headers)
+        self.assertFalse("Authorization" in archive_request.headers)
+        self.assertFalse(
+            any(SENTINEL_TOKEN in value for value in archive_request.headers.values())
+        )
+        self.assertNotIn(SENTINEL_TOKEN, archive_request.url)
+
+    def test_download_415_fails_closed_without_retry_or_leak(self):
+        client, transport = self.client(
+            {
+                RUNS_ROUTE: [
+                    api_json(
+                        {"workflow_runs": [run_data(300, "2026-10-03T23:30:00Z")]}
+                    )
+                ],
+                artifacts_route(300): [api_json({"artifacts": [artifact_data(901)]})],
+                zip_route(901): [
+                    api_json({"message": SENTINEL_TOKEN, "status": "415"}, status=415)
+                ],
+            }
+        )
+        with self.assertRaises(GitHubReadError) as caught:
+            self.select(client)
+        self.assertEqual(caught.exception.status_code, 415)
+        self.assertEqual(
+            str(caught.exception),
+            "GitHub read failed during download candidate artifact: HTTP 415.",
+        )
+        self.assertEqual(len(transport.sent), 3)
+        self.assertEqual(self.sleeps, [])
+        self.assertFalse(self.output.exists())
+
+    def test_cli_415_failure_output_is_sanitized(self):
+        now = datetime.now(timezone.utc)
+        code, stdout, stderr, transport = self.run_cli(
+            {
+                RUNS_ROUTE: [
+                    api_json(
+                        {
+                            "workflow_runs": [
+                                run_data(300, iso(now - timedelta(hours=1)))
+                            ]
+                        }
+                    )
+                ],
+                artifacts_route(300): [
+                    api_json(
+                        {
+                            "artifacts": [
+                                artifact_data(
+                                    901, expires_at=iso(now + timedelta(days=6))
+                                )
+                            ]
+                        }
+                    )
+                ],
+                zip_route(901): [
+                    api_json({"message": SENTINEL_TOKEN, "status": "415"}, status=415)
+                ],
+            },
+            issue_date="2026-10-05",
+        )
+        self.assertEqual(code, 1)
+        self.assertEqual(stdout, "")
+        self.assertEqual(
+            stderr,
+            "ERROR: GitHub read failed during download candidate artifact: "
+            "HTTP 415.\n",
+        )
+        self.assertEqual(len(transport.sent), 3)
+        self.assertFalse(self.output.exists())
+
+    def test_cli_downloads_redirected_archive_for_expected_issue(self):
+        now = datetime.now(timezone.utc)
+        github_output = Path(self.temp.name) / "github_output"
+        code, stdout, stderr, transport = self.run_cli(
+            {
+                RUNS_ROUTE: [
+                    api_json(
+                        {
+                            "workflow_runs": [
+                                run_data(300, iso(now - timedelta(hours=1)))
+                            ]
+                        }
+                    )
+                ],
+                artifacts_route(300): [
+                    api_json(
+                        {
+                            "artifacts": [
+                                artifact_data(
+                                    901, expires_at=iso(now + timedelta(days=6))
+                                )
+                            ]
+                        }
+                    )
+                ],
+                zip_route(901): [api_redirect(901)],
+                archive_route(901): [
+                    archive_download(archive(issue_date="2026-10-05"))
+                ],
+            },
+            issue_date="2026-10-05",
+            github_output=github_output,
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(stderr, "")
+        self.assertIn("run=300, artifact=901", stdout)
+        self.assertNotIn(SENTINEL_TOKEN, stdout)
+        self.assertTrue((self.output / "nested" / "gate_a_package.json").is_file())
+        self.assertIn(
+            "artifact_id=901", github_output.read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            [request.method for request in transport.sent], ["GET"] * 4
+        )
+        self.assertEqual(
+            [urlsplit(request.url).netloc for request in transport.sent],
+            [API_HOST, API_HOST, API_HOST, ARCHIVE_HOST],
+        )
+
+    def test_transient_api_503_on_download_is_retried(self):
+        payload = archive()
+        client, transport = self.client(
+            {
+                zip_route(901): [api_json({}, status=503), api_redirect(901)],
+                archive_route(901): [archive_download(payload)],
+            }
+        )
+        self.assertEqual(self.download(client), payload)
+        self.assertEqual(self.sleeps, [1.0])
+        self.assertEqual(len(transport.sent), 3)
+
+    def test_transient_archive_host_503_is_retried_with_fresh_redirect(self):
+        payload = archive()
+        client, transport = self.client(
+            {
+                zip_route(901): [
+                    api_redirect(901, "first"),
+                    api_redirect(901, "second"),
+                ],
+                archive_route(901): [(503, {}, b""), archive_download(payload)],
+            }
+        )
+        self.assertEqual(self.download(client), payload)
+        self.assertEqual(self.sleeps, [1.0])
+        self.assertEqual(
+            [urlsplit(request.url).netloc for request in transport.sent],
+            [API_HOST, ARCHIVE_HOST, API_HOST, ARCHIVE_HOST],
+        )
+        self.assertIn("sig=second", transport.sent[-1].url)
+
+    def test_rate_limited_403_on_download_is_retried(self):
+        payload = archive()
+        client, _ = self.client(
+            {
+                zip_route(901): [
+                    api_json({}, status=403, headers={"Retry-After": "3"}),
+                    api_redirect(901),
+                ],
+                archive_route(901): [archive_download(payload)],
+            }
+        )
+        self.assertEqual(self.download(client), payload)
+        self.assertEqual(self.sleeps, [3.0])
+
+    def test_download_404_falls_back_through_redirect_contract(self):
+        client, _ = self.client(
+            {
+                RUNS_ROUTE: [
+                    api_json(
+                        {
+                            "workflow_runs": [
+                                run_data(300, "2026-10-03T23:30:00Z"),
+                                run_data(299, "2026-10-03T22:30:00Z"),
+                            ]
+                        }
+                    )
+                ],
+                artifacts_route(300): [api_json({"artifacts": [artifact_data(902)]})],
+                zip_route(902): [api_json({"message": "Not Found"}, status=404)],
+                artifacts_route(299): [api_json({"artifacts": [artifact_data(901)]})],
+                zip_route(901): [api_redirect(901)],
+                archive_route(901): [archive_download(archive())],
+            }
+        )
+        selected = self.select(client)
+        self.assertEqual((selected.run_id, selected.artifact_id), (299, 901))
+        self.assertEqual(self.sleeps, [])
+
+    def test_redirected_archive_for_wrong_issue_fails_closed(self):
+        client, _ = self.client(
+            {
+                RUNS_ROUTE: [
+                    api_json(
+                        {"workflow_runs": [run_data(300, "2026-10-03T23:30:00Z")]}
+                    )
+                ],
+                artifacts_route(300): [api_json({"artifacts": [artifact_data(901)]})],
+                zip_route(901): [api_redirect(901)],
+                archive_route(901): [
+                    archive_download(archive(issue_date="2026-10-03"))
+                ],
+            }
+        )
+        with self.assertRaises(ArtifactSelectionError) as caught:
+            self.select(client)
+        self.assertIn("artifact_content_invalid=1", str(caught.exception))
+        self.assertFalse(self.output.exists())
+
+    def test_redirected_archive_declared_over_response_ceiling_is_rejected(self):
+        oversized = str(artifact_fetch.MAX_ARCHIVE_RESPONSE_BYTES + 1)
+        client, _ = self.client(
+            {
+                RUNS_ROUTE: [
+                    api_json(
+                        {"workflow_runs": [run_data(300, "2026-10-03T23:30:00Z")]}
+                    )
+                ],
+                artifacts_route(300): [api_json({"artifacts": [artifact_data(901)]})],
+                zip_route(901): [api_redirect(901)],
+                archive_route(901): [
+                    archive_download(archive(), headers={"Content-Length": oversized})
+                ],
+            }
+        )
+        with self.assertRaises(ArtifactSelectionError) as caught:
+            self.select(client)
+        self.assertIn("artifact_content_invalid=1", str(caught.exception))
+        self.assertFalse(self.output.exists())
 
 
 class WorkflowContractTests(unittest.TestCase):
