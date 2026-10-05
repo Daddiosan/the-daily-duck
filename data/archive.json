@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-05",
+    "displayDate": "October 5, 2026",
+    "slug": "rainbow-quacker",
+    "title": "RAINBOW QUACKER",
+    "duckName": "Rainbow Quacker",
+    "storyTitleEn": "APOD: 2026 October 4 – Supernumerary Rainbows over New Jersey",
+    "storyTitleJa": "APOD: 2026 October 4 – Supernumerary Rainbows over New Jersey",
+    "image": "assets/ducks/2026-10-05-rainbow-quacker.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Rainbow Quacker",
+    "imageAltJa": "Rainbow QuackerをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "The sky over New Jersey became a canvas for supernumerary rainbows. Their unusual arcs offer a beautiful reminder that the natural world can still surprise us with a little extra color.",
+    "storyJa": "ニュージャージーの空に、過剰虹と呼ばれる虹が現れました。珍しい弧を描くその光景は、自然が今も思いがけない色彩で私たちを驚かせてくれることを思い出させます。",
+    "duckEn": "When one rainbow is not enough, the sky adds a few more.",
+    "duckJa": "虹が一本で足りないとき、空は何本か追加してくれるよ。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/image-article/apod-2026-october-4-supernumerary-rainbows-over-new-jersey/",
+    "archiveSummaryEn": "Supernumerary rainbows over New Jersey bring an extra dose of color and wonder to the sky. 🌈🦆",
+    "archiveSummaryJa": "ニュージャージー上空に現れた過剰虹が、空にいつもより多くの彩りと驚きを届けました。🌈🦆",
+    "reasonEn": "Supernumerary rainbows over New Jersey bring an extra dose of color and wonder to the sky. 🌈🦆",
+    "reasonJa": "ニュージャージー上空に現れた過剰虹が、空にいつもより多くの彩りと驚きを届けました。🌈🦆",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-04",
     "displayDate": "October 4, 2026",
     "slug": "the-popcorn-explorer",
