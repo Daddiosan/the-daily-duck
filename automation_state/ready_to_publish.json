@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-05",
-  "generated_at": "2026-10-05T04:34:49.336401+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-05T04:47:17.121546+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-05",
     "issue_date": "2026-10-05",
     "phase": 2,
@@ -562,40 +562,9 @@
       "gate_a_package_created_at": "2026-10-05T00:43:23.807253+00:00",
       "approval_token_digest": "a0f13a516f83acfff72f72652be1216441f45642a89e9e607c414923e8e0e648"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 12,
-    "title": "APOD: 2026 October 4 – Supernumerary Rainbows over New Jersey",
-    "source": "NASA",
-    "url": "https://science.nasa.gov/image-article/apod-2026-october-4-supernumerary-rainbows-over-new-jersey/",
-    "category": "space",
-    "happiness": 9,
-    "hope": 7,
-    "general_interest": 8,
-    "surprise": 8,
-    "duck_visual": 10,
-    "source_quality": 10,
-    "freshness": 10,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 8,
-    "total_score": 78,
-    "reason": "A striking rainbow image offers immediate beauty and wonder while providing the day's one space or astronomy entry.",
-    "candidate_number": 3,
-    "title_en": "Supernumerary Rainbows Arc Over New Jersey",
-    "reason_en": "This striking rainbow image offers immediate beauty and wonder, giving readers a colorful moment of curiosity and joy.",
-    "en_copy": "The sky over New Jersey became a canvas for supernumerary rainbows. Their unusual arcs offer a beautiful reminder that the natural world can still surprise us with a little extra color.",
-    "duck_name": "Rainbow Quacker",
-    "duck_en": "When one rainbow is not enough, the sky adds a few more.",
-    "x_en": "Supernumerary rainbows over New Jersey bring an extra dose of color and wonder to the sky. 🌈🦆",
-    "title_ja": "ニュージャージー上空に現れた、ひと味違う虹",
-    "reason_ja": "印象的な虹の光景が、見る人に美しさと驚きを届ける、色鮮やかで好奇心を誘う話題です。",
-    "jp_copy": "ニュージャージーの空に、過剰虹と呼ばれる虹が現れました。珍しい弧を描くその光景は、自然が今も思いがけない色彩で私たちを驚かせてくれることを思い出させます。",
-    "duck_jp": "虹が一本で足りないとき、空は何本か追加してくれるよ。",
-    "x_jp": "ニュージャージー上空に現れた過剰虹が、空にいつもより多くの彩りと驚きを届けました。🌈🦆"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "Rainbow Duck Under Extra Arcs",
       "concept_en": "A joyful mascot-led celebration of supernumerary rainbows, with the friendly yellow duck looking up as several delicate rainbow arcs layer across the sky.",
@@ -607,107 +576,9 @@
       "composition_ja": "横長のヒーロー構図。手前中央下に、オレンジ色のくちばし、大きくつややかな黒い目、小さな羽毛の tuft、親しみやすい表情を持つ黄色いアヒルを配置します。頭上には、複数の繊細な虹の弧を重ね、広い空にいつもより多くの色が現れた印象をつくります。背景は特定の場所を示さない柔らかな地平線と穏やかな光にとどめ、現代的で上質な編集イラストにします。ロゴ、透かし、UI、読める文字、見出しは入れません。",
       "alt_ja": "開けた空に重なる複数の虹を、黄色いアヒルが見上げている。"
     },
-    {
-      "number": 2,
-      "title_en": "The Sky’s Extra Color",
-      "concept_en": "An elegant visual metaphor for nature adding a little more than expected: the duck discovers a suspended rainbow spectrum blooming through the sky like an unexpected bonus of color.",
-      "composition_en": "Landscape composition divided visually between a calm pale sky and a sweeping, translucent spectrum emerging from soft light. Place the recognizable yellow duck on the lower right, facing the color phenomenon with delighted curiosity. The rainbow should feel atmospheric and natural rather than mechanical; use layered arcs and subtle glow to suggest extra color without adding unsupported scientific diagrams or labels. Clean editorial design, sophisticated gradients, warm expression, and strong left-to-right visual flow. No logos, watermarks, UI, readable text, or headline.",
-      "generation_prompt_en": "Create one publishable landscape editorial illustration in a clean, modern, warm, premium style. Feature the consistent Daily Duck mascot on the lower right: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, looking toward an unexpected bloom of extra rainbow color in the sky. Use a broad calm sky, soft natural light, translucent layered rainbow arcs, and refined atmospheric gradients. The image should communicate wonder and the feeling that nature has added a little more color than expected, without scientific labels, diagrams, or invented objects. Keep the composition simple with a strong focal point and generous negative space. No logos, no watermarks, no UI, no readable embedded text, no headline, no people.",
-      "alt_en": "A curious yellow duck watches an unexpected bloom of layered rainbow color spread across the sky.",
-      "title_ja": "空に加わった、もうひとつの彩り",
-      "concept_ja": "自然が予想以上の色彩を空に加えてくれたように見える、洗練された視覚的メタファーです。",
-      "composition_ja": "横長の構図で、穏やかな淡い空と、柔らかな光から広がる半透明の虹色のスペクトルを組み合わせます。右下には、オレンジ色のくちばし、大きくつややかな黒い目、小さな羽毛の tuft、喜びを含んだ好奇心のある表情の黄色いアヒルを配置し、空の色彩を見つめさせます。虹は機械的ではなく、自然な光の現象として描き、繊細な弧と控えめな輝きで「追加された色」を表現します。ロゴ、透かし、UI、読める文字、見出しは入れません。",
-      "alt_ja": "黄色いアヒルが、空いっぱいに広がる重なった虹色の光を好奇心いっぱいに見つめている。"
-    },
-    {
-      "number": 3,
-      "title_en": "When One Rainbow Isn’t Enough",
-      "concept_en": "A playful poster-like scene that turns the story’s central surprise into a visual moment: the duck stands beneath an extravagant canopy of extra rainbow arcs, surrounded by open sky and joyful color.",
-      "composition_en": "Use a bold landscape poster composition with the duck large in the lower-left foreground, facing upward and slightly toward the viewer. Multiple graceful rainbow arcs form a sweeping canopy from upper left to upper right, leaving clean sky space around the mascot and a clear visual rhythm. Keep the background minimal and location-neutral, with soft atmospheric depth and no literal signage or text. The mood is celebratory, curious, warm, and premium rather than childish. No logos, watermarks, UI, readable embedded text, or headline.",
-      "generation_prompt_en": "Create one polished landscape hero image for a warm editorial publication, using a clean modern premium illustration style. Show the consistent Daily Duck mascot large in the lower-left foreground: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, looking up in delighted surprise. Let several elegant rainbow arcs sweep overhead like a colorful canopy, with extra layered arcs suggesting supernumerary rainbows. Use a simple location-neutral horizon, soft atmospheric depth, luminous but tasteful colors, strong poster-like silhouette, and generous clean sky space. Make the scene playful, curious, and visually striking without becoming childish. No logos, no watermarks, no UI, no readable embedded text, no headline, no human figures.",
-      "alt_en": "A delighted yellow duck stands beneath a sweeping canopy of extra rainbow arcs in a bright open sky.",
-      "title_ja": "虹がひとつでは足りない空",
-      "concept_ja": "「虹が一本では足りない」という驚きを、頭上いっぱいに広がる複数の虹で表現する、ポスター性の高いビジュアルです。",
-      "composition_ja": "横長のポスター風構図。左下の手前にマスコットを大きく配置し、少しこちらを向きながら上空を見上げさせます。上部左右には、複数の優雅な虹の弧を大きなカラフルな天蓋のように走らせ、マスコットの周囲には空の余白を残して明快なリズムをつくります。背景は場所を特定しない簡素な地平線と柔らかな奥行きにし、祝祭感と好奇心を上質に表現します。ロゴ、透かし、UI、読める文字、見出しは入れません。",
-      "alt_ja": "明るく開けた空の下、黄色いアヒルが頭上を覆う複数の虹を喜んで見上げている。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IT OR NOT: MORE RAINBOWS!",
-      "meaning_ja": "「信じられないかもしれないけれど、虹がもっとある！」という意味です。元の表現は “BELIEVE IT OR NOT” で、BELIEVE の冒頭を duck の特徴である “BILL” に置き換えています。くちばし（bill）を思わせる BILL と BELIEVE の音の近さが、デイリーダックらしい言葉遊びになります。"
-    },
-    {
-      "number": 2,
-      "title": "THE SKY ADDS A LITTLE EXTRA",
-      "meaning_ja": "「空が少し特別なおまけを加える」という自然な意味です。supernumerary rainbows の「通常より余分に現れる」という特徴を、“a little extra” という軽やかな表現に置き換えています。科学用語を直接繰り返さず、期待以上の色彩という二重のニュアンスをつくるスマートな言葉遊びです。"
-    },
-    {
-      "number": 3,
-      "title": "WHEN ONE RAINBOW ISN’T ENOUGH",
-      "meaning_ja": "「虹がひとつでは足りないとき」という意味です。虹が複数現れる驚きを、短く力強いポスターコピーにしています。少し大げさな言い方が好奇心と楽しさを生み、見た瞬間に「では、いくつ現れたのだろう」と想像させる余韻があります。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Rainbow Duck Under Extra Arcs",
-      "concept_title_ja": "虹を見上げるレインボーダック",
-      "image_path": "automation_images/design_previews/2026-10-05/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "7426f8dc234ea6e038777c2667839b6b91d930fe4f1829a18294233116aee750",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Supernumerary Rainbows Arc Over New Jersey\nSummary: This striking rainbow image offers immediate beauty and wonder, giving readers a colorful moment of curiosity and joy.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nRainbow Duck Under Extra Arcs\n\nCONCEPT:\nA joyful mascot-led celebration of supernumerary rainbows, with the friendly yellow duck looking up as several delicate rainbow arcs layer across the sky.\n\nCOMPOSITION:\nLandscape hero composition with the recognizable friendly yellow duck in the lower center foreground, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Several luminous, closely layered rainbow arcs sweep across a wide open sky above the duck. Keep the setting simple and non-specific, with a softly suggested horizon and gentle atmospheric light. Use clean modern editorial illustration, premium color harmony, strong focal point, generous negative space, and a sense of wonder. No logos, watermarks, UI, readable text, or headline.\n\nPRODUCTION DIRECTION:\nCreate one polished landscape editorial hero illustration in a clean, modern, charming premium style. Show the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, standing in the lower center foreground and gazing upward. Above it, depict multiple delicate supernumerary rainbow arcs layered near a larger rainbow, creating an unusual extra-color effect in the open sky. Use soft luminous atmosphere, gentle clouds kept minimal, a subtle non-specific horizon, rich but natural rainbow colors, clear silhouette, strong focal point, and ample negative space. Make the duck unmistakably recognizable and appealing. Landscape aspect ratio, publication-ready composition, no logos, no watermarks, no UI, no readable embedded text, no headline, no photorealistic human figures.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck looks up at several layered rainbow arcs glowing across an open sky.",
-      "alt_ja": "開けた空に重なる複数の虹を、黄色いアヒルが見上げている。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Sky’s Extra Color",
-      "concept_title_ja": "空に加わった、もうひとつの彩り",
-      "image_path": "automation_images/design_previews/2026-10-05/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "13bfaccd1a43597db81c808276e9e90ec1a116cbbba61fffff3dd510b3511c10",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Supernumerary Rainbows Arc Over New Jersey\nSummary: This striking rainbow image offers immediate beauty and wonder, giving readers a colorful moment of curiosity and joy.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Sky’s Extra Color\n\nCONCEPT:\nAn elegant visual metaphor for nature adding a little more than expected: the duck discovers a suspended rainbow spectrum blooming through the sky like an unexpected bonus of color.\n\nCOMPOSITION:\nLandscape composition divided visually between a calm pale sky and a sweeping, translucent spectrum emerging from soft light. Place the recognizable yellow duck on the lower right, facing the color phenomenon with delighted curiosity. The rainbow should feel atmospheric and natural rather than mechanical; use layered arcs and subtle glow to suggest extra color without adding unsupported scientific diagrams or labels. Clean editorial design, sophisticated gradients, warm expression, and strong left-to-right visual flow. No logos, watermarks, UI, readable text, or headline.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration in a clean, modern, warm, premium style. Feature the consistent Daily Duck mascot on the lower right: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, looking toward an unexpected bloom of extra rainbow color in the sky. Use a broad calm sky, soft natural light, translucent layered rainbow arcs, and refined atmospheric gradients. The image should communicate wonder and the feeling that nature has added a little more color than expected, without scientific labels, diagrams, or invented objects. Keep the composition simple with a strong focal point and generous negative space. No logos, no watermarks, no UI, no readable embedded text, no headline, no people.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A curious yellow duck watches an unexpected bloom of layered rainbow color spread across the sky.",
-      "alt_ja": "黄色いアヒルが、空いっぱいに広がる重なった虹色の光を好奇心いっぱいに見つめている。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "When One Rainbow Isn’t Enough",
-      "concept_title_ja": "虹がひとつでは足りない空",
-      "image_path": "automation_images/design_previews/2026-10-05/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "5b0d543b5f34e197f0efe227ab9965998384c91c759a6ed7bd2502606c0bddcc",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Supernumerary Rainbows Arc Over New Jersey\nSummary: This striking rainbow image offers immediate beauty and wonder, giving readers a colorful moment of curiosity and joy.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nWhen One Rainbow Isn’t Enough\n\nCONCEPT:\nA playful poster-like scene that turns the story’s central surprise into a visual moment: the duck stands beneath an extravagant canopy of extra rainbow arcs, surrounded by open sky and joyful color.\n\nCOMPOSITION:\nUse a bold landscape poster composition with the duck large in the lower-left foreground, facing upward and slightly toward the viewer. Multiple graceful rainbow arcs form a sweeping canopy from upper left to upper right, leaving clean sky space around the mascot and a clear visual rhythm. Keep the background minimal and location-neutral, with soft atmospheric depth and no literal signage or text. The mood is celebratory, curious, warm, and premium rather than childish. No logos, watermarks, UI, readable embedded text, or headline.\n\nPRODUCTION DIRECTION:\nCreate one polished landscape hero image for a warm editorial publication, using a clean modern premium illustration style. Show the consistent Daily Duck mascot large in the lower-left foreground: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, looking up in delighted surprise. Let several elegant rainbow arcs sweep overhead like a colorful canopy, with extra layered arcs suggesting supernumerary rainbows. Use a simple location-neutral horizon, soft atmospheric depth, luminous but tasteful colors, strong poster-like silhouette, and generous clean sky space. Make the scene playful, curious, and visually striking without becoming childish. No logos, no watermarks, no UI, no readable embedded text, no headline, no human figures.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A delighted yellow duck stands beneath a sweeping canopy of extra rainbow arcs in a bright open sky.",
-      "alt_ja": "明るく開けた空の下、黄色いアヒルが頭上を覆う複数の虹を喜んで見上げている。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-05/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "BILL-IEVE IT OR NOT: MORE RAINBOWS!"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "BILL-IEVE IT OR NOT: MORE RAINBOWS!",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "BILL-IEVE IT OR NOT: MORE RAINBOWS!",
+    "meaning_ja": "「信じられないかもしれないけれど、虹がもっとある！」という意味です。元の表現は “BELIEVE IT OR NOT” で、BELIEVE の冒頭を duck の特徴である “BILL” に置き換えています。くちばし（bill）を思わせる BILL と BELIEVE の音の近さが、デイリーダックらしい言葉遊びになります。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "Rainbow Duck Under Extra Arcs",
+    "concept_title_ja": "虹を見上げるレインボーダック",
+    "image_path": "automation_images/design_previews/2026-10-05/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "7426f8dc234ea6e038777c2667839b6b91d930fe4f1829a18294233116aee750",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: Supernumerary Rainbows Arc Over New Jersey\nSummary: This striking rainbow image offers immediate beauty and wonder, giving readers a colorful moment of curiosity and joy.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nRainbow Duck Under Extra Arcs\n\nCONCEPT:\nA joyful mascot-led celebration of supernumerary rainbows, with the friendly yellow duck looking up as several delicate rainbow arcs layer across the sky.\n\nCOMPOSITION:\nLandscape hero composition with the recognizable friendly yellow duck in the lower center foreground, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Several luminous, closely layered rainbow arcs sweep across a wide open sky above the duck. Keep the setting simple and non-specific, with a softly suggested horizon and gentle atmospheric light. Use clean modern editorial illustration, premium color harmony, strong focal point, generous negative space, and a sense of wonder. No logos, watermarks, UI, readable text, or headline.\n\nPRODUCTION DIRECTION:\nCreate one polished landscape editorial hero illustration in a clean, modern, charming premium style. Show the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, standing in the lower center foreground and gazing upward. Above it, depict multiple delicate supernumerary rainbow arcs layered near a larger rainbow, creating an unusual extra-color effect in the open sky. Use soft luminous atmosphere, gentle clouds kept minimal, a subtle non-specific horizon, rich but natural rainbow colors, clear silhouette, strong focal point, and ample negative space. Make the duck unmistakably recognizable and appealing. Landscape aspect ratio, publication-ready composition, no logos, no watermarks, no UI, no readable embedded text, no headline, no photorealistic human figures.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A friendly yellow duck looks up at several layered rainbow arcs glowing across an open sky.",
+    "alt_ja": "開けた空に重なる複数の虹を、黄色いアヒルが見上げている。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-05.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "52ac0dc3249e054e46b2ebd4f355da65d12e29551281ae1d168137b153f3729e",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-05 — Batch 1",
-  "final_email_sent_at": "2026-10-05T04:34:53.362000+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "BILL-IEVE IT OR NOT: MORE RAINBOWS!",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-05T04:47:17.122718+00:00"
+    "translation_language": "ja"
+  }
 }
