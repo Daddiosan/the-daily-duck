@@ -1,4 +1,5 @@
 import ast
+import hashlib
 import subprocess
 import unittest
 from pathlib import Path
@@ -58,7 +59,30 @@ IGNORED_RUNTIME_ENTRIES = {"__pycache__"}
 # The generic workflow diff below excludes that one file, while the dedicated
 # test immediately below compares its prefix and post-fetch suffix byte-for-byte
 # with this baseline. The exception therefore does not permit unrelated edits.
+#
+# GATE A TERMINAL-NOOP REAPPROVAL RECORD (2026-10-06): the human explicitly
+# approved a preflight before artifact retrieval and exact guards on Prepare,
+# Gmail approval, and approval commit, plus a fixed no-op report block. The
+# preflight/fetch section is pinned by digest and the suffix is reconstructed
+# from the baseline with only those exact additions, so schedule, permissions,
+# dispatch, failure notification, and all unrelated workflow behavior remain
+# protected.
 PHASE_3B_2A1_APPROVED_BASELINE = "23f54a4234bcb332f8f0b97bedb255b749235dd0"
+GATE_A_PREFLIGHT_SECTION_SHA256 = (
+    "bae110d1e7c0e22dfa54a23bcc5a2a65d7f8699fb22dd98a6171c3d0f8900785"
+)
+GATE_A_PREFLIGHT_GUARD = (
+    "        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'"
+)
+GATE_A_NOOP_REPORT = (
+    '          if [ "${{ steps.preflight.outputs.action }}" = '
+    '"NO_ACTION_REQUIRED" ]; then\n'
+    '            echo "STATE: NO_ACTION_REQUIRED"\n'
+    '            echo "Reason: ${{ steps.preflight.outputs.reason }}"\n'
+    '            echo "Evidence: ${{ steps.preflight.outputs.evidence }}"\n'
+    "            exit 0\n"
+    "          fi\n\n"
+)
 
 
 class ApprovalReceiverContractTests(unittest.TestCase):
@@ -201,7 +225,7 @@ class ApprovalReceiverContractTests(unittest.TestCase):
         )
         self.assertEqual(result.stdout.strip(), "")
 
-    def test_gate_a_workflow_change_is_limited_to_artifact_fetch_section(self):
+    def test_gate_a_workflow_change_is_limited_to_approved_sections(self):
         path = ".github/workflows/approval-check-phase2.yml"
         result = subprocess.run(
             ["git", "show", f"{PHASE_3B_2A1_APPROVED_BASELINE}:{path}"],
@@ -225,8 +249,34 @@ class ApprovalReceiverContractTests(unittest.TestCase):
             baseline.split(baseline_start, 1)[0],
             current.split(current_start, 1)[0],
         )
+
+        current_middle = current.split(current_start, 1)[1].split(common_end, 1)[0]
         self.assertEqual(
-            baseline.split(common_end, 1)[1],
+            hashlib.sha256(current_middle.encode()).hexdigest(),
+            GATE_A_PREFLIGHT_SECTION_SHA256,
+        )
+
+        approved_suffix = baseline.split(common_end, 1)[1]
+        approved_suffix = "\n" + GATE_A_PREFLIGHT_GUARD + approved_suffix
+        for step_name in (
+            "Check Gate A story selection",
+            "Commit APPROVED_STORY when created",
+        ):
+            marker = f"      - name: {step_name}\n"
+            self.assertEqual(approved_suffix.count(marker), 1)
+            approved_suffix = approved_suffix.replace(
+                marker,
+                marker + GATE_A_PREFLIGHT_GUARD + "\n",
+            )
+
+        report_anchor = '          echo "Gate A approval check finished."\n\n'
+        self.assertEqual(approved_suffix.count(report_anchor), 1)
+        approved_suffix = approved_suffix.replace(
+            report_anchor,
+            report_anchor + GATE_A_NOOP_REPORT,
+        )
+        self.assertEqual(
+            approved_suffix,
             current.split(common_end, 1)[1],
         )
 

@@ -82,10 +82,22 @@ jobs:
           echo "Expected Daily Duck issue: $EXPECTED_ISSUE_DATE"
 
       # ======================================================
+      # 4a. Stop harmless wakes after Gate A has already completed
+      # ======================================================
+
+      - name: Determine whether Gate A still requires action
+        id: preflight
+        run: |
+          python scripts/gate_a_preflight.py \
+            --expected-issue-date "${{ steps.expected_issue.outputs.expected_issue_date }}" \
+            --github-output "$GITHUB_OUTPUT"
+
+      # ======================================================
       # 5. Select and download an authoritative Gate A artifact
       # ======================================================
 
       - name: Fetch newest usable Daily Duck Automation artifact
+        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'
         id: dailyduck
         env:
           GH_TOKEN: ${{ github.token }}
@@ -100,6 +112,7 @@ jobs:
       # ======================================================
 
       - name: Prepare Gate A package
+        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'
         shell: bash
         run: |
           set -euo pipefail
@@ -176,6 +189,7 @@ jobs:
       # ======================================================
 
       - name: Check Gate A story selection
+        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -188,6 +202,7 @@ jobs:
       # ======================================================
 
       - name: Commit APPROVED_STORY when created
+        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'
         id: approval_commit
         shell: bash
         run: |
@@ -253,6 +268,13 @@ jobs:
         shell: bash
         run: |
           echo "Gate A approval check finished."
+
+          if [ "${{ steps.preflight.outputs.action }}" = "NO_ACTION_REQUIRED" ]; then
+            echo "STATE: NO_ACTION_REQUIRED"
+            echo "Reason: ${{ steps.preflight.outputs.reason }}"
+            echo "Evidence: ${{ steps.preflight.outputs.evidence }}"
+            exit 0
+          fi
 
           if [ -f automation_state/approved_story.json ]; then
 
