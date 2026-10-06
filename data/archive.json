@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-06",
+    "displayDate": "October 6, 2026",
+    "slug": "comfort-character-duck",
+    "title": "COMFORT CHARACTER DUCK",
+    "duckName": "Comfort Character Duck",
+    "storyTitleEn": "'Digital ibuprofen' offers Chinese youth comfort through cute characters facing familiar struggles",
+    "storyTitleJa": "'Digital ibuprofen' offers Chinese youth comfort through cute characters facing familiar struggles",
+    "image": "assets/ducks/2026-10-06-comfort-character-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Comfort Character Duck",
+    "imageAltJa": "Comfort Character DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "For some Chinese youth, cute online characters facing familiar struggles can offer comfort—an idea described as “digital ibuprofen.” It is a warm look at how recognition and a little charm can help people through difficult times.",
+    "storyJa": "中国の若者の中には、身近な悩みに向き合うかわいいオンラインキャラクターから慰めを得ている人たちがいます。こうした存在は「デジタルなイブプロフェン」と表現されており、つらい時期に、共感と少しの親しみやすさが人を支えることを感じさせる話です。",
+    "duckEn": "A tiny bit of charm can be a big comfort.",
+    "duckJa": "小さなかわいらしさが、大きな慰めになることもあります。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-digital-ibuprofen-chinese-youth-comfort.html",
+    "archiveSummaryEn": "Cute online characters facing familiar struggles are offering some Chinese youth comfort—a kind of “digital ibuprofen” for difficult times.",
+    "archiveSummaryJa": "身近な悩みに向き合うかわいいオンラインキャラクターが、中国の若者の慰めに。「デジタルなイブプロフェン」ともいえる、つらい時期の支えです。",
+    "reasonEn": "Cute online characters facing familiar struggles are offering some Chinese youth comfort—a kind of “digital ibuprofen” for difficult times.",
+    "reasonJa": "身近な悩みに向き合うかわいいオンラインキャラクターが、中国の若者の慰めに。「デジタルなイブプロフェン」ともいえる、つらい時期の支えです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-05",
     "displayDate": "October 5, 2026",
     "slug": "rainbow-quacker",
