@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-07",
-  "generated_at": "2026-10-07T02:35:20.695700+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-07T09:41:27.519967+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-07",
     "issue_date": "2026-10-07",
     "phase": 2,
@@ -562,40 +562,9 @@
       "gate_a_package_created_at": "2026-10-07T01:24:18.273882+00:00",
       "approval_token_digest": "daa05da24a4e5772fd798e84342c98d3f342c4c1909ea4bb07396f94aac25281"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 53,
-    "title": "Scientists say this simple habit could strengthen your marriage",
-    "source": "ScienceDaily All",
-    "url": "https://www.sciencedaily.com/releases/2026/10/261004001843.htm",
-    "category": "people",
-    "happiness": 8,
-    "hope": 8,
-    "general_interest": 9,
-    "surprise": 4,
-    "duck_visual": 5,
-    "source_quality": 8,
-    "freshness": 9,
-    "broad_appeal": 9,
-    "novelty_vs_archive": 8,
-    "total_score": 69,
-    "reason": "Simple, practical and warmly relatable, this story turns an everyday walk into a hopeful idea about connection and better relationships.",
-    "candidate_number": 2,
-    "title_en": "A Simple Walk May Help Strengthen a Marriage",
-    "reason_en": "Warmly relatable and easy to imagine, this story presents an everyday walk as a hopeful way to support connection and stronger relationships.",
-    "en_copy": "A simple everyday habit may offer a meaningful boost to married life: taking a walk. The idea is refreshingly practical, turning ordinary time together into an opportunity for connection. Sometimes, a hopeful relationship habit can begin with nothing more complicated than stepping outside side by side.",
-    "duck_name": "The Strolling Duck",
-    "duck_en": "A little together time can go a long way.",
-    "x_en": "Could a simple walk help strengthen a marriage? This hopeful idea turns ordinary time together into an opportunity for connection.",
-    "title_ja": "シンプルな散歩が夫婦の絆を深めるかもしれない",
-    "reason_ja": "身近で実践しやすいこの話は、日常の散歩を、心のつながりやより良い関係を支える希望の習慣として紹介しています。",
-    "jp_copy": "日常のシンプルな習慣が、夫婦の生活にうれしい変化をもたらすかもしれません。それは、一緒に散歩することです。とても実践しやすく、普段のふたりの時間をつながりを深める機会に変えてくれます。希望を感じられる関係づくりは、肩を並べて外に出ることから始まるのかもしれません。",
-    "duck_jp": "少し一緒に過ごすだけで、ふたりの時間はもっと豊かに。",
-    "x_jp": "シンプルな散歩が、夫婦の絆を深めるかもしれません。何気ないふたりの時間を、つながりを育む機会に変える希望のアイデアです。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "Side by Side on the Path",
       "concept_en": "A warm, literal visualization of a simple shared walk as an opportunity for connection, featuring two recognizable Daily Duck mascots strolling together outdoors.",
@@ -607,107 +576,9 @@
       "composition_ja": "暖かな朝の光が差す公園を横長のヒーロー構図で描きます。手前右側に、オレンジ色のくちばし、大きく艶のある黒い目、小さな羽毛の tuft、親しみやすい表情を持つ2羽の黄色いダックを並んで配置します。道は柔らかな光へ向かってゆるやかに曲がり、左側には余白を残します。",
       "alt_ja": "親しみやすい黄色いダックの2羽が、日差しの中の公園の道を並んで歩いている。"
     },
-    {
-      "number": 2,
-      "title_en": "The Heart of the Walk",
-      "concept_en": "A charming visual metaphor in which the route of a shared walk gently forms a heart, emphasizing emotional connection without adding unsupported factual details.",
-      "composition_en": "Landscape composition viewed from a slightly elevated angle over a minimal green park. A single winding walking path subtly forms the outline of a heart without looking artificial. Place two friendly yellow duck mascots near the lower center, walking together along the path toward the heart-shaped bend. Include soft grass, a few understated trees, and warm daylight. Keep the heart shape as a natural path motif rather than a graphic icon; use clean negative space and a polished editorial finish.",
-      "generation_prompt_en": "Create a premium, clean, modern editorial illustration in a wide 16:9 landscape format. From a slightly elevated viewpoint, show a simple winding path through a peaceful green park; the path should subtly and naturally suggest the shape of a heart as it curves through the scene. Place two consistent friendly yellow Daily Duck mascots walking together near the lower center. They must have bright yellow feathers, orange beaks, large dark glossy eyes, small feather tufts, and warm approachable expressions. Use soft daylight, gentle greenery, restrained detail, elegant composition, and a hopeful intimate mood. The heart must be formed only by the path, not by graphic symbols or text. No logos, no watermark, no UI, no readable embedded text, no headline, no human couple, no exaggerated cartoon clutter.",
-      "alt_en": "Two friendly yellow ducks walk together on a park path that gently curves into a heart shape, symbolizing connection.",
-      "title_ja": "散歩が描くハート",
-      "concept_ja": "ふたりで歩く道そのものが自然にハートを描く、つながりの視覚的なメタファーです。散歩と夫婦の心の距離の近さを、説明的になりすぎず表現します。",
-      "composition_ja": "穏やかな緑の公園をやや俯瞰で捉えた横長構図です。一本の曲がりくねった散歩道が、人工的に見えない自然なハート形をほのかに描きます。画面下中央付近に、並んで歩く2羽の黄色いダックを配置し、柔らかな日差しと控えめな木々、広い余白で上品に仕上げます。",
-      "alt_ja": "2羽の親しみやすい黄色いダックが、自然にハート形へ曲がる公園の散歩道を一緒に歩いている。"
-    },
-    {
-      "number": 3,
-      "title_en": "A Pause That Brings Them Closer",
-      "concept_en": "A distinct editorial scene showing that connection can grow during an ordinary walk, with two ducks pausing together at a scenic overlook rather than simply moving along a path.",
-      "composition_en": "Wide landscape hero image at a quiet overlook beside a walking trail. Place two friendly yellow duck mascots in the foreground, sitting or standing close together on a simple wooden bench, looking toward a softly glowing open landscape. A pair of walking shoes is not needed; keep the scene focused on together time after the walk. Use a broad sky, gentle horizon, warm late-afternoon light, and strong clean silhouettes. The mood is reflective, affectionate, and optimistic, with ample negative space around the subjects.",
-      "generation_prompt_en": "Create a clean, modern, warm premium editorial illustration in a wide 16:9 landscape format. Show two recognizable friendly yellow Daily Duck mascots taking a quiet pause together on a simple wooden bench beside a walking trail at a peaceful scenic overlook. They should remain consistent mascot characters with yellow feathers, orange beaks, large dark glossy eyes, small feather tufts, and warm approachable expressions. The ducks sit close together and look toward a softly glowing open horizon, suggesting meaningful together time during an ordinary walk. Use late-afternoon golden light, a broad uncluttered sky, minimal natural scenery, refined shapes, soft shadows, and a strong focal point. No logos, no watermark, no UI, no readable text, no headline, no invented scientific equipment, no photorealistic humans.",
-      "alt_en": "Two friendly yellow duck mascots pause together on a bench beside a walking trail, looking toward a warm open horizon.",
-      "title_ja": "歩いた先のひと休み",
-      "concept_ja": "歩くことだけでなく、散歩の途中で立ち止まり、同じ景色を眺める時間にもつながりが生まれるという、別角度の表現です。",
-      "composition_ja": "静かな見晴らしのよい場所にある散歩道のそばを、横長のヒーロー構図で描きます。手前にシンプルな木製ベンチを置き、2羽の黄色いダックが近くに座る、または立って、柔らかく光る水平線を眺めています。広い空と暖かな夕方の光、整理された自然の背景で、思索的かつ前向きな雰囲気にします。",
-      "alt_ja": "2羽の親しみやすい黄色いダックが、散歩道のそばのベンチで休みながら、暖かな水平線を眺めている。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "WADDLE IT TAKE? JUST A LITTLE WALK.",
-      "meaning_ja": "「What’ll it take?（何が必要だろう？）」を「Waddle it take?」に変えた、明確なダック系の語呂合わせです。waddle はアヒルのよちよち歩きを表す語で、「夫婦のつながりに何が必要？」という問いを「少し一緒に歩くこと」と軽やかに返しています。"
-    },
-    {
-      "number": 2,
-      "title": "A STEP IN THE RIGHT DIRECTION",
-      "meaning_ja": "「正しい方向への一歩」というおなじみの比喩表現を、実際の散歩の一歩と、関係をより良くする前向きな行動の両方に重ねています。ダック語彙に頼らない、故事成語的なスマートな二重の意味です。"
-    },
-    {
-      "number": 3,
-      "title": "TWO PEOPLE. ONE SIMPLE WALK.",
-      "meaning_ja": "「ふたり」と「たったひとつのシンプルな散歩」を短く並べた、ポスターやソーシャルカード向けの強いコピーです。大げさにせず、日常的な行動がふたりの時間を特別にするという、温かく印象的なニュアンスを持たせています。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "Side by Side on the Path",
-      "concept_title_ja": "肩を並べて歩く道",
-      "image_path": "automation_images/design_previews/2026-10-07/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "ce1ce670ce1c8169f728703118c9e83b1d8c27b88b6562f61d2c4a976c3a6ec0",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Walk May Help Strengthen a Marriage\nSummary: Warmly relatable and easy to imagine, this story presents an everyday walk as a hopeful way to support connection and stronger relationships.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nSide by Side on the Path\n\nCONCEPT:\nA warm, literal visualization of a simple shared walk as an opportunity for connection, featuring two recognizable Daily Duck mascots strolling together outdoors.\n\nCOMPOSITION:\nLandscape hero composition in a bright, elegant park at golden morning light. Place two friendly yellow ducks in the lower-right foreground, walking side by side along a gently curving path toward open light. Both have orange beaks, large dark glossy eyes, small feather tufts, and warm approachable expressions. Keep the background softly simplified with greenery and a few trees, leaving generous clean negative space on the left. Mood: hopeful, calm, intimate, and premium editorial.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, charming premium editorial illustration in a wide 16:9 landscape format. Show two recognizable friendly yellow duck mascots walking side by side on a simple park path in warm early-morning light. Each duck must have an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression; keep their mascot identity consistent and appealing. The path curves gently toward soft sunlight, symbolizing connection and a hopeful shared habit. Use elegant simplified greenery, subtle depth, soft natural shadows, a refined warm color palette, and a strong focal point on the pair. Leave uncluttered negative space on the left. No logos, no watermark, no UI, no readable text, no headline, no speech bubbles, no photorealistic humans.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "Two friendly yellow duck mascots walk side by side along a sunlit park path, suggesting a simple shared walk and stronger connection.",
-      "alt_ja": "親しみやすい黄色いダックの2羽が、日差しの中の公園の道を並んで歩いている。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Heart of the Walk",
-      "concept_title_ja": "散歩が描くハート",
-      "image_path": "automation_images/design_previews/2026-10-07/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "4fdef5fd614df9234934a2e8d334633b49249250311690ac4171dbdc7da96063",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Walk May Help Strengthen a Marriage\nSummary: Warmly relatable and easy to imagine, this story presents an everyday walk as a hopeful way to support connection and stronger relationships.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Heart of the Walk\n\nCONCEPT:\nA charming visual metaphor in which the route of a shared walk gently forms a heart, emphasizing emotional connection without adding unsupported factual details.\n\nCOMPOSITION:\nLandscape composition viewed from a slightly elevated angle over a minimal green park. A single winding walking path subtly forms the outline of a heart without looking artificial. Place two friendly yellow duck mascots near the lower center, walking together along the path toward the heart-shaped bend. Include soft grass, a few understated trees, and warm daylight. Keep the heart shape as a natural path motif rather than a graphic icon; use clean negative space and a polished editorial finish.\n\nPRODUCTION DIRECTION:\nCreate a premium, clean, modern editorial illustration in a wide 16:9 landscape format. From a slightly elevated viewpoint, show a simple winding path through a peaceful green park; the path should subtly and naturally suggest the shape of a heart as it curves through the scene. Place two consistent friendly yellow Daily Duck mascots walking together near the lower center. They must have bright yellow feathers, orange beaks, large dark glossy eyes, small feather tufts, and warm approachable expressions. Use soft daylight, gentle greenery, restrained detail, elegant composition, and a hopeful intimate mood. The heart must be formed only by the path, not by graphic symbols or text. No logos, no watermark, no UI, no readable embedded text, no headline, no human couple, no exaggerated cartoon clutter.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "Two friendly yellow ducks walk together on a park path that gently curves into a heart shape, symbolizing connection.",
-      "alt_ja": "2羽の親しみやすい黄色いダックが、自然にハート形へ曲がる公園の散歩道を一緒に歩いている。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "A Pause That Brings Them Closer",
-      "concept_title_ja": "歩いた先のひと休み",
-      "image_path": "automation_images/design_previews/2026-10-07/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "35181c51bb535a42639b1d9676e22f153e08cc7b946b668bc63b066c1ad7771e",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Walk May Help Strengthen a Marriage\nSummary: Warmly relatable and easy to imagine, this story presents an everyday walk as a hopeful way to support connection and stronger relationships.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nA Pause That Brings Them Closer\n\nCONCEPT:\nA distinct editorial scene showing that connection can grow during an ordinary walk, with two ducks pausing together at a scenic overlook rather than simply moving along a path.\n\nCOMPOSITION:\nWide landscape hero image at a quiet overlook beside a walking trail. Place two friendly yellow duck mascots in the foreground, sitting or standing close together on a simple wooden bench, looking toward a softly glowing open landscape. A pair of walking shoes is not needed; keep the scene focused on together time after the walk. Use a broad sky, gentle horizon, warm late-afternoon light, and strong clean silhouettes. The mood is reflective, affectionate, and optimistic, with ample negative space around the subjects.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, warm premium editorial illustration in a wide 16:9 landscape format. Show two recognizable friendly yellow Daily Duck mascots taking a quiet pause together on a simple wooden bench beside a walking trail at a peaceful scenic overlook. They should remain consistent mascot characters with yellow feathers, orange beaks, large dark glossy eyes, small feather tufts, and warm approachable expressions. The ducks sit close together and look toward a softly glowing open horizon, suggesting meaningful together time during an ordinary walk. Use late-afternoon golden light, a broad uncluttered sky, minimal natural scenery, refined shapes, soft shadows, and a strong focal point. No logos, no watermark, no UI, no readable text, no headline, no invented scientific equipment, no photorealistic humans.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "Two friendly yellow duck mascots pause together on a bench beside a walking trail, looking toward a warm open horizon.",
-      "alt_ja": "2羽の親しみやすい黄色いダックが、散歩道のそばのベンチで休みながら、暖かな水平線を眺めている。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-07/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "WADDLE IT TAKE? JUST A LITTLE WALK."
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "WADDLE IT TAKE? JUST A LITTLE WALK.",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "WADDLE IT TAKE? JUST A LITTLE WALK.",
+    "meaning_ja": "「What’ll it take?（何が必要だろう？）」を「Waddle it take?」に変えた、明確なダック系の語呂合わせです。waddle はアヒルのよちよち歩きを表す語で、「夫婦のつながりに何が必要？」という問いを「少し一緒に歩くこと」と軽やかに返しています。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "Side by Side on the Path",
+    "concept_title_ja": "肩を並べて歩く道",
+    "image_path": "automation_images/design_previews/2026-10-07/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "ce1ce670ce1c8169f728703118c9e83b1d8c27b88b6562f61d2c4a976c3a6ec0",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Walk May Help Strengthen a Marriage\nSummary: Warmly relatable and easy to imagine, this story presents an everyday walk as a hopeful way to support connection and stronger relationships.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nSide by Side on the Path\n\nCONCEPT:\nA warm, literal visualization of a simple shared walk as an opportunity for connection, featuring two recognizable Daily Duck mascots strolling together outdoors.\n\nCOMPOSITION:\nLandscape hero composition in a bright, elegant park at golden morning light. Place two friendly yellow ducks in the lower-right foreground, walking side by side along a gently curving path toward open light. Both have orange beaks, large dark glossy eyes, small feather tufts, and warm approachable expressions. Keep the background softly simplified with greenery and a few trees, leaving generous clean negative space on the left. Mood: hopeful, calm, intimate, and premium editorial.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, charming premium editorial illustration in a wide 16:9 landscape format. Show two recognizable friendly yellow duck mascots walking side by side on a simple park path in warm early-morning light. Each duck must have an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression; keep their mascot identity consistent and appealing. The path curves gently toward soft sunlight, symbolizing connection and a hopeful shared habit. Use elegant simplified greenery, subtle depth, soft natural shadows, a refined warm color palette, and a strong focal point on the pair. Leave uncluttered negative space on the left. No logos, no watermark, no UI, no readable text, no headline, no speech bubbles, no photorealistic humans.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "Two friendly yellow duck mascots walk side by side along a sunlit park path, suggesting a simple shared walk and stronger connection.",
+    "alt_ja": "親しみやすい黄色いダックの2羽が、日差しの中の公園の道を並んで歩いている。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-07.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "b29ed8fae1fcc47e4f94fc259e7943641bac1bdbfd0c25d92d941762bc26b1c6",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-07 — Batch 1",
-  "final_email_sent_at": "2026-10-07T02:35:24.500028+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "WADDLE IT TAKE? JUST A LITTLE WALK.",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-07T09:41:27.520952+00:00"
+    "translation_language": "ja"
+  }
 }
