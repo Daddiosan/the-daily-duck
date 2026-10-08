@@ -5,7 +5,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.fetch_gate_a_artifact import ArtifactSelectionError, GitHubReadError
+from scripts.fetch_gate_a_artifact import (
+    ArtifactFetchResult,
+    ArtifactResultState,
+    ArtifactSelectionError,
+    GitHubReadError,
+)
 from scripts.gate_a_preflight import (
     GateAPreflightError,
     PreflightAction,
@@ -46,7 +51,13 @@ class GateAPreflightTests(unittest.TestCase):
         decision = self.decide()
         if decision.action is PreflightAction.NO_ACTION_REQUIRED:
             return "SUCCESS_NOOP"
-        artifact_fetch()
+        artifact_result = artifact_fetch()
+        if (
+            isinstance(artifact_result, ArtifactFetchResult)
+            and artifact_result.state
+            is ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT
+        ):
+            return "SUCCESS_WAITING"
         return "NORMAL_DISPATCH"
 
     def test_case_1_waiting_for_gate_a_with_valid_approval_uses_normal_path(self):
@@ -131,6 +142,24 @@ class GateAPreflightTests(unittest.TestCase):
         for fetch in (stale_artifact_result, artifact_api_anomaly):
             with self.subTest(fetch=fetch.__name__):
                 self.assertEqual(self.pipeline(fetch), "SUCCESS_NOOP")
+
+    def test_case_9_terminal_current_issue_remains_no_action_required(self):
+        self.write(
+            "ready_to_publish.json",
+            {"issue_date": ISSUE, "state": "X_POSTED"},
+        )
+
+        def forbidden_artifact_fetch():
+            self.fail("terminal current issue must skip artifact fetch")
+
+        self.assertEqual(self.pipeline(forbidden_artifact_fetch), "SUCCESS_NOOP")
+
+    def test_waiting_artifact_result_is_success_without_normal_dispatch(self):
+        result = ArtifactFetchResult(
+            state=ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT,
+            reason="CURRENT_ISSUE_ARTIFACT_NOT_READY",
+        )
+        self.assertEqual(self.pipeline(lambda: result), "SUCCESS_WAITING")
 
     def test_mixed_issue_dates_fail_closed(self):
         self.write(
@@ -283,7 +312,6 @@ class GateAWorkflowOrderTests(unittest.TestCase):
 
     def test_noop_guards_all_side_effecting_gate_a_steps(self):
         guarded_steps = (
-            "Fetch newest usable Daily Duck Automation artifact",
             "Prepare Gate A package",
             "Check Gate A story selection",
             "Commit APPROVED_STORY when created",
@@ -297,6 +325,19 @@ class GateAWorkflowOrderTests(unittest.TestCase):
                     "steps.preflight.outputs.action == 'CHECK_REQUIRED'",
                     condition,
                 )
+                self.assertIn(
+                    "steps.dailyduck.outputs.artifact_result == 'ARTIFACT_READY'",
+                    condition,
+                )
+
+        fetch_marker = "- name: Fetch newest usable Daily Duck Automation artifact\n"
+        fetch_start = self.workflow.index(fetch_marker)
+        fetch_step = self.workflow[fetch_start : fetch_start + 260]
+        self.assertIn(
+            "if: steps.preflight.outputs.action == 'CHECK_REQUIRED'",
+            fetch_step,
+        )
+        self.assertNotIn("artifact_result == 'ARTIFACT_READY'", fetch_step)
 
         trigger_start = self.workflow.index(
             "- name: Trigger Design Options automatically"
@@ -312,6 +353,21 @@ class GateAWorkflowOrderTests(unittest.TestCase):
         notify = self.workflow[notify_start : notify_start + 240]
         self.assertIn("if: failure()", notify)
         self.assertNotIn("preflight.outputs", notify)
+
+    def test_waiting_result_reports_success_and_skips_gate_a_side_effects(self):
+        self.assertIn(
+            'steps.dailyduck.outputs.artifact_result }}" = '
+            '"WAITING_FOR_CURRENT_ISSUE_ARTIFACT"',
+            self.workflow,
+        )
+        self.assertIn('echo "STATE: WAITING_FOR_CURRENT_ISSUE_ARTIFACT"', self.workflow)
+        self.assertIn('echo "Reason: ${{ steps.dailyduck.outputs.reason }}"', self.workflow)
+        self.assertEqual(
+            self.workflow.count(
+                "steps.dailyduck.outputs.artifact_result == 'ARTIFACT_READY'"
+            ),
+            3,
+        )
 
     def test_polling_and_schedule_are_unchanged(self):
         self.assertIn('cron: "11,26,41,56 * * * *"', self.workflow)

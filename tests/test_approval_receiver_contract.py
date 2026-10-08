@@ -67,12 +67,20 @@ IGNORED_RUNTIME_ENTRIES = {"__pycache__"}
 # from the baseline with only those exact additions, so schedule, permissions,
 # dispatch, failure notification, and all unrelated workflow behavior remain
 # protected.
+#
+# GATE A MORNING-WAIT REAPPROVAL RECORD (2026-10-08): the human approved a
+# 12:00 JST artifact deadline, an explicit non-failing waiting result before
+# that deadline, ARTIFACT_READY guards on the existing Gate A side effects,
+# and a fixed waiting report block. The failure notification remains the
+# original unconditional failure() policy, and schedule/permissions are still
+# pinned by the unchanged prefix/suffix reconstruction below.
 PHASE_3B_2A1_APPROVED_BASELINE = "23f54a4234bcb332f8f0b97bedb255b749235dd0"
 GATE_A_PREFLIGHT_SECTION_SHA256 = (
     "bae110d1e7c0e22dfa54a23bcc5a2a65d7f8699fb22dd98a6171c3d0f8900785"
 )
 GATE_A_PREFLIGHT_GUARD = (
-    "        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'"
+    "        if: steps.preflight.outputs.action == 'CHECK_REQUIRED' && "
+    "steps.dailyduck.outputs.artifact_result == 'ARTIFACT_READY'"
 )
 GATE_A_NOOP_REPORT = (
     '          if [ "${{ steps.preflight.outputs.action }}" = '
@@ -80,6 +88,14 @@ GATE_A_NOOP_REPORT = (
     '            echo "STATE: NO_ACTION_REQUIRED"\n'
     '            echo "Reason: ${{ steps.preflight.outputs.reason }}"\n'
     '            echo "Evidence: ${{ steps.preflight.outputs.evidence }}"\n'
+    "            exit 0\n"
+    "          fi\n\n"
+)
+GATE_A_WAIT_REPORT = (
+    '          if [ "${{ steps.dailyduck.outputs.artifact_result }}" = '
+    '"WAITING_FOR_CURRENT_ISSUE_ARTIFACT" ]; then\n'
+    '            echo "STATE: WAITING_FOR_CURRENT_ISSUE_ARTIFACT"\n'
+    '            echo "Reason: ${{ steps.dailyduck.outputs.reason }}"\n'
     "            exit 0\n"
     "          fi\n\n"
 )
@@ -273,7 +289,7 @@ class ApprovalReceiverContractTests(unittest.TestCase):
         self.assertEqual(approved_suffix.count(report_anchor), 1)
         approved_suffix = approved_suffix.replace(
             report_anchor,
-            report_anchor + GATE_A_NOOP_REPORT,
+            report_anchor + GATE_A_NOOP_REPORT + GATE_A_WAIT_REPORT,
         )
         self.assertEqual(
             approved_suffix,

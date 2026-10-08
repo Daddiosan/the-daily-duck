@@ -17,10 +17,12 @@ import time
 import zipfile
 from collections import Counter
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, time as datetime_time, timedelta, timezone
 from email.utils import parsedate_to_datetime
+from enum import Enum
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Mapping
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -33,6 +35,8 @@ DEFAULT_ARTIFACT = "daily-duck-results"
 DEFAULT_REQUIRED_FILE = "gate_a_package.json"
 DEFAULT_MAX_AGE_HOURS = 36.0
 DEFAULT_MAX_CANDIDATES = 20
+CURRENT_ISSUE_ARTIFACT_DEADLINE_JST = datetime_time(hour=12)
+JST = ZoneInfo("Asia/Tokyo")
 MAX_ATTEMPTS = 3
 MAX_RETRY_DELAY_SECONDS = 60.0
 MAX_ARCHIVE_RESPONSE_BYTES = 64 * 1024 * 1024
@@ -56,12 +60,44 @@ class GitHubReadError(RuntimeError):
 class ArtifactSelectionError(RuntimeError):
     """No authoritative, fresh, usable artifact could be selected."""
 
+    def __init__(self, message: str, *, wait_eligible: bool = False) -> None:
+        self.wait_eligible = wait_eligible
+        super().__init__(message)
+
+
+class UpstreamArtifactTimeout(ArtifactSelectionError):
+    """The current issue artifact did not arrive before the approved deadline."""
+
+
+class _ArtifactIssueMismatch(ValueError):
+    """A structurally readable package belongs to a different issue."""
+
+    def __init__(self, actual_issue_date: str) -> None:
+        self.actual_issue_date = actual_issue_date
+        super().__init__("package issue date does not match expected issue")
+
+
+class _DuplicateJsonKeyError(ValueError):
+    """A JSON object contains an ambiguous duplicate key."""
+
+
+class ArtifactResultState(str, Enum):
+    ARTIFACT_READY = "ARTIFACT_READY"
+    WAITING_FOR_CURRENT_ISSUE_ARTIFACT = "WAITING_FOR_CURRENT_ISSUE_ARTIFACT"
+
 
 @dataclass(frozen=True)
 class Selection:
     run_id: int
     artifact_id: int
     package_path: Path
+
+
+@dataclass(frozen=True)
+class ArtifactFetchResult:
+    state: ArtifactResultState
+    selection: Selection | None = None
+    reason: str | None = None
 
 
 def _utc(value: datetime) -> datetime:
@@ -289,6 +325,32 @@ def _canonical_issue_date(value: object, *, field: str) -> str:
     return value
 
 
+def _object_without_duplicate_keys(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise _DuplicateJsonKeyError(key)
+        result[key] = value
+    return result
+
+
+def _issue_date_for_run(created_at: datetime) -> str:
+    """Apply the same 07:00 JST issue boundary as the Gate A workflow."""
+
+    return (created_at.astimezone(JST) - timedelta(hours=7)).date().isoformat()
+
+
+def _artifact_deadline(expected_issue_date: str) -> datetime:
+    issue_date = datetime.strptime(expected_issue_date, "%Y-%m-%d").date()
+    return datetime.combine(
+        issue_date,
+        CURRENT_ISSUE_ARTIFACT_DEADLINE_JST,
+        tzinfo=JST,
+    ).astimezone(timezone.utc)
+
+
 def _validated_archive(
     payload: bytes,
     required_file: str,
@@ -353,8 +415,11 @@ def _validated_archive(
     if len(packages) != 1:
         raise ValueError("required package count is not one")
     try:
-        package = json.loads(packages[0].decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        package = json.loads(
+            packages[0].decode("utf-8"),
+            object_pairs_hook=_object_without_duplicate_keys,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError, _DuplicateJsonKeyError) as exc:
         raise ValueError("package is not valid JSON") from exc
     if not isinstance(package, dict):
         raise ValueError("package is not an object")
@@ -363,7 +428,7 @@ def _validated_archive(
         field="package issue_date",
     )
     if issue_date != expected_issue_date:
-        raise ValueError("package issue date does not match expected issue")
+        raise _ArtifactIssueMismatch(issue_date)
     compatibility_date = package.get("date")
     if compatibility_date is not None and compatibility_date != issue_date:
         raise ValueError("package date aliases disagree")
@@ -433,19 +498,19 @@ def fetch_gate_a_artifact(
         )
     payload = client.get_json(
         f"repos/{repository}/actions/workflows/{workflow}/runs",
-        operation="list successful Daily Duck runs",
+        operation="list Daily Duck runs",
         params={
             "branch": branch,
-            "status": "success",
             "per_page": max_candidates,
         },
     )
     raw_runs = payload.get("workflow_runs")
     if not isinstance(raw_runs, list):
-        raise GitHubReadError("list successful Daily Duck runs")
+        raise GitHubReadError("list Daily Duck runs")
 
     reasons: Counter[str] = Counter()
     considered = 0
+    fatal_current_issue_evidence = False
     newest_first = sorted(
         raw_runs[:max_candidates],
         key=lambda run: (
@@ -459,22 +524,49 @@ def fetch_gate_a_artifact(
     for run in newest_first:
         if not isinstance(run, Mapping):
             reasons["malformed_run"] += 1
+            fatal_current_issue_evidence = True
             continue
         run_id = run.get("id")
         created_at = _parse_timestamp(run.get("created_at"))
+        run_issue_date = (
+            _issue_date_for_run(created_at) if created_at is not None else None
+        )
+        is_current_issue_run = run_issue_date == expected_issue_date
+        if run_issue_date is not None and run_issue_date > expected_issue_date:
+            reasons["future_run"] += 1
+            fatal_current_issue_evidence = True
+            continue
         if (
             not isinstance(run_id, int)
             or isinstance(run_id, bool)
             or run_id <= 0
             or created_at is None
             or run.get("head_branch") != branch
-            or run.get("status") != "completed"
-            or run.get("conclusion") != "success"
         ):
             reasons["non_authoritative_run"] += 1
+            fatal_current_issue_evidence = True
+            continue
+        status = run.get("status")
+        conclusion = run.get("conclusion")
+        if status != "completed" or conclusion != "success":
+            if is_current_issue_run and status in {
+                "requested",
+                "queued",
+                "pending",
+                "waiting",
+                "in_progress",
+            }:
+                reasons["current_run_in_progress"] += 1
+            elif is_current_issue_run:
+                reasons["current_run_failed"] += 1
+                fatal_current_issue_evidence = True
+            else:
+                reasons["non_authoritative_run"] += 1
             continue
         if created_at > current + timedelta(minutes=5) or current - created_at > max_age:
             reasons["stale_run"] += 1
+            if is_current_issue_run:
+                fatal_current_issue_evidence = True
             continue
 
         considered += 1
@@ -500,6 +592,8 @@ def fetch_gate_a_artifact(
         ]
         if not matching:
             reasons["artifact_missing"] += 1
+            if is_current_issue_run:
+                fatal_current_issue_evidence = True
             continue
 
         selected_files: list[tuple[Path, bytes]] | None = None
@@ -516,6 +610,8 @@ def fetch_gate_a_artifact(
                 or artifact_id <= 0
             ):
                 reasons["artifact_expired_or_invalid"] += 1
+                if is_current_issue_run:
+                    fatal_current_issue_evidence = True
                 continue
             try:
                 archive_payload = client.get_bytes(
@@ -526,10 +622,14 @@ def fetch_gate_a_artifact(
             except GitHubReadError as exc:
                 if exc.status_code == 404:
                     reasons["artifact_unavailable"] += 1
+                    if is_current_issue_run:
+                        fatal_current_issue_evidence = True
                     continue
                 raise
             except ValueError:
                 reasons["artifact_content_invalid"] += 1
+                if is_current_issue_run:
+                    fatal_current_issue_evidence = True
                 continue
             try:
                 selected_files = _validated_archive(
@@ -537,8 +637,15 @@ def fetch_gate_a_artifact(
                     required_file,
                     expected_issue_date,
                 )
+            except _ArtifactIssueMismatch as exc:
+                reasons["artifact_content_invalid"] += 1
+                if is_current_issue_run or exc.actual_issue_date > expected_issue_date:
+                    fatal_current_issue_evidence = True
+                continue
             except ValueError:
                 reasons["artifact_content_invalid"] += 1
+                if is_current_issue_run:
+                    fatal_current_issue_evidence = True
                 continue
             selected_artifact_id = artifact_id
             break
@@ -557,15 +664,76 @@ def fetch_gate_a_artifact(
     ) or "no_candidates=1"
     raise ArtifactSelectionError(
         "No usable fresh Daily Duck Gate A artifact was found "
-        f"({considered} fresh successful candidate(s); {reason_text})."
+        f"({considered} fresh successful candidate(s); {reason_text}).",
+        wait_eligible=not fatal_current_issue_evidence,
     )
 
 
-def _append_github_output(path: Path, selection: Selection) -> None:
+def resolve_gate_a_artifact(
+    *,
+    client: GitHubReadClient,
+    repository: str,
+    output_dir: Path,
+    workflow: str = DEFAULT_WORKFLOW,
+    branch: str = DEFAULT_BRANCH,
+    artifact_name: str = DEFAULT_ARTIFACT,
+    required_file: str = DEFAULT_REQUIRED_FILE,
+    expected_issue_date: str,
+    max_age: timedelta = timedelta(hours=DEFAULT_MAX_AGE_HOURS),
+    max_candidates: int = DEFAULT_MAX_CANDIDATES,
+    now: datetime | None = None,
+) -> ArtifactFetchResult:
+    """Return an explicit ready/wait result while preserving fatal errors.
+
+    Waiting is permitted only for an otherwise normal read that contains no
+    current-issue failure evidence. GitHub read errors never enter this path.
+    """
+
+    current = _utc(now or datetime.now(timezone.utc))
+    expected_issue_date = _canonical_issue_date(
+        expected_issue_date,
+        field="expected issue date",
+    )
+    try:
+        selection = fetch_gate_a_artifact(
+            client=client,
+            repository=repository,
+            output_dir=output_dir,
+            workflow=workflow,
+            branch=branch,
+            artifact_name=artifact_name,
+            required_file=required_file,
+            expected_issue_date=expected_issue_date,
+            max_age=max_age,
+            max_candidates=max_candidates,
+            now=current,
+        )
+    except ArtifactSelectionError as exc:
+        if not exc.wait_eligible:
+            raise
+        if current >= _artifact_deadline(expected_issue_date):
+            raise UpstreamArtifactTimeout(
+                "UPSTREAM_ARTIFACT_TIMEOUT: no usable current-issue Gate A "
+                "artifact was available by 12:00 JST."
+            ) from exc
+        return ArtifactFetchResult(
+            state=ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT,
+            reason="CURRENT_ISSUE_ARTIFACT_NOT_READY",
+        )
+    return ArtifactFetchResult(
+        state=ArtifactResultState.ARTIFACT_READY,
+        selection=selection,
+    )
+
+
+def _append_github_output(path: Path, result: ArtifactFetchResult) -> None:
     with path.open("a", encoding="utf-8") as output:
-        output.write(f"run_id={selection.run_id}\n")
-        output.write(f"artifact_id={selection.artifact_id}\n")
-        output.write(f"package_path={selection.package_path.as_posix()}\n")
+        output.write(f"artifact_result={result.state.value}\n")
+        output.write(f"reason={result.reason or ''}\n")
+        if result.selection is not None:
+            output.write(f"run_id={result.selection.run_id}\n")
+            output.write(f"artifact_id={result.selection.artifact_id}\n")
+            output.write(f"package_path={result.selection.package_path.as_posix()}\n")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -585,7 +753,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.max_age_hours <= 0:
         parser.error("--max-age-hours must be positive")
 
-    selection = fetch_gate_a_artifact(
+    result = resolve_gate_a_artifact(
         client=GitHubReadClient(token=token),
         repository=args.repository,
         output_dir=args.output_dir,
@@ -593,12 +761,18 @@ def main(argv: list[str] | None = None) -> int:
         max_age=timedelta(hours=args.max_age_hours),
     )
     if args.github_output is not None:
-        _append_github_output(args.github_output, selection)
+        _append_github_output(args.github_output, result)
+    print(f"Gate A artifact result: {result.state.value}")
+    if result.state is ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT:
+        print(f"Reason: {result.reason}")
+        return 0
+    if result.selection is None:
+        raise AssertionError("ready artifact result has no selection")
     print(
         "Selected usable Daily Duck artifact: "
-        f"run={selection.run_id}, artifact={selection.artifact_id}"
+        f"run={result.selection.run_id}, artifact={result.selection.artifact_id}"
     )
-    print(f"Validated Gate A package: {selection.package_path}")
+    print(f"Validated Gate A package: {result.selection.package_path}")
     return 0
 
 

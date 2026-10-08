@@ -22,10 +22,14 @@ from requests.structures import CaseInsensitiveDict
 
 from scripts import fetch_gate_a_artifact as artifact_fetch
 from scripts.fetch_gate_a_artifact import (
+    ArtifactFetchResult,
+    ArtifactResultState,
     ArtifactSelectionError,
     GitHubReadClient,
     GitHubReadError,
+    UpstreamArtifactTimeout,
     fetch_gate_a_artifact,
+    resolve_gate_a_artifact,
 )
 
 
@@ -860,6 +864,202 @@ class ArtifactSelectionTests(unittest.TestCase):
                 )
 
 
+class ArtifactWaitingStateTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.output = Path(self.temp.name) / "artifact"
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def client(self, *responses, sleeps=None):
+        return GitHubReadClient(
+            token="test-token",
+            session=ScriptedSession(*responses),
+            sleep=(sleeps.append if sleeps is not None else lambda _: None),
+            clock=lambda: NOW,
+        )
+
+    def resolve(self, client, *, now=NOW, output=None):
+        return resolve_gate_a_artifact(
+            client=client,
+            repository=REPOSITORY,
+            output_dir=output or self.output,
+            expected_issue_date="2026-10-04",
+            now=now,
+        )
+
+    def test_case_1_prior_issue_only_before_noon_waits_successfully(self):
+        client = self.client(
+            FakeResponse(
+                body={"workflow_runs": [run_data(299, "2026-10-03T01:00:00Z")]}
+            ),
+            FakeResponse(body={"artifacts": [artifact_data(901)]}),
+            FakeResponse(content=archive(issue_date="2026-10-03")),
+        )
+        result = self.resolve(client)
+        self.assertIs(
+            result.state,
+            ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT,
+        )
+        self.assertIsNone(result.selection)
+        self.assertFalse(self.output.exists())
+
+    def test_case_2_stale_only_response_before_noon_waits_successfully(self):
+        client = self.client(
+            FakeResponse(
+                body={"workflow_runs": [run_data(200, "2026-09-24T00:00:00Z")]}
+            )
+        )
+        result = self.resolve(client)
+        self.assertIs(
+            result.state,
+            ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT,
+        )
+
+    def test_current_issue_run_in_progress_before_noon_waits_successfully(self):
+        client = self.client(
+            FakeResponse(
+                body={
+                    "workflow_runs": [
+                        run_data(
+                            300,
+                            "2026-10-03T23:30:00Z",
+                            status="in_progress",
+                            conclusion=None,
+                        )
+                    ]
+                }
+            )
+        )
+        result = self.resolve(client)
+        self.assertIs(
+            result.state,
+            ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT,
+        )
+
+    def test_case_3_current_valid_artifact_is_ready(self):
+        client = self.client(
+            FakeResponse(
+                body={"workflow_runs": [run_data(300, "2026-10-03T23:30:00Z")]}
+            ),
+            FakeResponse(body={"artifacts": [artifact_data(901)]}),
+            FakeResponse(content=archive()),
+        )
+        result = self.resolve(client)
+        self.assertIs(result.state, ArtifactResultState.ARTIFACT_READY)
+        self.assertEqual(result.selection.run_id, 300)
+
+    def test_case_4_missing_current_artifact_at_noon_times_out(self):
+        client = self.client(
+            FakeResponse(
+                body={"workflow_runs": [run_data(299, "2026-10-03T01:00:00Z")]}
+            ),
+            FakeResponse(body={"artifacts": [artifact_data(901)]}),
+            FakeResponse(content=archive(issue_date="2026-10-03")),
+        )
+        with self.assertRaisesRegex(
+            UpstreamArtifactTimeout,
+            "UPSTREAM_ARTIFACT_TIMEOUT",
+        ):
+            self.resolve(client, now=datetime(2026, 10, 4, 3, 0, tzinfo=timezone.utc))
+
+    def test_case_5_current_day_corrupt_artifact_fails_closed(self):
+        client = self.client(
+            FakeResponse(
+                body={"workflow_runs": [run_data(300, "2026-10-03T23:30:00Z")]}
+            ),
+            FakeResponse(body={"artifacts": [artifact_data(901)]}),
+            FakeResponse(content=b"not-a-zip"),
+        )
+        with self.assertRaises(ArtifactSelectionError) as caught:
+            self.resolve(client)
+        self.assertNotIsInstance(caught.exception, UpstreamArtifactTimeout)
+        self.assertFalse(caught.exception.wait_eligible)
+
+    def test_current_day_duplicate_json_key_fails_closed(self):
+        output = io.BytesIO()
+        with zipfile.ZipFile(output, "w") as zipped:
+            zipped.writestr(
+                "gate_a_package.json",
+                '{"issue_date":"2026-10-04","issue_date":"2026-10-04"}',
+            )
+        client = self.client(
+            FakeResponse(
+                body={"workflow_runs": [run_data(300, "2026-10-03T23:30:00Z")]}
+            ),
+            FakeResponse(body={"artifacts": [artifact_data(901)]}),
+            FakeResponse(content=output.getvalue()),
+        )
+        with self.assertRaises(ArtifactSelectionError) as caught:
+            self.resolve(client)
+        self.assertFalse(caught.exception.wait_eligible)
+
+    def test_case_6_current_day_run_without_artifact_fails_closed(self):
+        client = self.client(
+            FakeResponse(
+                body={"workflow_runs": [run_data(300, "2026-10-03T23:30:00Z")]}
+            ),
+            FakeResponse(body={"artifacts": []}),
+        )
+        with self.assertRaises(ArtifactSelectionError) as caught:
+            self.resolve(client)
+        self.assertFalse(caught.exception.wait_eligible)
+
+    def test_case_7_transient_api_failure_is_retried_then_can_wait(self):
+        sleeps = []
+        client = self.client(
+            FakeResponse(503, body={}),
+            FakeResponse(body={"workflow_runs": []}),
+            sleeps=sleeps,
+        )
+        result = self.resolve(client)
+        self.assertIs(
+            result.state,
+            ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT,
+        )
+        self.assertEqual(sleeps, [1.0])
+
+    def test_case_8_persistent_api_failure_after_retry_is_fatal(self):
+        sleeps = []
+        client = self.client(
+            FakeResponse(503, body={}),
+            FakeResponse(503, body={}),
+            FakeResponse(503, body={}),
+            sleeps=sleeps,
+        )
+        with self.assertRaises(GitHubReadError):
+            self.resolve(client)
+        self.assertEqual(sleeps, [1.0, 2.0])
+
+    def test_case_10_duplicate_waiting_wakes_are_idempotent(self):
+        states = []
+        for number in range(2):
+            client = self.client(FakeResponse(body={"workflow_runs": []}))
+            result = self.resolve(
+                client,
+                output=Path(self.temp.name) / f"artifact-{number}",
+            )
+            states.append(result.state)
+        self.assertEqual(
+            states,
+            [ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT] * 2,
+        )
+
+    def test_waiting_github_outputs_are_explicit_and_contain_no_artifact(self):
+        result = ArtifactFetchResult(
+            state=ArtifactResultState.WAITING_FOR_CURRENT_ISSUE_ARTIFACT,
+            reason="CURRENT_ISSUE_ARTIFACT_NOT_READY",
+        )
+        github_output = Path(self.temp.name) / "github-output"
+        artifact_fetch._append_github_output(github_output, result)
+        self.assertEqual(
+            github_output.read_text(encoding="utf-8"),
+            "artifact_result=WAITING_FOR_CURRENT_ISSUE_ARTIFACT\n"
+            "reason=CURRENT_ISSUE_ARTIFACT_NOT_READY\n",
+        )
+
+
 class GitHubArtifactDownloadContractTests(unittest.TestCase):
     """Regression coverage for the 2026-10-05 Gate A HTTP 415 incident."""
 
@@ -1000,6 +1200,7 @@ class GitHubArtifactDownloadContractTests(unittest.TestCase):
 
     def test_cli_415_failure_output_is_sanitized(self):
         now = datetime.now(timezone.utc)
+        issue_date = artifact_fetch._issue_date_for_run(now - timedelta(hours=1))
         code, stdout, stderr, transport = self.run_cli(
             {
                 RUNS_ROUTE: [
@@ -1026,7 +1227,7 @@ class GitHubArtifactDownloadContractTests(unittest.TestCase):
                     api_json({"message": SENTINEL_TOKEN, "status": "415"}, status=415)
                 ],
             },
-            issue_date="2026-10-05",
+            issue_date=issue_date,
         )
         self.assertEqual(code, 1)
         self.assertEqual(stdout, "")
@@ -1040,6 +1241,7 @@ class GitHubArtifactDownloadContractTests(unittest.TestCase):
 
     def test_cli_downloads_redirected_archive_for_expected_issue(self):
         now = datetime.now(timezone.utc)
+        issue_date = artifact_fetch._issue_date_for_run(now - timedelta(hours=1))
         github_output = Path(self.temp.name) / "github_output"
         code, stdout, stderr, transport = self.run_cli(
             {
@@ -1065,19 +1267,24 @@ class GitHubArtifactDownloadContractTests(unittest.TestCase):
                 ],
                 zip_route(901): [api_redirect(901)],
                 archive_route(901): [
-                    archive_download(archive(issue_date="2026-10-05"))
+                    archive_download(archive(issue_date=issue_date))
                 ],
             },
-            issue_date="2026-10-05",
+            issue_date=issue_date,
             github_output=github_output,
         )
         self.assertEqual(code, 0)
         self.assertEqual(stderr, "")
+        self.assertIn("Gate A artifact result: ARTIFACT_READY", stdout)
         self.assertIn("run=300, artifact=901", stdout)
         self.assertNotIn(SENTINEL_TOKEN, stdout)
         self.assertTrue((self.output / "nested" / "gate_a_package.json").is_file())
         self.assertIn(
             "artifact_id=901", github_output.read_text(encoding="utf-8")
+        )
+        self.assertIn(
+            "artifact_result=ARTIFACT_READY",
+            github_output.read_text(encoding="utf-8"),
         )
         self.assertEqual(
             [request.method for request in transport.sent], ["GET"] * 4

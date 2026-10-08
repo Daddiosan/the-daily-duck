@@ -112,7 +112,7 @@ jobs:
       # ======================================================
 
       - name: Prepare Gate A package
-        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'
+        if: steps.preflight.outputs.action == 'CHECK_REQUIRED' && steps.dailyduck.outputs.artifact_result == 'ARTIFACT_READY'
         shell: bash
         run: |
           set -euo pipefail
@@ -189,7 +189,7 @@ jobs:
       # ======================================================
 
       - name: Check Gate A story selection
-        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'
+        if: steps.preflight.outputs.action == 'CHECK_REQUIRED' && steps.dailyduck.outputs.artifact_result == 'ARTIFACT_READY'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -202,7 +202,7 @@ jobs:
       # ======================================================
 
       - name: Commit APPROVED_STORY when created
-        if: steps.preflight.outputs.action == 'CHECK_REQUIRED'
+        if: steps.preflight.outputs.action == 'CHECK_REQUIRED' && steps.dailyduck.outputs.artifact_result == 'ARTIFACT_READY'
         id: approval_commit
         shell: bash
         run: |
@@ -273,6 +273,12 @@ jobs:
             echo "STATE: NO_ACTION_REQUIRED"
             echo "Reason: ${{ steps.preflight.outputs.reason }}"
             echo "Evidence: ${{ steps.preflight.outputs.evidence }}"
+            exit 0
+          fi
+
+          if [ "${{ steps.dailyduck.outputs.artifact_result }}" = "WAITING_FOR_CURRENT_ISSUE_ARTIFACT" ]; then
+            echo "STATE: WAITING_FOR_CURRENT_ISSUE_ARTIFACT"
+            echo "Reason: ${{ steps.dailyduck.outputs.reason }}"
             exit 0
           fi
 
