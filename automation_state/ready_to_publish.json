@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-08",
-  "generated_at": "2026-10-08T10:31:09.580751+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-08T10:42:00.538524+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-08",
     "issue_date": "2026-10-08",
     "phase": 2,
@@ -562,40 +562,9 @@
       "gate_a_package_created_at": "2026-10-08T01:46:46.313834+00:00",
       "approval_token_digest": "336067f1a22d17b132324c05c84718bf86ecddf6da9da29a3bd1579dbc28d6d5"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 17,
-    "title": "One simple addition to postpartum care made a major difference",
-    "source": "ScienceDaily Society",
-    "url": "https://www.sciencedaily.com/releases/2026/10/261003234017.htm",
-    "category": "community",
-    "happiness": 8,
-    "hope": 9,
-    "general_interest": 8,
-    "surprise": 5,
-    "duck_visual": 6,
-    "source_quality": 7,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 9,
-    "total_score": 69,
-    "reason": "A practical kindness story showing how patient navigators help new mothers overcome everyday barriers and receive essential care.",
-    "candidate_number": 3,
-    "title_en": "A Simple Addition to Postpartum Care Made a Major Difference",
-    "reason_en": "This practical kindness story shows how patient navigators helped new mothers overcome everyday barriers and receive essential care.",
-    "en_copy": "A simple addition to postpartum care made a major difference for new mothers. Patient navigators helped them overcome everyday barriers and receive essential care—a practical reminder that thoughtful support can open important doors.",
-    "duck_name": "The Care Navigators",
-    "duck_en": "A little guidance helped make a big difference for new mothers.",
-    "x_en": "A simple addition to postpartum care helped new mothers overcome everyday barriers and receive essential care. Thoughtful support can open important doors.",
-    "title_ja": "産後ケアへの小さな追加が大きな違いに",
-    "reason_ja": "患者ナビゲーターが新しい母親たちの身近な障壁を乗り越え、必要なケアを受ける助けとなった、実践的な思いやりの話です。",
-    "jp_copy": "産後ケアに加えられたシンプルな取り組みが、新しい母親たちに大きな違いをもたらしました。患者ナビゲーターが日常のさまざまな障壁を乗り越え、必要なケアを受ける手助けをしたのです。思いやりのある支援が、大切な機会への扉を開くことを教えてくれる実践的な話です。",
-    "duck_jp": "少しの案内が、新しい母親たちに大きな違いをもたらしました。",
-    "x_jp": "産後ケアに加えられたシンプルな支援が、新しい母親たちの身近な障壁を取り除き、必要なケアを受ける助けになりました。思いやりが大切な扉を開きます。"
-  },
-  "image_concepts": [
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 1,
+    "selected_image_concept": {
       "number": 1,
       "title_en": "The Open Door",
       "concept_en": "The Daily Duck visualizes patient navigation as a welcoming path through everyday barriers to essential postpartum care.",
@@ -607,107 +576,9 @@
       "composition_ja": "明るく穏やかなケアの場を舞台にした横長のヒーロー構図。オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の tuft、親しみやすい表情を備えた、見分けやすい黄色いDaily Duckを手前に配置します。アヒルは中央右のやわらかく光る開いた扉を示し、道の途中には日常の障壁を象徴する抽象的で低い障害物をいくつか置きます。危険や苦痛は描かず、クリーム色、淡いティール、金色の光で、清潔で希望のある雰囲気にします。",
       "alt_ja": "黄色いアヒルが小さな抽象的障害物を避けて開いた扉へ向かう道を案内し、新しい母親が必要な産後ケアにたどり着くための支援を象徴している。"
     },
-    {
-      "number": 2,
-      "title_en": "The Care Bridge",
-      "concept_en": "The Daily Duck becomes a patient navigator helping connect a new mother’s everyday world with the care she needs, shown through a gentle bridge metaphor.",
-      "composition_en": "Landscape composition built around a broad, sturdy bridge spanning a small symbolic gap. On the left, keep a cozy everyday setting with a simple home-like chair and soft personal items that suggest daily life without inventing specific facts. On the right, show a calm, welcoming care destination with a softly lit doorway and minimal medical context, avoiding readable signs or detailed equipment. Place the friendly yellow duck mascot at the center of the bridge, carrying a small blank guide card or pointing forward, with a warm reassuring expression. Use distinct visual separation from concept one: a centered bridge and balanced two-sided composition rather than a winding path. Soft sunrise palette, clean editorial illustration, hopeful and approachable.",
-      "generation_prompt_en": "Create one publishable landscape hero illustration in a clean, modern, warm premium editorial style. Feature the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Build the image around a broad gentle bridge crossing a small symbolic gap. One side suggests everyday life with a simple chair and understated personal belongings; the other side suggests essential postpartum care through a calm welcoming room and softly lit doorway, with no specific institution, location, or readable signage. Place the duck at the center of the bridge as a patient navigator, offering reassurance and direction. Balanced symmetrical composition, soft sunrise colors, cream, peach, muted blue, clean shapes, subtle texture, strong focal point, generous negative space. No logos, no watermarks, no UI, no readable embedded text, no headline, no invented medical instruments, no identifiable real people.",
-      "alt_en": "A friendly yellow duck stands on a bridge connecting everyday life with a welcoming care setting, symbolizing patient navigation to essential postpartum care.",
-      "title_ja": "ケアをつなぐ橋",
-      "concept_ja": "患者ナビゲーターが、新しい母親の日常と必要なケアをつなぐ存在であることを、やさしい橋の比喩で表現します。",
-      "composition_ja": "小さな象徴的な隔たりに架かる、幅広く安定した橋を中心にした横長構図。左側には椅子や控えめな身の回りの品を置いた、日常生活を思わせる居心地のよい空間を描きます。右側には、特定の施設や場所を示さない、やわらかく照らされた扉のある落ち着いたケアの場を置きます。橋の中央には、案内役として前方を示す黄色いアヒルを配置します。道を描く案1とは異なり、左右をつなぐ橋と均衡の取れた構図にし、日の出を思わせるやさしい色調で希望を表します。",
-      "alt_ja": "黄色いアヒルが日常生活と welcoming なケアの場をつなぐ橋に立ち、必要な産後ケアへ導く患者ナビゲーションを象徴している。"
-    },
-    {
-      "number": 3,
-      "title_en": "One More Helping Hand",
-      "concept_en": "A single added layer of thoughtful guidance transforms a complicated care journey into a clear, welcoming arrangement, represented as the duck organizing simple stepping stones.",
-      "composition_en": "Use a landscape tabletop-style editorial scene with a clean pale background and three or four large, rounded stepping stones arranged from left to right. The stones symbolize everyday steps toward essential care without displaying numbers, labels, or factual data. Place the Daily Duck prominently in the center, warmly positioning one final stepping stone into place while looking toward a softly glowing destination shape at the far right. The visual emphasis is on the simple addition that makes the whole route feel possible. Make this distinct from the doorway and bridge concepts through a graphic still-life arrangement, top-down three-quarter perspective, crisp geometry, and bright optimistic colors. Keep the mood humane, calm, and empowering.",
-      "generation_prompt_en": "Create a single clean, modern, premium editorial landscape illustration for a hopeful postpartum-care story. Show the consistent friendly yellow Daily Duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Present a graphic still-life scene with three or four large rounded stepping stones across a pale surface, representing everyday steps toward essential care. The duck is centered and gently placing one additional stepping stone into the route, making the previously incomplete path feel clear and welcoming. Include a soft glowing destination shape at the far edge, but no literal hospital branding or specific medical claims. Use a top-down three-quarter perspective, crisp rounded geometry, warm yellow, cream, peach, and soft blue, subtle shadows, polished magazine illustration, strong focal point, spacious composition. No readable text, no numbers, no logos, no watermarks, no UI, no headline, no identifiable real people, no invented medical equipment.",
-      "alt_en": "A friendly yellow duck places one final stepping stone into a simple route, showing how added guidance can make essential postpartum care easier to reach.",
-      "title_ja": "もう一つの支え",
-      "concept_ja": "思いやりのある案内という一つの追加が、複雑に見えるケアへの道を明確で進みやすいものに変える様子を、足場の比喩で描きます。",
-      "composition_ja": "淡い背景の上に、左から右へ並ぶ三つまたは四つの大きな丸い足場を置いた、横長のテーブル風エディトリアル構図。足場は必要なケアへ向かう日常の段階を象徴し、数字やラベル、具体的なデータは表示しません。中央にはDaily Duckを大きく配置し、最後の足場をそっと置きながら、右端のやわらかく光る目的地を見つめさせます。扉や橋ではなく、グラフィカルな静物構成、俯瞰に近い三分の四視点、明快な幾何学で、三案目ならではの見せ方にします。",
-      "alt_ja": "黄色いアヒルが道に最後の足場を加え、案内という支援によって必要な産後ケアへ進みやすくなる様子を表している。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "BILL-IEVE IN OPEN DOORS",
-      "meaning_ja": "「開かれた扉を信じよう」という自然な意味です。英語の「BELIEVE IN（〜を信じる）」を、アヒルのくちばしを意味する「BILL」に置き換えて「BILL-IEVE IN」としたダジャレです。支援によってケアへの扉が開くという物語にもつながります。"
-    },
-    {
-      "number": 2,
-      "title": "THE EXTRA STEP THAT OPENS DOORS",
-      "meaning_ja": "「扉を開く、もう一つのステップ」という意味です。「take an extra step（もう一歩踏み込んで努力する）」という英語表現と、実際にケアへ進む道のイメージを重ねた言葉遊びです。追加された支援が障壁を越える助けになる、という内容に合います。"
-    },
-    {
-      "number": 3,
-      "title": "A LITTLE GUIDANCE. A BIG DIFFERENCE.",
-      "meaning_ja": "「少しの案内が、大きな違いを生む」という意味です。短い二文を対比させるリズムがあり、シンプルな支援の大きな効果を強く印象づける、ポスター向けのコピーです。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "The Open Door",
-      "concept_title_ja": "開かれたケアへの扉",
-      "image_path": "automation_images/design_previews/2026-10-08/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "52b1f52111a9cbb14823a85703fd74bf1b0076483698108723056f524c78e5b8",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Addition to Postpartum Care Made a Major Difference\nSummary: This practical kindness story shows how patient navigators helped new mothers overcome everyday barriers and receive essential care.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Open Door\n\nCONCEPT:\nThe Daily Duck visualizes patient navigation as a welcoming path through everyday barriers to essential postpartum care.\n\nCOMPOSITION:\nLandscape hero composition in a bright, calm care setting. Place the friendly yellow Daily Duck mascot in the foreground, recognizable by its orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. The duck gently gestures toward a softly lit open doorway at the center-right, with a simple, non-readable pathway leading toward it. Use a few abstract low obstacles along the path to symbolize everyday barriers, without depicting danger or distress. Keep the background clean and spacious, with warm cream, soft teal, and golden light. Strong focal point on the duck and the open door; premium editorial illustration style.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, charming premium editorial landscape illustration for a positive community-care story. Show one recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck stands in the foreground beside a simple pathway that passes a few abstract low obstacles and leads to a softly glowing open doorway, symbolizing patient navigators helping new mothers overcome everyday barriers and reach essential postpartum care. Warm cream, soft teal, gentle coral accents, natural rounded forms, subtle depth, soft daylight, polished magazine hero-image composition, strong focal point, generous negative space, emotionally hopeful and practical. No real identifiable people, no logos, no watermarks, no UI, no readable text, no headline, no letters or symbols embedded in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck guides a path around small abstract barriers toward an open doorway, symbolizing support that helps new mothers reach essential postpartum care.",
-      "alt_ja": "黄色いアヒルが小さな抽象的障害物を避けて開いた扉へ向かう道を案内し、新しい母親が必要な産後ケアにたどり着くための支援を象徴している。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "The Care Bridge",
-      "concept_title_ja": "ケアをつなぐ橋",
-      "image_path": "automation_images/design_previews/2026-10-08/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "218c7a41f1d3f10e8c368ab9ed93eda1cc8b2fb6fff99c48d0d8078cb05f9f41",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Addition to Postpartum Care Made a Major Difference\nSummary: This practical kindness story shows how patient navigators helped new mothers overcome everyday barriers and receive essential care.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nThe Care Bridge\n\nCONCEPT:\nThe Daily Duck becomes a patient navigator helping connect a new mother’s everyday world with the care she needs, shown through a gentle bridge metaphor.\n\nCOMPOSITION:\nLandscape composition built around a broad, sturdy bridge spanning a small symbolic gap. On the left, keep a cozy everyday setting with a simple home-like chair and soft personal items that suggest daily life without inventing specific facts. On the right, show a calm, welcoming care destination with a softly lit doorway and minimal medical context, avoiding readable signs or detailed equipment. Place the friendly yellow duck mascot at the center of the bridge, carrying a small blank guide card or pointing forward, with a warm reassuring expression. Use distinct visual separation from concept one: a centered bridge and balanced two-sided composition rather than a winding path. Soft sunrise palette, clean editorial illustration, hopeful and approachable.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape hero illustration in a clean, modern, warm premium editorial style. Feature the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Build the image around a broad gentle bridge crossing a small symbolic gap. One side suggests everyday life with a simple chair and understated personal belongings; the other side suggests essential postpartum care through a calm welcoming room and softly lit doorway, with no specific institution, location, or readable signage. Place the duck at the center of the bridge as a patient navigator, offering reassurance and direction. Balanced symmetrical composition, soft sunrise colors, cream, peach, muted blue, clean shapes, subtle texture, strong focal point, generous negative space. No logos, no watermarks, no UI, no readable embedded text, no headline, no invented medical instruments, no identifiable real people.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck stands on a bridge connecting everyday life with a welcoming care setting, symbolizing patient navigation to essential postpartum care.",
-      "alt_ja": "黄色いアヒルが日常生活と welcoming なケアの場をつなぐ橋に立ち、必要な産後ケアへ導く患者ナビゲーションを象徴している。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "One More Helping Hand",
-      "concept_title_ja": "もう一つの支え",
-      "image_path": "automation_images/design_previews/2026-10-08/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "ec613d6a195d97d4843929781641324c3d89153571fa684a620dc38ff75c3217",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Addition to Postpartum Care Made a Major Difference\nSummary: This practical kindness story shows how patient navigators helped new mothers overcome everyday barriers and receive essential care.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nOne More Helping Hand\n\nCONCEPT:\nA single added layer of thoughtful guidance transforms a complicated care journey into a clear, welcoming arrangement, represented as the duck organizing simple stepping stones.\n\nCOMPOSITION:\nUse a landscape tabletop-style editorial scene with a clean pale background and three or four large, rounded stepping stones arranged from left to right. The stones symbolize everyday steps toward essential care without displaying numbers, labels, or factual data. Place the Daily Duck prominently in the center, warmly positioning one final stepping stone into place while looking toward a softly glowing destination shape at the far right. The visual emphasis is on the simple addition that makes the whole route feel possible. Make this distinct from the doorway and bridge concepts through a graphic still-life arrangement, top-down three-quarter perspective, crisp geometry, and bright optimistic colors. Keep the mood humane, calm, and empowering.\n\nPRODUCTION DIRECTION:\nCreate a single clean, modern, premium editorial landscape illustration for a hopeful postpartum-care story. Show the consistent friendly yellow Daily Duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. Present a graphic still-life scene with three or four large rounded stepping stones across a pale surface, representing everyday steps toward essential care. The duck is centered and gently placing one additional stepping stone into the route, making the previously incomplete path feel clear and welcoming. Include a soft glowing destination shape at the far edge, but no literal hospital branding or specific medical claims. Use a top-down three-quarter perspective, crisp rounded geometry, warm yellow, cream, peach, and soft blue, subtle shadows, polished magazine illustration, strong focal point, spacious composition. No readable text, no numbers, no logos, no watermarks, no UI, no headline, no identifiable real people, no invented medical equipment.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "A friendly yellow duck places one final stepping stone into a simple route, showing how added guidance can make essential postpartum care easier to reach.",
-      "alt_ja": "黄色いアヒルが道に最後の足場を加え、案内という支援によって必要な産後ケアへ進みやすくなる様子を表している。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-08/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 1,
+    "selected_title": "BILL-IEVE IN OPEN DOORS"
+  },
   "selected_image_concept_number": 1,
   "selected_image_concept": {
     "number": 1,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 1,
   "selected_title_number": 1,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "BILL-IEVE IN OPEN DOORS",
+  "selected_title_detail": {
+    "number": 1,
+    "title": "BILL-IEVE IN OPEN DOORS",
+    "meaning_ja": "「開かれた扉を信じよう」という自然な意味です。英語の「BELIEVE IN（〜を信じる）」を、アヒルのくちばしを意味する「BILL」に置き換えて「BILL-IEVE IN」としたダジャレです。支援によってケアへの扉が開くという物語にもつながります。"
   },
+  "selected_preview": {
+    "number": 1,
+    "concept_number": 1,
+    "concept_title_en": "The Open Door",
+    "concept_title_ja": "開かれたケアへの扉",
+    "image_path": "automation_images/design_previews/2026-10-08/batch_01/preview_1.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "52b1f52111a9cbb14823a85703fd74bf1b0076483698108723056f524c78e5b8",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Simple Addition to Postpartum Care Made a Major Difference\nSummary: This practical kindness story shows how patient navigators helped new mothers overcome everyday barriers and receive essential care.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nThe Open Door\n\nCONCEPT:\nThe Daily Duck visualizes patient navigation as a welcoming path through everyday barriers to essential postpartum care.\n\nCOMPOSITION:\nLandscape hero composition in a bright, calm care setting. Place the friendly yellow Daily Duck mascot in the foreground, recognizable by its orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. The duck gently gestures toward a softly lit open doorway at the center-right, with a simple, non-readable pathway leading toward it. Use a few abstract low obstacles along the path to symbolize everyday barriers, without depicting danger or distress. Keep the background clean and spacious, with warm cream, soft teal, and golden light. Strong focal point on the duck and the open door; premium editorial illustration style.\n\nPRODUCTION DIRECTION:\nCreate a clean, modern, charming premium editorial landscape illustration for a positive community-care story. Show one recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck stands in the foreground beside a simple pathway that passes a few abstract low obstacles and leads to a softly glowing open doorway, symbolizing patient navigators helping new mothers overcome everyday barriers and reach essential postpartum care. Warm cream, soft teal, gentle coral accents, natural rounded forms, subtle depth, soft daylight, polished magazine hero-image composition, strong focal point, generous negative space, emotionally hopeful and practical. No real identifiable people, no logos, no watermarks, no UI, no readable text, no headline, no letters or symbols embedded in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "A friendly yellow duck guides a path around small abstract barriers toward an open doorway, symbolizing support that helps new mothers reach essential postpartum care.",
+    "alt_ja": "黄色いアヒルが小さな抽象的障害物を避けて開いた扉へ向かう道を案内し、新しい母親が必要な産後ケアにたどり着くための支援を象徴している。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-08.png",
+  "design_approval_reply": "1 1",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "8162f36763c5f43c162140147fb6cf2007e97931b396a000bb532d027a79a36b",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-08 — Batch 1",
-  "final_email_sent_at": "2026-10-08T10:31:16.675898+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "BILL-IEVE IN OPEN DOORS",
-  "final_selection_reply": "1 1",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-08T10:42:00.539493+00:00"
+    "translation_language": "ja"
+  }
 }
