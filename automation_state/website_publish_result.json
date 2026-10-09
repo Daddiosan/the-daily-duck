@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-09T13:03:11.506729+00:00",
+  "issue_date": "2026-10-09",
+  "image": "assets/ducks/2026-10-09-splashdown-duck.png",
+  "page": "ducks/2026-10-09/index.html",
+  "title": "Crew-12 Returns to Earth",
+  "duck_name": "Splashdown Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

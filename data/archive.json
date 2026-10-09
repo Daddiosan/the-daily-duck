@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-09",
+    "displayDate": "October 9, 2026",
+    "slug": "splashdown-duck",
+    "title": "SPLASHDOWN DUCK",
+    "duckName": "Splashdown Duck",
+    "storyTitleEn": "Crew-12 Returns to Earth",
+    "storyTitleJa": "Crew-12 Returns to Earth",
+    "image": "assets/ducks/2026-10-09-splashdown-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Splashdown Duck",
+    "imageAltJa": "Splashdown DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Crew-12 has returned to Earth, bringing a hopeful homecoming to the story of a space journey. With astronauts, a spacecraft, and a splashdown, it is a reminder that every trip away can have a memorable way home.",
+    "storyJa": "クルー12が地球へ帰還し、宇宙への旅に希望に満ちた帰郷の場面をもたらしました。宇宙飛行士、宇宙船、そして着水。遠くへ出かけた旅には、心に残る帰り道があることを思わせてくれます。",
+    "duckEn": "A very big welcome home, with an extra splash!",
+    "duckJa": "大きな「おかえりなさい」に、ひとしぶきのおまけ！",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://www.nasa.gov/image-article/crew-12-returns-to-earth/",
+    "archiveSummaryEn": "Crew-12 has returned to Earth in a hopeful homecoming featuring astronauts, a spacecraft, and a splashdown. A joyful reminder that every journey home can make a splash.",
+    "archiveSummaryJa": "クルー12が地球へ帰還しました。宇宙飛行士、宇宙船、そして着水が彩る、希望に満ちた帰郷です。どんな旅も、帰り道でひときわ輝くことがあります。",
+    "reasonEn": "Crew-12 has returned to Earth in a hopeful homecoming featuring astronauts, a spacecraft, and a splashdown. A joyful reminder that every journey home can make a splash.",
+    "reasonJa": "クルー12が地球へ帰還しました。宇宙飛行士、宇宙船、そして着水が彩る、希望に満ちた帰郷です。どんな旅も、帰り道でひときわ輝くことがあります。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-08",
     "displayDate": "October 8, 2026",
     "slug": "the-care-navigators",
