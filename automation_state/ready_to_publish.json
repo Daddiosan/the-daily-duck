@@ -1,8 +1,8 @@
 {
-  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+  "state": "READY_TO_PUBLISH",
   "issue_date": "2026-10-10",
-  "generated_at": "2026-10-10T07:53:12.192919+00:00",
-  "approved_story": {
+  "ready_at": "2026-10-10T08:45:29.508858+00:00",
+  "gate_a_approved_story": {
     "date": "2026-10-10",
     "issue_date": "2026-10-10",
     "phase": 2,
@@ -562,52 +562,9 @@
       "gate_a_package_created_at": "2026-10-10T01:40:03.502509+00:00",
       "approval_token_digest": "9f0d00ae98e247f00206ea733819e169bf41b4ddf403c8c62852c0747350db52"
     },
-    "image_concept_status": "NOT_GENERATED"
-  },
-  "approved_story_compact": {
-    "id": 64,
-    "title": "Mountaineer: 'Tenzing biopic made me wonder what he would think if he could return to the mountain today'",
-    "source": "Phys.org",
-    "url": "https://phys.org/news/2026-10-mountaineer-tenzing-biopic-mountain-today.html",
-    "category": "people",
-    "happiness": 7,
-    "hope": 7,
-    "general_interest": 8,
-    "surprise": 5,
-    "duck_visual": 8,
-    "source_quality": 7,
-    "freshness": 9,
-    "broad_appeal": 8,
-    "novelty_vs_archive": 9,
-    "total_score": 78,
-    "reason": "A memorable human-interest story about adventure, legacy, film, and one of history’s great mountain achievements.",
-    "candidate_number": 1,
-    "title_en": "A Tenzing Biopic Sparks a Thoughtful Mountain Question",
-    "reason_en": "A film about Tenzing inspires a mountaineer to reflect on legacy, adventure, and what the legendary climber might think of the mountain today.",
-    "en_copy": "A Tenzing biopic has prompted a mountaineer to wonder what Tenzing would think if he could return to the mountain today. It is a warm reminder that great adventures do not end when the climb is over: they continue through films, memories, and the questions they inspire.",
-    "duck_name": "Summit Thought Duck",
-    "duck_en": "Some questions deserve a view from the top.",
-    "x_en": "A Tenzing biopic inspires a mountaineer to wonder what the legendary climber might think of the mountain today—a thoughtful reflection on adventure, memory, and legacy.",
-    "title_ja": "テンジンの伝記映画が生んだ、山をめぐる思索",
-    "reason_ja": "テンジンを描いた映画をきっかけに、ある登山家が伝説の登山家なら今の山をどう思うか考えました。冒険と功績について思いを巡らせる、心温まる話です。",
-    "jp_copy": "テンジンの伝記映画をきっかけに、ある登山家が「もしテンジンが今の山に戻れたら、何を思うだろう」と考えました。偉大な冒険は登頂で終わるのではなく、映画や記憶、そしてそこから生まれる問いを通して受け継がれていくのだと感じさせてくれる話です。",
-    "duck_jp": "頂上からでなければ見えない問いもあります。",
-    "x_jp": "テンジンの伝記映画をきっかけに、ある登山家が「伝説の登山家なら、今の山をどう思うだろう」と考えました。冒険と記憶、功績について思いを巡らせる話です。"
-  },
-  "image_concepts": [
-    {
-      "number": 1,
-      "title_en": "A Question Above the Clouds",
-      "concept_en": "The friendly Daily Duck pauses as a thoughtful mountaineer at a high snowy summit, looking across the mountain and wondering how a legendary climber might see it today.",
-      "composition_en": "Landscape hero composition with the recognizable yellow duck in the foreground, wearing a simple winter climbing jacket and a small backpack, standing safely on a broad snowy ridge. The duck faces a vast mountain panorama in soft morning light, with an open sky and generous negative space. Warm, reflective, premium editorial mood; no identifiable real person and no specific factual expedition details.",
-      "generation_prompt_en": "Create one clean, modern, charming premium editorial landscape hero image. Show the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck stands safely on a broad snowy mountain ridge, wearing a simple winter climbing jacket and small backpack, gazing thoughtfully toward a majestic distant mountain under gentle morning light. Convey reflection, adventure, memory, and legacy through the duck’s pose and the expansive view. Strong focal point, polished cinematic illustration, tasteful realism, soft warm color grading, uncluttered composition, generous sky negative space, landscape aspect ratio. Do not show any real identifiable person, specific expedition equipment, flags, logos, watermarks, UI, readable text, headline, or text embedded in the image.",
-      "alt_en": "The Daily Duck stands on a snowy ridge, thoughtfully gazing across a mountain landscape.",
-      "title_ja": "雲の上で考える問い",
-      "concept_ja": "親しみやすいデイリー・ダックが高い雪山の頂で立ち止まり、伝説の登山家なら今の山をどう見るだろうかと考える情景です。",
-      "composition_ja": "横長のヒーロー構図。前景に、黄色い体、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の tuft を持つダックを配置し、シンプルな冬用ジャケットと小さなリュックを身につけさせます。安全な雪の尾根から、柔らかな朝の光に照らされた雄大な山並みを見つめる構図です。実在人物や特定の遠征を示さず、冒険、記憶、功績への思索を温かく表現します。",
-      "alt_ja": "デイリー・ダックが雪の尾根に立ち、山並みを思慮深く見つめている。"
-    },
-    {
+    "image_concept_status": "NOT_GENERATED",
+    "selected_image_concept_number": 2,
+    "selected_image_concept": {
       "number": 2,
       "title_en": "From Film Frame to Mountain View",
       "concept_en": "A visual conversation between a biopic and the mountain: the duck observes a glowing film frame that symbolically opens onto the same snowy landscape, linking storytelling with remembered adventure.",
@@ -619,95 +576,9 @@
       "composition_ja": "横長構図。硬い分割画面ではなく、自然な視覚の変化で左右をつなぎます。左側には、抽象的で落ち着いた映画館のような空間と、柔らかく光るフィルムリール、画面を見つめるダックを配置します。右側では、画面の映像が広大な雪山の風景へと流れ込みます。フィルムや画面には、読める文字やロゴ、日付、人物名などを入れません。",
       "alt_ja": "デイリー・ダックが、雪山の風景へとつながる文字のない映画画面を見つめている。"
     },
-    {
-      "number": 3,
-      "title_en": "The Legacy Trail",
-      "concept_en": "The duck follows a gentle trail of symbolic footprints from a treasured mountain memory toward a bright open horizon, presenting adventure as something that continues through stories and questions.",
-      "composition_en": "Landscape hero image with the duck in the lower foreground beside a simple trail of footprints curving across a snowy mountain meadow toward distant peaks. A small, non-specific framed image or softly glowing memory shape rests near the starting point of the trail, without depicting a real person or readable content. The duck looks ahead rather than backward, creating a hopeful sense of continuity and legacy.",
-      "generation_prompt_en": "Create one clean, warm, premium editorial landscape illustration about adventure continuing through memory and legacy. Show the consistent Daily Duck mascot: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. In the lower foreground, the duck stands beside a gentle trail of symbolic footprints crossing a snowy mountain meadow and curving toward distant sunlit peaks. Near the beginning of the trail, include only an abstract softly glowing memory shape or blank frame, not a portrait or identifiable person. The duck faces the bright horizon with calm optimism. Modern charming visual storytelling, simple uncluttered design, strong focal point, atmospheric depth, warm light, landscape hero composition. Do not include real people, names, dates, flags, logos, watermarks, UI, readable text, headline, or any text embedded in the image.",
-      "alt_en": "The Daily Duck follows symbolic footprints across a snowy meadow toward sunlit mountain peaks.",
-      "title_ja": "受け継がれる山道",
-      "concept_ja": "ダックが、山の記憶を示す抽象的な光から明るい地平線へ続く足跡をたどります。冒険は登頂で終わらず、物語や問いを通して受け継がれるというテーマを、希望のある比喩で表現します。",
-      "composition_ja": "横長のヒーロー構図。手前の雪原にダックを置き、そこから象徴的な足跡が雪の山間をゆるやかに曲がりながら、遠くの陽光に照らされた峰へ続いていきます。足跡の始点には、実在人物の肖像ではなく、記憶を示す抽象的な光や文字のないフレームを控えめに配置します。ダックは後ろではなく明るい地平線を向き、継承と希望を表します。",
-      "alt_ja": "デイリー・ダックが雪原の象徴的な足跡をたどり、光に照らされた山頂へ向かっている。"
-    }
-  ],
-  "title_ideas": [
-    {
-      "number": 1,
-      "title": "DUCK TO THE FUTURE!",
-      "meaning_ja": "「未来へ戻る」を意味する有名なフレーズ “BACK TO THE FUTURE” を、先頭の “BACK” から “DUCK” に置き換えた、デイリー・ダックらしい語呂合わせです。テンジンがもし現代の山へ戻れたら、という物語の想像と、ダックの存在を重ねています。"
-    },
-    {
-      "number": 2,
-      "title": "THE CLIMB AFTER THE CLIMB",
-      "meaning_ja": "「登頂後にも続く登山」という意味です。実際の山登りと、映画・記憶・問いを通じて続いていく功績や影響を、“climb” の反復で表現したスマートな言葉遊びです。"
-    },
-    {
-      "number": 3,
-      "title": "THE CLIMB LIVES ON",
-      "meaning_ja": "「その登山は生き続ける」という、短く力強いポスターコピーです。偉大な冒険が登頂で終わらず、映画や記憶、そこから生まれる問いとして受け継がれていくニュアンスを、希望を込めて伝えます。"
-    }
-  ],
-  "design_previews": [
-    {
-      "number": 1,
-      "concept_number": 1,
-      "concept_title_en": "A Question Above the Clouds",
-      "concept_title_ja": "雲の上で考える問い",
-      "image_path": "automation_images/design_previews/2026-10-10/batch_01/preview_1.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "43854eef20e39cc70c5e7537aa47d62ecb9246d150b4cbb697a5894f98b34ec6",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Tenzing Biopic Sparks a Thoughtful Mountain Question\nSummary: A film about Tenzing inspires a mountaineer to reflect on legacy, adventure, and what the legendary climber might think of the mountain today.\n\nTHIS IS CONCEPT 1 OF 3.\n\nCONCEPT TITLE:\nA Question Above the Clouds\n\nCONCEPT:\nThe friendly Daily Duck pauses as a thoughtful mountaineer at a high snowy summit, looking across the mountain and wondering how a legendary climber might see it today.\n\nCOMPOSITION:\nLandscape hero composition with the recognizable yellow duck in the foreground, wearing a simple winter climbing jacket and a small backpack, standing safely on a broad snowy ridge. The duck faces a vast mountain panorama in soft morning light, with an open sky and generous negative space. Warm, reflective, premium editorial mood; no identifiable real person and no specific factual expedition details.\n\nPRODUCTION DIRECTION:\nCreate one clean, modern, charming premium editorial landscape hero image. Show the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck stands safely on a broad snowy mountain ridge, wearing a simple winter climbing jacket and small backpack, gazing thoughtfully toward a majestic distant mountain under gentle morning light. Convey reflection, adventure, memory, and legacy through the duck’s pose and the expansive view. Strong focal point, polished cinematic illustration, tasteful realism, soft warm color grading, uncluttered composition, generous sky negative space, landscape aspect ratio. Do not show any real identifiable person, specific expedition equipment, flags, logos, watermarks, UI, readable text, headline, or text embedded in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck stands on a snowy ridge, thoughtfully gazing across a mountain landscape.",
-      "alt_ja": "デイリー・ダックが雪の尾根に立ち、山並みを思慮深く見つめている。"
-    },
-    {
-      "number": 2,
-      "concept_number": 2,
-      "concept_title_en": "From Film Frame to Mountain View",
-      "concept_title_ja": "映画から山の記憶へ",
-      "image_path": "automation_images/design_previews/2026-10-10/batch_01/preview_2.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "8e47e1424981c77c20a66e96f77b3feb7a365714134cdc51149109e3c0e19b79",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Tenzing Biopic Sparks a Thoughtful Mountain Question\nSummary: A film about Tenzing inspires a mountaineer to reflect on legacy, adventure, and what the legendary climber might think of the mountain today.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nFrom Film Frame to Mountain View\n\nCONCEPT:\nA visual conversation between a biopic and the mountain: the duck observes a glowing film frame that symbolically opens onto the same snowy landscape, linking storytelling with remembered adventure.\n\nCOMPOSITION:\nLandscape composition split by a graceful visual transition rather than a hard collage: on the left, the duck sits in a cozy, abstract cinema setting beside a softly glowing film reel; on the right, the film image flows into a snowy mountain vista. The duck looks from the film toward the real landscape with quiet curiosity. Keep the film reel generic and blank, with no readable markings or invented production details.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration with a distinctive visual bridge between cinema and mountain memory. Show the consistent Daily Duck mascot, a friendly yellow duck with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Place the duck in a simple cozy cinema-like space on the left beside a generic film reel and a softly glowing blank screen; let the screen’s image transition gracefully into a vast snowy mountain landscape on the right. The duck turns toward the mountain with thoughtful curiosity, suggesting how a biopic can inspire questions about adventure and legacy. Clean modern premium style, warm cinematic lighting, elegant storytelling composition, strong focal point, landscape hero framing. The film reel and screen must contain no readable text, logos, dates, names, or identifiable production details. No watermark, UI, headline, or embedded readable text.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck watches a blank film screen that visually opens into a snowy mountain landscape.",
-      "alt_ja": "デイリー・ダックが、雪山の風景へとつながる文字のない映画画面を見つめている。"
-    },
-    {
-      "number": 3,
-      "concept_number": 3,
-      "concept_title_en": "The Legacy Trail",
-      "concept_title_ja": "受け継がれる山道",
-      "image_path": "automation_images/design_previews/2026-10-10/batch_01/preview_3.png",
-      "mime_type": "image/png",
-      "provider": "OpenAI",
-      "model": "gpt-image-2",
-      "size": "1020x1160",
-      "generation_request_size": "1536x1024",
-      "aspect_ratio": "51:58",
-      "quality": "medium",
-      "sha256": "f43be02a82134103748baf00f8283ba3d640fd871545bb393c6b4e349731125f",
-      "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Tenzing Biopic Sparks a Thoughtful Mountain Question\nSummary: A film about Tenzing inspires a mountaineer to reflect on legacy, adventure, and what the legendary climber might think of the mountain today.\n\nTHIS IS CONCEPT 3 OF 3.\n\nCONCEPT TITLE:\nThe Legacy Trail\n\nCONCEPT:\nThe duck follows a gentle trail of symbolic footprints from a treasured mountain memory toward a bright open horizon, presenting adventure as something that continues through stories and questions.\n\nCOMPOSITION:\nLandscape hero image with the duck in the lower foreground beside a simple trail of footprints curving across a snowy mountain meadow toward distant peaks. A small, non-specific framed image or softly glowing memory shape rests near the starting point of the trail, without depicting a real person or readable content. The duck looks ahead rather than backward, creating a hopeful sense of continuity and legacy.\n\nPRODUCTION DIRECTION:\nCreate one clean, warm, premium editorial landscape illustration about adventure continuing through memory and legacy. Show the consistent Daily Duck mascot: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. In the lower foreground, the duck stands beside a gentle trail of symbolic footprints crossing a snowy mountain meadow and curving toward distant sunlit peaks. Near the beginning of the trail, include only an abstract softly glowing memory shape or blank frame, not a portrait or identifiable person. The duck faces the bright horizon with calm optimism. Modern charming visual storytelling, simple uncluttered design, strong focal point, atmospheric depth, warm light, landscape hero composition. Do not include real people, names, dates, flags, logos, watermarks, UI, readable text, headline, or any text embedded in the image.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
-      "alt_en": "The Daily Duck follows symbolic footprints across a snowy meadow toward sunlit mountain peaks.",
-      "alt_ja": "デイリー・ダックが雪原の象徴的な足跡をたどり、光に照らされた山頂へ向かっている。"
-    }
-  ],
-  "preview_batch_number": 1,
-  "preview_batch_path": "automation_images/design_previews/2026-10-10/batch_01",
-  "preview_candidate_count": 3,
+    "selected_title_number": 2,
+    "selected_title": "THE CLIMB AFTER THE CLIMB"
+  },
   "selected_image_concept_number": 2,
   "selected_image_concept": {
     "number": 2,
@@ -723,45 +594,38 @@
   },
   "selected_image_number": 2,
   "selected_title_number": 2,
-  "design_flow": {
-    "selection_turns_after_gate_a": 1,
-    "concept_count": 3,
-    "images_per_concept": 1,
-    "image_count": 3,
-    "title_count": 3,
-    "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_supported": true,
-    "full_width_supported": true
+  "selected_title": "THE CLIMB AFTER THE CLIMB",
+  "selected_title_detail": {
+    "number": 2,
+    "title": "THE CLIMB AFTER THE CLIMB",
+    "meaning_ja": "「登頂後にも続く登山」という意味です。実際の山登りと、映画・記憶・問いを通じて続いていく功績や影響を、“climb” の反復で表現したスマートな言葉遊びです。"
   },
+  "selected_preview": {
+    "number": 2,
+    "concept_number": 2,
+    "concept_title_en": "From Film Frame to Mountain View",
+    "concept_title_ja": "映画から山の記憶へ",
+    "image_path": "automation_images/design_previews/2026-10-10/batch_01/preview_2.png",
+    "mime_type": "image/png",
+    "provider": "OpenAI",
+    "model": "gpt-image-2",
+    "size": "1020x1160",
+    "generation_request_size": "1536x1024",
+    "aspect_ratio": "51:58",
+    "quality": "medium",
+    "sha256": "8e47e1424981c77c20a66e96f77b3feb7a365714134cdc51149109e3c0e19b79",
+    "generation_prompt": "Create ONE polished, publishable landscape hero image for The Daily Duck.\n\nAPPROVED STORY:\nHeadline: A Tenzing Biopic Sparks a Thoughtful Mountain Question\nSummary: A film about Tenzing inspires a mountaineer to reflect on legacy, adventure, and what the legendary climber might think of the mountain today.\n\nTHIS IS CONCEPT 2 OF 3.\n\nCONCEPT TITLE:\nFrom Film Frame to Mountain View\n\nCONCEPT:\nA visual conversation between a biopic and the mountain: the duck observes a glowing film frame that symbolically opens onto the same snowy landscape, linking storytelling with remembered adventure.\n\nCOMPOSITION:\nLandscape composition split by a graceful visual transition rather than a hard collage: on the left, the duck sits in a cozy, abstract cinema setting beside a softly glowing film reel; on the right, the film image flows into a snowy mountain vista. The duck looks from the film toward the real landscape with quiet curiosity. Keep the film reel generic and blank, with no readable markings or invented production details.\n\nPRODUCTION DIRECTION:\nCreate one publishable landscape editorial illustration with a distinctive visual bridge between cinema and mountain memory. Show the consistent Daily Duck mascot, a friendly yellow duck with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Place the duck in a simple cozy cinema-like space on the left beside a generic film reel and a softly glowing blank screen; let the screen’s image transition gracefully into a vast snowy mountain landscape on the right. The duck turns toward the mountain with thoughtful curiosity, suggesting how a biopic can inspire questions about adventure and legacy. Clean modern premium style, warm cinematic lighting, elegant storytelling composition, strong focal point, landscape hero framing. The film reel and screen must contain no readable text, logos, dates, names, or identifiable production details. No watermark, UI, headline, or embedded readable text.\n\n\n\nThe three concept images must look meaningfully different from each other.\n\nPreserve The Daily Duck mascot:\n- friendly recognizable yellow duck\n- orange beak\n- large dark glossy eyes\n- small feather tuft\n- warm expression\n\nStyle:\n- clean\n- modern\n- charming\n- premium editorial\n- landscape hero composition\n- publication quality\n\nDo not include:\n- readable text\n- numbers\n- headlines\n- logos\n- watermarks\n- UI\n\nDo not invent unsupported facts.",
+    "alt_en": "The Daily Duck watches a blank film screen that visually opens into a snowy mountain landscape.",
+    "alt_ja": "デイリー・ダックが、雪山の風景へとつながる文字のない映画画面を見つめている。"
+  },
+  "preview_batch_number": 1,
+  "canonical_image_path": "automation_images/canonical/2026-10-10.png",
+  "design_approval_reply": "2 2",
+  "design_approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "publish_started": false,
   "language_policy": {
     "primary_language": "en",
     "canonical_language": "en",
-    "translation_language": "ja",
-    "translation_source": "english_master"
-  },
-  "approval_token_digest": "34195dda576d0a232e5f31ec88942b7349d7f8d82a457d115e978cdf3a1a635c",
-  "final_email_subject_prefix": "The Daily Duck — Choose Image + Title — 2026-10-10 — Batch 1",
-  "final_email_sent_at": "2026-10-10T07:53:15.598708+00:00",
-  "final_selection_rule": {
-    "image_numbers": [
-      1,
-      2,
-      3
-    ],
-    "title_numbers": [
-      1,
-      2,
-      3
-    ],
-    "format": "IMAGE_NUMBER TITLE_NUMBER",
-    "example": "1 3",
-    "next_3_command": "NEXT 3",
-    "full_width_supported": true,
-    "next_state": "READY_TO_PUBLISH"
-  },
-  "selected_title": "THE CLIMB AFTER THE CLIMB",
-  "final_selection_reply": "2 2",
-  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
-  "final_selected_at": "2026-10-10T08:45:29.509824+00:00"
+    "translation_language": "ja"
+  }
 }
