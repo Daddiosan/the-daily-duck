@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-10T08:45:52.838195+00:00",
+  "issue_date": "2026-10-10",
+  "image": "assets/ducks/2026-10-10-summit-thought-duck.png",
+  "page": "ducks/2026-10-10/index.html",
+  "title": "Mountaineer: 'Tenzing biopic made me wonder what he would think if he could return to the mountain today'",
+  "duck_name": "Summit Thought Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

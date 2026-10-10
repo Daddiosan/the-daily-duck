@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-10",
+    "displayDate": "October 10, 2026",
+    "slug": "summit-thought-duck",
+    "title": "SUMMIT THOUGHT DUCK",
+    "duckName": "Summit Thought Duck",
+    "storyTitleEn": "Mountaineer: 'Tenzing biopic made me wonder what he would think if he could return to the mountain today'",
+    "storyTitleJa": "Mountaineer: 'Tenzing biopic made me wonder what he would think if he could return to the mountain today'",
+    "image": "assets/ducks/2026-10-10-summit-thought-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Summit Thought Duck",
+    "imageAltJa": "Summit Thought DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A Tenzing biopic has prompted a mountaineer to wonder what Tenzing would think if he could return to the mountain today. It is a warm reminder that great adventures do not end when the climb is over: they continue through films, memories, and the questions they inspire.",
+    "storyJa": "テンジンの伝記映画をきっかけに、ある登山家が「もしテンジンが今の山に戻れたら、何を思うだろう」と考えました。偉大な冒険は登頂で終わるのではなく、映画や記憶、そしてそこから生まれる問いを通して受け継がれていくのだと感じさせてくれる話です。",
+    "duckEn": "Some questions deserve a view from the top.",
+    "duckJa": "頂上からでなければ見えない問いもあります。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-mountaineer-tenzing-biopic-mountain-today.html",
+    "archiveSummaryEn": "A Tenzing biopic inspires a mountaineer to wonder what the legendary climber might think of the mountain today—a thoughtful reflection on adventure, memory, and legacy.",
+    "archiveSummaryJa": "テンジンの伝記映画をきっかけに、ある登山家が「伝説の登山家なら、今の山をどう思うだろう」と考えました。冒険と記憶、功績について思いを巡らせる話です。",
+    "reasonEn": "A Tenzing biopic inspires a mountaineer to wonder what the legendary climber might think of the mountain today—a thoughtful reflection on adventure, memory, and legacy.",
+    "reasonJa": "テンジンの伝記映画をきっかけに、ある登山家が「伝説の登山家なら、今の山をどう思うだろう」と考えました。冒険と記憶、功績について思いを巡らせる話です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-09",
     "displayDate": "October 9, 2026",
     "slug": "splashdown-duck",
