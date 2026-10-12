@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-12",
+    "displayDate": "October 12, 2026",
+    "slug": "the-fresh-start-flock",
+    "title": "THE FRESH-START FLOCK",
+    "duckName": "The Fresh-Start Flock",
+    "storyTitleEn": "A FRESH START TAKES ROOT",
+    "storyTitleJa": "救出された8頭のオランウータン、保護林へ",
+    "image": "assets/ducks/2026-10-12-the-fresh-start-flock.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Fresh-Start Flock",
+    "imageAltJa": "The Fresh-Start FlockをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Eight orangutans rescued from fires have been released into a protected forest in Indonesia. Their journey from danger to a safer home offers an uplifting reminder that rescue can lead to a fresh start.",
+    "storyJa": "火災から救出された8頭のオランウータンが、インドネシアの保護林へ放されました。危険な状況からより安全な住みかへ向かった彼らの歩みは、救出が新たな出発につながることを思い出させてくれます。",
+    "duckEn": "A hopeful homecoming deserves a very big quack.",
+    "duckJa": "希望に満ちた帰還に、特大のガーガー！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-indonesia-orangutans-forest.html",
+    "archiveSummaryEn": "Eight orangutans rescued from fires have found a fresh start in a protected forest in Indonesia. A hopeful homecoming for some very special neighbors.",
+    "archiveSummaryJa": "火災から救出された8頭のオランウータンが、インドネシアの保護林で新たなスタートを切りました。特別な仲間たちの、希望に満ちた帰還です。",
+    "reasonEn": "Eight orangutans rescued from fires have found a fresh start in a protected forest in Indonesia. A hopeful homecoming for some very special neighbors.",
+    "reasonJa": "火災から救出された8頭のオランウータンが、インドネシアの保護林で新たなスタートを切りました。特別な仲間たちの、希望に満ちた帰還です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-11",
     "displayDate": "October 11, 2026",
     "slug": "the-meal-prep-duck",
