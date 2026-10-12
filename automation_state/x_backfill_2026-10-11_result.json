@@ -1,0 +1,75 @@
+{
+  "state": "POST_IN_FLIGHT",
+  "at": "2026-10-12T06:20:54.831429+00:00",
+  "issue_date": "2026-10-11",
+  "operation_id": "x-backfill-2026-10-11-11725558085-f970c8333fb4",
+  "dry_run": false,
+  "publication_attempted": false,
+  "http_post_executed": false,
+  "x_media_uploaded": false,
+  "x_post_created": false,
+  "human_gate": "APPROVED",
+  "source_artifact": {
+    "run_id": 38201777075,
+    "artifact_id": 11725558085,
+    "artifact_name": "daily-duck-backfill-2026-10-11-ready-to-publish",
+    "artifact_digest": "sha256:da8c3ccbc23fbf954b8607b9b6e1fa70111ad14837a7a964dca1dc333c143ce9",
+    "run_head_sha": "67d9143452af063478a0caa7f47b90e5a74d5827",
+    "ready_sha256": "4e1328ee300665929506e42d39025b139ef02a8f2539c021e30b45175d7944ac",
+    "approved_image_sha256": "f970c8333fb46c24e5ab6362c9bbc119a52517574b5805f9a1f9e09df9e49432"
+  },
+  "website_publication": {
+    "workflow_run_id": 38208086549,
+    "publication_commit": "2c07d38c82ff59ce2892b0c8250a3e997ba49aab",
+    "publication_commit_is_ancestor": true,
+    "action": "ARCHIVE_ONLY_PUBLISHED",
+    "article_url": "https://www.thedailyduck.ai/ducks/2026-10-11/",
+    "published_image_sha256": "f970c8333fb46c24e5ab6362c9bbc119a52517574b5805f9a1f9e09df9e49432"
+  },
+  "selection": {
+    "selected_image_number": 2,
+    "selected_title_number": 2,
+    "selected_title": "SAFE, SET, PREP!"
+  },
+  "x_card": {
+    "path": "automation_images/x_backfill/2026-10-11-x-card.png",
+    "size": "1500x1200",
+    "ratio": "5:4",
+    "format": "PNG",
+    "sha256": "7311afec73c9b5588db619796cf7141ae147abb3a3714fc3ca33d27c4ce581ae",
+    "title": "SAFE, SET, PREP!",
+    "layout": "english-first-80pct-photo-v1",
+    "source_image_sha256": "f970c8333fb46c24e5ab6362c9bbc119a52517574b5805f9a1f9e09df9e49432"
+  },
+  "x_post": {
+    "text": "Meal prep made safer: a microbiologist shares a step-by-step guide for everyday cooks. Practical advice can make daily routines feel a little easier.\n\nhttps://www.thedailyduck.ai/ducks/2026-10-11/",
+    "weighted_length": 174,
+    "max_weighted_length": 280,
+    "language": "en",
+    "article_url": "https://www.thedailyduck.ai/ducks/2026-10-11/",
+    "made_with_ai": true
+  },
+  "duplicate_guard": {
+    "status": "CLEAR_COMPLETE",
+    "checked_at": "2026-10-12T06:20:54.672312+00:00",
+    "found": false,
+    "pages_scanned": 1,
+    "posts_scanned": 1,
+    "scan_start": "2026-10-10T00:00:00Z",
+    "complete": true
+  },
+  "shared_x_state": {
+    "ready_path": "automation_state/ready_to_publish.json",
+    "ready_sha256": "d197389b18688851bc6f37318ad79877bf5dd29a6921ee2fbf935e52b43b2a78",
+    "result_path": "automation_state/x_publish_result.json",
+    "result_sha256": "ef9bf6cd9fc70ea7e3d6b8e6124eb65f6bab1fd6d4dc7ebf5ca6c5608b5de6d0",
+    "ready_issue_date": "2026-10-10",
+    "ready_state": "X_POSTED",
+    "result_issue_date": "2026-10-10",
+    "result_action": "X_POSTED",
+    "target_terminal_post_exists": false,
+    "preserved": true
+  },
+  "armed_at": "2026-10-12T06:20:54.831439+00:00",
+  "armed_by": "Daddiosan"
+}
