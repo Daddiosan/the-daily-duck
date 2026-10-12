@@ -1,0 +1,188 @@
+name: The Daily Duck - 2026-10-11 Design Options Backfill
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type SEND-2026-10-11-DESIGN-OPTIONS after Human Gate approval"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: daily-duck-backfill-2026-10-11-design-options
+  cancel-in-progress: false
+
+jobs:
+  isolated-backfill:
+    runs-on: ubuntu-latest
+    environment: Production
+    env:
+      TARGET_ISSUE_DATE: "2026-10-11"
+      EXPECTED_RUN_ID: "38099673013"
+      EXPECTED_ARTIFACT_ID: "11686304073"
+      BACKFILL_WORKDIR: ${{ runner.temp }}/daily-duck-backfill-2026-10-11
+
+    steps:
+      - name: Enforce Human Gate confirmation
+        shell: bash
+        env:
+          HUMAN_GATE_CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/main"
+          test "$GITHUB_ACTOR" = "Daddiosan"
+          test "$GITHUB_TRIGGERING_ACTOR" = "Daddiosan"
+          test "$HUMAN_GATE_CONFIRMATION" = "SEND-2026-10-11-DESIGN-OPTIONS"
+
+      - name: Checkout reviewed recovery code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Install existing Phase 2 dependencies
+        run: |
+          python -m pip install -r requirements-backfill-2026-10-11.txt
+
+      - name: Create isolated work directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$BACKFILL_WORKDIR"
+          mkdir -p "$BACKFILL_WORKDIR"
+
+      - name: Fetch and validate the authoritative Gate A artifact
+        id: gate_a_artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/fetch_gate_a_artifact.py \
+            --output-dir "$BACKFILL_WORKDIR/gate-a-artifact" \
+            --expected-issue-date "$TARGET_ISSUE_DATE" \
+            --max-age-hours 168 \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Pin artifact provenance and prepare isolated package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ steps.gate_a_artifact.outputs.artifact_result }}" = "ARTIFACT_READY"
+          test "${{ steps.gate_a_artifact.outputs.run_id }}" = "$EXPECTED_RUN_ID"
+          test "${{ steps.gate_a_artifact.outputs.artifact_id }}" = "$EXPECTED_ARTIFACT_ID"
+          package=$(find "$BACKFILL_WORKDIR/gate-a-artifact" -type f -name gate_a_package.json -print -quit)
+          test -n "$package"
+          cp "$package" "$BACKFILL_WORKDIR/gate_a_package.json"
+
+      - name: Restore Gate A approval with the existing token-verifying logic
+        working-directory: ${{ env.BACKFILL_WORKDIR }}
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python "$GITHUB_WORKSPACE/scripts/check_story_approval.py"
+
+      - name: Verify the exact candidate 5 approval and source package
+        working-directory: ${{ env.BACKFILL_WORKDIR }}
+        run: python "$GITHUB_WORKSPACE/scripts/backfill_2026_10_11.py" validate-approved
+
+      - name: Stop before generation when the design email already exists
+        id: duplicate_guard
+        working-directory: ${{ env.BACKFILL_WORKDIR }}
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: >-
+          python "$GITHUB_WORKSPACE/scripts/backfill_2026_10_11.py"
+          check-duplicate --github-output "$GITHUB_OUTPUT"
+
+      - name: Generate exactly 3 concepts, previews, and titles
+        if: steps.duplicate_guard.outputs.should_send == 'true'
+        working-directory: ${{ env.BACKFILL_WORKDIR }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TEXT_MODEL: gemini-3.6-flash
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: gpt-image-2
+          OPENAI_IMAGE_SIZE: "1536x1024"
+          OPENAI_IMAGE_QUALITY: medium
+        run: python "$GITHUB_WORKSPACE/scripts/generate_image_concepts.py"
+
+      - name: Dry-run the complete design email
+        if: steps.duplicate_guard.outputs.should_send == 'true'
+        working-directory: ${{ env.BACKFILL_WORKDIR }}
+        run: python "$GITHUB_WORKSPACE/scripts/backfill_2026_10_11.py" dry-run-email
+
+      - name: Upload prepared recovery evidence before SMTP
+        if: steps.duplicate_guard.outputs.should_send == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: daily-duck-backfill-2026-10-11-prepared
+          path: |
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/approved_story.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/design_options.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_images/design_previews/2026-10-11/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Send the one permitted design-selection email
+        if: steps.duplicate_guard.outputs.should_send == 'true'
+        id: send
+        working-directory: ${{ env.BACKFILL_WORKDIR }}
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: >-
+          python "$GITHUB_WORKSPACE/scripts/backfill_2026_10_11.py"
+          send-email --github-output "$GITHUB_OUTPUT"
+
+      - name: Verify the sent message in Gmail
+        id: verify_sent
+        if: ${{ always() && steps.duplicate_guard.outputs.should_send != '' }}
+        working-directory: ${{ env.BACKFILL_WORKDIR }}
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python "$GITHUB_WORKSPACE/scripts/backfill_2026_10_11.py" verify-sent
+
+      - name: Upload final isolated recovery evidence
+        if: ${{ always() && steps.duplicate_guard.outputs.should_send == 'true' && steps.verify_sent.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: daily-duck-backfill-2026-10-11-final
+          path: |
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/approved_story.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/design_options.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_images/design_previews/2026-10-11/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Verify repository and publication paths were untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f ducks/2026-10-10/index.html
+          git diff --exit-code
+          test -z "$(git status --short)"
+          echo "WEBSITE_PUBLISH_EXECUTED: NO"
+          echo "X_PUBLISH_EXECUTED: NO"
+          echo "CURRENT_WORKFLOW_PRESERVED: YES"
+
+      - name: Report recovery boundary
+        shell: bash
+        run: |
+          echo "TARGET_ISSUE_DATE: 2026-10-11"
+          echo "DESIGN_EMAIL_ALREADY_SENT: ${{ steps.duplicate_guard.outputs.should_send == 'false' }}"
+          echo "EMAIL_SEND_RESULT: ${{ steps.send.outputs.send_result || 'SKIPPED_EXISTING' }}"
+          echo "No website or X workflow was invoked."
