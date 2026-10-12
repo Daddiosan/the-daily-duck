@@ -24,7 +24,6 @@ jobs:
       TARGET_ISSUE_DATE: "2026-10-11"
       EXPECTED_RUN_ID: "38099673013"
       EXPECTED_ARTIFACT_ID: "11686304073"
-      BACKFILL_WORKDIR: ${{ runner.temp }}/daily-duck-backfill-2026-10-11
 
     steps:
       - name: Enforce Human Gate confirmation
@@ -56,6 +55,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          BACKFILL_WORKDIR="$RUNNER_TEMP/daily-duck-backfill-2026-10-11"
+          printf 'BACKFILL_WORKDIR=%s\n' "$BACKFILL_WORKDIR" >> "$GITHUB_ENV"
           test ! -e "$BACKFILL_WORKDIR"
           mkdir -p "$BACKFILL_WORKDIR"
 

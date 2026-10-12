@@ -27,7 +27,9 @@ class BackfillWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("force_regenerate", self.text)
 
     def test_uses_isolated_temp_state_and_read_only_repository_permission(self):
-        self.assertIn("${{ runner.temp }}/daily-duck-backfill-2026-10-11", self.text)
+        self.assertIn('$RUNNER_TEMP/daily-duck-backfill-2026-10-11', self.text)
+        self.assertIn('>> "$GITHUB_ENV"', self.text)
+        self.assertNotIn("${{ runner.temp }}", self.text)
         self.assertIn("contents: read", self.text)
         self.assertNotIn("contents: write", self.text)
         self.assertNotIn("git push", self.text)
