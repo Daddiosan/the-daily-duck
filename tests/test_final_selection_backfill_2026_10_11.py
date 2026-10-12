@@ -262,14 +262,48 @@ class FinalSelectionBackfillTests(unittest.TestCase):
             self.assertFalse(backfill.check_duplicate_artifacts(listing, output))
             self.assertIn("should_create=false", output.read_text(encoding="utf-8"))
 
-    def test_website_compatibility_reports_selected_title_blocker(self):
+    def test_website_compatibility_uses_selected_title(self):
         with fixture_root() as (root, metadata, run_metadata, _):
             backfill.finalize(root, metadata, run_metadata, evidence())
             report = json.loads((root / backfill.REPORT_PATH).read_text(encoding="utf-8"))
             finding = report["publication_compatibility"]
-            self.assertEqual(finding["status"], "BLOCKED_SELECTED_TITLE_NOT_USED_BY_WEBSITE")
+            self.assertEqual(finding["status"], "PASS")
             self.assertEqual(finding["selected_title"], backfill.TARGET_TITLE_TEXT)
-            self.assertEqual(finding["website_story_title"], backfill.TARGET_ARTICLE)
+            self.assertEqual(finding["website_story_title"], backfill.TARGET_TITLE_TEXT)
+
+    def test_tampered_selected_title_is_rejected(self):
+        with fixture_root() as (root, metadata, run_metadata, _):
+            backfill.finalize(root, metadata, run_metadata, evidence())
+            ready = json.loads((root / backfill.READY_PATH).read_text(encoding="utf-8"))
+            ready["selected_title"] = "TAMPERED TITLE"
+            write_json(root / backfill.READY_PATH, ready)
+            with self.assertRaises(backfill.FinalSelectionError):
+                backfill.validate_ready(root)
+
+    def test_existing_artifact_blocker_report_is_preserved_and_revalidated(self):
+        with fixture_root() as (root, metadata, run_metadata, _):
+            backfill.finalize(root, metadata, run_metadata, evidence())
+            report = json.loads((root / backfill.REPORT_PATH).read_text(encoding="utf-8"))
+            report["publication_compatibility"]["status"] = (
+                "BLOCKED_SELECTED_TITLE_NOT_USED_BY_WEBSITE"
+            )
+            report["publication_compatibility"]["website_story_title"] = (
+                backfill.TARGET_ARTICLE
+            )
+            write_json(root / backfill.REPORT_PATH, report)
+
+            validated = backfill.validate_ready(root)
+
+            self.assertEqual(
+                validated["publication_compatibility"]["status"],
+                "BLOCKED_SELECTED_TITLE_NOT_USED_BY_WEBSITE",
+            )
+            self.assertEqual(
+                backfill.publication_compatibility(
+                    json.loads((root / backfill.READY_PATH).read_text(encoding="utf-8"))
+                )["status"],
+                "PASS",
+            )
 
     def test_source_artifact_metadata_is_exact(self):
         with fixture_root() as (_, metadata, _, _):
