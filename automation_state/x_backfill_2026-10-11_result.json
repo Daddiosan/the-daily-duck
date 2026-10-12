@@ -1,14 +1,14 @@
 {
-  "state": "POST_IN_FLIGHT",
-  "at": "2026-10-12T06:20:54.831429+00:00",
+  "state": "X_POSTED",
+  "at": "2026-10-12T06:20:58.361350+00:00",
   "issue_date": "2026-10-11",
   "operation_id": "x-backfill-2026-10-11-11725558085-f970c8333fb4",
   "dry_run": false,
-  "publication_attempted": false,
-  "http_post_executed": false,
-  "x_media_uploaded": false,
-  "x_post_created": false,
-  "human_gate": "APPROVED",
+  "publication_attempted": true,
+  "http_post_executed": true,
+  "x_media_uploaded": true,
+  "x_post_created": true,
+  "human_gate": "COMPLETE",
   "source_artifact": {
     "run_id": 38201777075,
     "artifact_id": 11725558085,
@@ -50,8 +50,8 @@
     "made_with_ai": true
   },
   "duplicate_guard": {
-    "status": "CLEAR_COMPLETE",
-    "checked_at": "2026-10-12T06:20:54.672312+00:00",
+    "status": "CLEAR_COMPLETE_FINAL_RECHECK",
+    "checked_at": "2026-10-12T06:20:57.404868+00:00",
     "found": false,
     "pages_scanned": 1,
     "posts_scanned": 1,
@@ -71,5 +71,20 @@
     "preserved": true
   },
   "armed_at": "2026-10-12T06:20:54.831439+00:00",
-  "armed_by": "Daddiosan"
+  "armed_by": "Daddiosan",
+  "attempted_at": "2026-10-12T06:20:57.404886+00:00",
+  "x_media_id": "2109529738737786880",
+  "posted_at": "2026-10-12T06:20:58.361364+00:00",
+  "x_post_id": "2109529741069865406",
+  "x_post_url": "https://x.com/i/web/status/2109529741069865406",
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2109529741069865406",
+      "text": "Meal prep made safer: a microbiologist shares a step-by-step guide for everyday cooks. Practical advice can make daily routines feel a little easier.\n\nhttps://t.co/i8ZJI9tFKK https://t.co/8yn22JSC2v"
+    }
+  },
+  "automatic_retry_allowed": false
 }
