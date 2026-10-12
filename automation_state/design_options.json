@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-12",
   "generated_at": "2026-10-12T06:28:22.214933+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-12/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "A New Canopy",
+    "concept_en": "A visual metaphor for a fresh start, showing the orangutans moving from a sparse lower edge into a bright, living forest canopy while the duck shares the journey.",
+    "composition_en": "Wide landscape composition built around a sweeping upward path of branches and leaves. The friendly yellow duck mascot, with orange beak, large dark glossy eyes and small feather tuft, walks along the lower foreground beside the orangutans. The path rises toward a sunlit protected forest canopy filled with healthy leaves and welcoming space. The lower edge is subdued and sparse but not bleak; the upper forest is vibrant and restorative. Use a clear diagonal movement from lower left to upper right, elegant editorial illustration, warm optimism, uncluttered background and strong visual rhythm.",
+    "generation_prompt_en": "Create one publishable landscape hero image in a clean, charming, premium editorial illustration style. Depict eight orangutans rescued from fires finding a fresh start after release into a protected forest in Indonesia. Use a symbolic upward path of sturdy branches leading from a quiet sparse forest edge into a bright, lush green canopy. Include the recognizable friendly yellow Daily Duck mascot walking alongside the orangutans: orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Make the composition flow diagonally from lower left to upper right, with soft sunlight filtering through leaves and a sense of safety and renewal. No logos, no watermarks, no UI, no readable embedded text, no headline, no invented people, no unsupported equipment, no graphic fire imagery.",
+    "alt_en": "A friendly yellow duck walks with rescued orangutans along branches toward a bright new forest canopy.",
+    "title_ja": "新しい森の天蓋",
+    "concept_ja": "新たな出発を、まばらな森の端から生命力のある明るい樹冠へ伸びる道として描く、象徴的なコンセプトです。",
+    "composition_ja": "横長の構図で、枝と葉がつくる上向きの道を中心にします。手前には、オレンジ色のくちばし、大きくつやのある黒い目、小さな羽毛の tuftを持つ黄色いDaily Duckマスコットが、オランウータンたちと並んで歩きます。道は明るい保護林の樹冠へ向かって伸び、下部は控えめで簡素、上部は健やかな葉と光に満ちた表現にします。左下から右上へ視線が流れる、上質で整理された編集イラストです。",
+    "alt_ja": "黄色いダックが救出されたオランウータンたちと枝の道を歩き、明るい新しい森の樹冠へ向かっている。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "A FRESH START TAKES ROOT",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-12T06:30:01.303730+00:00"
 }
