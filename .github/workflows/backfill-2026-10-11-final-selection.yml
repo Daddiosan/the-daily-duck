@@ -1,0 +1,157 @@
+name: The Daily Duck - 2026-10-11 Final Selection Backfill
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type CREATE-2026-10-11-READY-TO-PUBLISH after Human Gate approval"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: daily-duck-backfill-2026-10-11-final-selection
+  cancel-in-progress: false
+
+jobs:
+  isolated-final-selection:
+    runs-on: ubuntu-latest
+    environment: Production
+    env:
+      SOURCE_RUN_ID: "38198699096"
+      SOURCE_ARTIFACT_ID: "11724976131"
+      SOURCE_ARTIFACT_NAME: daily-duck-backfill-2026-10-11-final
+      OUTPUT_ARTIFACT_NAME: daily-duck-backfill-2026-10-11-ready-to-publish
+
+    steps:
+      - name: Enforce Human Gate confirmation
+        shell: bash
+        env:
+          HUMAN_GATE_CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/main"
+          test "$GITHUB_ACTOR" = "Daddiosan"
+          test "$GITHUB_TRIGGERING_ACTOR" = "Daddiosan"
+          test "$HUMAN_GATE_CONFIRMATION" = "CREATE-2026-10-11-READY-TO-PUBLISH"
+
+      - name: Checkout reviewed recovery code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned existing dependencies
+        run: python -m pip install -r requirements-backfill-2026-10-11.txt
+
+      - name: Create isolated work directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          BACKFILL_WORKDIR="$RUNNER_TEMP/daily-duck-final-selection-2026-10-11"
+          printf 'BACKFILL_WORKDIR=%s\n' "$BACKFILL_WORKDIR" >> "$GITHUB_ENV"
+          test ! -e "$BACKFILL_WORKDIR"
+          mkdir -p "$BACKFILL_WORKDIR"
+
+      - name: Stop if the isolated ready artifact already exists
+        id: duplicate_guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/artifacts?name=$OUTPUT_ARTIFACT_NAME&per_page=100" \
+            > "$BACKFILL_WORKDIR/output-artifacts.json"
+          python scripts/final_selection_backfill_2026_10_11.py \
+            check-duplicate-artifacts \
+            --listing "$BACKFILL_WORKDIR/output-artifacts.json" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Fetch exact source artifact metadata and files
+        if: steps.duplicate_guard.outputs.should_create == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/artifacts/$SOURCE_ARTIFACT_ID" \
+            > "$BACKFILL_WORKDIR/source-artifact-metadata.json"
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
+            > "$BACKFILL_WORKDIR/source-run-metadata.json"
+          gh run download "$SOURCE_RUN_ID" \
+            --name "$SOURCE_ARTIFACT_NAME" \
+            --dir "$BACKFILL_WORKDIR"
+
+      - name: Validate exact source artifact and selection contract
+        if: steps.duplicate_guard.outputs.should_create == 'true'
+        run: >-
+          python scripts/final_selection_backfill_2026_10_11.py
+          validate-source
+          --root "$BACKFILL_WORKDIR"
+          --artifact-metadata "$BACKFILL_WORKDIR/source-artifact-metadata.json"
+          --run-metadata "$BACKFILL_WORKDIR/source-run-metadata.json"
+
+      - name: Authenticate Gmail reply and create isolated ready package
+        if: steps.duplicate_guard.outputs.should_create == 'true'
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: >-
+          python scripts/final_selection_backfill_2026_10_11.py
+          finalize
+          --root "$BACKFILL_WORKDIR"
+          --artifact-metadata "$BACKFILL_WORKDIR/source-artifact-metadata.json"
+          --run-metadata "$BACKFILL_WORKDIR/source-run-metadata.json"
+
+      - name: Validate final schema hashes and publication boundary
+        if: steps.duplicate_guard.outputs.should_create == 'true'
+        run: >-
+          python scripts/final_selection_backfill_2026_10_11.py
+          validate-ready
+          --root "$BACKFILL_WORKDIR"
+
+      - name: Upload isolated ready-to-publish evidence
+        if: steps.duplicate_guard.outputs.should_create == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: daily-duck-backfill-2026-10-11-ready-to-publish
+          path: |
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/approved_story.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/design_options.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/ready_to_publish.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/design_selection_result.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_state/final_selection_backfill_report.json
+            ${{ env.BACKFILL_WORKDIR }}/automation_images/canonical/2026-10-11.png
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Verify repository and publication paths were untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f ducks/2026-10-10/index.html
+          git diff --exit-code
+          test -z "$(git status --short)"
+          echo "EMAIL_SENT: NO"
+          echo "IMAGE_REGENERATED: NO"
+          echo "WEBSITE_PUBLISH_EXECUTED: NO"
+          echo "X_PUBLISH_EXECUTED: NO"
+
+      - name: Report isolation boundary
+        shell: bash
+        run: |
+          echo "TARGET_ISSUE_DATE: 2026-10-11"
+          echo "READY_PACKAGE_CREATED: ${{ steps.duplicate_guard.outputs.should_create }}"
+          echo "EXISTING_READY_ARTIFACT: ${{ steps.duplicate_guard.outputs.existing_artifact_id }}"
+          echo "No email, image generation, website, X, or normal publication workflow was invoked."
