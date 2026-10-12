@@ -1,0 +1,16 @@
+{
+  "action": "ARCHIVE_ONLY_PUBLISHED",
+  "at": "2026-10-12T05:28:58.918203+00:00",
+  "issue_date": "2026-10-11",
+  "image": "assets/ducks/2026-10-11-the-meal-prep-duck.png",
+  "page": "ducks/2026-10-11/index.html",
+  "title": "SAFE, SET, PREP!",
+  "duck_name": "The Meal-Prep Duck",
+  "publication_mode": "ARCHIVE_ONLY",
+  "x_publish_requested": false,
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

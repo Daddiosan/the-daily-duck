@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-11",
+    "displayDate": "October 11, 2026",
+    "slug": "the-meal-prep-duck",
+    "title": "THE MEAL-PREP DUCK",
+    "duckName": "The Meal-Prep Duck",
+    "storyTitleEn": "SAFE, SET, PREP!",
+    "storyTitleJa": "微生物学者が教える、より安全な作り置きガイド",
+    "image": "assets/ducks/2026-10-11-the-meal-prep-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Meal-Prep Duck",
+    "imageAltJa": "The Meal-Prep DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Meal prep can be convenient, and doing it safely matters. A microbiologist offers a step-by-step guide to safer meal preparation, giving everyday cooks a practical way to approach food. It is a small piece of guidance with the potential to make routines feel more reassuring.",
+    "storyJa": "作り置きは便利ですが、安全に行うことも大切です。微生物学者が、より安全に食事を準備するための手順を紹介しています。毎日の料理をする人にとって、食事との向き合い方を考える実用的なガイドです。小さなアドバイスでも、日々の習慣をより安心できるものにしてくれます。",
+    "duckEn": "This duck likes its meal prep organized, practical, and reassuring.",
+    "duckJa": "このダックは、整理されていて実用的で、安心できる作り置きが好きです。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-meal-prep-safely-microbiologist-stepbystep.html",
+    "archiveSummaryEn": "Meal prep made safer: a microbiologist shares a step-by-step guide for everyday cooks. Practical advice can make daily routines feel a little easier.",
+    "archiveSummaryJa": "作り置きをもっと安全に。微生物学者が、毎日の料理に役立つ手順を紹介しています。実用的なアドバイスで、日々の習慣が少し楽になるかもしれません。",
+    "reasonEn": "Meal prep made safer: a microbiologist shares a step-by-step guide for everyday cooks. Practical advice can make daily routines feel a little easier.",
+    "reasonJa": "作り置きをもっと安全に。微生物学者が、毎日の料理に役立つ手順を紹介しています。実用的なアドバイスで、日々の習慣が少し楽になるかもしれません。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-10",
     "displayDate": "October 10, 2026",
     "slug": "summit-thought-duck",
