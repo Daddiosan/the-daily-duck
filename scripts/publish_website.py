@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
+import hashlib
 import html
 import json
 import re
@@ -18,6 +20,9 @@ CONTENT = Path("data/content.js")
 HOME = Path("index.html")
 ASSET_DIR = Path("assets/ducks")
 DUCKS_DIR = Path("ducks")
+NORMAL_MODE = "NORMAL"
+ARCHIVE_ONLY_MODE = "ARCHIVE_ONLY"
+PUBLICATION_MODES = (NORMAL_MODE, ARCHIVE_ONLY_MODE)
 
 
 def load_json(path: Path) -> Any:
@@ -62,11 +67,12 @@ def now() -> str:
 
 def result(
     action: str,
+    result_path: Path | None = None,
     **extra: Any,
 ) -> None:
 
     write_json(
-        RESULT,
+        result_path or RESULT,
         {
             "action":
                 action,
@@ -123,6 +129,169 @@ def e(
     )
 
 
+def _selection_number(
+    value: Any,
+    field: str,
+) -> int | None:
+
+    if value is None:
+        return None
+
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, int)
+        or value < 1
+    ):
+        raise ValueError(
+            f"{field} must be a positive integer."
+        )
+
+    return value
+
+
+def _selected_title_text(
+    value: Any,
+    field: str,
+) -> str:
+
+    if not isinstance(value, str):
+        raise ValueError(
+            f"{field} must be a non-empty string."
+        )
+
+    selected = value.strip()
+
+    if not selected or selected != value:
+        raise ValueError(
+            f"{field} must be a non-empty, trimmed string."
+        )
+
+    if any(
+        ord(character) < 32
+        for character in selected
+    ):
+        raise ValueError(
+            f"{field} contains control characters."
+        )
+
+    if "<" in selected or ">" in selected:
+        raise ValueError(
+            f"{field} contains HTML delimiter characters."
+        )
+
+    return selected
+
+
+def publication_title(
+    ready: dict[str, Any],
+    approved: dict[str, Any],
+    fallback: str,
+) -> str:
+    """Resolve the approved English publication title, failing closed on conflicts."""
+
+    selected_present = "selected_title" in ready
+    selection_markers = (
+        "selected_title_number",
+        "selected_title_detail",
+    )
+    approved_markers = (
+        "selected_title",
+        "selected_title_number",
+    )
+
+    if not selected_present:
+        if any(key in ready for key in selection_markers) or any(
+            key in approved
+            for key in approved_markers
+        ):
+            raise ValueError(
+                "Selected-title state is incomplete: selected_title is missing."
+            )
+
+        return fallback
+
+    selected = _selected_title_text(
+        ready.get("selected_title"),
+        "selected_title",
+    )
+    selected_number = _selection_number(
+        ready.get("selected_title_number"),
+        "selected_title_number",
+    )
+    corroborating_numbers = [
+        selected_number
+    ] if selected_number is not None else []
+
+    detail = ready.get("selected_title_detail")
+    if "selected_title_detail" in ready:
+        if not isinstance(detail, dict):
+            raise ValueError(
+                "selected_title_detail must be an object."
+            )
+
+        detail_title = _selected_title_text(
+            detail.get("title"),
+            "selected_title_detail.title",
+        )
+        if detail_title != selected:
+            raise ValueError(
+                "selected_title conflicts with selected_title_detail.title."
+            )
+
+        detail_number = _selection_number(
+            detail.get("number"),
+            "selected_title_detail.number",
+        )
+        if detail_number is not None:
+            corroborating_numbers.append(
+                detail_number
+            )
+
+    if "selected_title" in approved:
+        approved_title = _selected_title_text(
+            approved.get("selected_title"),
+            "gate_a_approved_story.selected_title",
+        )
+        if approved_title != selected:
+            raise ValueError(
+                "selected_title conflicts with gate_a_approved_story.selected_title."
+            )
+
+    approved_number = _selection_number(
+        approved.get("selected_title_number"),
+        "gate_a_approved_story.selected_title_number",
+    )
+    if approved_number is not None:
+        corroborating_numbers.append(
+            approved_number
+        )
+
+    reply = ready.get("design_approval_reply")
+    if reply is not None:
+        if not isinstance(reply, str):
+            raise ValueError(
+                "design_approval_reply must be a string."
+            )
+        match = re.fullmatch(
+            r"[1-9][0-9]*\s+([1-9][0-9]*)",
+            reply.strip(),
+        )
+        if not match:
+            raise ValueError(
+                "design_approval_reply is invalid."
+            )
+        corroborating_numbers.append(
+            int(match.group(1))
+        )
+
+    if len(set(corroborating_numbers)) > 1:
+        raise ValueError(
+            "Selected-title numbers conflict across the approval state."
+        )
+
+    return selected
+
+
 def build_item(
     ready: dict[str, Any],
     image_rel: str,
@@ -153,6 +322,19 @@ def build_item(
         else {}
     )
 
+    selected_story = (
+        approved.get(
+            "selected_story"
+        )
+        if isinstance(
+            approved.get(
+                "selected_story"
+            ),
+            dict,
+        )
+        else {}
+    )
+
     date = text(
         ready.get(
             "issue_date"
@@ -176,7 +358,7 @@ def build_item(
     # English-first canonical content
     # ========================================================
 
-    title_en = text(
+    fallback_title_en = text(
         approved.get(
             "title_en"
         ),
@@ -187,6 +369,12 @@ def build_item(
             "title"
         ),
         duck_name,
+    )
+
+    title_en = publication_title(
+        ready,
+        approved,
+        fallback_title_en,
     )
 
     reason_en = text(
@@ -236,6 +424,9 @@ def build_item(
 
     title_ja = text(
         approved.get(
+            "title_ja"
+        ),
+        selected_story.get(
             "title_ja"
         ),
         title_en,
@@ -539,6 +730,9 @@ def render_page(
             ",",
             ":",
         ),
+    ).replace(
+        "</",
+        "<\\/",
     )
 
     return """<!doctype html>
@@ -843,10 +1037,377 @@ def update_home(
     )
 
 
-def main() -> int:
+def _valid_issue_date(
+    value: Any,
+    field: str,
+) -> str:
+
+    if not isinstance(value, str) or not value:
+        raise ValueError(
+            f"{field} must be a YYYY-MM-DD string."
+        )
+
+    try:
+        parsed = datetime.strptime(
+            value,
+            "%Y-%m-%d",
+        )
+    except ValueError as exc:
+        raise ValueError(
+            f"{field} must be a valid YYYY-MM-DD date."
+        ) from exc
+
+    if parsed.strftime("%Y-%m-%d") != value:
+        raise ValueError(
+            f"{field} must be a canonical YYYY-MM-DD date."
+        )
+
+    return value
+
+
+def _sorted_archive(
+    archive: list[Any],
+    item: dict[str, Any],
+) -> list[dict[str, Any]]:
+
+    validated: list[dict[str, Any]] = []
+    dates: set[str] = set()
+
+    for index, entry in enumerate(archive):
+        if not isinstance(entry, dict):
+            raise ValueError(
+                f"data/archive.json entry {index} must be an object."
+            )
+
+        date = _valid_issue_date(
+            entry.get("date"),
+            f"data/archive.json entry {index}.date",
+        )
+        if date in dates:
+            raise ValueError(
+                f"data/archive.json contains duplicate date {date}."
+            )
+        dates.add(date)
+        validated.append(entry)
+
+    issue = _valid_issue_date(
+        item.get("date"),
+        "issue_date",
+    )
+    if issue in dates:
+        raise ValueError(
+            f"Date already exists in archive: {issue}."
+        )
+
+    return sorted(
+        [item, *validated],
+        key=lambda entry: entry["date"],
+        reverse=True,
+    )
+
+
+def _load_content_data() -> dict[str, Any]:
+
+    source = CONTENT.read_text(
+        encoding="utf-8"
+    )
+    match = re.fullmatch(
+        r"\s*window\.DAILY_DUCK_DATA\s*=\s*(\{.*\})\s*;\s*",
+        source,
+        flags=re.DOTALL,
+    )
+    if not match:
+        raise ValueError(
+            "data/content.js has an invalid data wrapper."
+        )
+
+    value = json.loads(
+        match.group(1)
+    )
+    if not isinstance(value, dict):
+        raise ValueError(
+            "data/content.js must contain an object."
+        )
+
+    return value
+
+
+def _write_content_data(
+    today: Any,
+    archive: list[dict[str, Any]],
+) -> None:
+
+    CONTENT.write_text(
+        (
+            "window.DAILY_DUCK_DATA = "
+            + json.dumps(
+                {
+                    "today": today,
+                    "archive": archive,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + ";\n"
+        ),
+        encoding="utf-8",
+    )
+
+
+def _sha256_file(
+    path: Path,
+) -> str:
+
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(
+            lambda: stream.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
+def _validate_publication_request(
+    ready: dict[str, Any],
+    mode: str,
+    expected_issue_date: str | None,
+) -> None:
+
+    provenance = ready.get(
+        "final_selection_backfill"
+    )
+
+    if mode == NORMAL_MODE:
+        if provenance is not None:
+            raise ValueError(
+                "Backfill-ready packages cannot be published in NORMAL mode."
+            )
+        if expected_issue_date:
+            raise ValueError(
+                "--issue-date is only valid with ARCHIVE_ONLY mode."
+            )
+        return
+
+    if not expected_issue_date:
+        raise ValueError(
+            "ARCHIVE_ONLY requires an explicit --issue-date."
+        )
+
+    expected = _valid_issue_date(
+        expected_issue_date,
+        "--issue-date",
+    )
+    issue = _valid_issue_date(
+        ready.get("issue_date"),
+        "issue_date",
+    )
+    if issue != expected:
+        raise ValueError(
+            "ARCHIVE_ONLY issue_date does not match the explicit --issue-date."
+        )
+
+    if not isinstance(provenance, dict):
+        raise ValueError(
+            "ARCHIVE_ONLY requires final_selection_backfill provenance."
+        )
+    if provenance.get("target_issue_date") != expected:
+        raise ValueError(
+            "Backfill provenance target date does not match --issue-date."
+        )
+    if provenance.get("isolated") is not True:
+        raise ValueError(
+            "ARCHIVE_ONLY requires isolated backfill provenance."
+        )
+    if provenance.get("publication_allowed") is not False:
+        raise ValueError(
+            "ARCHIVE_ONLY requires publication_allowed=false provenance."
+        )
+
+
+def _publish_archive_only(
+    ready: dict[str, Any],
+    result_path: Path,
+    archive: list[Any],
+    issue: str,
+    canonical: Path,
+    asset: Path,
+    item: dict[str, Any],
+) -> int:
+
+    _valid_issue_date(
+        issue,
+        "issue_date",
+    )
+
+    provenance = ready["final_selection_backfill"]
+    expected_hash = provenance.get(
+        "canonical_image_sha256"
+    )
+    source_hash = provenance.get(
+        "source_image_sha256"
+    )
+    if (
+        not isinstance(expected_hash, str)
+        or not re.fullmatch(r"[0-9a-f]{64}", expected_hash)
+    ):
+        raise ValueError(
+            "Backfill canonical_image_sha256 is invalid."
+        )
+    if (
+        not isinstance(source_hash, str)
+        or not re.fullmatch(r"[0-9a-f]{64}", source_hash)
+        or source_hash != expected_hash
+    ):
+        raise ValueError(
+            "Backfill source and canonical image hashes are invalid or inconsistent."
+        )
+    actual_hash = _sha256_file(
+        canonical
+    )
+    if actual_hash != expected_hash:
+        raise ValueError(
+            "Canonical image hash does not match backfill approval evidence."
+        )
+    new_archive = _sorted_archive(
+        archive,
+        item,
+    )
+
+    today = load_json(
+        TODAY
+    )
+    content = _load_content_data()
+    if content.get("today") != today:
+        raise ValueError(
+            "data/content.js today does not match data/today.json."
+        )
+    if content.get("archive") != archive:
+        raise ValueError(
+            "data/content.js archive does not match data/archive.json."
+        )
+
+    day_dir = DUCKS_DIR / issue
+    existing_assets = (
+        [
+            path
+            for path in ASSET_DIR.iterdir()
+            if path.is_file()
+            and path.name.startswith(f"{issue}-")
+        ]
+        if ASSET_DIR.exists()
+        else []
+    )
+    if existing_assets:
+        raise FileExistsError(
+            "Archive-only image conflict: "
+            + ", ".join(
+                path.as_posix()
+                for path in existing_assets
+            )
+        )
+    if day_dir.exists():
+        raise FileExistsError(
+            f"Archive-only article conflict: {day_dir}."
+        )
+
+    page = render_page(
+        item
+    )
+
+    ASSET_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+    shutil.copy2(
+        canonical,
+        asset,
+    )
+    day_dir.mkdir(
+        parents=True,
+        exist_ok=False,
+    )
+    (
+        day_dir
+        / "index.html"
+    ).write_text(
+        page,
+        encoding="utf-8",
+    )
+    write_json(
+        ARCHIVE,
+        new_archive,
+    )
+    _write_content_data(
+        content["today"],
+        new_archive,
+    )
+
+    result(
+        "ARCHIVE_ONLY_PUBLISHED",
+        result_path=result_path,
+        issue_date=issue,
+        image=asset.as_posix(),
+        page=f"ducks/{issue}/index.html",
+        title=item["storyTitleEn"],
+        duck_name=item["duckName"],
+        publication_mode=ARCHIVE_ONLY_MODE,
+        x_publish_requested=False,
+        language_policy={
+            "primary_language": "en",
+            "canonical_language": "en",
+            "translation_language": "ja",
+        },
+    )
+
+    print(
+        "Published archive-only website package "
+        f"for {issue}"
+    )
+    print("LANGUAGE: ENGLISH-FIRST")
+    print("X PUBLISH REQUESTED: NO")
+    print("STATE: ARCHIVE_ONLY_PUBLISHED")
+    return 0
+
+
+def main(
+    mode: str = NORMAL_MODE,
+    expected_issue_date: str | None = None,
+    ready_path: Path | None = None,
+    result_path: Path | None = None,
+) -> int:
+
+    if mode not in PUBLICATION_MODES:
+        raise ValueError(
+            "publication mode must be NORMAL or ARCHIVE_ONLY."
+        )
+
+    if mode == NORMAL_MODE:
+        if ready_path is not None or result_path is not None:
+            raise ValueError(
+                "Custom state paths are only valid with ARCHIVE_ONLY mode."
+            )
+        source_ready = READY
+        publication_result = RESULT
+    else:
+        if ready_path is None or result_path is None:
+            raise ValueError(
+                "ARCHIVE_ONLY requires explicit --ready-path and --result-path."
+            )
+        source_ready = ready_path
+        publication_result = result_path
+        if source_ready.resolve() == READY.resolve():
+            raise ValueError(
+                "ARCHIVE_ONLY cannot use the shared ready_to_publish.json path."
+            )
+        if publication_result.resolve() == RESULT.resolve():
+            raise ValueError(
+                "ARCHIVE_ONLY cannot use the shared website publish result path."
+            )
 
     ready = load_json(
-        READY
+        source_ready
     )
 
     if not isinstance(
@@ -868,6 +1429,12 @@ def main() -> int:
             "Expected READY_TO_PUBLISH, "
             f"got {ready.get('state')!r}."
         )
+
+    _validate_publication_request(
+        ready,
+        mode,
+        expected_issue_date,
+    )
 
     archive = load_json(
         ARCHIVE
@@ -910,6 +1477,7 @@ def main() -> int:
 
         result(
             "DUPLICATE_DATE_BLOCKED",
+            result_path=publication_result,
             issue_date=issue,
             message=(
                 "Date already exists. "
@@ -943,6 +1511,15 @@ def main() -> int:
     canonical = Path(
         canonical_text
     )
+
+    if (
+        mode == ARCHIVE_ONLY_MODE
+        and not canonical.is_absolute()
+    ):
+        canonical = (
+            source_ready.parent.parent
+            / canonical
+        )
 
     if not canonical.exists():
         raise FileNotFoundError(
@@ -986,6 +1563,17 @@ def main() -> int:
         ready,
         asset.as_posix(),
     )
+
+    if mode == ARCHIVE_ONLY_MODE:
+        return _publish_archive_only(
+            ready,
+            publication_result,
+            archive,
+            issue,
+            canonical,
+            asset,
+            item,
+        )
 
     ASSET_DIR.mkdir(
         parents=True,
@@ -1141,12 +1729,54 @@ def main() -> int:
     return 0
 
 
+def parser() -> argparse.ArgumentParser:
+
+    result_parser = argparse.ArgumentParser()
+    result_parser.add_argument(
+        "--mode",
+        choices=PUBLICATION_MODES,
+        default=NORMAL_MODE,
+        help=(
+            "NORMAL updates today's issue and may be followed by X publishing; "
+            "ARCHIVE_ONLY updates only the historical article and archive data."
+        ),
+    )
+    result_parser.add_argument(
+        "--issue-date",
+        help=(
+            "Required only for ARCHIVE_ONLY; must exactly match the ready package "
+            "and its backfill provenance."
+        ),
+    )
+    result_parser.add_argument(
+        "--ready-path",
+        type=Path,
+        help=(
+            "ARCHIVE_ONLY input package path; the shared ready state is forbidden."
+        ),
+    )
+    result_parser.add_argument(
+        "--result-path",
+        type=Path,
+        help=(
+            "ARCHIVE_ONLY result path; the shared normal publish result is forbidden."
+        ),
+    )
+    return result_parser
+
+
 if __name__ == "__main__":
 
     try:
 
+        args = parser().parse_args()
         raise SystemExit(
-            main()
+            main(
+                args.mode,
+                args.issue_date,
+                args.ready_path,
+                args.result_path,
+            )
         )
 
     except Exception as exc:

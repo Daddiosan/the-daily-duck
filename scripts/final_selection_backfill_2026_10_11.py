@@ -298,14 +298,19 @@ def fetch_and_validate_reply(options: dict[str, Any]) -> ReplyEvidence:
 
 
 def publication_compatibility(ready: dict[str, Any]) -> dict[str, Any]:
-    item = publish_website.build_item(ready, "assets/ducks/2026-10-11.png")
+    try:
+        item = publish_website.build_item(ready, "assets/ducks/2026-10-11.png")
+    except (TypeError, ValueError) as exc:
+        raise FinalSelectionError(
+            f"Website publication contract rejected the ready package: {exc}"
+        ) from exc
     actual = item.get("storyTitleEn")
     compatible = actual == TARGET_TITLE_TEXT
     return {
         "status": "PASS" if compatible else "BLOCKED_SELECTED_TITLE_NOT_USED_BY_WEBSITE",
         "selected_title": TARGET_TITLE_TEXT,
         "website_story_title": actual,
-        "archive_order": "NEW_ITEM_PREPENDED",
+        "archive_order": "DATE_DESCENDING",
         "x_input_contract": "READY_FIELDS_PRESENT_X_NOT_EXECUTED",
     }
 
@@ -406,6 +411,12 @@ def validate_ready(root: Path) -> dict[str, Any]:
     report = load_json(root / REPORT_PATH)
     source_hash = sha256_file(root / SELECTED_PREVIEW)
     canonical_hash = sha256_file(root / CANONICAL_IMAGE)
+    report_compatibility = report.get("publication_compatibility")
+    report_compatibility_status = (
+        report_compatibility.get("status")
+        if isinstance(report_compatibility, dict)
+        else None
+    )
     checks = {
         "ready state": ready.get("state") == "READY_TO_PUBLISH",
         "ready date": ready.get("issue_date") == TARGET_DATE,
@@ -420,6 +431,13 @@ def validate_ready(root: Path) -> dict[str, Any]:
         "image hash": source_hash == canonical_hash,
         "report state": report.get("state") == "READY_TO_PUBLISH",
         "report hash": report.get("image_hash_match") is True,
+        # Preserve the already-issued PR #7 report as immutable evidence. Its
+        # historical blocker is accepted here; the current website contract is
+        # recomputed below and must now pass.
+        "report compatibility evidence": report_compatibility_status in {
+            "PASS",
+            "BLOCKED_SELECTED_TITLE_NOT_USED_BY_WEBSITE",
+        },
         "website not run": report.get("website_publish_executed") is False,
         "x not run": report.get("x_publish_executed") is False,
     }
@@ -427,8 +445,8 @@ def validate_ready(root: Path) -> dict[str, Any]:
     if failed:
         raise FinalSelectionError("Invalid ready package: " + ", ".join(failed))
     compatibility = publication_compatibility(ready)
-    if compatibility["status"] != "BLOCKED_SELECTED_TITLE_NOT_USED_BY_WEBSITE":
-        raise FinalSelectionError("Expected publication title compatibility finding changed.")
+    if compatibility["status"] != "PASS":
+        raise FinalSelectionError("Selected title is not publication-compatible.")
     return report
 
 
