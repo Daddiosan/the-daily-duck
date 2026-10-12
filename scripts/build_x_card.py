@@ -106,6 +106,12 @@ def find_font(bold: bool = False) -> str:
             "/usr/share/fonts/truetype/dejavu/"
             "DejaVuSans.ttf"
         ),
+        (
+            "C:/Windows/Fonts/arialbd.ttf"
+            if bold
+            else
+            "C:/Windows/Fonts/arial.ttf"
+        ),
     ]
 
     for path in candidates:
