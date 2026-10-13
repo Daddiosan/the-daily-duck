@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-13T05:03:59.057572+00:00",
+  "issue_date": "2026-10-13",
+  "image": "assets/ducks/2026-10-13-bloom-boom-duck.png",
+  "page": "ducks/2026-10-13/index.html",
+  "title": "WHEN THE OUTBACK COMES ALIVE",
+  "duck_name": "Bloom Boom Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
