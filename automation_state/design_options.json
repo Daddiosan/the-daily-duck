@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-14",
   "generated_at": "2026-10-14T02:41:26.745543+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-14/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "CLAW ON THE COAST",
+    "concept_en": "A dramatic but friendly coastal discovery scene evoking the Isle of Wight fossil find, with the duck uncovering an extraordinary claw fossil against an expansive prehistoric-looking landscape.",
+    "composition_en": "Landscape hero composition with a low, sweeping view across a generic island shoreline and layered rocky ground. In the foreground, a partially exposed fossil fragment with long curved claw bones emerges from the earth while the Daily Duck kneels beside it, holding a small soft brush. The duck remains unmistakable and warm, with yellow feathers, orange beak, glossy dark eyes, and a small feather tuft. Use a large atmospheric sky and diagonal rock layers to create discovery and scale without showing a literal confirmed dinosaur or inventing archaeological equipment.",
+    "generation_prompt_en": "Create one publishable wide 16:9 landscape editorial illustration with a clean, modern, premium storybook realism style. Set the scene on a generic windswept island coast inspired by a fossil discovery, with layered pale rock and a broad luminous sky. In the foreground, show a fossil fragment emerging from the ground, including a striking pair of unusually long curved claw bones. The consistent Daily Duck mascot kneels nearby with a small soft brush, clearly recognizable as a friendly yellow duck with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Make the moment feel like a curious discovery, not a literal historical reenactment; do not show humans, logos, text, or a fully confirmed dinosaur. Strong focal point, elegant negative space, warm adventurous mood, refined editorial composition. No watermarks, no UI, no readable embedded text, no headline.",
+    "alt_en": "The Daily Duck gently uncovers long curved dinosaur claw bones in rocky ground beside a windswept island coast.",
+    "title_ja": "海辺に現れた長い爪",
+    "concept_ja": "ワイト島での化石発見を思わせる、ドラマチックでありながら親しみやすい海辺の発見シーン。デイリー・ダックが、驚くべき爪の化石を掘り出します。",
+    "composition_ja": "横長のヒーロー構図。島の海岸を思わせる岩場を低い視点から大きく見せ、幾重にも重なる岩肌と広い空を配置します。手前では、長く湾曲した爪の骨を含む化石の一部が地面から現れ、デイリー・ダックが小さな柔らかいブラシを手に、その隣にしゃがんでいます。黄色い羽、オレンジ色のくちばし、つやのある黒い目、小さな羽毛の房、温かな表情を明確に保ちます。発見の瞬間を表現しつつ、確認済みの恐竜を直接描いたり、事実にない発掘道具を加えたりしません。",
+    "alt_ja": "風の強い島の海岸近くで、デイリー・ダックが長く湾曲した恐竜の爪の骨をそっと掘り出している。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "A CLAW-SER LOOK AT PREHISTORY",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-14T06:46:50.367491+00:00"
 }
