@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-15",
+    "displayDate": "October 15, 2026",
+    "slug": "the-stretchy-brothers",
+    "title": "THE STRETCHY BROTHERS",
+    "duckName": "The Stretchy Brothers",
+    "storyTitleEn": "SOME CLUES STAND TALL",
+    "storyTitleJa": "2匹の長い脚の猫が、希少な遺伝性疾患の特定に貢献",
+    "image": "assets/ducks/2026-10-15-the-stretchy-brothers.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Stretchy Brothers",
+    "imageAltJa": "The Stretchy BrothersをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Two unusually long-legged cats have helped Cornell scientists identify a rare human genetic disorder. The brotherly pair turned an unusual physical trait into an unexpected genetic clue—and a striking reminder that discoveries can begin in surprising places.",
+    "storyJa": "ひときわ長い脚を持つ2匹の猫が、コーネル大学の研究者による希少なヒトの遺伝性疾患の特定に貢献しました。この兄弟猫の珍しい身体的特徴が、思いがけない遺伝的手がかりに。驚くような発見は、意外なところから始まるのかもしれません。",
+    "duckEn": "When your legs are unusually long, you might just be carrying a scientific clue.",
+    "duckJa": "脚がとても長いなら、科学の手がかりを持っているのかも。",
+    "sourceLabel": "ScienceDaily Environment",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261013015801.htm",
+    "archiveSummaryEn": "Two unusually long-legged cat brothers helped Cornell scientists identify a rare human genetic disorder. Sometimes a surprising discovery starts with a very memorable pair of paws.",
+    "archiveSummaryJa": "ひときわ長い脚を持つ兄弟猫が、コーネル大学の研究者による希少なヒトの遺伝性疾患の特定に貢献しました。驚くような発見は、とても印象的な2匹の猫から始まることもあるのです。",
+    "reasonEn": "Two unusually long-legged cat brothers helped Cornell scientists identify a rare human genetic disorder. Sometimes a surprising discovery starts with a very memorable pair of paws.",
+    "reasonJa": "ひときわ長い脚を持つ兄弟猫が、コーネル大学の研究者による希少なヒトの遺伝性疾患の特定に貢献しました。驚くような発見は、とても印象的な2匹の猫から始まることもあるのです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-14",
     "displayDate": "October 14, 2026",
     "slug": "claw-some-isle-dinosaur",
