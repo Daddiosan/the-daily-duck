@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-15",
   "generated_at": "2026-10-15T03:06:06.958850+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-15/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "DISCOVERY STARTS TALL",
+    "concept_en": "A cinematic mystery scene showing how an extraordinary physical feature can point toward an unexpected discovery, with the Daily Duck following the cats’ trail toward a softly glowing clue.",
+    "composition_en": "Wide landscape composition with a warm dusk-to-dawn gradient background and a simple path of oversized cat pawprints leading from the foreground toward two long-legged brother cats on a gentle rise. The Daily Duck occupies the near foreground as a curious guide, looking toward a small abstract glow beyond the cats. Keep the scene symbolic rather than literal: no laboratory, no named location, and no invented scientific equipment. Use luminous gold, soft violet and deep blue, with the cats and duck clearly readable as the focal subjects.",
+    "generation_prompt_en": "Create one clean, cinematic yet charming landscape hero illustration for a premium editorial story. In the foreground, show the consistent Daily Duck mascot as a recognizable friendly yellow duck with orange beak, large dark glossy eyes, small feather tuft and warm approachable expression, following a trail of oversized cat pawprints. In the middle distance, show two friendly brother cats with unusually long legs standing together on a gentle rise. Beyond them, add a small abstract warm glow suggesting an unexpected clue or discovery, without depicting a literal laboratory or specific scientific instrument. Use a soft dusk-to-dawn gradient of deep blue, violet and golden cream, simple shapes, elegant lighting, strong focal hierarchy, and generous negative space. No people, no logos, no watermarks, no UI, no readable text, no headline, no literal DNA helix, no invented factual details.",
+    "alt_en": "The Daily Duck follows pawprints toward two unusually long-legged brother cats and a softly glowing symbol of discovery.",
+    "title_ja": "発見は高いところから",
+    "concept_ja": "珍しい身体的特徴が、思いがけない発見へつながる様子を、猫たちの足跡を追うデイリー・ダックの小さな冒険として描きます。",
+    "composition_ja": "横長で映画的ながら親しみやすい構図。手前には、黄色いデイリー・ダックが大きな猫の足跡を追って進みます。中景の緩やかな高台には、ひときわ長い脚を持つ兄弟猫を並べ、その向こうに発見を象徴する小さな柔らかな光を置きます。研究室や具体的な科学機器は描かず、深い青、紫、金色のグラデーションで、好奇心と驚きを表現します。",
+    "alt_ja": "デイリー・ダックが足跡を追い、ひときわ長い脚を持つ兄弟猫と発見を象徴する柔らかな光へ向かっている。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "SOME CLUES STAND TALL",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-15T03:31:53.559835+00:00"
 }
