@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-16",
+    "displayDate": "October 16, 2026",
+    "slug": "big-claw",
+    "title": "BIG CLAW",
+    "duckName": "Big Claw",
+    "storyTitleEn": "THE SCALE OF SURPRISE",
+    "storyTitleJa": "「クロージラ」より大きなザリガニを科学者が発見",
+    "image": "assets/ducks/2026-10-16-big-claw.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Big Claw",
+    "imageAltJa": "Big ClawをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "“Crawzilla” was already huge—but scientists have now found an even bigger crayfish. It is a simple, delightful reminder that the natural world can still surprise us with creatures that seem almost too large to be real.",
+    "storyJa": "すでにとても大きかった「クロージラ」。ところが科学者たちは、さらに大きなザリガニを発見しました。現実とは思えないほど大きな生き物がまだ私たちを驚かせてくれる、自然界の楽しさを感じさせるニュースです。",
+    "duckEn": "When “huge” gets an upgrade, this crayfish is ready to make a splash.",
+    "duckJa": "「大きい」の次は、もっと大きい。さあ、ザリガニの登場です。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261015073220.htm",
+    "archiveSummaryEn": "“Crawzilla” was huge. Then scientists found an even bigger crayfish. Nature clearly has a sense of scale—and a flair for surprise.",
+    "archiveSummaryJa": "「クロージラ」も大きかったのに、科学者たちはさらに大きなザリガニを発見。自然界のスケールと驚きには、まだまだ上があります。",
+    "reasonEn": "“Crawzilla” was huge. Then scientists found an even bigger crayfish. Nature clearly has a sense of scale—and a flair for surprise.",
+    "reasonJa": "「クロージラ」も大きかったのに、科学者たちはさらに大きなザリガニを発見。自然界のスケールと驚きには、まだまだ上があります。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-15",
     "displayDate": "October 15, 2026",
     "slug": "the-stretchy-brothers",

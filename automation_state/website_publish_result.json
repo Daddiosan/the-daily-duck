@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-16T19:21:00.852999+00:00",
+  "issue_date": "2026-10-16",
+  "image": "assets/ducks/2026-10-16-big-claw.png",
+  "page": "ducks/2026-10-16/index.html",
+  "title": "THE SCALE OF SURPRISE",
+  "duck_name": "Big Claw",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
