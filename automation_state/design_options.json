@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-16",
   "generated_at": "2026-10-16T19:18:30.646080+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-16/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "The Unexpected Discovery",
+    "concept_en": "A discovery-focused scene that turns the larger crayfish into a moment of scientific wonder, while keeping the mascot as the approachable guide.",
+    "composition_en": "Landscape composition with the duck mascot in a calm natural-water environment, crouched beside a large crayfish emerging from the water. A simple unmarked observation tray and a small non-digital magnifying glass suggest careful scientific attention without inventing a laboratory, named researcher, or specific equipment. In the background, a second crayfish silhouette is subtly framed larger through depth and perspective, creating surprise. Use a warm spotlight effect, teal water, coral-orange shells, and generous negative space.",
+    "generation_prompt_en": "Create one publishable landscape editorial illustration with a clean, modern, premium feel. Show the recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression beside a large crayfish emerging from shallow natural water. The duck leans forward with delighted scientific curiosity. Include only simple, generic visual cues of observation: an unmarked shallow tray and a small plain magnifying glass, with no laboratory branding, no named person, and no technical labels. In the softly blurred background, suggest that another crayfish is even larger through perspective and partial framing, without adding exact size claims. Warm natural light, teal and amber palette, polished editorial storybook realism, clear focal point, wide landscape hero composition. No logos, no watermarks, no UI, no readable text, no headline inside the image.",
+    "alt_en": "A curious yellow duck examines a large crayfish beside shallow water while an even larger form is suggested in the background.",
+    "title_ja": "発見の瞬間",
+    "concept_ja": "さらに大きなザリガニが見つかった驚きを、自然の中で観察する瞬間として描く、発見中心のビジュアルです。",
+    "composition_ja": "穏やかな水辺で、黄色いマスコットが水から現れた大きなザリガニを興味深そうに観察する横長構図です。名前や特定の研究者、専門機器を創作せず、印のない浅いトレーとシンプルな虫眼鏡だけで観察の雰囲気を示します。背景には、奥行きと一部だけ見える姿によって、さらに大きなザリガニの存在をほのめかします。",
+    "alt_ja": "好奇心いっぱいの黄色いアヒルが浅瀬の大きなザリガニを観察し、背景にはさらに大きな姿がほのめかされている。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "THE SCALE OF SURPRISE",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-16T19:20:40.500659+00:00"
 }
