@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-17",
   "generated_at": "2026-10-17T01:07:09.478270+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-17/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "THE SKYWARD VIEWFINDER",
+    "concept_en": "A playful visual metaphor for chasing the International Space Station: the duck uses a simple telescope-like viewer while the ISS appears high above, making the act of looking itself the story.",
+    "composition_en": "Landscape hero composition, 16:9. Set the friendly yellow duck in the lower-right foreground beside a simple, unbranded small telescope or viewing tube aimed diagonally toward the upper-left sky. Preserve the mascot identity: yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm expression. Show the International Space Station clearly in the upper-left sky, framed by the viewing direction but still visible as the main subject. Use a clean dusky-blue background with a soft circular glow around the ISS, restrained stars, and ample negative space. The telescope is an illustrative viewing aid, not technical equipment detail. No observatory, people, logos, or text.",
+    "generation_prompt_en": "Create one publishable landscape editorial illustration, 16:9, clean modern premium style. Feature the consistent Daily Duck mascot in the lower-right foreground: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Place the duck beside a simple unbranded telescope-like viewing tube, angled toward the upper-left sky, suggesting a playful chase for a distant view. Show a clearly recognizable International Space Station in the upper-left as the dominant celestial subject, with a soft halo and only a few restrained stars. Use elegant deep blue and indigo tones with gentle warm highlights on the duck, strong visual hierarchy, simple shapes, refined lighting, and generous negative space. No people, no additional spacecraft, no logos, no watermark, no UI, no headline, no readable embedded text, no lettering anywhere.",
+    "alt_en": "A friendly yellow duck peers toward the International Space Station through a simple viewing tube beneath a deep blue sky.",
+    "title_ja": "空をのぞくビューファインダー",
+    "concept_ja": "国際宇宙ステーションを追いかける感覚を、ダックがシンプルな望遠鏡風の道具で空をのぞく姿に置き換えた、遊び心のある視覚的メタファーです。",
+    "composition_ja": "横長16:9のヒーロー構図。右下の手前に、黄色い羽、オレンジ色のくちばし、大きく艶のある黒い目、小さな羽毛の房、温かな表情を備えたダックを置きます。ダックのそばには、ロゴのないシンプルな望遠鏡風の筒を配置し、左上の空へ斜めに向けます。左上には、主役としてはっきり認識できる国際宇宙ステーションを描き、周囲に控えめな光の輪と少数の星を添えます。技術的な装置の細部や人物、文字は避け、濃い青と藍色を基調に上質で余白のある画面にします。",
+    "alt_ja": "深い青色の空の下、黄色いダックがシンプルな筒を通して国際宇宙ステーションを見つめている。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "THE SKY ISN’T THE LIMIT",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-17T02:41:04.437009+00:00"
 }
