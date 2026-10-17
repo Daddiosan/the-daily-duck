@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-17T02:41:23.673637+00:00",
+  "issue_date": "2026-10-17",
+  "image": "assets/ducks/2026-10-17-orbiting-wonder.png",
+  "page": "ducks/2026-10-17/index.html",
+  "title": "THE SKY ISN’T THE LIMIT",
+  "duck_name": "Orbiting Wonder",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

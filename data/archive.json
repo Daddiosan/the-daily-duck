@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-17",
+    "displayDate": "October 17, 2026",
+    "slug": "orbiting-wonder",
+    "title": "ORBITING WONDER",
+    "duckName": "Orbiting Wonder",
+    "storyTitleEn": "THE SKY ISN’T THE LIMIT",
+    "storyTitleJa": "国際宇宙ステーションを追いかけて",
+    "image": "assets/ducks/2026-10-17-orbiting-wonder.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Orbiting Wonder",
+    "imageAltJa": "Orbiting WonderをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Today’s Astronomy Picture of the Day features a striking image of the International Space Station. The photograph offers a vivid moment of human wonder, turning a distant spacecraft into something we can pause and look toward with curiosity. Some images do more than show us a place—they invite us to chase the horizon a little farther.",
+    "storyJa": "今日の「Astronomy Picture of the Day」では、国際宇宙ステーションを写した印象的な画像が紹介されています。その写真は、人類が宇宙で活動していることを鮮やかに感じさせ、遠くにある宇宙船を、好奇心を持って立ち止まり眺めたくなる存在に変えてくれます。画像の中には、場所を見せるだけでなく、私たちにさらに遠くの地平線を追いかけたくさせるものもあります。",
+    "duckEn": "Keep looking up—the view is worth the chase.",
+    "duckJa": "空を見上げ続けましょう。追いかける価値のある景色です。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/image-article/apod-2026-october-16-chasing-the-international-space-station/",
+    "archiveSummaryEn": "Today’s Astronomy Picture of the Day captures the International Space Station in a striking visual moment. A little space-based wonder for your day.",
+    "archiveSummaryJa": "今日の「Astronomy Picture of the Day」は、国際宇宙ステーションを印象的な一瞬として捉えています。あなたの一日に、宇宙からの小さな驚きを。",
+    "reasonEn": "Today’s Astronomy Picture of the Day captures the International Space Station in a striking visual moment. A little space-based wonder for your day.",
+    "reasonJa": "今日の「Astronomy Picture of the Day」は、国際宇宙ステーションを印象的な一瞬として捉えています。あなたの一日に、宇宙からの小さな驚きを。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-16",
     "displayDate": "October 16, 2026",
     "slug": "big-claw",
