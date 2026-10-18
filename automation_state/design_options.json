@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-18",
   "generated_at": "2026-10-18T06:15:35.564089+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-18/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "The Upward Wingbeat",
+    "concept_en": "A dynamic flight portrait that makes the nightjar’s unusual upward wingbeat the unmistakable focal idea, with the Daily Duck mascot playfully echoing the motion.",
+    "composition_en": "Landscape hero composition in a bright open sky. Place the recognizable friendly yellow duck in the foreground, airborne in a three-quarter view with both wings lifted upward at the peak of a beat, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Include a small, simple nightjar silhouette farther back in the sky to connect the visual to the story without inventing physical details. Use subtle curved motion trails and airy cloud shapes to emphasize upward movement. Clean modern editorial styling, strong focal point, warm light, generous negative space, premium finish.",
+    "generation_prompt_en": "Create one clean, modern premium editorial landscape hero image about a nightjar’s unusual upward wingbeat during a long-distance flight. Feature a recognizable friendly yellow Daily Duck mascot as the large foreground subject, airborne in three-quarter view with wings raised upward at the peak of a wingbeat, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Add a small distant nightjar represented only as a simple dark bird silhouette in the open sky. Use subtle non-literal curved motion trails and soft clouds to make the upward motion clear. Warm luminous sky, elegant composition, strong focal point, polished storybook realism, simple uncluttered background, no logos, no watermark, no UI, no readable text, no headline, no embedded typography.",
+    "alt_en": "A friendly yellow duck rises through an open sky with its wings lifted upward, while a distant nightjar silhouette suggests the bird’s unusual wingbeat and long-distance flight.",
+    "title_ja": "上向きの羽ばたき",
+    "concept_ja": "ヨタカの独特な上向きの羽ばたきを、飛行中のデイリー・ダックが楽しく再現する、動きのあるビジュアルです。",
+    "composition_ja": "明るく開けた空を舞台にした横長のヒーロー構図。手前には、オレンジ色のくちばし、大きく黒く艶のある目、小さな羽毛の房、親しみやすい表情を備えた、見分けやすい黄色いマスコットのアヒルを配置します。アヒルは斜め向きで飛び、両翼を羽ばたきの頂点のように上へ広げます。物語とのつながりを示すため、遠景には具体的な外見を付け加えない簡潔な暗い鳥のシルエットとしてヨタカを置きます。緩やかな動線と軽い雲で上向きの動きを表現し、余白を活かした、温かく洗練された構成にします。",
+    "alt_ja": "開けた空を、翼を上向きに広げた親しみやすい黄色いアヒルが飛んでいる。遠くのヨタカのシルエットが、独特の羽ばたきと長距離飛行を示している。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "WADDLE IT TAKE TO FLY?",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-18T07:13:29.258635+00:00"
 }
