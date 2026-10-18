@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-18",
+    "displayDate": "October 18, 2026",
+    "slug": "upwing",
+    "title": "UPWING",
+    "duckName": "Upwing",
+    "storyTitleEn": "WADDLE IT TAKE TO FLY?",
+    "storyTitleJa": "長距離を飛ぶ鳥、その翼には意外な秘密",
+    "image": "assets/ducks/2026-10-18-upwing.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Upwing",
+    "imageAltJa": "UpwingをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "The nightjar flies thousands of miles, yet its wings have a catch: it uses an unusual upward wingbeat technique. That surprising detail adds a lively twist to an already remarkable long-distance journey and shows how much intrigue can be packed into a bird's flight.",
+    "storyJa": "ヨタカは何千マイルも飛びますが、その翼にはひとつ特徴があります。上向きに羽ばたく独特の技法を使うのです。驚きのあるこの動きが、すでに素晴らしい長距離の旅に、生き生きとしたひねりを加えています。鳥の飛行には、まだまだ興味深いことが詰まっています。",
+    "duckEn": "Every mile comes with its own wing trick.",
+    "duckJa": "一マイルごとに、翼の技が光ります。",
+    "sourceLabel": "ScienceDaily Environment",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261016070624.htm",
+    "archiveSummaryEn": "The nightjar flies thousands of miles, but its unusual upward wingbeat gives its remarkable journey an unexpected twist.",
+    "archiveSummaryJa": "ヨタカは何千マイルも飛びますが、上向きに羽ばたく独特の飛び方が、その素晴らしい旅に意外なひねりを加えています。",
+    "reasonEn": "The nightjar flies thousands of miles, but its unusual upward wingbeat gives its remarkable journey an unexpected twist.",
+    "reasonJa": "ヨタカは何千マイルも飛びますが、上向きに羽ばたく独特の飛び方が、その素晴らしい旅に意外なひねりを加えています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-17",
     "displayDate": "October 17, 2026",
     "slug": "orbiting-wonder",
