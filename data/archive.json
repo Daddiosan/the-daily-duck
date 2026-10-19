@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-19",
+    "displayDate": "October 19, 2026",
+    "slug": "doomsday-duck",
+    "title": "DOOMSDAY DUCK",
+    "duckName": "Doomsday Duck",
+    "storyTitleEn": "THE FUTURE HAS OPTIONS",
+    "storyTitleJa": "11月13日の終末予言が教えてくれる、ほっとすること",
+    "image": "assets/ducks/2026-10-19-doomsday-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Doomsday Duck",
+    "imageAltJa": "Doomsday DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A prediction once warned of doomsday on November 13, 2026. Should we be worried? This curious story offers a more reassuring takeaway: human behavior can change, and forecasts have limits. Sometimes the most uplifting lesson is that the future is not as fixed as an old prediction makes it seem.",
+    "storyJa": "かつて、2026年11月13日に終末が訪れるという予言がありました。私たちは心配すべきなのでしょうか。この興味深い話が伝える、より安心できる見方があります。それは、人の行動は変わりうること、そして予測には限界があるということです。古い予言が示すほど、未来は決まったものではないのかもしれません。",
+    "duckEn": "This duck is keeping calm—and leaving room for a better forecast.",
+    "duckJa": "このアヒルは落ち着いています。もっといい予測が生まれる余地を残しておきましょう。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261016070639.htm",
+    "archiveSummaryEn": "A doomsday prediction for November 13, 2026, offers a reassuring lesson: human behavior can change, and forecasts have limits. The future is not always fixed.",
+    "archiveSummaryJa": "2026年11月13日の終末予言が教えてくれる、ほっとすること。それは、人の行動は変わりうること、そして予測には限界があるということです。未来はいつも決まっているわけではありません。",
+    "reasonEn": "A doomsday prediction for November 13, 2026, offers a reassuring lesson: human behavior can change, and forecasts have limits. The future is not always fixed.",
+    "reasonJa": "2026年11月13日の終末予言が教えてくれる、ほっとすること。それは、人の行動は変わりうること、そして予測には限界があるということです。未来はいつも決まっているわけではありません。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-18",
     "displayDate": "October 18, 2026",
     "slug": "upwing",
