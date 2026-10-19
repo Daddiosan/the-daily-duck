@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-19",
   "generated_at": "2026-10-19T10:36:36.377917+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-19/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "Calm Beneath the Big Question",
+    "concept_en": "The duck sits peacefully beneath an oversized abstract question mark formed by a fading storm cloud and a rising crescent of light. The image turns an alarming prediction into a warm, curious invitation to reconsider certainty.",
+    "composition_en": "Wide cinematic landscape with the duck seated in the lower-right foreground on a simple grassy rise. Above it, a large sculptural question mark is suggested by a curling dark cloud that transitions into a glowing arc of light. In the background, a calm horizon shifts from dusky blue to soft gold, with no destruction or threatening event. Use expressive lighting and a clear silhouette for immediate editorial impact, leaving open sky on the left for layout flexibility. The duck should remain the emotional anchor: composed, friendly, and quietly hopeful.",
+    "generation_prompt_en": "Create one clean, modern, charming premium editorial landscape image for a reassuring story about a doomsday prediction and the limits of forecasts. Show the consistent Daily Duck mascot seated in the lower-right foreground: recognizable friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression, calm and quietly hopeful. Above the duck, form a large abstract question mark from a curling dark cloud that gradually transitions into a luminous arc of light. Set the scene on a simple grassy rise beneath a calm horizon shifting from dusky blue to soft gold. Make the cloud a symbolic shape, not an actual disaster. Strong cinematic silhouette, tasteful depth, polished editorial illustration, warm premium lighting, wide landscape hero composition, clean open sky on the left for layout flexibility. No readable text, no headline, no numbers, no date, no logos, no watermark, no UI, no destruction, no panic, no people, no extra characters.",
+    "alt_en": "A calm yellow duck sits beneath a question mark shaped from a fading cloud and a glowing arc of light.",
+    "title_ja": "大きな問いの下で落ち着くアヒル",
+    "concept_ja": "薄れていく嵐雲と光の弧が大きな疑問符を形作り、その下でアヒルが穏やかに座っています。不安をあおる予言を、確実性を問い直すための温かな好奇心へと変換するビジュアルです。",
+    "composition_ja": "映画的な横長構図。右下の手前、簡素な草地の高まりにアヒルを座らせます。頭上には、渦巻く暗い雲が光る弧へと移り変わることで、大きな疑問符を抽象的に形作ります。背景の地平線は、くすんだ青から柔らかな金色へと変化させ、破壊や脅威となる出来事は描きません。印象的なシルエットと表情豊かな光で編集画面としての力を出し、左側にはレイアウト用の空を広く残します。",
+    "alt_ja": "薄れる雲と光る弧でできた疑問符の下に、落ち着いた黄色いアヒルが座っている。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "THE FUTURE HAS OPTIONS",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-19T11:31:01.740177+00:00"
 }
