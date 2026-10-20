@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-20",
+    "displayDate": "October 20, 2026",
+    "slug": "the-fall-palette",
+    "title": "THE FALL PALETTE",
+    "duckName": "The Fall Palette",
+    "storyTitleEn": "THE LEAVES HAVE IT",
+    "storyTitleJa": "秋色に染まるポーランドのビエシュチャディ山地",
+    "image": "assets/ducks/2026-10-20-the-fall-palette.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Fall Palette",
+    "imageAltJa": "The Fall PaletteをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Autumn has painted Poland’s Bieszczady Mountains in a colorful seasonal display. It is a simple, uplifting reminder that nature can turn a familiar landscape into something fresh and beautiful.",
+    "storyJa": "秋の訪れとともに、ポーランドのビエシュチャディ山地が色鮮やかな季節の景色に包まれています。見慣れた風景を新鮮で美しいものに変える、自然の力を感じさせてくれる明るい話題です。",
+    "duckEn": "Nature’s paintbrush is showing off again.",
+    "duckJa": "自然の絵筆が、また腕前を披露しています。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/autumn-paints-polands-bieszczady-mountains/",
+    "archiveSummaryEn": "Autumn paints Poland’s Bieszczady Mountains in a colorful seasonal display—a cheerful reminder of nature’s talent for turning landscapes into art.",
+    "archiveSummaryJa": "ポーランドのビエシュチャディ山地を、秋が色鮮やかに染めています。風景を芸術に変える自然の才能を感じる、明るい季節の便りです。",
+    "reasonEn": "Autumn paints Poland’s Bieszczady Mountains in a colorful seasonal display—a cheerful reminder of nature’s talent for turning landscapes into art.",
+    "reasonJa": "ポーランドのビエシュチャディ山地を、秋が色鮮やかに染めています。風景を芸術に変える自然の才能を感じる、明るい季節の便りです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-19",
     "displayDate": "October 19, 2026",
     "slug": "doomsday-duck",
