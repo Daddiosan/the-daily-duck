@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-20",
   "generated_at": "2026-10-20T12:03:02.768601+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-20/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "A Duck’s Eye View of Autumn",
+    "concept_en": "A naturalistic viewpoint scene in which the Daily Duck pauses to admire the seasonal colors across the Bieszczady Mountains, emphasizing wonder, scale, and peaceful discovery.",
+    "composition_en": "Landscape hero composition from a low, intimate viewpoint on a quiet mountain path or overlook. Place the duck in the right foreground, seen in three-quarter view and gazing toward a sweeping valley of autumn-colored mountain slopes. Use layered foliage, soft atmospheric distance, and a large open sky. Avoid identifying architecture, signs, trailside structures, or other unsupported location details.",
+    "generation_prompt_en": "Create one publishable landscape editorial image with a clean, modern, premium nature-magazine aesthetic. Feature the consistent Daily Duck mascot in the right foreground: friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. The duck stands on a simple natural overlook, looking across a sweeping view of Poland’s Bieszczady Mountains covered in vivid autumn colors—rust red, amber, orange, yellow, and deep green. Low viewpoint, broad panoramic valley, layered ridgelines, soft atmospheric perspective, gentle sunlight, calm uplifting mood, strong focal point, generous negative space in the sky, landscape orientation. No signs, no buildings, no people, no readable text, no logos, no watermark, no UI, no headline.",
+    "alt_en": "A friendly yellow duck looks across the autumn-colored Bieszczady Mountains from a quiet natural overlook.",
+    "title_ja": "ダックの目に映る秋",
+    "concept_ja": "山の静かな展望地点から、デイリー・ダックがビエシュチャディ山地の鮮やかな秋色を眺める、自然な発見と感嘆の場面です。",
+    "composition_ja": "横長のヒーロー構図。静かな山道または自然の見晴らしからの低い視点で、右手前にダックを三四分の一正面で配置し、秋色の山並みを見つめさせます。赤、琥珀、オレンジ、黄色、深い緑の斜面を重ね、遠景には柔らかな空気遠近法を使います。建物や標識など、根拠のない場所の細部は加えません。",
+    "alt_ja": "静かな自然の見晴らしから、友好的な黄色いダックが秋色のビエシュチャディ山地を眺めている。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "THE LEAVES HAVE IT",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-20T12:07:10.189090+00:00"
 }
