@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-21",
   "generated_at": "2026-10-21T00:44:50.481856+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-21/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "THE COLOR RETURNS",
+    "concept_en": "A reef neighborhood visualizes recovery spreading outward: a vivid healthy coral anchors a pale neighboring patch, with a gentle gradation of returning color between them.",
+    "composition_en": "Use a wide landscape reef scene with three visual zones arranged naturally across the frame: a pale bleached coral area on one side, a transitional area with soft hints of color in the middle, and a healthy vivid coral cluster on the other side. The healthy and bleached corals should remain adjacent, making the connection clear without literal arrows or diagrams. Place the friendly yellow duck mascot swimming above the reef, warmly looking toward the coral interaction. Keep the design airy, optimistic, and editorial rather than scientific or cluttered.",
+    "generation_prompt_en": "Create one publishable landscape editorial illustration in a clean, modern, premium style. Show an underwater coral reef with a pale bleached coral patch beside a vibrant healthy coral cluster, joined by a subtle natural gradation of returning color that suggests recovery spreading between neighboring corals. Do not use arrows, diagrams, labels, or literal before-and-after panels. Include the recognizable friendly yellow Daily Duck mascot swimming gently above the reef, yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Make the coral relationship the main focal point, with calm blue water, balanced horizontal composition, soft sunbeams, elegant simplified textures, and hopeful atmosphere. No logos, no watermark, no UI, no readable embedded text, no headline.",
+    "alt_en": "A yellow duck looks over a reef where color appears to return from a healthy coral toward a neighboring bleached coral.",
+    "title_ja": "色が戻るサンゴ礁",
+    "concept_ja": "鮮やかな健康なサンゴを中心に、隣接する白化したサンゴへ回復の色が広がっていくように見せる、サンゴ礁の近所の物語です。",
+    "composition_ja": "横長の水中風景を自然な3つの領域で構成します。一方に白化して色を失ったサンゴ、中央に淡い色が戻り始めたような移行部分、反対側に鮮やかで健康なサンゴの群れを置きます。矢印や図解は使わず、隣り合うサンゴ同士のつながりで意味を伝えます。上方には、黄色い羽、オレンジ色のくちばし、大きくつやのある目、小さな羽毛の tuft を持つDaily Duckを配置し、温かく見守らせます。",
+    "alt_ja": "黄色いアヒルが、健康なサンゴから隣の白化したサンゴへ色が戻っていくように見えるサンゴ礁を見下ろしている。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "BLEACHED, BUT NOT BEATEN",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-21T01:44:33.663721+00:00"
 }
