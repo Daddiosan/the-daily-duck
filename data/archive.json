@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-21",
+    "displayDate": "October 21, 2026",
+    "slug": "coral-cheer",
+    "title": "CORAL CHEER",
+    "duckName": "Coral Cheer",
+    "storyTitleEn": "BLEACHED, BUT NOT BEATEN",
+    "storyTitleJa": "たった一度のふれあいで、サンゴが7週間で再生？",
+    "image": "assets/ducks/2026-10-21-coral-cheer.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Coral Cheer",
+    "imageAltJa": "Coral CheerをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A simple touch may give dying corals a new chance. The story describes healthy corals helping bleached neighbors recover in just seven weeks, turning coral restoration into a hopeful picture of one part of a reef supporting another.",
+    "storyJa": "たった一度のふれあいが、死にかけたサンゴに新たな可能性をもたらすかもしれません。健康なサンゴが白化した隣のサンゴの回復を助け、わずか7週間で変化が見られたという、希望に満ちた物語です。サンゴ礁の一部が別の部分を支える、心温まる再生の姿です。",
+    "duckEn": "Sometimes a helping touch is where a comeback begins.",
+    "duckJa": "助け合いのひとふれが、再生の始まりになることもあります。",
+    "sourceLabel": "ScienceDaily Environment",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261017230025.htm",
+    "archiveSummaryEn": "A simple touch may help dying corals recover in just seven weeks, with healthy corals helping bleached neighbors bounce back. A hopeful reminder that recovery can spread.",
+    "archiveSummaryJa": "たった一度のふれあいで、死にかけたサンゴが7週間で回復する可能性があるそうです。健康なサンゴが白化した隣のサンゴを助ける、希望のニュースです。",
+    "reasonEn": "A simple touch may help dying corals recover in just seven weeks, with healthy corals helping bleached neighbors bounce back. A hopeful reminder that recovery can spread.",
+    "reasonJa": "たった一度のふれあいで、死にかけたサンゴが7週間で回復する可能性があるそうです。健康なサンゴが白化した隣のサンゴを助ける、希望のニュースです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-20",
     "displayDate": "October 20, 2026",
     "slug": "the-fall-palette",
