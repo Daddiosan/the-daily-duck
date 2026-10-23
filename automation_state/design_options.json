@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-23",
   "generated_at": "2026-10-23T05:09:50.461819+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-23/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "THE SHADE SHIFT",
+    "concept_en": "A visual before-and-after metaphor showing how thoughtful playground design can turn harsh exposure into a more comfortable, safer play experience without removing the joy of being outside.",
+    "composition_en": "Landscape split-flow composition rather than a literal divider: on the left, bright open sunlight over a simple playground; a sweeping architectural shade form curves through the center; on the right, the same playful environment becomes cooler, calmer, and more inviting beneath shade. The Daily Duck mascot straddles the transition, cheerfully guiding the eye from sun to shade. Keep the playground generic and avoid invented engineering features. Modern editorial illustration with warm yellows, coral accents, soft teal shade, clean geometry, and a hopeful sense of movement.",
+    "generation_prompt_en": "Create one publishable landscape hero illustration with a clever visual transformation from intense open sunlight to comfortable protective shade in a generic modern playground. Use a flowing curved composition, not a rigid infographic or literal before-and-after panel. On the left, show a bright sunny play space; through the center, a graceful shade structure sweeps across the scene; on the right, show the play space feeling cooler, calmer, and welcoming under shade while remaining visibly fun and outdoors. Place the recognizable friendly yellow Daily Duck mascot at the transition point, with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, gesturing cheerfully toward the safer shaded side. Optional tiny generic child silhouettes only, no identifiable people. Premium clean editorial illustration, balanced landscape framing, strong focal point, sophisticated color contrast, no readable text. No logos, watermarks, UI, headline, specific location, unsupported scientific diagrams, or exaggerated claims.",
+    "alt_en": "The Daily Duck mascot welcomes viewers from a brightly sunlit playground into a cooler, shaded play area.",
+    "title_ja": "日陰へ変わる遊び場",
+    "concept_ja": "工夫された遊具デザインによって、強い日差しの下の空間が、屋外の楽しさを保ったまま、より快適で安全な遊び場へ変わる様子を視覚的な変化として表現します。",
+    "composition_ja": "左右をはっきり分ける説明図ではなく、流れるようなランドスケープ構図にします。左側には明るい日差しの遊び場、中央には空間を横切る曲線的な日よけ、右側には日陰によって落ち着きと快適さが増した同じ遊び場を描きます。黄色いDaily Duckマスコットは変化の境目に立ち、日陰側へ視線を導きます。遊具は一般的なものにとどめ、実在しない技術的特徴は加えません。",
+    "alt_ja": "Daily Duckのマスコットが、明るい日なたの遊び場から涼しく日陰になった遊び場へ案内している。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "A BRIGHT IDEA FOR SHADE",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-23T10:02:09.596227+00:00"
 }
