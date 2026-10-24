@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-10-24T04:59:15.146394+00:00",
+  "issue_date": "2026-10-24",
+  "x_post_id": "2113857829660483928",
+  "x_post_url": "https://x.com/i/web/status/2113857829660483928",
+  "x_media_id": "2113857827403907072",
+  "image_path": "automation_images/x/2026-10-24-x-card.png",
+  "post_text": "Birds are more afraid of women than men, and scientists don’t know why. A wonderfully odd animal-behavior mystery that leaves us with one big question: what do birds know?\n\nhttps://www.thedailyduck.ai/ducks/2026-10-24/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 196
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2113857829660483928",
+      "text": "Birds are more afraid of women than men, and scientists don’t know why. A wonderfully odd animal-behavior mystery that leaves us with one big question: what do birds know?\n\nhttps://t.co/aYUXmsFjtt https://t.co/iAcR2MrFRo"
+    }
+  }
+}
