@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-24T04:58:37.233354+00:00",
+  "issue_date": "2026-10-24",
+  "image": "assets/ducks/2026-10-24-mystery-finch.png",
+  "page": "ducks/2026-10-24/index.html",
+  "title": "WHAT DO BIRDS KNOW?",
+  "duck_name": "Mystery Finch",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

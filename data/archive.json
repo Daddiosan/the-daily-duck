@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-24",
+    "displayDate": "October 24, 2026",
+    "slug": "mystery-finch",
+    "title": "MYSTERY FINCH",
+    "duckName": "Mystery Finch",
+    "storyTitleEn": "WHAT DO BIRDS KNOW?",
+    "storyTitleJa": "鳥は男性より女性を怖がる？科学者にも理由はわからない",
+    "image": "assets/ducks/2026-10-24-mystery-finch.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Mystery Finch",
+    "imageAltJa": "Mystery FinchをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Birds appear to be more afraid of women than men—but scientists have no idea why. It is an amusing reminder that animal behavior can still surprise us, even when the question sounds simple. For now, this feathered mystery remains wide open.",
+    "storyJa": "鳥は男性よりも女性を怖がるようです——しかし、科学者にもその理由はわかっていません。単純そうに見える問いでさえ、動物の行動はまだ私たちを驚かせることがあります。今のところ、この羽毛に包まれた謎は解明されていません。",
+    "duckEn": "Even the birds are keeping their reasons under their wings.",
+    "duckJa": "鳥たちは理由を、羽の下にそっと隠しているようです。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261021231250.htm",
+    "archiveSummaryEn": "Birds are more afraid of women than men, and scientists don’t know why. A wonderfully odd animal-behavior mystery that leaves us with one big question: what do birds know?",
+    "archiveSummaryJa": "鳥は男性より女性を怖がるようですが、科学者にも理由はわかっていません。思わず考え込んでしまう、奇妙で楽しい動物行動の謎です。",
+    "reasonEn": "Birds are more afraid of women than men, and scientists don’t know why. A wonderfully odd animal-behavior mystery that leaves us with one big question: what do birds know?",
+    "reasonJa": "鳥は男性より女性を怖がるようですが、科学者にも理由はわかっていません。思わず考え込んでしまう、奇妙で楽しい動物行動の謎です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-23",
     "displayDate": "October 23, 2026",
     "slug": "sunshine-playground-duck",
