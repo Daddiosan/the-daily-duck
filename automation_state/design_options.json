@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-24",
   "generated_at": "2026-10-24T04:49:25.159034+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-24/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "UNDER THEIR WINGS",
+    "concept_en": "A warm, memorable metaphor for birds keeping their reasons secret: the Daily Duck mascot stands in the foreground while a small flock retreats beneath overlapping wings and foliage, leaving the mystery unresolved.",
+    "composition_en": "Use a cinematic landscape composition with the duck mascot in a softly lit foreground clearing, looking upward with a gentle puzzled smile. In the midground, several generic birds gather close together beneath overlapping wings and broad leaves, creating a sheltered, secretive silhouette without suggesting danger. Leave an open luminous sky above them and a calm path of light through the scene. The image should feel charming, poetic, and slightly mysterious, with one strong focal point and minimal background detail.",
+    "generation_prompt_en": "Create one premium modern landscape hero illustration, 16:9, with a warm poetic mystery mood. Show the consistent Daily Duck mascot in the foreground, clearly recognizable as a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck gazes upward with a gentle puzzled smile. In the midground, several generic birds huddle beneath overlapping wings and broad leaves as a visual metaphor for keeping their reasons hidden; do not depict fear, conflict, or a specific factual event. Use a softly glowing open sky, calm natural colors, elegant cinematic light, simple contemporary editorial styling, polished shapes, subtle depth, and generous negative space. Make the duck the strongest focal point and keep the birds secondary. No logos, no watermark, no UI, no readable text, no headline, no labels, no letters, no numbers, no specific people, no invented location.",
+    "alt_en": "A puzzled friendly yellow duck looks toward birds sheltering beneath overlapping wings and leaves in a warm, mysterious editorial illustration.",
+    "title_ja": "羽の下に隠された理由",
+    "concept_ja": "鳥たちが理由を秘密にしているように見えるという物語のユーモアを、羽の下に身を寄せる鳥たちと、見上げるデイリー・ダックで温かく表現します。",
+    "composition_ja": "柔らかな光の当たる手前の空き地に、やさしく困った表情のマスコットを置きます。中景では、数羽の鳥が重なった翼や大きな葉の下に寄り集まり、秘密めいたシルエットをつくります。上部には明るく開けた空を残し、危険ではなく、詩的で少し不思議な雰囲気にします。",
+    "alt_ja": "温かく謎めいたエディトリアルイラスト。困った表情の黄色いアヒルが、重なった翼や葉の下に身を寄せる鳥たちを見上げている。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "WHAT DO BIRDS KNOW?",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-24T04:58:20.524531+00:00"
 }
