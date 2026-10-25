@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-25",
+    "displayDate": "October 25, 2026",
+    "slug": "the-pepper-palette",
+    "title": "THE PEPPER PALETTE",
+    "duckName": "The Pepper Palette",
+    "storyTitleEn": "COLOR HAS A SECRET",
+    "storyTitleJa": "ピーマンの色から、甘さ・栄養・熟し具合がわかる",
+    "image": "assets/ducks/2026-10-25-the-pepper-palette.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Pepper Palette",
+    "imageAltJa": "The Pepper PaletteをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Bell peppers bring more than color to the kitchen. Their colors reveal differences in sweetness, nutrients and ripeness, turning a familiar ingredient into a small lesson in food. The next time you choose a pepper, its color may offer more to notice than you expected.",
+    "storyJa": "ピーマンは、台所に彩りを添えるだけではありません。色によって、甘さや栄養、熟し具合に違いが表れます。身近な食材が、食べ物についての小さな学びに変わる話です。次にピーマンを選ぶときは、その色から思っていた以上のことに気づけるかもしれません。",
+    "duckEn": "A colorful little reminder that the kitchen is full of clues.",
+    "duckJa": "台所には、色から読み取れるヒントがいっぱいあると教えてくれる話です。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-bell-pepper-reveal-differences-sweetness.html",
+    "archiveSummaryEn": "Bell pepper colors can reveal differences in sweetness, nutrients and ripeness—proof that everyday food can still surprise us.",
+    "archiveSummaryJa": "ピーマンの色から、甘さや栄養、熟し具合の違いがわかるそうです。身近な食べ物にも、まだまだ驚きがあります。",
+    "reasonEn": "Bell pepper colors can reveal differences in sweetness, nutrients and ripeness—proof that everyday food can still surprise us.",
+    "reasonJa": "ピーマンの色から、甘さや栄養、熟し具合の違いがわかるそうです。身近な食べ物にも、まだまだ驚きがあります。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-24",
     "displayDate": "October 24, 2026",
     "slug": "mystery-finch",
