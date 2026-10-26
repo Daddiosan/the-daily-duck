@@ -847,6 +847,39 @@ class ProjectAccessDeniedEndToEndTests(unittest.TestCase):
         self.assertEqual(urlopen_mock.call_count, 1)
         self.assertEqual(openai_mock.call_count, 1)
 
+    def test_free_tier_unavailable_falls_back_only_for_confirmed_response(self):
+        message = (
+            "The Gemini API free tier is not available for this project. "
+            "To use the Gemini API, please set up billing to upgrade to the paid tier "
+            "at https://aistudio.google.com/billing. For more information, see "
+            "https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable."
+        )
+        for code, status, detail, fallback in (
+            (403, "PERMISSION_DENIED", message, True),
+            (403, "PERMISSION_DENIED", "Please set up billing.", False),
+            (403, "PERMISSION_DENIED", message.replace("free tier is not available", "free tier is available"), False),
+            (403, "OTHER_STATUS", message, False),
+            (401, "PERMISSION_DENIED", message, False),
+        ):
+            with self.subTest(code=code, status=status, detail=detail):
+                error = gemini_http_error_with_body(code, {
+                    "error": {"code": code, "status": status, "message": detail}
+                })
+                with patch.object(
+                    llm_provider.urllib.request, "urlopen", side_effect=error
+                ) as gemini_mock, patch.object(
+                    llm_provider, "_call_openai_once",
+                    return_value=json.dumps(valid_ranking_result()),
+                ) as openai_mock:
+                    if fallback:
+                        _, provider = llm_provider.generate_ranking("prompt", {}, validate=noop_validate)
+                        self.assertEqual(provider, llm_provider.OPENAI)
+                    else:
+                        with self.assertRaises(llm_provider.ProviderFailure):
+                            llm_provider.generate_ranking("prompt", {}, validate=noop_validate)
+                self.assertEqual(gemini_mock.call_count, 1)
+                self.assertEqual(openai_mock.call_count, int(fallback))
+
     def test_22_news_ranking_generic_403_still_fails_closed(self):
         error = gemini_http_error_with_body(403, PERMISSION_DENIED_BODY)
 
