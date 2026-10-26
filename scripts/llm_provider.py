@@ -38,7 +38,8 @@ AUTH_FAILURE = "AUTH_FAILURE"
 PERMISSION_FAILURE = "PERMISSION_FAILURE"
 # Narrow subset of PERMISSION_FAILURE: a *confirmed* Google project-denied
 # condition (HTTP 403 + status PERMISSION_DENIED + the specific "denied
-# access ... contact support" message), not every 403. See
+# access ... contact support" or confirmed free-tier-unavailable message),
+# not every 403. See
 # _is_confirmed_project_access_denied(). Human-approved policy (Phase B):
 # this gets an immediate OpenAI fallback instead of failing closed, because
 # unlike an ordinary permission error it is not a request/config bug that
@@ -286,13 +287,19 @@ def _classify_http_status(status: int | None) -> str:
 # so wording drift in either phrase alone does not cause a false match,
 # while tolerating minor punctuation/formatting differences around them.
 _PROJECT_ACCESS_DENIED_MESSAGE_MARKERS = ("denied access", "contact support")
+# Confirmed 2026-10-26 production condition; all markers must match.
+_FREE_TIER_UNAVAILABLE_MESSAGE_MARKERS = (
+    "the gemini api free tier is not available for this project",
+    "please set up billing to upgrade to the paid tier",
+    "https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable",
+)
 
 
 def _is_confirmed_project_access_denied(exc: Exception) -> bool:
     """Narrow, evidence-based detector for the confirmed Google
     project-denied condition. Deliberately requires ALL of: HTTP 403,
     structured status PERMISSION_DENIED, AND the specific denied-access
-    message text -- an ordinary 403 (e.g. API_KEY_SERVICE_BLOCKED, a
+    or confirmed free-tier-unavailable message text -- an ordinary 403 (e.g. API_KEY_SERVICE_BLOCKED, a
     restricted key/model binding) must NOT match this and must keep
     failing closed as PERMISSION_FAILURE.
     """
@@ -307,7 +314,10 @@ def _is_confirmed_project_access_denied(exc: Exception) -> bool:
         return False
 
     message = (diagnostic.get("GEMINI_ERROR_MESSAGE") or "").lower()
-    return all(marker in message for marker in _PROJECT_ACCESS_DENIED_MESSAGE_MARKERS)
+    return (
+        all(marker in message for marker in _PROJECT_ACCESS_DENIED_MESSAGE_MARKERS)
+        or all(marker in message for marker in _FREE_TIER_UNAVAILABLE_MESSAGE_MARKERS)
+    )
 
 
 def classify_gemini_error(exc: Exception) -> str:
