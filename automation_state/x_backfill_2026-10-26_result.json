@@ -1,14 +1,14 @@
 {
-  "state": "POST_IN_FLIGHT",
-  "at": "2026-10-27T12:16:48.703189+00:00",
+  "state": "X_POSTED",
+  "at": "2026-10-27T12:16:52.414821+00:00",
   "issue_date": "2026-10-26",
   "operation_id": "x-backfill-2026-10-26-12730768044-1774c9be3c89",
   "dry_run": false,
-  "publication_attempted": false,
-  "http_post_executed": false,
-  "x_media_uploaded": false,
-  "x_post_created": false,
-  "human_gate": "APPROVED",
+  "publication_attempted": true,
+  "http_post_executed": true,
+  "x_media_uploaded": true,
+  "x_post_created": true,
+  "human_gate": "COMPLETE",
   "source_artifact": {
     "run_id": 40497923591,
     "artifact_id": 12730768044,
@@ -50,8 +50,8 @@
     "made_with_ai": true
   },
   "duplicate_guard": {
-    "status": "CLEAR_COMPLETE",
-    "checked_at": "2026-10-27T12:16:48.500250+00:00",
+    "status": "CLEAR_COMPLETE_FINAL_RECHECK",
+    "checked_at": "2026-10-27T12:16:51.228752+00:00",
     "found": false,
     "pages_scanned": 1,
     "posts_scanned": 1,
@@ -71,5 +71,20 @@
     "preserved": true
   },
   "armed_at": "2026-10-27T12:16:48.703200+00:00",
-  "armed_by": "Daddiosan"
+  "armed_by": "Daddiosan",
+  "attempted_at": "2026-10-27T12:16:51.228771+00:00",
+  "x_media_id": "2115055121667067904",
+  "posted_at": "2026-10-27T12:16:52.414834+00:00",
+  "x_post_id": "2115055124242432299",
+  "x_post_url": "https://x.com/i/web/status/2115055124242432299",
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2115055124242432299",
+      "text": "Some tiny snakes can move four times faster by rolling than by slithering. An wonderfully odd escape trick—and a very memorable way to roll with it.\n\nhttps://t.co/9dBnGeqEsY https://t.co/WvEFMdBKyb"
+    }
+  },
+  "automatic_retry_allowed": false
 }
