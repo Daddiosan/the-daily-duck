@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-27",
   "generated_at": "2026-10-27T12:36:32.142877+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-27/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "The Friendship Circle",
+    "concept_en": "A warm campus gathering shows the Daily Duck mascot at the center of an inviting face-to-face friendship circle, making togetherness the clear visual subject.",
+    "composition_en": "Landscape hero composition in a sunlit college courtyard. The recognizable friendly yellow duck with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression sits at the center of a loose circle with several diverse college-age friends. They are engaged in relaxed face-to-face conversation around a simple outdoor table, with backpacks and an understated campus building softly blurred in the background. Keep the group readable as one connected circle, with the duck as the strongest focal point. Clean modern premium editorial illustration, warm natural palette, generous negative space, no text.",
+    "generation_prompt_en": "Create one clean, modern, charming premium editorial landscape illustration about college students flourishing through in-person time with friends. Place the consistent Daily Duck mascot at the center of a friendly face-to-face gathering in a sunny college courtyard: recognizable yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Surround the duck with a diverse small group of college-age friends seated in a relaxed circle around a simple outdoor table, naturally engaged with one another. Include only understated contextual details such as backpacks, notebooks without writing, soft greenery, and a blurred campus building. Strong central focal point, welcoming composition, warm sunlight, polished contemporary illustration, subtle depth of field, premium magazine hero image, landscape 16:9. No logos, no watermarks, no UI, no readable text, no headline, no speech bubbles, no overly vintage styling.",
+    "alt_en": "The Daily Duck mascot shares a warm face-to-face gathering with college friends in a sunny campus courtyard.",
+    "title_ja": "友情の輪",
+    "concept_ja": "大学生の友人同士が直接会って過ごす時間を、デイリー・ダックを中心とした温かな交流の輪として描くコンセプトです。",
+    "composition_ja": "日差しの明るい大学キャンパスの中庭を舞台にした横長のヒーロー構図です。オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の房、親しみやすい表情を持つ黄色いダックを中央に配置し、数人の大学生の友人が簡素な屋外テーブルを囲んで向かい合って会話しています。背景には控えめなキャンパス建物や緑、文字のないバッグやノートをぼかして置き、全員がつながった一つの輪に見えるようにします。",
+    "alt_ja": "晴れた大学キャンパスの中庭で、デイリー・ダックが友人たちと温かく向かい合って過ごしている。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "DUCK TOGETHER",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-27T12:57:04.629600+00:00"
 }
