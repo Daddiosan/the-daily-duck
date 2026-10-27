@@ -1,0 +1,190 @@
+name: The Daily Duck - Archive Only Publish - 2026-10-26
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type PUBLISH-ARCHIVE-2026-10-26 to pass the Human Gate
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: daily-duck-website-publish
+  cancel-in-progress: false
+
+jobs:
+  publish-archive-only:
+    runs-on: ubuntu-latest
+    env:
+      ARCHIVE_ISSUE_DATE: "2026-10-26"
+      ARTIFACT_RUN_ID: "40497923591"
+      ARTIFACT_ID: "12730768044"
+      ARTIFACT_NAME: daily-duck-backfill-2026-10-26-ready-to-publish
+      ARTIFACT_DIGEST: sha256:e123b6eb02b04c895c0a1b468130154951a31a7b377afb08588d81b1b2b8b348
+      APPROVED_IMAGE_SHA256: 1774c9be3c89ad3c8050be2ab1532dadae81f0fc2633eb7afca55cafe8686ae4
+      ARCHIVE_RESULT_PATH: automation_state/archive_only_publish_result.json
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Verify explicit Human Gate
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_ACTOR" = "Daddiosan"
+          test "$GITHUB_TRIGGERING_ACTOR" = "Daddiosan"
+          test "$CONFIRMATION" = "PUBLISH-ARCHIVE-2026-10-26"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download exact approved artifact
+        id: artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACKAGE_DIR="$RUNNER_TEMP/daily-duck-archive-only-$GITHUB_RUN_ID"
+          mkdir -p "$PACKAGE_DIR"
+
+          ARTIFACT_METADATA=$(gh api \
+            "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID")
+          export ARTIFACT_METADATA
+          python - <<'PY'
+          import json
+          import os
+
+          metadata = json.loads(os.environ["ARTIFACT_METADATA"])
+          expected = {
+              "id": int(os.environ["ARTIFACT_ID"]),
+              "name": os.environ["ARTIFACT_NAME"],
+              "run_id": int(os.environ["ARTIFACT_RUN_ID"]),
+          }
+          assert metadata.get("id") == expected["id"]
+          assert metadata.get("name") == expected["name"]
+          assert metadata.get("expired") is False
+          assert metadata.get("digest") == os.environ["ARTIFACT_DIGEST"]
+          assert metadata.get("workflow_run", {}).get("id") == expected["run_id"]
+          PY
+
+          gh run download "$ARTIFACT_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$ARTIFACT_NAME" \
+            --dir "$PACKAGE_DIR"
+
+          test -f "$PACKAGE_DIR/automation_state/ready_to_publish.json"
+          test -f "$PACKAGE_DIR/automation_images/canonical/2026-10-26.png"
+          test "$(sha256sum "$PACKAGE_DIR/automation_images/canonical/2026-10-26.png" | cut -d' ' -f1)" = "$APPROVED_IMAGE_SHA256"
+          echo "package_dir=$PACKAGE_DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Publish historical article only
+        id: publish
+        env:
+          PACKAGE_DIR: ${{ steps.artifact.outputs.package_dir }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TODAY_HASH_BEFORE=$(sha256sum data/today.json | cut -d' ' -f1)
+          INDEX_HASH_BEFORE=$(sha256sum index.html | cut -d' ' -f1)
+          READY_HASH_BEFORE=$(sha256sum automation_state/ready_to_publish.json | cut -d' ' -f1)
+          NORMAL_RESULT_HASH_BEFORE=$(sha256sum automation_state/website_publish_result.json | cut -d' ' -f1)
+
+          python scripts/publish_website.py \
+            --mode ARCHIVE_ONLY \
+            --issue-date "$ARCHIVE_ISSUE_DATE" \
+            --ready-path "$PACKAGE_DIR/automation_state/ready_to_publish.json" \
+            --result-path "$ARCHIVE_RESULT_PATH"
+
+          test "$(sha256sum data/today.json | cut -d' ' -f1)" = "$TODAY_HASH_BEFORE"
+          test "$(sha256sum index.html | cut -d' ' -f1)" = "$INDEX_HASH_BEFORE"
+          test "$(sha256sum automation_state/ready_to_publish.json | cut -d' ' -f1)" = "$READY_HASH_BEFORE"
+          test "$(sha256sum automation_state/website_publish_result.json | cut -d' ' -f1)" = "$NORMAL_RESULT_HASH_BEFORE"
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          issue = "2026-10-26"
+          archive = json.loads(Path("data/archive.json").read_text(encoding="utf-8"))
+          content_text = Path("data/content.js").read_text(encoding="utf-8").strip()
+          prefix = "window.DAILY_DUCK_DATA = "
+          assert content_text.startswith(prefix) and content_text.endswith(";")
+          content = json.loads(content_text[len(prefix):-1])
+          today = json.loads(Path("data/today.json").read_text(encoding="utf-8"))
+          result = json.loads(Path("automation_state/archive_only_publish_result.json").read_text(encoding="utf-8"))
+          dates = [entry["date"] for entry in archive]
+          assert dates == sorted(dates, reverse=True)
+          assert dates.count(issue) == 1
+          target = [entry for entry in archive if entry["date"] == issue]
+          assert len(target) == 1
+          assert target[0]["storyTitleEn"] == "ESCAPE BY ROLLING!"
+          assert content["today"] == today
+          assert content["archive"] == archive
+          assert result["action"] == "ARCHIVE_ONLY_PUBLISHED"
+          assert result["x_publish_requested"] is False
+          PY
+
+          PUBLISHED_IMAGE_PATH=$(python - <<'PY'
+          import json
+          from pathlib import Path
+
+          result = json.loads(Path("automation_state/archive_only_publish_result.json").read_text(encoding="utf-8"))
+          image = result.get("image")
+          assert isinstance(image, str)
+          assert image.startswith("assets/ducks/2026-10-26-")
+          assert image.endswith(".png")
+          assert ".." not in Path(image).parts
+          print(image)
+          PY
+          )
+          echo "image_path=$PUBLISHED_IMAGE_PATH" >> "$GITHUB_OUTPUT"
+
+          git diff --exit-code -- index.html data/today.json \
+            automation_state/ready_to_publish.json \
+            automation_state/website_publish_result.json
+
+      - name: Commit archive-only website files
+        env:
+          PUBLISHED_IMAGE_PATH: ${{ steps.publish.outputs.image_path }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/archive.json
+          git add data/content.js
+          git add ducks/2026-10-26/index.html
+          git add "$PUBLISHED_IMAGE_PATH"
+          git add "$ARCHIVE_RESULT_PATH"
+
+          if git diff --cached --quiet; then
+            echo "No archive-only changes to commit."
+            exit 1
+          fi
+
+          git diff --exit-code
+          git commit -m "publish: Daily Duck 2026-10-26 archive only"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Report Human Gate result
+        run: |
+          echo "STATE: ARCHIVE_ONLY_PUBLISHED"
+          echo "WEBSITE_PUBLISH_EXECUTED: ARCHIVE_ONLY"
+          echo "X_PUBLISH_EXECUTED: NO"
+
