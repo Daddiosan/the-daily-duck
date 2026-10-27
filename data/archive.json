@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-27",
+    "displayDate": "October 27, 2026",
+    "slug": "the-friendship-flock",
+    "title": "THE FRIENDSHIP FLOCK",
+    "duckName": "The Friendship Flock",
+    "storyTitleEn": "DUCK TOGETHER",
+    "storyTitleJa": "友人と直接会う時間が、大学生の充実を最もよく予測",
+    "image": "assets/ducks/2026-10-27-the-friendship-flock.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Friendship Flock",
+    "imageAltJa": "The Friendship FlockをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "For college students, spending time with friends in person is the biggest predictor of whether they flourish. It is a hopeful reminder that meaningful connection can begin with something wonderfully ordinary: being together.",
+    "storyJa": "大学生が充実した生活を送れるかどうかを最もよく予測するのは、友人と直接会って過ごす時間です。意味のあるつながりは、とても身近なことから始まるのかもしれません。ただ一緒に過ごすことです。",
+    "duckEn": "Good company may be one of life’s simplest ways to thrive.",
+    "duckJa": "良い仲間と過ごすことは、健やかに前へ進むいちばん身近な方法かもしれません。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-inperson-friends-biggest-predictor-college.html",
+    "archiveSummaryEn": "A hopeful reminder for college students: spending time with friends in person is the biggest predictor of whether they flourish. Sometimes, showing up matters most.",
+    "archiveSummaryJa": "大学生への前向きなメッセージ。友人と直接会って過ごす時間が、充実できるかどうかを最もよく予測します。ときには、会いに行くことが何より大切です。",
+    "reasonEn": "A hopeful reminder for college students: spending time with friends in person is the biggest predictor of whether they flourish. Sometimes, showing up matters most.",
+    "reasonJa": "大学生への前向きなメッセージ。友人と直接会って過ごす時間が、充実できるかどうかを最もよく予測します。ときには、会いに行くことが何より大切です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-26",
     "displayDate": "October 26, 2026",
     "slug": "the-rolling-snakes",

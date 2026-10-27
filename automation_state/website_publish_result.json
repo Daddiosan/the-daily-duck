@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-27T12:57:27.649516+00:00",
+  "issue_date": "2026-10-27",
+  "image": "assets/ducks/2026-10-27-the-friendship-flock.png",
+  "page": "ducks/2026-10-27/index.html",
+  "title": "DUCK TOGETHER",
+  "duck_name": "The Friendship Flock",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
