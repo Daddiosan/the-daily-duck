@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-26",
+    "displayDate": "October 26, 2026",
+    "slug": "the-rolling-snakes",
+    "title": "THE ROLLING SNAKES",
+    "duckName": "The Rolling Snakes",
+    "storyTitleEn": "ESCAPE BY ROLLING!",
+    "storyTitleJa": "小さなヘビ、這うより4倍速く転がる",
+    "image": "assets/ducks/2026-10-26-the-rolling-snakes.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Rolling Snakes",
+    "imageAltJa": "The Rolling SnakesをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Some tiny snakes have a surprisingly speedy way to get away: rolling. They can move four times faster by rolling than by slithering, turning an unusual escape trick into a wonderfully amusing piece of animal news.",
+    "storyJa": "小さなヘビの中には、驚くほど速く逃げる方法を持つものがいます。それは、転がること。這うよりも転がったほうが4倍速く移動できるのです。なんともユニークな逃げ技が、楽しい動物ニュースになっています。",
+    "duckEn": "When slithering feels too slow, these little snakes simply roll with it.",
+    "duckJa": "這うのが遅いなら、ころころ転がっていこう。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261023023718.htm",
+    "archiveSummaryEn": "Some tiny snakes can move four times faster by rolling than by slithering. An wonderfully odd escape trick—and a very memorable way to roll with it.",
+    "archiveSummaryJa": "小さなヘビは、這うより転がったほうが4倍速く移動できることがあります。驚くほど風変わりで、記憶に残る逃げ技です。",
+    "reasonEn": "Some tiny snakes can move four times faster by rolling than by slithering. An wonderfully odd escape trick—and a very memorable way to roll with it.",
+    "reasonJa": "小さなヘビは、這うより転がったほうが4倍速く移動できることがあります。驚くほど風変わりで、記憶に残る逃げ技です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-25",
     "displayDate": "October 25, 2026",
     "slug": "the-pepper-palette",
