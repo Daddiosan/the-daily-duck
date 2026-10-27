@@ -1,0 +1,218 @@
+name: The Daily Duck - X Backfill Publish - 2026-10-26
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type PUBLISH-X-BACKFILL-2026-10-26 after Human Gate approval"
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+# This is intentionally the same group as the normal X workflow.  A normal
+# publication and this historical backfill can never write to X concurrently.
+concurrency:
+  group: daily-duck-x-publish
+  cancel-in-progress: false
+
+env:
+  SOURCE_RUN_ID: "40497923591"
+  SOURCE_ARTIFACT_ID: "12730768044"
+  SOURCE_ARTIFACT_NAME: daily-duck-backfill-2026-10-26-ready-to-publish
+  WEBSITE_RUN_ID: "40501255509"
+  STATE_PATH: automation_state/x_backfill_2026-10-26_result.json
+  CARD_PATH: automation_images/x_backfill/2026-10-26-x-card.png
+
+jobs:
+  publish-x-backfill:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate Human Gate and actor
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          OWNER: ${{ github.repository_owner }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$CONFIRMATION" = "PUBLISH-X-BACKFILL-2026-10-26"
+          test "$GITHUB_REF" = "refs/heads/main"
+          test "${ACTOR,,}" = "${OWNER,,}"
+          test "${TRIGGERING_ACTOR,,}" = "${OWNER,,}"
+
+      - name: Checkout latest main only
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Verify fixed website publication commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git merge-base --is-ancestor \
+            2450f454cbb5ea8fe89088a4e180ea99dd65bff3 \
+            HEAD
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install fixed runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk unzip
+          python -m pip install --upgrade pip
+          pip install Pillow requests requests-oauthlib
+
+      - name: Download fixed source evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_DIR="$RUNNER_TEMP/x-backfill-source"
+          mkdir -p "$SOURCE_DIR"
+
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/artifacts/$SOURCE_ARTIFACT_ID" \
+            > "$SOURCE_DIR/artifact-metadata.json"
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" \
+            > "$SOURCE_DIR/run-metadata.json"
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$WEBSITE_RUN_ID" \
+            > "$SOURCE_DIR/website-run-metadata.json"
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/artifacts/$SOURCE_ARTIFACT_ID/zip" \
+            > "$SOURCE_DIR/source.zip"
+          echo \
+            "e123b6eb02b04c895c0a1b468130154951a31a7b377afb08588d81b1b2b8b348  $SOURCE_DIR/source.zip" \
+            | sha256sum --check --strict
+          unzip -q "$SOURCE_DIR/source.zip" -d "$SOURCE_DIR/payload"
+
+      - name: Prepare isolated card and state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/x_backfill_2026_10_26.py prepare \
+            --source-dir "$RUNNER_TEMP/x-backfill-source/payload" \
+            --work-root "$GITHUB_WORKSPACE" \
+            --repository-root "$GITHUB_WORKSPACE" \
+            --artifact-metadata "$RUNNER_TEMP/x-backfill-source/artifact-metadata.json" \
+            --run-metadata "$RUNNER_TEMP/x-backfill-source/run-metadata.json" \
+            --website-run-metadata "$RUNNER_TEMP/x-backfill-source/website-run-metadata.json"
+
+      - name: Complete read-only X duplicate scan
+        id: duplicate
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/x_backfill_2026_10_26.py check-duplicate \
+            --state-path "$STATE_PATH" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Persist duplicate or hold evidence without posting
+        if: steps.duplicate.outputs.can_post != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$STATE_PATH" "$CARD_PATH"
+          git commit -m "automation: record 2026-10-26 X backfill hold"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      - name: Arm one fixed posting attempt
+        if: steps.duplicate.outputs.can_post == 'true'
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+          ACTOR: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/x_backfill_2026_10_26.py arm \
+            --state-path "$STATE_PATH" \
+            --confirmation "$CONFIRMATION" \
+            --actor "$ACTOR" \
+            --owner "$OWNER"
+
+      # Persisting POST_IN_FLIGHT before the first X POST closes the crash window:
+      # if the request result or final git push is lost, a rerun stops for review.
+      - name: Persist POST_IN_FLIGHT before any X write
+        if: steps.duplicate.outputs.can_post == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$STATE_PATH" "$CARD_PATH"
+          git commit -m "automation: arm 2026-10-26 X backfill"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      - name: Execute the single armed X posting attempt
+        if: steps.duplicate.outputs.can_post == 'true'
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+          ACTOR: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/x_backfill_2026_10_26.py post \
+            --state-path "$STATE_PATH" \
+            --card-path "$CARD_PATH" \
+            --confirmation "$CONFIRMATION" \
+            --actor "$ACTOR" \
+            --owner "$OWNER"
+
+      - name: Persist final or unknown result
+        if: always() && steps.duplicate.outputs.can_post == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$STATE_PATH"
+          if git diff --cached --quiet; then
+            echo "No final-state change to commit. POST_IN_FLIGHT remains authoritative."
+            exit 0
+          fi
+          git commit -m "automation: record 2026-10-26 X backfill result"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
+      - name: Upload isolated evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-x-backfill-2026-10-26-evidence
+          path: |
+            automation_state/x_backfill_2026-10-26_result.json
+            automation_images/x_backfill/2026-10-26-x-card.png
+          if-no-files-found: error
+          retention-days: 30
+
