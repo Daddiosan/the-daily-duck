@@ -1,0 +1,75 @@
+{
+  "state": "POST_IN_FLIGHT",
+  "at": "2026-10-27T12:16:48.703189+00:00",
+  "issue_date": "2026-10-26",
+  "operation_id": "x-backfill-2026-10-26-12730768044-1774c9be3c89",
+  "dry_run": false,
+  "publication_attempted": false,
+  "http_post_executed": false,
+  "x_media_uploaded": false,
+  "x_post_created": false,
+  "human_gate": "APPROVED",
+  "source_artifact": {
+    "run_id": 40497923591,
+    "artifact_id": 12730768044,
+    "artifact_name": "daily-duck-backfill-2026-10-26-ready-to-publish",
+    "artifact_digest": "sha256:e123b6eb02b04c895c0a1b468130154951a31a7b377afb08588d81b1b2b8b348",
+    "run_head_sha": "f183249898a30876f8777e3269c3bc32f77c130e",
+    "ready_sha256": "5ea882e52ed4f20594df40a11199ebe2102b86a0b4419d2367ee251b2afe4736",
+    "approved_image_sha256": "1774c9be3c89ad3c8050be2ab1532dadae81f0fc2633eb7afca55cafe8686ae4"
+  },
+  "website_publication": {
+    "workflow_run_id": 40501255509,
+    "publication_commit": "2450f454cbb5ea8fe89088a4e180ea99dd65bff3",
+    "publication_commit_is_ancestor": true,
+    "action": "ARCHIVE_ONLY_PUBLISHED",
+    "article_url": "https://www.thedailyduck.ai/ducks/2026-10-26/",
+    "published_image_sha256": "1774c9be3c89ad3c8050be2ab1532dadae81f0fc2633eb7afca55cafe8686ae4"
+  },
+  "selection": {
+    "selected_image_number": 3,
+    "selected_title_number": 3,
+    "selected_title": "ESCAPE BY ROLLING!"
+  },
+  "x_card": {
+    "path": "automation_images/x_backfill/2026-10-26-x-card.png",
+    "size": "1500x1200",
+    "ratio": "5:4",
+    "format": "PNG",
+    "sha256": "aa9518537dec21b5cc0b91162b304bce198b69100ce5e2041a1fbec85b25a340",
+    "title": "ESCAPE BY ROLLING!",
+    "layout": "english-first-80pct-photo-v1",
+    "source_image_sha256": "1774c9be3c89ad3c8050be2ab1532dadae81f0fc2633eb7afca55cafe8686ae4"
+  },
+  "x_post": {
+    "text": "Some tiny snakes can move four times faster by rolling than by slithering. An wonderfully odd escape trick—and a very memorable way to roll with it.\n\nhttps://www.thedailyduck.ai/ducks/2026-10-26/",
+    "weighted_length": 173,
+    "max_weighted_length": 280,
+    "language": "en",
+    "article_url": "https://www.thedailyduck.ai/ducks/2026-10-26/",
+    "made_with_ai": true
+  },
+  "duplicate_guard": {
+    "status": "CLEAR_COMPLETE",
+    "checked_at": "2026-10-27T12:16:48.500250+00:00",
+    "found": false,
+    "pages_scanned": 1,
+    "posts_scanned": 1,
+    "scan_start": "2026-10-25T00:00:00Z",
+    "complete": true
+  },
+  "shared_x_state": {
+    "ready_path": "automation_state/ready_to_publish.json",
+    "ready_sha256": "e79cef2a2bfa9e06c3ed924df89869d6b9d6e24a94e72e4d2fafc6ef4f1fbea7",
+    "result_path": "automation_state/x_publish_result.json",
+    "result_sha256": "faf9e7ec2f7a1a7911e63385e9d32996266a74fa084bf42ff71e8710facf418e",
+    "ready_issue_date": "2026-10-25",
+    "ready_state": "X_POSTED",
+    "result_issue_date": "2026-10-25",
+    "result_action": "X_POSTED",
+    "target_terminal_post_exists": false,
+    "preserved": true
+  },
+  "armed_at": "2026-10-27T12:16:48.703200+00:00",
+  "armed_by": "Daddiosan"
+}
