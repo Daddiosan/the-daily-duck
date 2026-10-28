@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-28",
+    "displayDate": "October 28, 2026",
+    "slug": "dreamy-legs",
+    "title": "DREAMY LEGS",
+    "duckName": "Dreamy Legs",
+    "storyTitleEn": "DUCK, DUCK, DREAM!",
+    "storyTitleJa": "クモは夢を見る？ その謎に迫る驚きの手がかり",
+    "image": "assets/ducks/2026-10-28-dreamy-legs.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Dreamy Legs",
+    "imageAltJa": "Dreamy LegsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Do spiders dream? Scientists have found a surprising clue that brings this wonderfully odd question a little closer to an answer. The discovery offers a fascinating glimpse of spider behavior—and a reminder that even the smallest creatures can leave us full of wonder.",
+    "storyJa": "クモは夢を見るのでしょうか。科学者たちは、このとても不思議な疑問に答えへ近づく、驚きの手がかりを見つけました。今回の発見は、クモの行動を垣間見せてくれるとともに、小さな生き物にも私たちを驚かせる力があることを思い出させてくれます。",
+    "duckEn": "Even spiders may have a little nighttime mystery up their eight sleeves.",
+    "duckJa": "クモにも、8本の脚のどこかに夜の秘密があるのかも。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/10/261026225555.htm",
+    "archiveSummaryEn": "Do spiders dream? Scientists have found a surprising clue, offering a fascinating glimpse of spider behavior and a fresh reason to wonder about the smallest creatures.",
+    "archiveSummaryJa": "クモは夢を見る？ 科学者たちが驚きの手がかりを発見。クモの行動を知る、そして小さな生き物に思いをはせる新たなきっかけです。",
+    "reasonEn": "Do spiders dream? Scientists have found a surprising clue, offering a fascinating glimpse of spider behavior and a fresh reason to wonder about the smallest creatures.",
+    "reasonJa": "クモは夢を見る？ 科学者たちが驚きの手がかりを発見。クモの行動を知る、そして小さな生き物に思いをはせる新たなきっかけです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-27",
     "displayDate": "October 27, 2026",
     "slug": "the-friendship-flock",
