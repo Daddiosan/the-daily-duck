@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-29",
+    "displayDate": "October 29, 2026",
+    "slug": "phantom-beacon",
+    "title": "PHANTOM BEACON",
+    "duckName": "Phantom Beacon",
+    "storyTitleEn": "NOW YOU SEE THE LIGHT",
+    "storyTitleJa": "オーストラリアの「幻の灯台」の謎",
+    "image": "assets/ducks/2026-10-29-phantom-beacon.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Phantom Beacon",
+    "imageAltJa": "Phantom BeaconをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "For years, a mysterious lighthouse seemed to appear in Australia—despite there being no lighthouse there. New research explores the illusion behind this atmospheric puzzle, turning a strange sight into an intriguing story about how mysteries can be understood.",
+    "storyJa": "オーストラリアで、そこに灯台がないにもかかわらず、謎の灯台が現れるように見える現象が長年語られてきました。新たな研究は、この幻想的な謎の背景にある錯覚を探っています。不思議な光景が、理解へとつながる興味深い物語になりました。",
+    "duckEn": "Not every lighthouse needs a building to light up a good mystery.",
+    "duckJa": "建物がなくても、灯台のように見えれば謎はしっかり灯ります。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-phantom-lighthouse-australia-strangest-illusions.html",
+    "archiveSummaryEn": "A lighthouse that does not exist became one of Australia’s strangest illusions. New research explores the mystery behind the phantom beacon.",
+    "archiveSummaryJa": "存在しない灯台が、オーストラリアで最も奇妙な錯覚の一つになりました。新たな研究が、この「幻の灯台」の謎を探っています。",
+    "reasonEn": "A lighthouse that does not exist became one of Australia’s strangest illusions. New research explores the mystery behind the phantom beacon.",
+    "reasonJa": "存在しない灯台が、オーストラリアで最も奇妙な錯覚の一つになりました。新たな研究が、この「幻の灯台」の謎を探っています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-28",
     "displayDate": "October 28, 2026",
     "slug": "dreamy-legs",

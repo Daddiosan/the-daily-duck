@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-10-29T07:33:20.085274+00:00",
+  "issue_date": "2026-10-29",
+  "image": "assets/ducks/2026-10-29-phantom-beacon.png",
+  "page": "ducks/2026-10-29/index.html",
+  "title": "NOW YOU SEE THE LIGHT",
+  "duck_name": "Phantom Beacon",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
