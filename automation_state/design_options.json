@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-29",
   "generated_at": "2026-10-29T03:48:02.258856+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-29/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "A Puzzle Made of Light",
+    "concept_en": "A graphic editorial metaphor showing how an empty horizon can assemble itself into the impression of a lighthouse through overlapping light, haze, and reflection.",
+    "composition_en": "Use a wide, carefully balanced landscape composition with the duck centered slightly to the right, standing beside a calm dark-blue sea. In front of the horizon, arrange translucent layers of haze, reflected light, and soft geometric shapes that align into a temporary lighthouse-like silhouette, while small gaps reveal that no solid tower exists. The duck should look gently puzzled and welcoming, with one wing raised toward the visual puzzle. Keep the scene abstract but readable, with clean shapes, restrained colors, and a premium magazine-illustration finish.",
+    "generation_prompt_en": "Create one publishable landscape editorial illustration with a clean modern premium magazine aesthetic. Feature the recognizable friendly yellow Daily Duck mascot slightly right of center beside a calm dark-blue sea; preserve the orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Visualize an optical illusion using overlapping translucent layers of coastal haze, reflected light, and soft geometric atmospheric shapes that temporarily align into a lighthouse-like silhouette above an empty horizon. Make it clear through visible gaps and transparency that no solid lighthouse tower exists. The duck gently raises one wing toward the puzzle with curious delight. Use elegant navy, sea-glass teal, pale gold, and cream, crisp shapes softened by atmospheric blending, strong focal hierarchy, and wide negative space. No scientific diagrams, no invented equipment, no people, no logos, no watermarks, no UI, no readable text, no headline, no embedded lettering.",
+    "alt_en": "A curious yellow duck gestures toward translucent layers of haze and reflected light forming a temporary lighthouse-like shape above an empty sea horizon.",
+    "title_ja": "光でできた謎解き",
+    "concept_ja": "霧や反射光が重なり合うことで、存在しない灯台の形が一時的に組み上がって見えるという錯覚を、洗練された図形的メタファーで表現します。",
+    "composition_ja": "横長でバランスのよい構図にし、穏やかな濃紺の海のそば、やや右寄りにアヒルを立たせます。水平線の前には、海辺の霧、反射光、柔らかな幾何学形状の透明な層を重ね、それらが一時的に灯台のような輪郭をつくるようにします。隙間や透明感によって、実体のある塔ではないことが伝わるようにします。アヒルは片翼をその謎へ向け、穏やかに驚いた表情を見せます。ネイビー、シーグラス色、淡い金色、クリーム色を使い、雑誌の上質なイラストのように仕上げます。",
+    "alt_ja": "好奇心いっぱいの黄色いアヒルが、空の海の水平線に霧と反射光で一時的に現れた灯台のような形を指し示している。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "NOW YOU SEE THE LIGHT",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-29T07:32:57.315752+00:00"
 }
