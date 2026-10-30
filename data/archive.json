@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-10-30",
+    "displayDate": "October 30, 2026",
+    "slug": "bright-eyes",
+    "title": "BRIGHT-EYES",
+    "duckName": "Bright-Eyes",
+    "storyTitleEn": "A WORLD WORTH SEEING",
+    "storyTitleJa": "獣医師のユニークな治療、犬の視力を守る一助に",
+    "image": "assets/ducks/2026-10-30-bright-eyes.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Bright-Eyes",
+    "imageAltJa": "Bright-EyesをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A veterinarian has applied a unique treatment in an effort to preserve a dog’s eyesight. It is a small but moving reminder of how far people will go to help the animals they care about—and how creative care can offer hope.",
+    "storyJa": "ある獣医師が、犬の視力を守るためにユニークな治療を行いました。動物を大切に思う人々がどれほど力を尽くすのか、そして工夫を凝らした治療が希望をもたらし得ることを感じさせてくれる、心動かされる話です。",
+    "duckEn": "A little care can help keep the world in view.",
+    "duckJa": "小さな思いやりが、見える世界を守ることもあるよ。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-10-eye-veterinarian-unique-treatment-dog.html",
+    "archiveSummaryEn": "A veterinarian’s unique treatment is helping preserve a dog’s eyesight—a warm reminder that creative care and compassion can go a long way.",
+    "archiveSummaryJa": "獣医師によるユニークな治療が、犬の視力を守る一助に。工夫を凝らしたケアと思いやりの力を感じる、心温まるニュースです。",
+    "reasonEn": "A veterinarian’s unique treatment is helping preserve a dog’s eyesight—a warm reminder that creative care and compassion can go a long way.",
+    "reasonJa": "獣医師によるユニークな治療が、犬の視力を守る一助に。工夫を凝らしたケアと思いやりの力を感じる、心温まるニュースです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-29",
     "displayDate": "October 29, 2026",
     "slug": "phantom-beacon",
