@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-10-30",
   "generated_at": "2026-10-30T02:06:23.001556+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-10-30/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "Gentle Care, Bright Hope",
+    "concept_en": "An intimate emotional portrait of Bright-Eyes offering quiet companionship to a dog, focusing on the human-animal bond and the hope carried by compassionate veterinary care.",
+    "composition_en": "Landscape close-to-medium shot with the duck and dog forming a gentle diagonal from lower left to upper right. The duck leans toward the dog with a reassuring wing gesture, while the dog rests comfortably and looks toward the viewer with a peaceful, trusting expression. Use a softly illuminated neutral interior with a subtle warm glow around their faces. Keep the mascot identity highly consistent: yellow feathers, orange beak, glossy dark eyes, small feather tuft, friendly expression. Avoid depicting a specific person, named veterinarian, or identifiable treatment. Premium soft editorial illustration, intimate but uncluttered, emotionally immediate, strong focal point, no text.",
+    "generation_prompt_en": "Create one publishable landscape editorial illustration with a clean, modern, charming, premium feel. Show the recognizable friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression gently leaning toward a calm beloved dog in a reassuring gesture of companionship. The dog rests comfortably and looks toward the viewer with a peaceful, trusting expression. Compose them on a soft diagonal across the frame, with a subtle warm glow around their faces and a quiet neutral interior behind them. Emphasize compassion, the bond between people and animals, and hopeful care without showing a specific person or identifiable medical treatment. Intimate but uncluttered, polished magazine illustration, warm natural colors, strong focal point, landscape hero composition. No logos, no watermark, no UI, no readable text, no headline, no lettering, no invented medical equipment or procedure.",
+    "alt_en": "A friendly yellow duck gently comforts a calm dog in a softly lit interior, expressing compassion and hope through quiet companionship.",
+    "title_ja": "やさしいケア、明るい希望",
+    "concept_ja": "ブライトアイズが犬に静かに寄り添う親密なポートレートで、動物との絆と、思いやりのある獣医療がもたらす希望に焦点を当てます。",
+    "composition_ja": "横長の中近景で、ダックと犬が画面左下から右上へ向かう穏やかな対角線を形作ります。ダックは安心させるように翼を差し伸べ、犬は心地よく休みながら、穏やかで信頼した表情でこちらを見ます。背景は柔らかな光のニュートラルな室内とし、2匹の顔の周囲に控えめな温かい光を置きます。黄色い羽、オレンジ色のくちばし、艶のある黒い目、小さな羽毛の tuft、親しみやすい表情というマスコットの一貫性を保ちます。特定の人物、獣医師、識別可能な治療は描かず、整理された上質な編集イラストにします。画像内に文字は入れません。",
+    "alt_ja": "柔らかな室内の光の中で、親しみやすい黄色いダックが落ち着いた犬に寄り添い、静かな思いやりと希望を表現している。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "A WORLD WORTH SEEING",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-10-30T03:50:11.257548+00:00"
 }
