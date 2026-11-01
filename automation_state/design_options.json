@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-01",
   "generated_at": "2026-11-01T11:30:52.006711+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-01/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "Earthly Fun, Orbital View",
+    "concept_en": "A visual contrast between the familiar warmth of Halloween celebration and the extraordinary setting of the International Space Station, seen through the duck’s delighted perspective.",
+    "composition_en": "Landscape composition built around a large observation window. The duck appears in the foreground, looking outward with delighted curiosity while a few generic astronaut figures in creative, non-specific costumes float softly in the background. Earth occupies the lower part of the window, while warm interior lighting creates a cozy counterpoint to the vast dark space outside. Keep the figures clearly illustrative and avoid identifiable people or costume details.",
+    "generation_prompt_en": "Create a premium, clean modern editorial illustration in a wide landscape format. Feature the recognizable Daily Duck mascot with yellow feathers, orange beak, large dark glossy eyes, small feather tuft, and a warm approachable expression. Compose the scene from the duck’s viewpoint inside the International Space Station: the duck stands in the foreground near a large observation window, gazing outward with cheerful curiosity. In the softly focused background, show a small group of generic astronaut figures floating and celebrating in creative but non-specific Halloween costumes. Show Earth through the window, with warm interior light contrasting against deep space. No names, no logos, no readable text, no watermark, no UI, no headline, no identifiable real people. Elegant spacing, strong focal hierarchy, gentle humor, polished magazine-art direction.",
+    "alt_en": "The Daily Duck looks through a space-station window as generic astronauts in creative Halloween costumes float nearby, with Earth beyond them.",
+    "title_ja": "地上の楽しさ、軌道上の景色",
+    "concept_ja": "身近で温かなハロウィーンのお祝いと、国際宇宙ステーションという特別な舞台を、ダックの驚きと喜びの視点から対比して見せるコンセプトです。",
+    "composition_ja": "大きな観測窓を中心にした横長構図です。手前にダックを置き、うれしそうな好奇心で外を眺めさせます。背景には、特定の人物や具体的な衣装を再現しない、抽象的な宇宙飛行士たちが仮装姿で浮かんでいる様子を柔らかく描きます。窓の下部には地球を配置し、暖かな船内の光と、外側の広い暗い宇宙を対比させます。",
+    "alt_ja": "デイリー・ダックが宇宙ステーションの窓から外を眺め、近くでは仮装した宇宙飛行士たちが浮かび、遠くに地球が見えている。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "HIGH SPIRITS, HIGH ORBIT",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-01T11:32:07.801260+00:00"
 }
