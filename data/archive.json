@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-01",
+    "displayDate": "November 1, 2026",
+    "slug": "orbit-o-ween",
+    "title": "ORBIT-O-WEEN",
+    "duckName": "Orbit-O-Ween",
+    "storyTitleEn": "HIGH SPIRITS, HIGH ORBIT",
+    "storyTitleJa": "宇宙ステーションにもハロウィーンの遊び心",
+    "image": "assets/ducks/2026-11-01-orbit-o-ween.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Orbit-O-Ween",
+    "imageAltJa": "Orbit-O-WeenをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Halloween has reached an unusual destination: the International Space Station. Astronauts marked the occasion in creative costumes, adding a little earthly playfulness to life in orbit. It is a warm reminder that even far from home, people still make room for fun and celebration.",
+    "storyJa": "ハロウィーンが、ちょっと意外な場所にやってきました。国際宇宙ステーションです。宇宙飛行士たちは創意工夫あふれる仮装でこの日を祝い、軌道上の暮らしに地上の楽しい雰囲気を添えました。地球から遠く離れていても、人は楽しみやお祝いの時間を大切にするのだと感じさせてくれる、温かな話題です。",
+    "duckEn": "Even in orbit, there is always room for a little costume fun.",
+    "duckJa": "軌道上でも、仮装を楽しむ余地はたっぷりあります。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://www.nasa.gov/centers-and-facilities/johnson/halloween-aboard-the-international-space-station/",
+    "archiveSummaryEn": "Halloween has reached the International Space Station, where astronauts celebrated in creative costumes. A playful reminder that fun travels well—even into orbit.",
+    "archiveSummaryJa": "ハロウィーンが国際宇宙ステーションに到着。宇宙飛行士たちは創意工夫あふれる仮装でお祝いしました。楽しさは、軌道上までちゃんと届くようです。",
+    "reasonEn": "Halloween has reached the International Space Station, where astronauts celebrated in creative costumes. A playful reminder that fun travels well—even into orbit.",
+    "reasonJa": "ハロウィーンが国際宇宙ステーションに到着。宇宙飛行士たちは創意工夫あふれる仮装でお祝いしました。楽しさは、軌道上までちゃんと届くようです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-10-30",
     "displayDate": "October 30, 2026",
     "slug": "bright-eyes",
