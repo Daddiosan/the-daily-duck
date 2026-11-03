@@ -1,0 +1,112 @@
+2026-11-02 story 3 — continuation preparation, 2026-11-03 JST
+
+State: READY_FOR_RECOVERY_BRANCH_PUSH_HUMAN_GATE
+Paid API calls this session: 0. Additional API charge incurred: USD 0.
+Three image concepts and three titles: prepared in design_brief.json.
+Actual generated images: NOT YET CREATED. Selection email: NOT YET SENT.
+Web and X publication: NOT EXECUTED. No new publication URLs exist.
+
+Environment
+HP development PC, Windows PowerShell from the requested recovery worktree.
+Branch recovery/2026-11-02, resumed from
+53883850c4dbc1fffd0907cad82a11b271895a0b.
+Local process/User/Machine API/mail environment variables are absent.
+No .env was found in either the recovery or original worktree.
+Required credentials exist in GitHub repository Secrets (values not retrieved).
+The remote recovery branch did not exist when checked.
+
+Concrete execution candidate
+.github/workflows/design-options.yml is overridden ONLY on this isolated
+recovery branch. The existing workflow path is already registered on GitHub,
+so it can run against the explicitly selected recovery ref after approval.
+NEVER merge this workflow override into main.
+The job's contents/actions permissions are read-only. It uploads recovery
+artifacts and sends one selection email; it cannot commit production state.
+No third-party Actions were added; the official pinned Actions are reused.
+Existing requirements-backfill-2026-10-11.txt supplies pinned dependencies.
+
+run_design.py reuses existing generate_image_concepts.py image creation,
+51:58 crop (1020x1160), package construction and the existing design email
+formatter/attachment/SMTP functions. Existing production scripts are unchanged.
+The concepts and titles were created in the Codex subscription session,
+without calling Gemini or any paid text-generation API.
+
+Titles (three existing creative lanes)
+1. A CHILL DOWN YOUR FEATHERS — duck/idiom pun
+2. ICE TO MEET YOU, SKULLCAPE — story-related phonetic wordplay
+3. ANTARCTICA IS STARING BACK — short poster copy
+English visual concepts, Japanese review text and complete image prompts:
+design_brief.json and execution/image_prompt_1.txt through image_prompt_3.txt.
+
+Cost estimate before live execution
+Existing model/settings: gpt-image-2 / medium / 1536x1024 / n=1.
+Three estimated image outputs: USD 0.123.
+Prompt UTF-8 byte counts: 1964, 1950, 2062.
+At USD 5 / million text input tokens, using byte count as a conservative
+input-token estimate gives USD 0.029880 for all three prompts.
+Combined estimate: USD 0.152880.
+Reserve: USD 0.13 per request, USD 0.39 for all three; user cap USD 0.50.
+There is no paid text generation, model fallback, or automatic retry.
+This is an estimate, not a provider invoice or a server-side billing cap.
+Usage is recorded when returned; input is charged at the higher USD 8/M rate
+for conservative runtime accounting, output at USD 30/M. Each next request
+is blocked if the updated estimate plus remaining reserves exceeds USD 0.50.
+Pricing checked in official OpenAI documentation:
+https://developers.openai.com/api/docs/pricing
+https://developers.openai.com/api/docs/guides/image-generation
+Machine-readable estimate: execution/cost_plan.json.
+
+Guards and evidence
+- November 2, story 3, ID 46 and restored approval SHA256 are checked.
+- Confirmation is bound to recovery/2026-11-02, repository and actor.
+- A previous recovery workflow run blocks all further paid execution.
+- SDK retries and duplicate-image retries are both zero; at most 3 calls.
+- Each request reserves cost in cost_ledger.json BEFORE the network call.
+- A failed or uncertain request blocks further calls and automatic restart.
+- Gmail Sent is checked for an existing November 2 design email before
+  generation and again before SMTP. A targeted connector search also returned
+  no November 2 selection emails during this continuation session.
+- Generated assets and ledger are uploaded BEFORE SMTP, and partial evidence
+  is also uploaded after failure when the runner can still execute cleanup.
+- The approval-token digest and SMTP-attempt marker are saved BEFORE sending.
+- SMTP is attempted once. An uncertain outcome requires inspection, not resend.
+- Sent verification checks Message-ID, approval identity, recipients and all
+  three attachment hashes. Raw approval tokens are never saved to artifacts.
+- The job ends at WAITING_HUMAN_SELECTION; Web/X publication is separate.
+
+Offline validation
+Nine targeted guard tests passed; no real provider, SMTP, IMAP or image call
+was made by tests. Test images are 2x2 temporary fixtures, not deliverables.
+Evidence: execution/offline_tests_final.log.
+The first test run exposed a test-only missing 'run' key on a uses step.
+It was corrected; the initial failure and intermediate rerun are preserved.
+Initial and earlier offline_tests logs are superseded by offline_tests_final.log.
+The mocked SMTP test also verifies digest/attempt preservation before an
+uncertain send, and that a second send is refused.
+This is offline verification, not a successful live integration claim.
+
+Why the next action needs a Human Gate
+The user-supplied development rule 5 explicitly requires human approval for
+push. The current instruction authorizes the API spend and image/email work,
+but does not explicitly authorize uploading this new workflow candidate.
+The executable candidate is prepared for concrete review before asking.
+Requested approval: push only recovery/2026-11-02 and execute the one-shot
+generation/email workflow. The user must still select image and title by mail.
+
+Execution after that approval (not executed here)
+PC: HP development PC. Terminal: Windows PowerShell / VS Code.
+Project: C:\Users\hirok\Projects\the-daily-duck-recovery-2026-11-02
+1. Verify clean recovery branch and the specifically approved commit SHA.
+2. Perform resource checks and use only the authoritative heavy-job-lock.ps1
+   status/acquire/release procedure for the image-generation job; HOLD unless
+   acquisition returns ACQUIRED with exit code 0. Never manipulate lock files.
+3. Push the reviewed commit to refs/heads/recovery/2026-11-02 without force.
+4. Verify remote branch SHA, then dispatch design-options.yml against that ref
+   with confirmation GENERATE-AND-EMAIL-2026-11-02-USD050 exactly once.
+5. Inspect logs/artifacts, download real images/ledger/mail result, and confirm
+   the selection email through Gmail. Do not rerun after an uncertain failure.
+6. Release this session's acquired heavy lock and verify RELEASED.
+7. Stop for the human image/title reply. Preserve the returned token digest
+   and batch package; normal current-date production state is not the source.
+8. Web publication, X duplicate checks/posting and production application are
+   later stages requiring the appropriate human approvals and live evidence.

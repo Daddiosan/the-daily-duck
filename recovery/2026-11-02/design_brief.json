@@ -1,0 +1,61 @@
+{
+  "issue_date": "2026-11-02",
+  "selected_story_number": 3,
+  "selected_story_id": 46,
+  "text_creation": "Created in the authorized Codex ChatGPT subscription session; no text-generation API calls.",
+  "image_concepts": [
+    {
+      "number": 1,
+      "title_en": "The Landscape Looks Back",
+      "concept_en": "A friendly yellow duck notices a skull-like face formed by Antarctica's ice and dark terrain. A playful landscape illustration inspired by Vega Island, not a scientific reconstruction.",
+      "composition_en": "Wide scenic illustration with a small duck centered in the lower foreground and a skull-resembling arrangement of white icy slopes and dark recesses in the central background. Keep both subjects inside the central 55 percent so the final portrait crop preserves the visual joke.",
+      "generation_prompt_en": "Premium, softly rendered 3D editorial landscape. A recognizable friendly yellow duck with an orange beak, large glossy dark eyes and a small feather tuft looks up with warm curiosity at an icy Antarctic landscape whose natural-looking contours suggest a skull. The face is formed by white snow, blue ice and dark terrain, not an actual skull. Cool blue daylight, gentle warm highlights on the duck, inviting rather than frightening. A fictional editorial illustration inspired by the approved Vega Island story; no claim of accurate terrain or a NASA photograph. Central composition safe for a 51:58 crop. No text, numbers, logos or watermark.",
+      "alt_en": "A yellow duck looks toward a skull-like arrangement of icy Antarctic slopes in an editorial illustration.",
+      "title_ja": "こちらを見返す氷の風景",
+      "concept_ja": "南極の氷と暗い地形が作る、骸骨のような顔に黄色いアヒルが気づきます。ベガ島の記事に着想を得た楽しい風景イラストで、科学的な地形再現ではありません。",
+      "composition_ja": "広い風景の中央下に小さなアヒル、その背後中央に氷と暗いくぼみが作る顔を配置。縦長への中央トリミングでも両方を残します。",
+      "alt_ja": "南極の氷の斜面が作る骸骨のような形を見上げる黄色いアヒルのイラスト。"
+    },
+    {
+      "number": 2,
+      "title_en": "An Icy Double Take",
+      "concept_en": "An overhead, layered-paper editorial metaphor turns blue-and-white Antarctic shapes into a skull-like portrait, with the duck providing a cheerful contrasting focal point.",
+      "composition_en": "Top-down graphic composition made of layered white, pale-blue and navy paper shapes. A broad skull-like landscape pattern occupies the central upper area; a yellow duck seen from above sits just below it. Balanced negative space, central crop safety.",
+      "generation_prompt_en": "A sophisticated handcrafted paper-cut editorial illustration viewed directly from above. Layered white and pale-blue paper ice shapes over navy paper water and terrain loosely suggest a skull-shaped icy island landscape. Make the face-like pattern a visual metaphor, not a real skull or a map. Include one cheerful recognizable yellow duck with orange beak, glossy dark eyes and a small tuft, looking toward the face-like pattern. Crisp clean edges, tactile paper shadows, restrained modern editorial palette. Both duck and icy face remain centered within the central 55 percent of the landscape image for a 51:58 final crop. No labels, lettering, numbers, logos or watermark.",
+      "alt_en": "A yellow duck beside a skull-like pattern of layered paper ice, viewed from above.",
+      "title_ja": "氷の顔に、思わず二度見",
+      "concept_ja": "青と白の重ね紙で南極の風景を骸骨のような顔に見立て、明るい黄色のアヒルを添える俯瞰のイラスト表現です。",
+      "composition_ja": "真上から見た白・淡い青・紺の切り絵。中央上に顔のような氷の模様、そのすぐ下にアヒルを置き、中央の縦長範囲にも収めます。",
+      "alt_ja": "重ね紙の氷が作る骸骨のような模様と黄色いアヒルを真上から描いたイラスト。"
+    },
+    {
+      "number": 3,
+      "title_en": "A Little Chill, A Big Surprise",
+      "concept_en": "A miniature ice-landscape diorama and a curious duck turn the skull-like resemblance into a charming close-up visual discovery. This is a clearly invented editorial metaphor, not a field scene.",
+      "composition_en": "Close-up tabletop-style miniature against a clean pale-blue studio background. In the center, an icy landscape model has two dark hollow-like contours and a broad opening that suggest a skull; a small yellow duck leans around its lower edge. No real bones, lettering or equipment.",
+      "generation_prompt_en": "Premium miniature clay-and-frost editorial diorama, photographed with soft studio lighting on a clean pale-blue background. One charming yellow duck with orange beak, large dark glossy eyes and a small feather tuft peeks curiously around a small sculpted icy landscape whose blue-white contours loosely resemble a skull. Make it obvious this is an imaginative miniature landscape, not a literal skull, archaeological object, real Antarctic scene or NASA instrument. Rounded forms, detailed icy texture, friendly curiosity, gentle shadows, no horror. Tight central arrangement with the duck and entire face-like landscape inside the central 55 percent for a final 51:58 crop. No readable text, digits, logos, watermark or UI.",
+      "alt_en": "A curious yellow duck peeks around a miniature icy landscape with skull-like contours.",
+      "title_ja": "小さな寒気、大きな発見",
+      "concept_ja": "骸骨に似た氷の風景をミニチュアの見立てにし、好奇心いっぱいのアヒルと接写で表現します。実際の現地風景ではなく、創作のイラストです。",
+      "composition_ja": "淡い青の背景に、顔のような起伏を持つ小さな氷の風景模型を中央配置。下側からアヒルがのぞき込み、骨や文字、観測機器は入れません。",
+      "alt_ja": "骸骨のような起伏を持つ氷の風景模型をのぞき込む黄色いアヒル。"
+    }
+  ],
+  "title_ideas": [
+    {
+      "number": 1,
+      "title": "A CHILL DOWN YOUR FEATHERS",
+      "meaning_ja": "『羽までぞくっとする寒さ／驚き』。慣用句 a chill down your spine（背筋がぞくっとする）から spine をアヒルの feathers（羽）に置き換えた言葉遊び。氷の冷たさと骸骨に似た風景への驚きを重ねています。"
+    },
+    {
+      "number": 2,
+      "title": "ICE TO MEET YOU, SKULLCAPE",
+      "meaning_ja": "『氷の顔さん、はじめまして』。Nice to meet you の Nice を、音の似た Ice に置き換え、氷の風景を顔に見立てて挨拶するコピーです。Skullcape は承認済み記事のDuck名です。"
+    },
+    {
+      "number": 3,
+      "title": "ANTARCTICA IS STARING BACK",
+      "meaning_ja": "『南極が、こちらを見返している』。顔に見える氷の風景という視覚の驚きを、短いポスターコピーに凝縮しています。実際に生き物がいるという意味ではありません。"
+    }
+  ]
+}

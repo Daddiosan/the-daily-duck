@@ -1,182 +1,119 @@
-name: The Daily Duck - Design Options
+# Recovery-branch override only. NEVER merge this workflow into main.
+name: The Daily Duck - 2026-11-02 Isolated Design Options
 
 on:
   workflow_dispatch:
     inputs:
-      force_regenerate:
-        description: "Regenerate today's 3 concept+image options even if already created"
-        required: false
-        type: boolean
-        default: false
+      confirmation:
+        description: "GENERATE-AND-EMAIL-2026-11-02-USD050"
+        required: true
+        type: string
 
 permissions:
-  contents: write
+  contents: read
+  actions: read
 
 concurrency:
-  group: daily-duck-design-options
+  group: daily-duck-recovery-2026-11-02-design-email
   cancel-in-progress: false
 
 jobs:
-  approved-story-to-design-email:
+  generate-and-email:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 20
+    environment: Production
+    env:
+      RECOVERY_CONFIRMATION: ${{ inputs.confirmation }}
+      PYTHONUNBUFFERED: "1"
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Enforce isolated branch and one-shot human confirmation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/recovery/2026-11-02"
+          test "$GITHUB_EVENT_NAME" = "workflow_dispatch"
+          test "$GITHUB_ACTOR" = "Daddiosan"
+          test "$GITHUB_TRIGGERING_ACTOR" = "Daddiosan"
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$RECOVERY_CONFIRMATION" = "GENERATE-AND-EMAIL-2026-11-02-USD050"
+
+      - name: Reject a second recovery run before any paid request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/workflows/design-options.yml/runs?branch=recovery%2F2026-11-02&per_page=100" > "$RUNNER_TEMP/recovery-runs.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          data = json.loads((Path(os.environ["RUNNER_TEMP"]) / "recovery-runs.json").read_text())
+          assert data["total_count"] == 1, "Prior recovery run exists; inspect evidence before any restart"
+          assert str(data["workflow_runs"][0]["id"]) == os.environ["GITHUB_RUN_ID"]
+          PY
+
+      - name: Checkout approved recovery branch commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          fetch-depth: 0
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-phase2.txt
-          pip install Pillow
+      - name: Install existing pinned recovery dependencies
+        run: python -m pip install -r requirements-backfill-2026-10-11.txt
 
-      - name: Verify APPROVED_STORY
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
+      - name: Confirm cost estimate and target story without paid calls
+        run: python recovery/2026-11-02/run_design.py --offline
 
-          p = Path("automation_state/approved_story.json")
-          if not p.exists():
-              raise SystemExit("approved_story.json not found.")
-
-          d = json.loads(p.read_text(encoding="utf-8"))
-
-          if d.get("state") != "APPROVED_STORY":
-              raise SystemExit(
-                  f"Expected APPROVED_STORY, got {d.get('state')!r}"
-              )
-
-          print(
-              "APPROVED_STORY OK:",
-              d.get("issue_date") or d.get("date")
-          )
-          PY
-
-      - name: Check whether today's design package already exists
-        id: design_gate
-        shell: bash
-        run: |
-          python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json
-          from pathlib import Path
-
-          approved = json.loads(
-              Path("automation_state/approved_story.json")
-              .read_text(encoding="utf-8")
-          )
-
-          issue = approved.get("issue_date") or approved.get("date")
-          force = "${{ inputs.force_regenerate }}" == "true"
-
-          p = Path("automation_state/design_options.json")
-
-          same_issue = False
-          existing_state = ""
-
-          if p.exists():
-              try:
-                  d = json.loads(p.read_text(encoding="utf-8"))
-                  same_issue = d.get("issue_date") == issue
-                  existing_state = str(d.get("state") or "")
-              except Exception:
-                  pass
-
-          should_run = force or not same_issue
-
-          print(f"should_run={'true' if should_run else 'false'}")
-          print(f"issue_date={issue}")
-          print(f"existing_state={existing_state}")
-          PY
-
-      - name: Report existing design package
-        if: steps.design_gate.outputs.should_run != 'true'
-        run: |
-          echo "A design package already exists for this issue."
-          echo "Automatic duplicate generation is skipped."
-          echo "Use force_regenerate=true only when deliberate regeneration is required."
-
-      - name: Clear only stale downstream state
-        if: steps.design_gate.outputs.should_run == 'true'
-        run: |
-          python scripts/reset_after_approved_story.py
-
-      - name: Generate 3 concepts + 3 real images + 3 titles in 51x58 final ratio
-        if: steps.design_gate.outputs.should_run == 'true'
+      - name: Generate three images using existing Daily Duck generator
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_TEXT_MODEL: gemini-3.6-flash
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_IMAGE_MODEL: gpt-image-2
           OPENAI_IMAGE_SIZE: "1536x1024"
           OPENAI_IMAGE_QUALITY: medium
-        run: |
-          python scripts/generate_image_concepts.py
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python recovery/2026-11-02/run_design.py --generate
 
-      - name: Send design selection email with 3 images
-        if: steps.design_gate.outputs.should_run == 'true'
+      - name: Preserve generated assets before SMTP
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: daily-duck-recovery-2026-11-02-before-email
+          path: |
+            recovery/2026-11-02/candidate/
+            recovery/2026-11-02/execution/
+            recovery/2026-11-02/design_brief.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Send existing-format image and title selection email once
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: |
-          python scripts/send_design_approval_email.py
+        run: python recovery/2026-11-02/run_design.py --send
 
-      - name: Commit design-stage output
-        if: steps.design_gate.outputs.should_run == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
+      - name: Preserve results including partial failure or uncertain SMTP
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: daily-duck-recovery-2026-11-02-result
+          path: |
+            recovery/2026-11-02/candidate/
+            recovery/2026-11-02/execution/
+            recovery/2026-11-02/design_brief.json
+          if-no-files-found: warn
+          retention-days: 30
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Verify tracked production files stayed unchanged
+        run: git diff --exit-code
 
-          git add automation_state/
-          git add automation_images/design_previews/
-
-          echo "=== Git status before commit ==="
-          git status --short
-
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-
-          git commit -m "Phase 2: create 3 concept images and 3 titles"
-
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
-
-      - name: Phase boundary
-        if: steps.design_gate.outputs.should_run == 'true'
-        run: |
-          echo "Exactly 3 image concepts created."
-          echo "Exactly 1 real image generated for each concept."
-          echo "Final source-image ratio: 51:58 (width:height)."
-          echo "Final stored size: 1020x1160."
-          echo "No stretching or squashing is allowed."
-          echo "Exactly 3 title ideas created."
-          echo "One email with all 3 images was sent."
-          echo "Waiting for: IMAGE_NUMBER TITLE_NUMBER"
-          echo "Examples: 1 3 / １ ３"
-          echo "NEXT 3 regenerates all 3 concept images."
-          echo "No website or X publication occurs here."
-
-      - name: Notify failure by email
-        if: failure()
-        env:
-          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          FAILURE_STAGE: Design Options - 3 concepts + 3 images + 3 titles
-          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: |
-          python scripts/send_workflow_failure_email.py
+      - name: Stop at human image and title selection
+        run: echo "WAITING_HUMAN_SELECTION; NO_WEB_PUBLISH; NO_X_POST; NO_GIT_PUSH"

@@ -1,0 +1,13 @@
+test_changed_quality_or_large_prompt_blocks_before_endpoint (__main__.Guards.test_changed_quality_or_large_prompt_blocks_before_endpoint) ... ok
+test_existing_sent_email_blocks_before_generation (__main__.Guards.test_existing_sent_email_blocks_before_generation) ... ok
+test_fourth_request_is_blocked_before_endpoint (__main__.Guards.test_fourth_request_is_blocked_before_endpoint) ... ok
+test_live_mode_refuses_main_and_local_execution (__main__.Guards.test_live_mode_refuses_main_and_local_execution) ... ok
+test_restored_story_and_three_distinct_title_lanes (__main__.Guards.test_restored_story_and_three_distinct_title_lanes) ... ok
+test_uncertain_request_is_recorded_and_never_retried (__main__.Guards.test_uncertain_request_is_recorded_and_never_retried) ... ok
+test_usage_cost_jump_stops_before_another_image (__main__.Guards.test_usage_cost_jump_stops_before_another_image) ... ok
+test_workflow_has_no_write_permission_or_publication (__main__.Guards.test_workflow_has_no_write_permission_or_publication) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.063s
+
+OK
