@@ -1,0 +1,1290 @@
+{
+  "generated_at": "2026-11-02T01:26:23.073987+00:00",
+  "candidate_count": 78,
+  "filtered_count": 68,
+  "shortlist": [
+    {
+      "source": "ScienceDaily Society",
+      "title": "Archaeologists discover 1,200-year-old mummified hairless dog in Peru",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261016070644.htm",
+      "published": "Sat, 17 Oct 2026 22:32:58 EDT",
+      "description": "Archaeologists have discovered 1,200-year-old remains of Peru’s famous hairless dogs at an ancient Wari Empire burial site, including remarkably preserved mummies and puppies buried alongside humans. Their unusual teeth, diets, and burial arrangements reveal surprising clues about how ancient Peruvians cared for, bred, and sometimes discarded their dogs.",
+      "score": 14,
+      "happy_score": 6,
+      "negative_score": 0,
+      "visual_score": 6,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "dog",
+        "dogs"
+      ]
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Scientists discover the hidden “muscles” trees use to straighten themselves",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030003006.htm",
+      "published": "Sat, 31 Oct 2026 22:44:28 EDT",
+      "description": "Scientists have discovered that trees can sense their own shape and straighten their trunks using specialized wood that acts like opposing muscles. This remarkable ability helps trees maintain their posture and could lead to stronger forests, better timber, and more resilient crops.",
+      "score": 11,
+      "happy_score": 9,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered",
+        "helps"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "Scientists discover a hidden 100-million-year-old volcanic system",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261026225615.htm",
+      "published": "Wed, 28 Oct 2026 08:00:17 EDT",
+      "description": "Scientists have uncovered a long-lost volcanic system in Iran that dates back roughly 100 million years, revealing a hidden chapter in Earth's tectonic history. The discovery sheds new light on the disappearance of an ancient ocean and the powerful geological forces that reshaped the Middle East.",
+      "score": 11,
+      "happy_score": 7,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovery",
+        "discover",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "ocean"
+      ]
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "128,000-year-old ice in Tibet could rewrite climate history",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261028232713.htm",
+      "published": "Thu, 29 Oct 2026 04:10:47 EDT",
+      "description": "Ancient ice discovered high in Tibet may be more than 128,000 years old, preserving an extraordinary record of Earth's climate that scientists previously thought had been lost. The discovery reveals a rare glimpse into the last ice age and could reshape our understanding of how glaciers survive dramatic changes in global climate.",
+      "score": 10,
+      "happy_score": 8,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovery",
+        "discovered",
+        "record"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "The Great Barrier Reef's most notorious coral killer may actually be helping it",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030002957.htm",
+      "published": "Sun, 01 Nov 2026 06:45:10 EST",
+      "description": "Crown-of-thorns starfish are notorious for devouring coral reefs, but surprising new research reveals these spiny predators may actually help reefs thrive when their populations are kept in check. Scientists studying Australia's Great Barrier Reef discovered that nearly 75% of observed starfish feeding events left behind living coral tissue, rather than destroying entire colonies. By feeding on fast-growing, dominant corals, the starfish create opportunities for slower-growing species to survive, potentially increasing coral biodiversity.",
+      "score": 9,
+      "happy_score": 7,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered",
+        "new",
+        "helping"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    }
+  ],
+  "all_candidates": [
+    {
+      "source": "ScienceDaily Society",
+      "title": "Archaeologists discover 1,200-year-old mummified hairless dog in Peru",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261016070644.htm",
+      "published": "Sat, 17 Oct 2026 22:32:58 EDT",
+      "description": "Archaeologists have discovered 1,200-year-old remains of Peru’s famous hairless dogs at an ancient Wari Empire burial site, including remarkably preserved mummies and puppies buried alongside humans. Their unusual teeth, diets, and burial arrangements reveal surprising clues about how ancient Peruvians cared for, bred, and sometimes discarded their dogs.",
+      "score": 14,
+      "happy_score": 6,
+      "negative_score": 0,
+      "visual_score": 6,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "dog",
+        "dogs"
+      ]
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Scientists discover the hidden “muscles” trees use to straighten themselves",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030003006.htm",
+      "published": "Sat, 31 Oct 2026 22:44:28 EDT",
+      "description": "Scientists have discovered that trees can sense their own shape and straighten their trunks using specialized wood that acts like opposing muscles. This remarkable ability helps trees maintain their posture and could lead to stronger forests, better timber, and more resilient crops.",
+      "score": 11,
+      "happy_score": 9,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered",
+        "helps"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "Scientists discover a hidden 100-million-year-old volcanic system",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261026225615.htm",
+      "published": "Wed, 28 Oct 2026 08:00:17 EDT",
+      "description": "Scientists have uncovered a long-lost volcanic system in Iran that dates back roughly 100 million years, revealing a hidden chapter in Earth's tectonic history. The discovery sheds new light on the disappearance of an ancient ocean and the powerful geological forces that reshaped the Middle East.",
+      "score": 11,
+      "happy_score": 7,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovery",
+        "discover",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "ocean"
+      ]
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "128,000-year-old ice in Tibet could rewrite climate history",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261028232713.htm",
+      "published": "Thu, 29 Oct 2026 04:10:47 EDT",
+      "description": "Ancient ice discovered high in Tibet may be more than 128,000 years old, preserving an extraordinary record of Earth's climate that scientists previously thought had been lost. The discovery reveals a rare glimpse into the last ice age and could reshape our understanding of how glaciers survive dramatic changes in global climate.",
+      "score": 10,
+      "happy_score": 8,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovery",
+        "discovered",
+        "record"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "The Great Barrier Reef's most notorious coral killer may actually be helping it",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030002957.htm",
+      "published": "Sun, 01 Nov 2026 06:45:10 EST",
+      "description": "Crown-of-thorns starfish are notorious for devouring coral reefs, but surprising new research reveals these spiny predators may actually help reefs thrive when their populations are kept in check. Scientists studying Australia's Great Barrier Reef discovered that nearly 75% of observed starfish feeding events left behind living coral tissue, rather than destroying entire colonies. By feeding on fast-growing, dominant corals, the starfish create opportunities for slower-growing species to survive, potentially increasing coral biodiversity.",
+      "score": 9,
+      "happy_score": 7,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered",
+        "new",
+        "helping"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Scientists discover metals that defy the deep freeze at -424°F",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261029072127.htm",
+      "published": "Sat, 31 Oct 2026 08:45:59 EDT",
+      "description": "Scientists have discovered a surprising mechanism that allows certain metals to resist cracking at temperatures as low as -253°C (-424°F), when similar materials typically become dangerously brittle. Instead of breaking, two experimental alloys reorganize their internal structures, creating new ways to absorb stress and remain flexible.",
+      "score": 9,
+      "happy_score": 7,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "A simple daily fiber supplement reduced arthritis pain and improved strength",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027230715.htm",
+      "published": "Tue, 27 Oct 2026 23:56:09 EDT",
+      "description": "A new clinical trial suggests that a simple daily fiber supplement could significantly reduce knee osteoarthritis pain, improve muscle strength, and make the body less sensitive to pain. Researchers discovered that the benefits may be linked to changes in gut bacteria and the hormone GLP-1, revealing a promising new approach to arthritis relief.",
+      "score": 9,
+      "happy_score": 7,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered",
+        "new",
+        "improved"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "NASA",
+      "title": "APOD: 2026 November 1 – Colors of the Moon",
+      "url": "https://science.nasa.gov/image-article/apod-2026-november-1-colors-of-the-moon/",
+      "published": "Sun, 01 Nov 2026 04:05:00 +0000",
+      "description": "APOD Science APOD APOD: 2026 November 1 –… Today’s APOD Archive Submissions Index Search Calendar RSS Education About Discuss APOD Astronomy Picture of the Day Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer. Colors of the [&#8230;]",
+      "score": 8,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 3,
+      "matched_happy": [
+        "discover"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "moon"
+      ]
+    },
+    {
+      "source": "NASA",
+      "title": "NASA’s James Webb Space Telescope Captures Eerie Cat’s Head",
+      "url": "https://www.nasa.gov/image-article/nasas-james-webb-space-telescope-captures-eerie-cats-head/",
+      "published": "Fri, 30 Oct 2026 15:56:26 +0000",
+      "description": "Intricate structures within the Cat&#8217;s Head Nebula are illuminated in this mid-infrared view from NASA’s James Webb Space Telescope released on Oct. 29, 2026. The distinctive “cat’s head” shape of the nebula was likely sculpted over time by the intense ultraviolet radiation and winds from massive stars in the Carina Nebula. As this stellar feedback [&#8230;]",
+      "score": 8,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 5,
+      "source_bonus": 3,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "cat",
+        "space"
+      ]
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "A 700,000-year-old elephant tooth reveals a lost world where early humans lived",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261028232709.htm",
+      "published": "Thu, 29 Oct 2026 08:38:53 EDT",
+      "description": "A remarkably preserved elephant tooth dating back nearly 700,000 years has revealed a surprisingly lush prehistoric world where giant elephants and early humans lived side by side. Discovered in northern Israel alongside ancient stone tools, the tooth belonged to a straight-tusked elephant, one of the largest land mammals of the Ice Age.",
+      "score": 8,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 3,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "elephant"
+      ]
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Scientists discover mysterious seahorse lookalikes that no one has ever seen alive",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261029072119.htm",
+      "published": "Thu, 29 Oct 2026 22:07:19 EDT",
+      "description": "Scientists have discovered that three bizarre deep-sea fish that look exactly like seahorses actually belong to a separate evolutionary group, proving that nature created the same unusual body shape more than once. Nicknamed \"sea muppets,\" these elusive creatures are known from just seven specimens, and no one has ever seen one alive.",
+      "score": 8,
+      "happy_score": 6,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Scientists discover a secret glow in toxic fire salamanders",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027063707.htm",
+      "published": "Wed, 28 Oct 2026 08:11:52 EDT",
+      "description": "Researchers have discovered a surprising hidden ability in Europe's familiar black-and-yellow fire salamanders: they glow green and cyan under ultraviolet light. The mysterious fluorescence comes mainly from glands in their skin and their toxic secretions, which can continue glowing for more than 24 hours after being released.",
+      "score": 8,
+      "happy_score": 6,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Scientists discover a hidden oxygen reservoir deep inside Earth",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027063702.htm",
+      "published": "Wed, 28 Oct 2026 21:13:05 EDT",
+      "description": "Scientists have discovered that magma deep inside Earth can store surprising amounts of extra oxygen, potentially revealing a hidden contributor to our planet's oxygen-rich atmosphere. The findings suggest that ancient volcanic eruptions may have helped transform Earth's atmosphere billions of years ago, with implications for understanding life on other planets.",
+      "score": 8,
+      "happy_score": 6,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "Antarctica’s “Doomsday Glacier” could raise sea levels twice as much as predicted",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027063701.htm",
+      "published": "Wed, 28 Oct 2026 05:22:09 EDT",
+      "description": "Antarctica’s Thwaites Glacier may be melting twice as much as previously predicted, even without additional global warming. Scientists discovered that warm ocean water is penetrating miles beneath the ice, weakening its foundations and accelerating its retreat. A new model predicts that the glacier could add up to 30 millimeters to global sea levels by 2100, with a 60% chance of losing a crucial stabilizing ridge.",
+      "score": 8,
+      "happy_score": 4,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "ocean"
+      ]
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Hubble reveals a stunning twist in how the universe emerged from darkness",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261029072113.htm",
+      "published": "Fri, 30 Oct 2026 06:50:22 EDT",
+      "description": "A surprising discovery by astronomers using the Hubble Space Telescope is challenging a leading explanation for how the early universe emerged from a dense fog of hydrogen roughly 13 billion years ago. Scientists once believed powerful winds from exploding stars helped radiation escape galaxies and clear that cosmic fog, but new observations reveal that these winds actually block radiation instead.",
+      "score": 8,
+      "happy_score": 4,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovery",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "space"
+      ]
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Ancient ape fossil in Egypt could rewrite the story of human origins",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261031011638.htm",
+      "published": "Sun, 01 Nov 2026 05:32:46 EST",
+      "description": "A 17- to 18-million-year-old ape fossil discovered in Egypt is challenging long-held beliefs about where the ancestors of humans and other modern apes first evolved. Scientists now suspect that North Africa and the Middle East, rather than East Africa, may have been the cradle of modern ape evolution.",
+      "score": 7,
+      "happy_score": 5,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered",
+        "first"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "A computer scientist breaks through a limit that stood since 1996",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261029072146.htm",
+      "published": "Fri, 30 Oct 2026 07:08:52 EDT",
+      "description": "A computer scientist has achieved a breakthrough in a nearly 25-year-old problem involving how computers calculate distances across enormous networks. The new algorithm delivers more reliable estimates for closely connected points without sacrificing speed, overcoming a longstanding limitation of earlier methods. Its secret lies in a smarter way of sampling network connections at multiple scales.",
+      "score": 7,
+      "happy_score": 5,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "breakthrough",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "Mars dust may be less abrasive than lunar dust, spacesuit samples suggest",
+      "url": "https://phys.org/news/2026-10-mars-abrasive-lunar-spacesuit-samples.html",
+      "published": "Sun, 01 Nov 2026 15:00:01 EST",
+      "description": "Tucked away among its sensors, cameras and navigation tools, NASA's Mars rover Perseverance is wearing small swatches of spacesuit material. A rover doesn't need a spacesuit, but the swatches—each less than a square inch (6.5 square centimeters) in size—serve an important purpose: They're helping scientists assess the potential damage caused by ubiquitous Martian dust.",
+      "score": 7,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [
+        "helping"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "mars"
+      ]
+    },
+    {
+      "source": "NASA",
+      "title": "APOD: 2026 October 31 – Night on a Spooky Planet",
+      "url": "https://science.nasa.gov/image-article/apod-2026-october-31-night-on-a-spooky-planet/",
+      "published": "Sat, 31 Oct 2026 04:05:00 +0000",
+      "description": "APOD Science APOD APOD: 2026 October 31 –… Today’s APOD Archive Submissions Index Search Calendar RSS Education About Discuss APOD Astronomy Picture of the Day Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer. Night on a [&#8230;]",
+      "score": 6,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 3,
+      "matched_happy": [
+        "discover"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "NASA",
+      "title": "APOD: 2026 October 30 – Haunting the Cepheus Flare",
+      "url": "https://science.nasa.gov/image-article/apod-2026-october-30-haunting-the-cepheus-flare/",
+      "published": "Fri, 30 Oct 2026 04:05:00 +0000",
+      "description": "APOD Science APOD APOD: 2026 October 30 –… Today’s APOD Archive Submissions Index Search Calendar RSS Education About Discuss APOD Astronomy Picture of the Day Discover the cosmos! Each day a different image or photograph of our fascinating universe is featured, along with a brief explanation written by a professional astronomer. Haunting the Cepheus [&#8230;]",
+      "score": 6,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 3,
+      "matched_happy": [
+        "discover"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "NASA",
+      "title": "Slice of Martian Meteorite Teghaza 001",
+      "url": "https://science.nasa.gov/photojournal/slice-of-martian-meteorite-teghaza-001/",
+      "published": "Thu, 29 Oct 2026 23:32:35 +0000",
+      "description": "Description This slice of Teghaza 001, one of the most ancient Martian meteorites ever found on Earth, was used to determine the age of the rock. Reflected light images like these serve as a scientist’s road map, helping them find minerals of interest to analyze by different instruments. Figure A is the same image with […]",
+      "score": 6,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 3,
+      "matched_happy": [
+        "helping"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily All",
+      "title": "Scientists discover a hidden driver of high cholesterol and a way to stop it",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030003003.htm",
+      "published": "Sat, 31 Oct 2026 21:57:50 EDT",
+      "description": "Scientists have uncovered a hidden mechanism that allows high-cholesterol diets to undermine the body's natural cholesterol defenses, and blocking it dramatically lowered harmful LDL cholesterol in mice. Even more promising, an experimental drug targeting this pathway has already passed an early human safety trial, potentially speeding the development of a new treatment for high cholesterol.",
+      "score": 6,
+      "happy_score": 4,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "1.9-million-year-old discovery rewrites the story of human evolution",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261025073042.htm",
+      "published": "Mon, 26 Oct 2026 21:35:08 EDT",
+      "description": "New evidence suggests that early humans reached the Jordan Valley at least 1.9 million years ago, hundreds of thousands of years earlier than scientists previously thought. Advanced dating methods revealed that the ‘Ubeidiya site is roughly as old as the famous Dmanisi site in Georgia, placing both among the earliest known human settlements outside Africa.",
+      "score": 6,
+      "happy_score": 4,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovery",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "Scientists discover a surprising twist in Japan's 7,300-year-old volcanic apocalypse",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261017230023.htm",
+      "published": "Sun, 18 Oct 2026 08:36:21 EDT",
+      "description": "A catastrophic volcanic eruption 7,300 years ago devastated Japan, but new research reveals that its impact on prehistoric populations was far more complex than previously believed. While some communities disappeared or declined, others unexpectedly flourished as survivors migrated, adapted, and found new ways to thrive.",
+      "score": 6,
+      "happy_score": 4,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "Scientists predicted doomsday for November 13, 2026. Should we be worried?",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261016070639.htm",
+      "published": "Fri, 16 Oct 2026 21:52:59 EDT",
+      "description": "In 1960, scientists predicted that runaway population growth would bring humanity to the brink of destruction on November 13, 2026, and their mathematical forecasts remained surprisingly accurate for decades. But as birth rates declined and population growth slowed, the terrifying prediction unraveled, revealing how even convincing scientific models can fail when human behavior changes.",
+      "score": 6,
+      "happy_score": 4,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "birth"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Scientists just broke a textbook rule of physics",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027063713.htm",
+      "published": "Wed, 28 Oct 2026 23:39:27 EDT",
+      "description": "Scientists have defied a long-standing rule of laser physics by generating X-rays with much higher energies than conventional theory predicts. The surprising discovery reveals how two electrons working together can overcome a previously accepted limit, opening new possibilities for quantum research.",
+      "score": 6,
+      "happy_score": 4,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovery",
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "James Webb discovers a scorching lava planet with a “giant sunscreen”",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261026225603.htm",
+      "published": "Tue, 27 Oct 2026 06:20:52 EDT",
+      "description": "A scorching lava planet 280 light-years away has surprised astronomers by apparently maintaining a thick atmosphere despite conditions that should have stripped it away billions of years ago. James Webb Space Telescope observations suggest that TOI-561 b reflects about 75% of incoming starlight, possibly because of mineral clouds that act like a giant sunscreen. The planet may also be continually replenishing its atmosphere through gases released from a global ocean of molten rock.",
+      "score": 6,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 4,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "space",
+        "ocean"
+      ]
+    },
+    {
+      "source": "NASA",
+      "title": "NASA Releases MAX POWER Key Events for Media, Participants",
+      "url": "https://www.nasa.gov/news-release/nasa-releases-max-power-key-events-for-media-participants/",
+      "published": "Fri, 30 Oct 2026 19:31:02 +0000",
+      "description": "America’s newest aerospace expo and air show – MAX POWER – is fast approaching, and NASA has announced key events beginning Friday, Nov. 6, and running through Sunday, Nov. 8, hosted on and near the agency’s Kennedy Space Center in Florida. Through multiple park experiences at MAX POWER, NASA and a variety of external collaborators [&#8230;]",
+      "score": 5,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 3,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "space"
+      ]
+    },
+    {
+      "source": "NASA",
+      "title": "NASA Explores Potential Commercial Servicing for Hubble Telescope",
+      "url": "https://science.nasa.gov/missions/hubble/nasa-explores-potential-commercial-servicing-for-hubble-telescope/",
+      "published": "Fri, 30 Oct 2026 14:51:21 +0000",
+      "description": "NASA issued a Request for Information Oct. 29 to learn more about industry capabilities for in-space servicing to support the agency’s Hubble Space Telescope.",
+      "score": 5,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 3,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "space"
+      ]
+    },
+    {
+      "source": "NASA",
+      "title": "Map Showing Potential Origins of Martian Meteorite Teghaza 001",
+      "url": "https://science.nasa.gov/photojournal/map-showing-potential-origins-of-martian-meteorite-teghaza-001/",
+      "published": "Fri, 30 Oct 2026 00:07:39 +0000",
+      "description": "Description This global map of Mars shows 13 locations that match the mineralogy and chemistry of Teghaza 001, one of the most ancient Martian meteorites ever found on Earth. While scientists can never know for sure where a Martian meteorite originated, Teghaza 001 includes clues that link it to highlands in the southern hemisphere of […]",
+      "score": 5,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 3,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "mars"
+      ]
+    },
+    {
+      "source": "ScienceDaily All",
+      "title": "Drinking tea may help protect your heart, but there’s a surprising catch",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261031221203.htm",
+      "published": "Sun, 01 Nov 2026 06:29:04 EST",
+      "description": "A massive study of nearly 486,000 adults found that regularly drinking tea was associated with an 11% lower risk of heart and blood vessel diseases. The lowest risk was linked to drinking roughly six to eight cups per day, with black tea showing more consistent benefits than green tea.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "protect"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "A mysterious 4,000-year-old wall is rewriting North Africa’s history",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030003022.htm",
+      "published": "Sat, 31 Oct 2026 09:09:49 EDT",
+      "description": "A remarkable 4,000-year-old defensive structure discovered in Morocco is rewriting what scientists thought they knew about ancient North African civilizations. The massive fortifications reveal unexpectedly sophisticated prehistoric societies and suggest that the region played a much greater role in Mediterranean history than previously recognized.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Astronauts just gave the International Space Station a powerful upgrade",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030002931.htm",
+      "published": "Fri, 30 Oct 2026 02:12:55 EDT",
+      "description": "Two astronauts completed a 7-hour, 11-minute spacewalk to install a new solar array on the International Space Station, bringing NASA one step closer to a major power upgrade. Once the final array is installed on November 5, the station will have up to 30% more available power, supporting critical operations and its eventual controlled deorbit.",
+      "score": 5,
+      "happy_score": 1,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": [
+        "space"
+      ]
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Archaeologists may have just found the world's oldest shipwreck",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261025073036.htm",
+      "published": "Mon, 26 Oct 2026 05:51:15 EDT",
+      "description": "A mysterious shipwreck off Turkey’s coast may be the oldest ever discovered, dating back approximately 4,500 years to the age of the Egyptian pyramids. Although the wooden vessel has disappeared, its surviving pottery cargo reveals clues about an ancient trading network that may have connected distant Mediterranean civilizations. Researchers believe the ship may have crashed against rocks during a storm while transporting valuable goods such as oil, wine, or tree resin.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "Your aging brain may be trading memory for something more valuable",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261019093357.htm",
+      "published": "Tue, 20 Oct 2026 07:31:22 EDT",
+      "description": "The aging brain may be undergoing a remarkable transformation rather than simply losing its abilities, shifting its focus from remembering details to understanding the bigger picture. Scientists suggest this change could be an evolutionary adaptation that helps older adults develop wisdom and share decades of knowledge with younger generations.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "helps"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "NASA discovers Jupiter’s invisible shield is more complex than Earth’s",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261028232715.htm",
+      "published": "Thu, 29 Oct 2026 08:26:25 EDT",
+      "description": "NASA’s Juno spacecraft has discovered that Jupiter uses a surprisingly complex system of powerful plasma waves and multiple shock regions to defend against the solar wind. The findings reveal major differences between Jupiter and Earth and could help scientists understand the enormous shock waves produced by exploding stars.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "A mysterious star system just 16 light-years away may be hiding habitable planets",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261028232711.htm",
+      "published": "Thu, 29 Oct 2026 23:17:17 EDT",
+      "description": "Astronomers have solved a 170-year-old planetary mystery in a nearby two-star system, discovering that a mysterious wobble was caused by stellar activity rather than a giant planet. Although Jupiter-sized worlds have been ruled out in key regions, smaller, potentially habitable planets could still be waiting to be discovered just 16 light-years from Earth.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Do spiders dream? Scientists just found a surprising clue",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261026225555.htm",
+      "published": "Tue, 27 Oct 2026 00:53:11 EDT",
+      "description": "Scientists have discovered that spiders may sleep in ways surprisingly similar to humans, complete with distinct sleep stages and a dream-like REM state. Researchers at the University of Bonn studied the Australian jumping spider Portia fimbriata, a remarkably clever hunter known for its sophisticated strategies. By recording the spiders over several days and nights, they found clear evidence of regulated sleep, including a REM-like stage marked by eye movements and muscle twitches.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "From Italy to Croatia, a warming climate threatens prized white truffles",
+      "url": "https://phys.org/news/2026-11-italy-croatia-climate-threatens-prized.html",
+      "published": "Sun, 01 Nov 2026 14:03:58 EST",
+      "description": "Guided by the beam of a flashlight, Tino Marolo follows his dog Stella through the darkness of a Piedmont woodland, searching for one of Italy's most prized culinary treasures hidden beneath the soil.",
+      "score": 5,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 3,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "dog"
+      ]
+    },
+    {
+      "source": "Phys.org",
+      "title": "Why some trees thrive far from home—and what that means for carbon sinks",
+      "url": "https://phys.org/news/2026-10-trees-home-carbon.html",
+      "published": "Sun, 01 Nov 2026 13:00:01 EST",
+      "description": "In a study spanning 192 sites and four continents, researchers have discovered that conifers planted in the Southern Hemisphere grow up to four times faster and are more drought-resistant than those growing in their native ranges.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "Giant virus yields potassium channel gene that illuminates complex protein evolution",
+      "url": "https://phys.org/news/2026-10-giant-virus-yields-potassium-channel.html",
+      "published": "Sat, 31 Oct 2026 17:00:05 EDT",
+      "description": "Researchers have discovered a gene for a tandem potassium channel in an algal virus. The finding supports the view that giant viruses may have contributed significantly to the evolution of complex proteins. The study is published in the journal Proceedings of the National Academy of Sciences.",
+      "score": 5,
+      "happy_score": 3,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily All",
+      "title": "Scientists discover a surprising brain benefit of eating peanuts every day",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030003001.htm",
+      "published": "Sun, 01 Nov 2026 08:24:51 EST",
+      "description": "A surprising new study suggests that eating peanuts every day could help support brain health and memory in older adults. Researchers found that consuming about two servings of unsalted, skin-roasted peanuts daily for 16 weeks improved insulin responsiveness in brain regions important for memory, a function that often weakens with age and has been linked to Alzheimer's disease.",
+      "score": 4,
+      "happy_score": 7,
+      "negative_score": -5,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover",
+        "new",
+        "improved"
+      ],
+      "matched_negative": [
+        "disease"
+      ],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "NASA’s Artemis I mission reveals surprising radiation levels near the Moon",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027063659.htm",
+      "published": "Wed, 28 Oct 2026 06:29:36 EDT",
+      "description": "NASA’s Artemis I mission has revealed that cosmic radiation near the Moon is higher than in Earth orbit, but not by as much as scientists might expect. Tiny experimental detectors also uncovered surprising details about how radiation passes through the human body, offering valuable insights for future lunar exploration.",
+      "score": 4,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "moon"
+      ]
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "A simple liquid can stop cavities without drilling, major study confirms",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261025222339.htm",
+      "published": "Sun, 25 Oct 2026 22:41:13 EDT",
+      "description": "A simple liquid painted onto teeth in seconds can stop cavities without drilling, injections, or anesthesia, according to a major clinical trial involving young children. The inexpensive treatment could spare thousands of children painful dental procedures and surgery while paving the way for broader FDA-approved use.",
+      "score": 4,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "children"
+      ]
+    },
+    {
+      "source": "Phys.org",
+      "title": "Collective human metabolism produces 2 billion metric tons of CO₂ a year, global study estimates",
+      "url": "https://phys.org/news/2026-10-human-metabolism-billion-metric-tons.html",
+      "published": "Sun, 01 Nov 2026 17:00:01 EST",
+      "description": "A University of Bath–led study has estimated that the carbon dioxide produced by humans as our bodies turn food into energy rose by 74% between 1985 and 2015, reaching 2.05 billion metric tons a year. Researchers say the findings could help scientists better understand where carbon comes from, where it goes and how human activity fits into the bigger picture.",
+      "score": 4,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 2,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": [
+        "food"
+      ]
+    },
+    {
+      "source": "Phys.org",
+      "title": "Looking for bats after dark can help science—and change how we see them",
+      "url": "https://phys.org/news/2026-10-dark-science.html",
+      "published": "Sat, 31 Oct 2026 18:30:01 EDT",
+      "description": "What's that chirping sound coming through the detector? Did you feel something whiz past? Those are just some ways people react when they encounter microbats for the first time. Microbats are small, mostly nocturnal mammals that use ultrasonic sounds to navigate and hunt at night. They do this through echolocation, producing calls and listening to the echoes that bounce back from objects and prey.",
+      "score": 4,
+      "happy_score": 2,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "first"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "NASA",
+      "title": "November’s Night Sky Notes: Light-Day Away",
+      "url": "https://science.nasa.gov/solar-system/skywatching/night-sky-network/novembers-night-sky-notes-light-day-away/",
+      "published": "Fri, 30 Oct 2026 10:00:00 +0000",
+      "description": "Twin Travelers In 1977, NASA launched twin spacecraft Voyager 1 and 2, taking advantage of a once-every-175-year planetary alignment of the four largest planets in our solar system: Jupiter, Saturn, Uranus, and Neptune. Using six gravity assists between them, this Grand Tour gave us up-close views of the gas and ice giants, including several moons. […]",
+      "score": 3,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 3,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "NASA",
+      "title": "Vega Island Frozen in Fright",
+      "url": "https://science.nasa.gov/earth/earth-observatory/vega-island-frozen-in-fright/",
+      "published": "Fri, 30 Oct 2026 04:01:00 +0000",
+      "description": "The sight of an icy skull-like visage on the Antarctic island could make one’s blood run cold.",
+      "score": 3,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 3,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Environment",
+      "title": "Scientists confirm global warming is accelerating faster than ever recorded",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027231200.htm",
+      "published": "Thu, 29 Oct 2026 23:50:51 EDT",
+      "description": "Earth is warming faster than ever recorded, with scientists detecting a major acceleration in global temperatures since around 2015. A new study reveals that the warming rate has surged to approximately 0.35°C per decade, nearly double the average pace observed from 1970 to 2015. After removing natural climate fluctuations, researchers confirmed the acceleration with more than 98% statistical confidence.",
+      "score": 3,
+      "happy_score": 1,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Smaller EV batteries, longer range? Scientists may have found a way",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261027063708.htm",
+      "published": "Wed, 28 Oct 2026 08:25:43 EDT",
+      "description": "Scientists have developed a new technology that could make electric vehicle batteries smaller, lighter, and longer-lasting, potentially allowing cars to travel farther on a single charge. By borrowing precision manufacturing techniques from computer chip production, they found a way to prevent damaging lithium buildup that has held back next-generation batteries.",
+      "score": 3,
+      "happy_score": 1,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "New restrictions kick in as Delhi battles pollution",
+      "url": "https://phys.org/news/2026-11-restrictions-delhi-pollution.html",
+      "published": "Sun, 01 Nov 2026 14:40:01 EST",
+      "description": "Authorities in New Delhi stepped up anti-pollution measures on Sunday, including higher parking fees and work-from-home orders, seeking to curb toxic smog in one of the world's most polluted capitals.",
+      "score": 3,
+      "happy_score": 1,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "new"
+      ],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Scientists say a forgotten particle may explain why the universe exists",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261031221201.htm",
+      "published": "Sun, 01 Nov 2026 00:33:36 EDT",
+      "description": "A mysterious particle overlooked for decades may hold the key to why matter survived the Big Bang, allowing stars, planets, and life to exist. Scientists believe this forgotten neutrino reshaped the early universe and may have left detectable gravitational wave signals that could help unlock the cosmos’s deepest mysteries.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Scientists shrink Archimedes’ screw to the size of a single molecule",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030002940.htm",
+      "published": "Sun, 01 Nov 2026 06:55:46 EST",
+      "description": "Scientists have built a groundbreaking molecular motor that spins in either direction using electricity, inspired by a machine invented more than 2,000 years ago. Even more remarkably, its rotation can boost electrical conductivity by up to 100 times, potentially transforming the future of molecular electronics.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Scientists smash oxygen nuclei to recreate matter from the Big Bang",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261030002935.htm",
+      "published": "Fri, 30 Oct 2026 22:09:38 EDT",
+      "description": "Scientists have recreated a primordial state of matter from the dawn of the universe by colliding oxygen nuclei at nearly the speed of light. The surprising results show that this exotic substance can form in smaller, lower-energy collisions than previously demonstrated, challenging the known boundaries of early-universe physics.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "The uranium cubes that exposed Nazi Germany’s nuclear failure",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261015073218.htm",
+      "published": "Fri, 16 Oct 2026 08:32:52 EDT",
+      "description": "Scientists investigating Nazi Germany's secret nuclear program have uncovered evidence that its final experimental reactor was nowhere near as close to working as previously claimed. Analysis of surviving uranium cubes and wartime documents reveals that Germany lacked the enormous quantities of uranium and heavy water needed to make its reactor operational.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "Scientists reveal 93% of Australia's Indigenous population was lost in just 73 years",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261013015807.htm",
+      "published": "Wed, 14 Oct 2026 19:34:00 EDT",
+      "description": "A groundbreaking study suggests that 2.22 million Indigenous Australians lived on the continent before European colonization, far more than previously believed. Researchers estimate that 93% of this population was lost within 73 years, revealing a demographic catastrophe on a scale that dramatically changes our understanding of Australian history.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Technology",
+      "title": "Physicists created a tiny universe and watched time emerge without a clock",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261028234703.htm",
+      "published": "Fri, 30 Oct 2026 07:42:36 EDT",
+      "description": "Scientists have created a miniature universe in the laboratory that could help answer one of the biggest mysteries in physics: What is time, and where does it come from? Using 24,000 ultracold atoms, a University of Birmingham researcher built an isolated quantum system that repeatedly expands and contracts, mimicking the Big Bang and a possible Big Crunch. Remarkably, the experiment showed that time could emerge from changes happening inside the system, without relying on an external clock.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Offbeat",
+      "title": "Einstein's equations may explain the universe without dark energy",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261028232719.htm",
+      "published": "Thu, 29 Oct 2026 08:07:58 EDT",
+      "description": "Mathematicians have uncovered what they argue is a fundamental flaw in the standard model of the universe, potentially challenging the need for dark energy. Their calculations suggest that the mathematical framework used to describe cosmic expansion is inherently unstable and that the universe could accelerate naturally under Einstein's original theory of gravity. The findings also raise surprising questions about whether our location in the universe is as ordinary as scientists have long assumed.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "'Air-con nation' Singapore eyes alternatives to cool down",
+      "url": "https://phys.org/news/2026-11-air-con-nation-singapore-eyes.html",
+      "published": "Sun, 01 Nov 2026 14:20:02 EST",
+      "description": "Long dubbed an \"air-conditioned nation,\" Singapore is experimenting with cooling alternatives from chilled beams to \"passive displacement\" to curb its thirst for energy-guzzling air conditioning.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "Warmer seas and shifting pressure systems: The signs that suggest the Mediterranean's climate is 'tropicalizing'",
+      "url": "https://phys.org/news/2026-10-warmer-seas-shifting-pressure-mediterranean.html",
+      "published": "Sun, 01 Nov 2026 14:00:01 EST",
+      "description": "Nowhere in the Iberian Peninsula or the Balearic Islands has a tropical climate—for this to be the case, the average temperature in the coldest month would have to be 18°C (64 degrees Fahrenheit) or higher. The contrast between Spain's winters and summers, and the low temperatures reached in winter, do not resemble those of any tropical climate.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "How permanent daylight saving time could affect schools",
+      "url": "https://phys.org/news/2026-10-permanent-daylight-affect-schools.html",
+      "published": "Sun, 01 Nov 2026 10:30:02 EST",
+      "description": "Sleep is fundamental to well-being. Decisions to end semiannual clock changes and remain on permanent daylight saving time (DST) in British Columbia, the Northwest Territories, Alberta, Manitoba and northwestern Ontario have consequences for many Canadians due to potential sleep disruption.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "Heavy hydrogen in 3I/ATLAS's methane points to a frigid birthplace",
+      "url": "https://phys.org/news/2026-10-heavy-hydrogen-3iatlas-methane-frigid.html",
+      "published": "Sun, 01 Nov 2026 10:20:02 EST",
+      "description": "The interstellar comet 3I/ATLAS carries a chemical clue to conditions in the planetary system of its origin, locked away long before it reached our sun. Its methane signature is unusually rich in heavy hydrogen, suggesting that the comet's frozen ingredients took shape in an intensely cold environment around another star—or in the cloud that preceded it.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "Breaking the ice: Scientists use attracting particles to form an anti-spin ice",
+      "url": "https://phys.org/news/2026-10-ice-scientists-particles-anti.html",
+      "published": "Sun, 01 Nov 2026 06:40:01 EST",
+      "description": "In a recent Nature Communications study, researchers have reported the realization of an anti-spin ice, a system that does the opposite of conventional spin ices by breaking the ice rule that governs them.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "Phys.org",
+      "title": "This oddball reflective lava world is challenging to understand",
+      "url": "https://phys.org/news/2026-10-oddball-lava-world.html",
+      "published": "Sat, 31 Oct 2026 20:30:01 EDT",
+      "description": "Among Kepler and TESS's many surprising exoplanet discoveries are the ultra-short-period (USP) planets. These planets move very quickly and complete an orbit in less than 24 hours. Ancient astronomers thought that Mercury was so fast—it goes around the sun every 88 days—that they named it after the Roman god Mercury, who was the fast-traveling messenger of the gods. They couldn't have known how sluggish Mercury is compared to the USPs.",
+      "score": 2,
+      "happy_score": 0,
+      "negative_score": 0,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [],
+      "matched_negative": [],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "Hurricane warning maps are improving, but a dangerous problem remains",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261019093443.htm",
+      "published": "Tue, 20 Oct 2026 08:49:51 EDT",
+      "description": "A new study reveals that improved hurricane forecast graphics may help people identify threatened areas without making them more likely to recognize the danger or take protective action. Researchers also found that a widespread misunderstanding of the hurricane cone persists, highlighting a potentially dangerous gap between accurate forecasts and public preparedness.",
+      "score": 1,
+      "happy_score": 4,
+      "negative_score": -5,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "new",
+        "improved"
+      ],
+      "matched_negative": [
+        "danger"
+      ],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily All",
+      "title": "Common pesticide linked to 2.5 times the risk of Parkinson’s disease",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261031013035.htm",
+      "published": "Sun, 01 Nov 2026 07:33:13 EST",
+      "description": "A UCLA study found that long-term exposure to a common pesticide was linked to more than 2.5 times the risk of Parkinson's disease. Scientists also uncovered how the chemical damages brain cells and identified a promising way to protect them.",
+      "score": 0,
+      "happy_score": 3,
+      "negative_score": -5,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "protect"
+      ],
+      "matched_negative": [
+        "disease"
+      ],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily All",
+      "title": "Scientists finally discover how a common gut bacterium can trigger colon cancer",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261031012912.htm",
+      "published": "Sat, 31 Oct 2026 09:49:23 EDT",
+      "description": "Scientists at Johns Hopkins have uncovered a crucial missing link between a common gut bacterium and colorectal cancer, solving a mystery that has puzzled researchers for nearly two decades. The bacterium, Bacteroides fragilis, produces a toxin that damages the colon’s protective lining, triggers chronic inflammation, and promotes tumor formation.",
+      "score": 0,
+      "happy_score": 3,
+      "negative_score": -5,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discover"
+      ],
+      "matched_negative": [
+        "cancer"
+      ],
+      "matched_visual": []
+    },
+    {
+      "source": "ScienceDaily Society",
+      "title": "A hidden bias in human language challenges 70 years of science",
+      "url": "https://www.sciencedaily.com/releases/2026/10/261023023738.htm",
+      "published": "Sat, 24 Oct 2026 09:01:22 EDT",
+      "description": "A groundbreaking study challenges 70 years of assumptions about how human language works. By analyzing billions of word uses, scientists discovered that meaning is organized around power, danger, and order rather than emotion alone. Even more surprisingly, human language shows a powerful hidden preference for safety, suggesting that our words may reflect ancient survival instincts.",
+      "score": 0,
+      "happy_score": 3,
+      "negative_score": -5,
+      "visual_score": 0,
+      "source_bonus": 2,
+      "matched_happy": [
+        "discovered"
+      ],
+      "matched_negative": [
+        "danger"
+      ],
+      "matched_visual": []
+    }
+  ]
+}

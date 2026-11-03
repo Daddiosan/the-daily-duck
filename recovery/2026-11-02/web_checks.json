@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://www.thedailyduck.ai/",
+    "status": 200,
+    "checked_at_utc": "2026-11-03T01:40:21.5224232Z",
+    "body_sha256": "CA2440F7EDF79FB86508011E365393FC582F91A4CEC7611BBB8CF8F9DA7EAC2D",
+    "has_nov01": true,
+    "has_nov02": false
+  },
+  {
+    "url": "https://www.thedailyduck.ai/ducks/2026-11-01/",
+    "status": 200,
+    "checked_at_utc": "2026-11-03T01:40:21.6170705Z",
+    "body_sha256": "08D17FD050BFA2A923C391A573E4E422B0FC50CA32F8A7596D6BC843FEB6D287",
+    "has_nov01": true,
+    "has_nov02": false
+  },
+  {
+    "url": "https://www.thedailyduck.ai/ducks/2026-11-02/",
+    "status": 404,
+    "checked_at_utc": "2026-11-03T01:40:21.6826250Z",
+    "body_sha256": "6D33C5EEF4346708214573731DF9A97E27DD6B69D20EF131F2715536B0315E16",
+    "has_nov01": false,
+    "has_nov02": false
+  }
+]

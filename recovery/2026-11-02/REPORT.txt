@@ -1,0 +1,101 @@
+The Daily Duck — 2026-11-02 recovery
+Checked: 2026-11-03 10:40 JST (see web_checks.json for exact timestamps)
+Status: STORY_RESTORED_IN_ISOLATION / COST_HOLD / NOT_PUBLISHED
+
+Environment and preservation
+HP development PC / PowerShell / Codex new session.
+Resource Class: LIGHT; worker limit 1; no HEAVY job or paid model call executed.
+Original worktree: C:\Users\hirok\Projects\the-daily-duck
+Original branch: fix/daily-duck-x-backfill-2026-10-11
+Original HEAD: ce14449 (initially ahead of tracking branch by one commit).
+Recovery worktree: C:\Users\hirok\Projects\the-daily-duck-recovery-2026-11-02
+Recovery branch: recovery/2026-11-02
+Production baseline: d7eee53b6f79cdde2a9e498bf986e5ab6c0a269c
+All new files are under recovery/2026-11-02; production state was not replaced.
+No workflow dispatch, push, merge, deployment, email send, or X post was performed.
+
+Confirmed story approval
+Issue date is explicitly 2026-11-02, independent of today's date.
+Candidate 3 / source story ID 46 / NASA / Vega Island Frozen in Fright.
+English title: An Antarctic Island Landscape Looks Frozen in Fright
+Duck: Skullcape
+Source: https://science.nasa.gov/earth/earth-observatory/vega-island-frozen-in-fright/
+Candidate mail: 1a199ddf4b62c4e9
+Reply mail: 1a19eab5d5d93085 / received 2026-11-03 08:49:51 JST / exact body 3.
+Same thread, matching subject, issue-bound token digest verified in memory,
+and candidate English/Japanese copy plus source URL matched the email.
+Raw approval tokens are not stored in these recovery files.
+Evidence: approval_evidence.json
+Mail: https://mail.google.com/mail/u/?authuser=thedailyduckai%40gmail.com#all/1a19eab5d5d93085
+
+Recovery source and result
+Source run: https://github.com/Daddiosan/the-daily-duck/actions/runs/41372437686
+Run result: success; created 2026-11-02T01:25:44Z.
+Artifact: daily-duck-results / ID 13110135880 / not expired when retrieved.
+Artifact metadata: source_artifact.json; original four files: source/
+Source gate_a_package.json SHA256:
+bf61eb0207006e312f36fe00689b4fada773162be681b3c313afb27d2541dff7
+Restored candidate: candidate/automation_state/approved_story.json
+Method: existing scripts/check_story_approval.py save_approved_story,
+with output redirected to the isolated candidate directory.
+Selected story was checked for exact equality with original candidate 3.
+Offline validation: PASS (verification.json).
+Live model integration: NOT RUN. Design approval: MISSING.
+restore_story.py is a one-shot recovery script guarded against overwriting output.
+
+Why normal Gate A did not process this approval
+10:17 JST run: https://github.com/Daddiosan/the-daily-duck/actions/runs/41558714398
+Expected Daily Duck issue: 2026-11-03
+Preflight: PRIOR_ISSUE_STATE_ONLY
+Artifact result: WAITING_FOR_CURRENT_ISSUE_ARTIFACT
+Reason: CURRENT_ISSUE_ARTIFACT_NOT_READY
+Evidence: gate_a_1017_filtered.log
+The normal workflow has no explicit historical date input and uses the current
+07:00 JST issue boundary. Re-running it would not target November 2.
+
+Existing assets and public state
+Latest normal Design Options run observed was November 1:
+https://github.com/Daddiosan/the-daily-duck/actions/runs/41302031649
+Production approved_story, design_options, ready_to_publish, website result,
+and X result all refer to November 1 (production_state_summary.json).
+No November 2 design/approval mail was returned by the targeted Gmail search.
+No November 2/3 dated assets or pages appeared in main's recursive Git tree.
+No reusable November 2 design package was found in the inspected sources.
+HTTP checks at 10:40 JST (web_checks.json):
+https://www.thedailyduck.ai/                            200 / contains November 1
+https://www.thedailyduck.ai/ducks/2026-11-01/          200
+https://www.thedailyduck.ai/ducks/2026-11-02/          404
+November 2 public Web URL is not yet live.
+Latest repository X result is November 1:
+https://x.com/i/web/status/2116856030076264614
+This is repository evidence, not independent verification of the X timeline.
+November 2 X URL is unconfirmed; duplicate checks remain required before posting.
+
+Cost hold required by the user's instruction
+Existing design-options.yml invokes Gemini text generation and OpenAI
+gpt-image-2, quality medium, 1536x1024, for three images. Existing provider
+paths also contain automatic retries/fallback; they were not invoked.
+Official OpenAI guide lists an estimated image output cost of USD 0.041 per
+image at these settings: three image outputs approximately USD 0.123.
+Text input charges, Gemini/title generation or fallback charges, and any
+regeneration are additional; the exact account total is not established.
+This is an estimate, not a spending cap or authorization to execute.
+Source: https://developers.openai.com/api/docs/guides/image-generation
+No paid generation request was made by this recovery session.
+
+Alternatives to new metered generation
+1. Manually create images within an existing ChatGPT subscription allowance
+   (availability/allowance must be confirmed) and prepare titles for review.
+2. Supply already-created November 2 images, or use suitable existing assets
+   after confirming the desired design; retain the ordinary selection gate.
+No provider, billing setting, or normal workflow was changed.
+
+Remaining work after the production method/cost decision
+Create exactly three November 2 image/title choices in isolation.
+Send the normal token-bound image/title selection email with real images.
+Stop until the authorized human replies with the required image/title numbers.
+Validate that approval against the correct November 2 package and batch.
+Apply only the authorized November 2 publication after concrete review.
+Verify Web publication, then check X duplicates, post once, and verify its URL.
+Record publication SHA, workflow logs, live Web URL, and live X URL.
+November 1 and November 3 must remain protected throughout.

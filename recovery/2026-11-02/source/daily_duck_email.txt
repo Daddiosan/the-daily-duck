@@ -1,0 +1,452 @@
+The Daily Duck — Gate A
+
+The Daily Duck is now ENGLISH-FIRST.
+English is the canonical/master copy.
+Japanese is provided as a translation for review.
+
+本日の候補ニュース5件について、
+英語を正式原稿（Master）として記事案を作成しました。
+日本語は英語正本を基にした確認用の翻訳です。
+
+5件を比較して、
+本日採用する記事を1つ選んでください。
+
+
+AIおすすめ: 候補 1
+
+
+==================================================
+CANDIDATE 1 / 候補 1
+★ AI RECOMMENDED / AIおすすめ
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+Scientists Find a Secret Glow in Toxic Fire Salamanders
+
+
+WHY THIS STORY
+
+A familiar animal hides a striking fluorescent secret, making this an accessible, amusing, and memorable science story.
+
+
+EDITORIAL COPY
+
+Fire salamanders have a surprise hidden beneath their familiar appearance: scientists have discovered a secret glow in these toxic amphibians. It is a bright reminder that even well-known animals can still hold unexpected mysteries.
+
+
+DUCK
+
+Duck name:
+Glowtail
+
+Duck line:
+Who knew toxic could look so luminous?
+
+
+X DRAFT
+
+Fire salamanders have a secret glow—and scientists found it. A familiar animal with an unexpectedly luminous side.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+毒を持つファイアサラマンダーに隠された光を科学者が発見
+
+
+記事のポイント
+
+身近な動物が鮮やかな蛍光の秘密を隠していたという、親しみやすく印象的で、ちょっと楽しい科学ニュースです。
+
+
+記事案
+
+ファイアサラマンダーには、見慣れた姿の下に驚きが隠されていました。科学者たちが、この毒を持つ両生類に秘められた光を発見したのです。よく知られた動物にも、まだ思いがけない謎が残されていることを教えてくれます。
+
+
+Duckコメント
+
+毒を持つのに、こんなに光るなんて！
+
+
+X投稿文
+
+ファイアサラマンダーには秘密の光があり、科学者たちがそれを発見しました。身近な動物の、意外に輝く一面です。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Scientists discover a secret glow in toxic fire salamanders
+
+Source:
+ScienceDaily Offbeat
+
+URL:
+https://www.sciencedaily.com/releases/2026/10/261027063707.htm
+
+Score: 84
+
+
+==================================================
+CANDIDATE 2 / 候補 2
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+A Warming Climate Puts Italy and Croatia’s White Truffles at Risk
+
+
+WHY THIS STORY
+
+The story combines climate concerns with a nighttime hunt and truffle dog Stella, offering a vivid human, food, and adventure angle.
+
+
+EDITORIAL COPY
+
+From Italy to Croatia, a warming climate is threatening prized white truffles. The nighttime search, joined by a truffle dog named Stella, brings a human and adventurous touch to a story about a cherished food.
+
+
+DUCK
+
+Duck name:
+Stella’s Truffle Trail
+
+Duck line:
+A midnight truffle hunt, with Stella on the trail.
+
+
+X DRAFT
+
+White truffles are prized from Italy to Croatia, but a warming climate threatens them. Meet the nighttime hunt—and truffle dog Stella—behind the story.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+温暖化でイタリアとクロアチアの貴重な白トリュフに危機
+
+
+記事のポイント
+
+気候への懸念に、夜の探索とトリュフ犬ステラが加わり、人、食、冒険の魅力を感じさせるニュースです。
+
+
+記事案
+
+イタリアからクロアチアにかけて、温暖化が貴重な白トリュフを脅かしています。トリュフ犬のステラも加わる夜の探索が、大切にされてきた食材をめぐる物語に、人間味と冒険の趣を添えています。
+
+
+Duckコメント
+
+真夜中のトリュフ探し、ステラが捜索中です。
+
+
+X投稿文
+
+イタリアからクロアチアにかけて珍重される白トリュフが、温暖化の脅威にさらされています。トリュフ犬ステラと夜の探索をめぐる物語です。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+From Italy to Croatia, a warming climate threatens prized white truffles
+
+Source:
+Phys.org
+
+URL:
+https://phys.org/news/2026-11-italy-croatia-climate-threatens-prized.html
+
+Score: 69
+
+
+==================================================
+CANDIDATE 3 / 候補 3
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+An Antarctic Island Landscape Looks Frozen in Fright
+
+
+WHY THIS STORY
+
+An icy Antarctic landscape resembling a skull is an instant visual surprise with a spooky seasonal character and no focus on tragedy.
+
+
+EDITORIAL COPY
+
+Vega Island in Antarctica has a chilling visual surprise: its icy landscape resembles a skull. The eerie shape gives a frozen scene a playful, spooky character and shows how landscapes can spark the imagination.
+
+
+DUCK
+
+Duck name:
+Skullcape
+
+Duck line:
+Antarctica brought its own spooky season special.
+
+
+X DRAFT
+
+An icy landscape on Antarctica’s Vega Island resembles a skull. A spooky visual surprise from a frozen world.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+南極の島に「凍った恐怖」？骸骨のように見える風景
+
+
+記事のポイント
+
+骸骨のように見える南極の氷の風景が、ひと目で驚きを生む、季節感のある少し不気味なニュースです。
+
+
+記事案
+
+南極のベガ島には、ひやりとする視覚的な驚きがあります。氷に覆われた風景が、骸骨のように見えるのです。不気味でありながらどこか楽しい形が、凍った景色に季節らしい雰囲気を与え、風景が想像力をかき立てることを教えてくれます。
+
+
+Duckコメント
+
+南極から、ひと味違うハロウィーンの景色です。
+
+
+X投稿文
+
+南極のベガ島にある氷の風景が、骸骨のように見えます。凍った世界から届いた、少し不気味な視覚の驚きです。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Vega Island Frozen in Fright
+
+Source:
+NASA
+
+URL:
+https://science.nasa.gov/earth/earth-observatory/vega-island-frozen-in-fright/
+
+Score: 70
+
+
+==================================================
+CANDIDATE 4 / 候補 4
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+Singapore Looks Beyond Air Conditioning to Cool Down
+
+
+WHY THIS STORY
+
+Singapore is exploring practical, less energy-hungry ways to stay cool, offering a constructive and hopeful everyday solutions story.
+
+
+EDITORIAL COPY
+
+Singapore, often described as an “air-con nation,” is looking for alternatives to cool down. The search for options that use less energy offers a practical, constructive look at how a modern city can rethink everyday comfort.
+
+
+DUCK
+
+Duck name:
+Cool Change
+
+Duck line:
+A cooler future may take more than turning down the thermostat.
+
+
+X DRAFT
+
+Singapore is looking beyond air conditioning for ways to cool down with less energy. A practical, hopeful rethink of everyday comfort.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+シンガポール、冷房に頼らない涼しさを模索
+
+
+記事のポイント
+
+シンガポールが、より少ないエネルギーで涼しく過ごす実用的な方法を探している、前向きな日常の解決策のニュースです。
+
+
+記事案
+
+「エアコン大国」とも呼ばれるシンガポールが、涼しく過ごすための代替策を探しています。より少ないエネルギーで快適さを保つ方法を模索する姿は、現代の都市が日々の過ごしやすさを見直す、実用的で建設的な取り組みです。
+
+
+Duckコメント
+
+もっと涼しい未来は、温度設定を変えるだけではないかもしれません。
+
+
+X投稿文
+
+シンガポールが、より少ないエネルギーで涼しく過ごすため、エアコン以外の方法を探しています。日常の快適さを見直す、実用的で希望のある動きです。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+'Air-con nation' Singapore eyes alternatives to cool down
+
+Source:
+Phys.org
+
+URL:
+https://phys.org/news/2026-11-air-con-nation-singapore-eyes.html
+
+Score: 70
+
+
+==================================================
+CANDIDATE 5 / 候補 5
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+Looking for Bats After Dark Can Change How We See Them
+
+
+WHY THIS STORY
+
+A welcoming invitation to encounter microbats turns nighttime curiosity into empathy, participation, and a hopeful community-minded science story.
+
+
+EDITORIAL COPY
+
+Looking for bats after dark can help science—and change how we see these animals. The invitation to encounter microbats turns nighttime curiosity into a chance for participation and a more understanding view of creatures that are often overlooked.
+
+
+DUCK
+
+Duck name:
+Nightwing Neighbors
+
+Duck line:
+A little nighttime curiosity can open our eyes to bats.
+
+
+X DRAFT
+
+Looking for microbats after dark can help science—and change how we see them. Nighttime curiosity may be the start of understanding.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+夜のコウモリ探しが、科学と見方を変える
+
+
+記事のポイント
+
+夜に小型コウモリと出会うことへの誘いが、好奇心を共感や参加につなげる、希望のある地域密着型の科学ニュースです。
+
+
+記事案
+
+暗くなってからコウモリを探すことは、科学の役に立つだけでなく、コウモリの見方を変えるきっかけにもなります。小型コウモリとの出会いへの誘いが、夜の好奇心を参加の機会へと変え、見過ごされがちな生き物をより理解する視点につながります。
+
+
+Duckコメント
+
+夜のちょっとした好奇心が、コウモリへの見方を変えるかもしれません。
+
+
+X投稿文
+
+夜に小型コウモリを探すことは、科学の役に立ち、コウモリへの見方も変えてくれます。夜の好奇心が、理解の始まりになるかもしれません。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Looking for bats after dark can help science—and change how we see them
+
+Source:
+Phys.org
+
+URL:
+https://phys.org/news/2026-10-dark-science.html
+
+Score: 71
+
+
+==================================================
+GATE A — STORY SELECTION / 本日の記事を選択
+==================================================
+
+採用する記事の番号だけを返信してください。
+
+1
+2
+3
+4
+5
+
+
+例:
+
+3
+
+
+IMPORTANT:
+
+- 「1」「2」「3」「4」「5」のいずれか1文字だけを返信してください。
+- それ以外の返信では承認されません。
+- 選択した1件だけが本日の正式記事になります。
+- 英語版がcanonical/master copyです。
+- 日本語版は英語正本から生成された翻訳です。
+- 記事選択後、その記事専用の画像コンセプトを3案作成します。
+- 画像コンセプトは別メールで送信します。
+- 画像コンセプト選択後、その1つのコンセプトから実画像を5枚生成します。
+- 最終画像選択が終わるまでWebサイト/Xには公開しません。

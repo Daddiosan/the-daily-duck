@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "kind": "offline_restoration_verification",
+  "issue_date": "2026-11-02",
+  "selected_story_number": 3,
+  "selected_story_id": 46,
+  "code_base_sha": "d7eee53b6f79cdde2a9e498bf986e5ab6c0a269c",
+  "source_run_id": 41372437686,
+  "artifact_id": 13110135880,
+  "source_package_sha256": "bf61eb0207006e312f36fe00689b4fada773162be681b3c313afb27d2541dff7",
+  "candidate_sha256": "bd1a8a9278ccc676fd612ea08d2642adf49edcbbec443c1fcbde8689776ab1ab",
+  "approved_story_unchanged_from_source": true,
+  "live_model_integration": "NOT_RUN_COST_HOLD",
+  "design_email_sent": false,
+  "website_published": false,
+  "x_posted": false
+}

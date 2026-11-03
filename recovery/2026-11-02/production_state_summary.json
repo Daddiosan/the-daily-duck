@@ -1,0 +1,37 @@
+[
+  {
+    "file": "automation_state/approved_story.json",
+    "issue_date": "2026-11-01",
+    "state": "APPROVED_STORY",
+    "action": null,
+    "x_post_url": null
+  },
+  {
+    "file": "automation_state/design_options.json",
+    "issue_date": "2026-11-01",
+    "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
+    "action": null,
+    "x_post_url": null
+  },
+  {
+    "file": "automation_state/ready_to_publish.json",
+    "issue_date": "2026-11-01",
+    "state": "X_POSTED",
+    "action": null,
+    "x_post_url": "https://x.com/i/web/status/2116856030076264614"
+  },
+  {
+    "file": "automation_state/website_publish_result.json",
+    "issue_date": "2026-11-01",
+    "state": null,
+    "action": "PUBLISHED",
+    "x_post_url": null
+  },
+  {
+    "file": "automation_state/x_publish_result.json",
+    "issue_date": "2026-11-01",
+    "state": null,
+    "action": "X_POSTED",
+    "x_post_url": "https://x.com/i/web/status/2116856030076264614"
+  }
+]

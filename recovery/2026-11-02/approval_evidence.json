@@ -1,0 +1,20 @@
+{
+  "issue_date": "2026-11-02",
+  "story_number": 3,
+  "source_run_id": 41372437686,
+  "artifact_id": 13110135880,
+  "base_sha": "d7eee53b6f79cdde2a9e498bf986e5ab6c0a269c",
+  "mail_thread_id": "1a199ddf4b62c4e9",
+  "candidate_message_id": "1a199ddf4b62c4e9",
+  "approval_message_id": "1a19eab5d5d93085",
+  "approval_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "approval_received_at": "2026-11-03T08:49:51+09:00",
+  "approval_command": "3",
+  "subject_matches": true,
+  "token_valid": true,
+  "candidate_fields_match": true,
+  "approval_token_digest": "4fb2098e05af35b73a7ad15eaf2032b3e66834095aa74f5cb00b939dcbdc8be7",
+  "validation_method": "SHA-256 issue-bound token check in memory; raw token not persisted",
+  "design_approval": "MISSING",
+  "publication_authorized_only_after_design_approval": true
+}
