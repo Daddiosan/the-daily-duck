@@ -1,0 +1,70 @@
+{
+  "issue_date": "2026-11-02",
+  "state": "POST_IN_FLIGHT",
+  "run_id": "41568524460",
+  "source_sha": "2b630168d3f376d66d3ffcd4a8fe6b829d4c5ba6",
+  "web_verified": {
+    "verified": true,
+    "issue_date": "2026-11-02",
+    "title": "A CHILL DOWN YOUR FEATHERS",
+    "page_url": "https://www.thedailyduck.ai/ducks/2026-11-02/",
+    "image_url": "https://www.thedailyduck.ai/assets/ducks/2026-11-02-skullcape.png",
+    "http_status": 200,
+    "image_sha256": "964d9f6da6b37f03745bfd672fc0552c284ee038ffcd66df9bc318e390d7e930",
+    "html_sha256": "f14799cc3e782938542bfdfa0a9af334ba51196557550c0410066d997e968acc",
+    "verified_at": "2026-11-03T02:51:02.933867+00:00"
+  },
+  "api_operations": [
+    {
+      "operation": "GET users/me",
+      "reserve_usd": 0.01
+    },
+    {
+      "operation": "GET own timeline, at most 5 post resources",
+      "reserve_usd": 0.025
+    }
+  ],
+  "prior_image_cost_estimate_usd": 0.129595,
+  "combined_cap_usd": 0.39,
+  "x_full_attempt_reserve_usd": 0.255,
+  "automatic_retries": 0,
+  "article_url": "https://www.thedailyduck.ai/ducks/2026-11-02/",
+  "card_sha256": "f38239f6a52e9ddb2f5f1e5b24ae172e29113763e0e1b04c335823a527dbef59",
+  "card_path": "automation_images/x_backfill/2026-11-02-x-card.png",
+  "post_text": "An icy landscape on Antarctica’s Vega Island resembles a skull. A spooky visual surprise from a frozen world.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-02/",
+  "author_id": "2086690259220471808",
+  "username": "TheDailyDuckAI",
+  "timeline_rows": [
+    {
+      "created_at": "2026-11-01T11:33:01.000Z",
+      "edit_history_tweet_ids": [
+        "2116856030076264614"
+      ],
+      "entities": {
+        "urls": [
+          {
+            "display_url": "thedailyduck.ai/ducks/2026-11-…",
+            "end": 187,
+            "expanded_url": "https://www.thedailyduck.ai/ducks/2026-11-01/",
+            "start": 164,
+            "status": 404,
+            "unwound_url": "https://www.thedailyduck.ai/ducks/2026-11-01/",
+            "url": "https://t.co/4MSUvzf8gb"
+          },
+          {
+            "display_url": "pic.x.com/2p04XgBGnz",
+            "end": 211,
+            "expanded_url": "https://x.com/TheDailyDuckAI/status/2116856030076264614/photo/1",
+            "media_key": "3_2116856027773550593",
+            "start": 188,
+            "url": "https://t.co/2p04XgBGnz"
+          }
+        ]
+      },
+      "id": "2116856030076264614",
+      "text": "Halloween has reached the International Space Station, where astronauts celebrated in creative costumes. A playful reminder that fun travels well—even into orbit.\n\nhttps://t.co/4MSUvzf8gb https://t.co/2p04XgBGnz"
+    }
+  ],
+  "duplicate_scan_complete": true,
+  "armed_at": "2026-11-03T02:51:03.431650+00:00"
+}
