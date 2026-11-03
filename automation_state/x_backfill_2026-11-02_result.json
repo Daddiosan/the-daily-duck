@@ -1,6 +1,6 @@
 {
   "issue_date": "2026-11-02",
-  "state": "POST_IN_FLIGHT",
+  "state": "X_POSTED_VERIFIED",
   "run_id": "41568524460",
   "source_sha": "2b630168d3f376d66d3ffcd4a8fe6b829d4c5ba6",
   "web_verified": {
@@ -22,6 +22,18 @@
     {
       "operation": "GET own timeline, at most 5 post resources",
       "reserve_usd": 0.025
+    },
+    {
+      "operation": "POST media upload (conservative reserve)",
+      "reserve_usd": 0.015
+    },
+    {
+      "operation": "POST tweet with article URL",
+      "reserve_usd": 0.2
+    },
+    {
+      "operation": "GET created tweet verification",
+      "reserve_usd": 0.005
     }
   ],
   "prior_image_cost_estimate_usd": 0.129595,
@@ -66,5 +78,52 @@
     }
   ],
   "duplicate_scan_complete": true,
-  "armed_at": "2026-11-03T02:51:03.431650+00:00"
+  "armed_at": "2026-11-03T02:51:03.431650+00:00",
+  "media_id": "2117449461462921216",
+  "post_id": "2117449463945937398",
+  "post_url": "https://x.com/TheDailyDuckAI/status/2117449463945937398",
+  "create_receipt": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2117449463945937398",
+      "text": "An icy landscape on Antarctica’s Vega Island resembles a skull. A spooky visual surprise from a frozen world.\n\nhttps://t.co/fm9h96WUnS https://t.co/lwq5MqGrVw"
+    }
+  },
+  "verification": {
+    "attachments": {
+      "media_keys": [
+        "3_2117449461462921216"
+      ]
+    },
+    "author_id": "2086690259220471808",
+    "created_at": "2026-11-03T02:51:07.000Z",
+    "edit_history_tweet_ids": [
+      "2117449463945937398"
+    ],
+    "entities": {
+      "urls": [
+        {
+          "display_url": "thedailyduck.ai/ducks/2026-11-…",
+          "end": 134,
+          "expanded_url": "https://www.thedailyduck.ai/ducks/2026-11-02/",
+          "start": 111,
+          "url": "https://t.co/fm9h96WUnS"
+        },
+        {
+          "display_url": "pic.x.com/lwq5MqGrVw",
+          "end": 158,
+          "expanded_url": "https://x.com/TheDailyDuckAI/status/2117449463945937398/photo/1",
+          "media_key": "3_2117449461462921216",
+          "start": 135,
+          "url": "https://t.co/lwq5MqGrVw"
+        }
+      ]
+    },
+    "id": "2117449463945937398",
+    "text": "An icy landscape on Antarctica’s Vega Island resembles a skull. A spooky visual surprise from a frozen world.\n\nhttps://t.co/fm9h96WUnS https://t.co/lwq5MqGrVw"
+  },
+  "verified_at": "2026-11-03T02:51:07.623845+00:00",
+  "combined_cost_reserve_usd": 0.384595
 }
