@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-03T04:10:27.004509+00:00",
+  "issue_date": "2026-11-03",
+  "x_post_id": "2117469426769342726",
+  "x_post_url": "https://x.com/i/web/status/2117469426769342726",
+  "x_media_id": "2117469424307372033",
+  "image_path": "automation_images/x/2026-11-03-x-card.png",
+  "post_text": "Pennsylvania’s Grand Canyon is glowing with spectacular autumn color—a bright, beautiful reminder that uplifting views may be closer than we think.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-03/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 172
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2117469426769342726",
+      "text": "Pennsylvania’s Grand Canyon is glowing with spectacular autumn color—a bright, beautiful reminder that uplifting views may be closer than we think.\n\nhttps://t.co/3y0MXsE3Pt https://t.co/4cx3YE0TQQ"
+    }
+  }
+}
