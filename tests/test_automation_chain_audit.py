@@ -115,8 +115,8 @@ class AuditTests(unittest.TestCase):
         name = "The Daily Duck Automation"
         runs = healthy_runs()
         runs[name] = [run(name, 99, created_at="2026-09-03T12:00:00Z")]
-        before_deadline = datetime(2026, 9, 4, 1, 6, tzinfo=timezone.utc)
-        after_deadline = datetime(2026, 9, 4, 1, 8, tzinfo=timezone.utc)
+        before_deadline = datetime(2026, 9, 3, 22, 14, tzinfo=timezone.utc)
+        after_deadline = datetime(2026, 9, 3, 22, 16, tzinfo=timezone.utc)
         before = {p.run_status for p in evaluate(runs, {}, before_deadline)}
         after = {p.run_status for p in evaluate(runs, {}, after_deadline)}
         self.assertNotIn("NO_RUN_TODAY", before)
@@ -133,7 +133,7 @@ class AuditTests(unittest.TestCase):
         runs, _ = live_inputs("owner/repo", Path("missing"))
         for name in SCHEDULED_WORKFLOWS:
             self.assertEqual({run["id"] for run in runs[name]}, {1, 2})
-        expected_calls = len(WORKFLOWS) + len(SCHEDULED_WORKFLOWS)
+        expected_calls = len(WORKFLOWS) + len(SCHEDULED_WORKFLOWS) + 2
         self.assertEqual(gh_json.call_count, expected_calls)
 
     def test_2026_09_04_failed_attempt_then_successful_retry(self):

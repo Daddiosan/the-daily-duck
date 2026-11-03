@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
   schedule:
-    # JST 08:20 / 12:20 / 18:20 / 22:20
-    - cron: "20 23 * * *"
+    # JST 07:15 / 12:20 / 18:20 / 22:20; external wake needed for timely detection.
+    - cron: "15 22 * * *"
     - cron: "20 3 * * *"
     - cron: "20 9 * * *"
     - cron: "20 13 * * *"
