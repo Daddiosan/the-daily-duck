@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-03T04:09:47.956085+00:00",
+  "issue_date": "2026-11-03",
+  "image": "assets/ducks/2026-11-03-autumn-canyon-duck.png",
+  "page": "ducks/2026-11-03/index.html",
+  "title": "A GRAND DUCK-SCAPE",
+  "duck_name": "Autumn Canyon Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

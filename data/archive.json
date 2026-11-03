@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-03",
+    "displayDate": "November 3, 2026",
+    "slug": "autumn-canyon-duck",
+    "title": "AUTUMN CANYON DUCK",
+    "duckName": "Autumn Canyon Duck",
+    "storyTitleEn": "A GRAND DUCK-SCAPE",
+    "storyTitleJa": "秋色に輝くペンシルベニアのグランドキャニオン",
+    "image": "assets/ducks/2026-11-03-autumn-canyon-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Autumn Canyon Duck",
+    "imageAltJa": "Autumn Canyon DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Pennsylvania’s Grand Canyon is putting on a spectacular autumn display. Its bright seasonal beauty offers a cheerful reminder that sometimes the most uplifting views are already within reach.",
+    "storyJa": "ペンシルベニアのグランドキャニオンが、壮観な秋の景色を見せています。鮮やかな季節の美しさは、心を明るくする風景が、思いのほか身近にあることを思い出させてくれます。",
+    "duckEn": "This duck is ready for a colorful change of scenery.",
+    "duckJa": "このカモは、色鮮やかな景色の変化を楽しむ準備万端です。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/pennsylvanias-grand-canyon/",
+    "archiveSummaryEn": "Pennsylvania’s Grand Canyon is glowing with spectacular autumn color—a bright, beautiful reminder that uplifting views may be closer than we think.",
+    "archiveSummaryJa": "ペンシルベニアのグランドキャニオンが、壮観な秋色に輝いています。心を明るくする景色は、意外と身近にあるのかもしれません。",
+    "reasonEn": "Pennsylvania’s Grand Canyon is glowing with spectacular autumn color—a bright, beautiful reminder that uplifting views may be closer than we think.",
+    "reasonJa": "ペンシルベニアのグランドキャニオンが、壮観な秋色に輝いています。心を明るくする景色は、意外と身近にあるのかもしれません。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-02",
     "displayDate": "November 2, 2026",
     "slug": "skullcape",
