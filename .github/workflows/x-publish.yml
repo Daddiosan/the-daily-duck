@@ -1,239 +1,103 @@
-name: The Daily Duck - X Publish
-
+# Recovery ref only. Keep this one-date override out of main.
+name: The Daily Duck - 2026-11-02 Verified X Publication
 on:
   workflow_dispatch:
     inputs:
-      test_only:
-        description: "Xカードだけ生成して投稿しない"
+      confirmation:
+        description: "PUBLISH-X-2026-11-02-IMAGE1-TITLE1"
         required: true
-        default: false
-        type: boolean
-
+        type: string
 permissions:
   contents: write
-
+  actions: read
 concurrency:
   group: daily-duck-x-publish
   cancel-in-progress: false
-
 jobs:
-  publish-x:
+  publish-november-2-x:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 12
+    environment: Production
+    env:
+      PUBLICATION_CONFIRMATION: ${{ inputs.confirmation }}
+      PUBLICATION_SITE: ${{ github.workspace }}/site
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Sync latest main
-        shell: bash
+      - name: Require dated human approval and reject repeat runs
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git fetch origin main
-          git reset --hard origin/main
-          echo "Repository synchronized to:"
-          git rev-parse HEAD
-
+          test "$GITHUB_REF" = "refs/heads/recovery/2026-11-02"
+          test "$GITHUB_ACTOR" = "Daddiosan"
+          test "$GITHUB_TRIGGERING_ACTOR" = "Daddiosan"
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$PUBLICATION_CONFIRMATION" = "PUBLISH-X-2026-11-02-IMAGE1-TITLE1"
+          count=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/x-publish.yml/runs?branch=recovery%2F2026-11-02&per_page=100" --jq .total_count)
+          test "$count" = "1"
+      - name: Checkout approved publication package and adapter
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          path: recovery
+          persist-credentials: false
+      - name: Checkout authoritative publication state
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          path: site
+          fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.12"
-
-      - name: Install X card and publishing dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk
-          python -m pip install --upgrade pip
-          pip install Pillow requests requests-oauthlib
-
-      - name: Build fixed 5:4 Daily Duck X card
-        run: |
-          python scripts/build_x_card.py
-
-      - name: Validate X card ratio and size
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from PIL import Image
-
-          with open(
-              "automation_state/ready_to_publish.json",
-              encoding="utf-8",
-          ) as f:
-              ready = json.load(f)
-
-          p = Path(
-              ready["canonical_x_image_path"]
-          )
-
-          if not p.exists():
-              raise SystemExit(
-                  f"X card not found: {p}"
-              )
-
-          with Image.open(p) as im:
-              print("X image:", p)
-              print("Size:", im.size)
-              print("Format:", im.format)
-
-              expected = (1500, 1200)
-
-              if im.size != expected:
-                  raise SystemExit(
-                      f"Unexpected X image size: "
-                      f"{im.size}; expected {expected}"
-                  )
-
-              width, height = im.size
-
-              if width * 4 != height * 5:
-                  raise SystemExit(
-                      f"Unexpected X image ratio: {im.size}; "
-                      "expected exact 5:4"
-                  )
-
-          size_bytes = p.stat().st_size
-          size_mb = size_bytes / (1024 * 1024)
-
-          print(f"File size: {size_mb:.2f} MiB")
-          print("X CARD VALID: 1500x1200, exact 5:4")
-          PY
-
-      - name: Upload X card artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: daily-duck-x-card
-          path: automation_images/x/
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: Report test-only mode
-        if: ${{ inputs.test_only == true }}
-        run: |
-          echo "TEST ONLY MODE"
-          echo "X card was generated at 1500x1200 and uploaded as an artifact."
-          echo "No X post was attempted."
-
-      - name: Publish to X
-        if: ${{ inputs.test_only == false }}
+      - name: Install existing pinned publication dependencies
+        run: python -m pip install -r recovery/requirements-backfill-2026-10-11.txt
+      - name: Verify live Web, cost and complete bounded duplicate scan
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-        run: |
-          python scripts/publish_x.py
-
-      - name: Read X publish result
-        id: xpublish
-        if: ${{ always() && inputs.test_only == false }}
-        shell: bash
+        run: python recovery/recovery/2026-11-02/publication/publish_x_once.py prepare
+      - name: Arm and durably commit one posting attempt
+        id: checkpoint
+        working-directory: site
         run: |
           set -euo pipefail
-
-          if [ ! -f automation_state/x_publish_result.json ]; then
-            echo "No x_publish_result.json was created."
-            echo "action=FAILED_BEFORE_RESULT" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          ACTION=$(python - <<'PY'
-          import json
-
-          with open(
-              "automation_state/x_publish_result.json",
-              encoding="utf-8",
-          ) as f:
-              data = json.load(f)
-
-          print(data.get("action", "UNKNOWN"))
-          PY
-          )
-
-          echo "action=$ACTION" >> "$GITHUB_OUTPUT"
-          echo "X publish action: $ACTION"
-
-      - name: Commit X card and X post state
-        if: |
-          inputs.test_only == false &&
-          steps.xpublish.outputs.action == 'X_POSTED'
-        shell: bash
-        run: |
-          set -euo pipefail
-
+          python ../recovery/recovery/2026-11-02/publication/publish_x_once.py arm
           git config user.name "github-actions[bot]"
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add automation_state/ready_to_publish.json
-          git add automation_state/x_publish_result.json
-          git add automation_images/x/
-
-          if git diff --cached --quiet; then
-            echo "No X publish state changes to commit."
-            exit 0
-          fi
-
-          git commit -m "publish: Daily Duck 1500x1200 card to X"
-          git pull --rebase --autostash origin main
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add automation_state/x_backfill_2026-11-02_result.json automation_images/x_backfill/2026-11-02-x-card.png
+          git diff --exit-code
+          git commit -m "automation: arm approved 2026-11-02 X publication"
           git push origin HEAD:main
-
-      - name: Commit blocked X result
-        if: |
-          inputs.test_only == false &&
-          (
-            steps.xpublish.outputs.action == 'WEBSITE_NOT_PUBLISHED_BLOCKED' ||
-            steps.xpublish.outputs.action == 'WEBSITE_STATE_NOT_PUBLISHED_BLOCKED' ||
-            steps.xpublish.outputs.action == 'ALREADY_POSTED_BLOCKED' ||
-            steps.xpublish.outputs.action == 'ALREADY_POSTED_REMOTE_BLOCKED'
-          )
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          git config user.name "github-actions[bot]"
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add automation_state/x_publish_result.json
-
-          if [ -f automation_state/ready_to_publish.json ]; then
-            git add automation_state/ready_to_publish.json
-          fi
-
-          if git diff --cached --quiet; then
-            echo "No blocked-state change to commit."
-            exit 0
-          fi
-
-          git commit -m "automation: record blocked X publish"
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
-
-      - name: Report X publish result
-        if: always()
-        run: |
-          echo "X workflow finished."
-
-          if [ "${{ inputs.test_only }}" = "true" ]; then
-            echo "Mode: TEST ONLY"
-            echo "Result: 1500x1200 X card generated; no X post attempted."
-          else
-            echo "Mode: LIVE PUBLISH"
-            echo "Result: ${{ steps.xpublish.outputs.action }}"
-          fi
-
-      - name: Notify failure by email
-        if: failure()
+          echo "armed=true" >> "$GITHUB_OUTPUT"
+      - name: Post once and verify returned tweet through X API
         env:
-          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          FAILURE_STAGE: X Publish
-          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: python recovery/recovery/2026-11-02/publication/publish_x_once.py post
+      - name: Preserve final or uncertain result without retrying any X write
+        if: always() && steps.checkpoint.outputs.armed == 'true'
+        working-directory: site
         run: |
-          python scripts/send_workflow_failure_email.py
+          set -euo pipefail
+          git add automation_state/x_backfill_2026-11-02_result.json
+          if git diff --cached --quiet; then
+            echo "No final state change; POST_IN_FLIGHT remains authoritative"
+            exit 0
+          fi
+          git commit -m "automation: record 2026-11-02 X publication result"
+          git push origin HEAD:main
+      - name: Upload exact publication evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: daily-duck-2026-11-02-x-publication
+          path: |
+            site/automation_state/x_backfill_2026-11-02_result.json
+            site/automation_images/x_backfill/2026-11-02-x-card.png
+          if-no-files-found: warn
+          retention-days: 30

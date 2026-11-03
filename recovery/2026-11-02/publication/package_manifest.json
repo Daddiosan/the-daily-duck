@@ -1,0 +1,16 @@
+{
+  "issue_date": "2026-11-02",
+  "title": "A CHILL DOWN YOUR FEATHERS",
+  "hero_sha256": "964d9f6da6b37f03745bfd672fc0552c284ee038ffcd66df9bc318e390d7e930",
+  "x_card_sha256": "f38239f6a52e9ddb2f5f1e5b24ae172e29113763e0e1b04c335823a527dbef59",
+  "protected_sha256": {
+    "index.html": "fa693e6c9167045b9c7add9b5452eeada76fe723d9bcc8da0be55ee2e2341198",
+    "data/today.json": "97aceef446c422ebb3e458993b082f9207f63aafac65a632a7cbf4b7004dfb35",
+    "automation_state/ready_to_publish.json": "8af0ea3c2c96e5c46f839641c09a5e6b5f3390b562d9e18dcd527787b78884e6",
+    "automation_state/website_publish_result.json": "9e767549091aca5a64bdd7e663af2af8843717ab0a9192f9fddb6e1a45495929",
+    "automation_state/x_publish_result.json": "fc42e275c2716cc753c838bb3dbd10e1d3ff6576afcf239ca178e5b66303a580",
+    "ducks/2026-11-01/index.html": "18720ccafc196001e7820681824be52191e65e82b76aa5136dc1687499ad6cbe"
+  },
+  "archive_other_dates_unchanged": true,
+  "preview_only_not_live": true
+}

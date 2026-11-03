@@ -1,0 +1,9 @@
+{
+  "kind": "OFFLINE_MOCK_TESTS_NO_EXTERNAL_API",
+  "passed": [
+    "Verified success refuses a second posting attempt",
+    "Uncertain posting outcome persists and refuses retry",
+    "Incomplete timeline stops after the single budgeted page without posting"
+  ],
+  "live_post_calls": 0
+}

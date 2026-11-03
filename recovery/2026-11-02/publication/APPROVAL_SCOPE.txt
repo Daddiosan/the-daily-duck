@@ -1,0 +1,43 @@
+2026-11-02 publication scope — current-session user GO
+
+The current user explicitly instructed continuation through Web and X
+publication, after independently checking the 1 1 reply. This is the Human
+Gate for November 2 publication and its necessary Git operations. The earlier
+one-shot image-generation approval is not used as publication authorization.
+
+Confirmed Gmail reply: 1a19f312eb733b69 / thread 1a19f2fb7353b491.
+Reply 1 1, 2026-11-03 11:15:59 JST, authorized sender, issue/batch-bound token.
+Selected image SHA256:
+964d9f6da6b37f03745bfd672fc0552c284ee038ffcd66df9bc318e390d7e930
+Title: A CHILL DOWN YOUR FEATHERS.
+No image/title regeneration or further paid model call is authorized or used.
+
+Recovery-branch-only workflow overrides call existing publication functions.
+The workflow overrides and recovery tooling must never be merged into main.
+Web publication uses existing ARCHIVE_ONLY with explicit date and custom
+ready/result paths. Only these main publication files are staged:
+data/archive.json; data/content.js; ducks/2026-11-02/index.html;
+assets/ducks/2026-11-02-skullcape.png;
+automation_state/archive_only_2026-11-02_result.json.
+All existing archive records other than November 2 must remain identical.
+
+After live Web verification, X uses the prepared existing-renderer card and
+the existing OAuth, media-upload and post functions. A complete single-page
+duplicate scan must succeed. Pagination requires a new budget review and
+therefore stops this attempt. No automatic X API retry is implemented.
+POST_IN_FLIGHT is committed to the date-specific main state before X writes;
+the terminal or uncertain result is then persisted. Shared November 1 X and
+ready state remain untouched. Date-specific X main additions only:
+automation_state/x_backfill_2026-11-02_result.json;
+automation_images/x_backfill/2026-11-02-x-card.png.
+
+Budget: earlier image usage estimate USD0.129595 + X reserve USD0.255
+= USD0.384595, within the existing stricter USD0.39 ceiling.
+X envelope reserves USD0.010 for user lookup, USD0.025 for at most five post
+reads, USD0.015 conservatively for media upload, USD0.200 for URL-bearing post
+creation, and USD0.005 for one created-post verification. This is a reserve,
+not an invoice. No credit purchase, auto-recharge or billing-setting change.
+Official price source: https://docs.x.com/x-api/getting-started/pricing
+
+Offline checks are recorded separately; they did not call the live X API.
+The current pre-publication preview is not proof of live publication.
