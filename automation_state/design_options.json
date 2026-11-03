@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-03",
   "generated_at": "2026-11-03T03:45:13.372565+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-03/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "THE AUTUMN OVERLOOK",
+    "concept_en": "A cheerful yellow duck shares a wide, uplifting view of Pennsylvania’s Grand Canyon glowing with autumn color.",
+    "composition_en": "Landscape hero composition with the recognizable friendly yellow duck in the lower-left foreground, standing at a safe scenic overlook and facing a broad canyon filled with vivid autumn reds, oranges, golds, and greens. The canyon and seasonal color remain the dominant subject, with generous open sky, clean layered depth, and a warm premium editorial mood. No signs, railings, buildings, logos, or readable text.",
+    "generation_prompt_en": "Create a clean, modern, premium editorial landscape hero image in a warm storybook-realistic style. Show a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, standing in the lower-left foreground at a scenic overlook. Behind the duck, show Pennsylvania’s Grand Canyon as a sweeping natural canyon landscape glowing with spectacular autumn color in reds, oranges, golds, and greens. Use strong focal hierarchy, broad panoramic depth, soft clear daylight, elegant natural textures, and a cheerful uplifting atmosphere. Landscape orientation, generous negative space, polished magazine illustration, no people, no logos, no watermark, no UI, no readable embedded text, no headline, no invented buildings or specific landmarks.",
+    "alt_en": "A friendly yellow duck looks across Pennsylvania’s Grand Canyon glowing with vivid autumn color.",
+    "title_ja": "秋色の絶景を望むカモ",
+    "concept_ja": "親しみやすい黄色いカモが、秋色に輝くペンシルベニアのグランドキャニオンの広がりを眺める、明るく uplifting なビジュアルです。",
+    "composition_ja": "横長のヒーロー構図。手前左に、オレンジ色のくちばし、大きくつややかな黒い目、小さな羽毛の房、親しみやすい表情を持つおなじみの黄色いカモを配置します。背景には、赤、オレンジ、金色、緑の鮮やかな秋色に染まる広大な峡谷を描きます。峡谷と季節の色彩を主役にし、空の余白と奥行きを活かした、温かく上質な雰囲気にします。看板、建物、ロゴ、読める文字は入れません。",
+    "alt_ja": "鮮やかな秋色に輝くペンシルベニアのグランドキャニオンを眺める、親しみやすい黄色いカモ。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "A GRAND DUCK-SCAPE",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-03T04:09:20.700669+00:00"
 }
