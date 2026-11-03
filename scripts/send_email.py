@@ -1017,6 +1017,13 @@ def send_email(
         body
     )
 
+    if os.getenv("DAILY_DUCK_DELIVERY_GUARD") == "1":
+        try:
+            from scripts import daily_generation_guard
+        except ImportError:
+            import daily_generation_guard
+        daily_generation_guard.assert_not_sent(get_issue_date())
+
     with smtplib.SMTP_SSL(
         "smtp.gmail.com",
         465,
@@ -1123,6 +1130,16 @@ def main() -> int:
             body,
         )
     )
+
+    if os.getenv("DAILY_DUCK_DELIVERY_GUARD") == "1":
+        try:
+            from scripts import daily_generation_guard
+        except ImportError:
+            import daily_generation_guard
+        daily_generation_guard.verify_delivery(
+            str(package["issue_date"]),
+            str(package["approval_token_digest"]),
+        )
 
     print(
         "Gate A package created: "

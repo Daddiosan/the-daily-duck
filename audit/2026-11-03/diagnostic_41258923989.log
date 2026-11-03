@@ -1,0 +1,21 @@
+daily-duck	UNKNOWN STEP	2026-11-01T00:56:47.9445708Z   ERROR: HTTP Error 403: Forbidden
+daily-duck	UNKNOWN STEP	2026-11-01T00:56:47.9601068Z   GEMINI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-01T00:56:47.9601904Z   OPENAI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-01T00:56:49.0590192Z LLM_OPERATION=news_ranking LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_RESULT=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-01T00:56:49.0592113Z LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_DETAIL=HTTPError GEMINI_HTTP_STATUS=403 GEMINI_ERROR_STATUS='PERMISSION_DENIED' GEMINI_ERROR_MESSAGE='The Gemini API free tier is not available for this project. To use the Gemini API, please set up billing to upgrade to the paid tier at https://aistudio.google.com/billing. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.' GEMINI_ERROR_REASON=None GEMINI_ERROR_SERVICE=None GEMINI_ERROR_METHOD=None
+daily-duck	UNKNOWN STEP	2026-11-01T00:56:49.0594225Z LLM_FALLBACK_TRIGGERED=true LLM_FALLBACK_REASON=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.1582258Z LLM_OPERATION=news_ranking LLM_PROVIDER=openai LLM_ATTEMPT=1 LLM_RESULT=SUCCESS
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.1589556Z    Reason: Astronauts celebrating Halloween in creative costumes is instantly understandable, playful and visually appealing, with a warm human touch.
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.1594372Z    Reason: A rare, dramatically broken helmet found far from its Celtic homeland opens an intriguing and accessible window onto ancient travel, ritual and cultural exchange.
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.1600004Z    Reason: An inviting after-dark encounter with bats can replace fear with curiosity and appreciation, giving readers a lively way to see familiar wildlife differently.
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.1606488Z    Reason: Despite missed opportunities, nearly 200 nations agreeing to renew biodiversity commitments provides a constructive, hopeful conservation story with global significance.
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.1612687Z    Reason: A major air show and aerospace expo promises planes, public experiences and shared excitement, making a lively community and events story.
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.3283377Z   GEMINI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:12.3284184Z   OPENAI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:13.1604183Z LLM_OPERATION=editorial_generation LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_RESULT=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:13.1607830Z LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_DETAIL=HTTPError GEMINI_HTTP_STATUS=403 GEMINI_ERROR_STATUS='PERMISSION_DENIED' GEMINI_ERROR_MESSAGE='The Gemini API free tier is not available for this project. To use the Gemini API, please set up billing to upgrade to the paid tier at https://aistudio.google.com/billing. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.' GEMINI_ERROR_REASON=None GEMINI_ERROR_SERVICE=None GEMINI_ERROR_METHOD=None
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:13.1610621Z LLM_FALLBACK_TRIGGERED=true LLM_FALLBACK_REASON=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:34.7541455Z OpenAI fallback max attempts: 2
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:34.7541920Z LLM_OPERATION=editorial_generation LLM_PROVIDER=openai LLM_ATTEMPT=1 LLM_RESULT=SUCCESS
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:34.7542916Z Using current JST Daily Duck issue date: 2026-11-01
+daily-duck	UNKNOWN STEP	2026-11-01T00:57:34.7544789Z Gate A email sent to 2 recipient(s).

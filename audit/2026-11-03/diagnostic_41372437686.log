@@ -1,0 +1,21 @@
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:23.0757041Z   ERROR: HTTP Error 403: Forbidden
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:23.0917957Z   GEMINI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:23.0918601Z   OPENAI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:24.4008934Z LLM_OPERATION=news_ranking LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_RESULT=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:24.4011270Z LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_DETAIL=HTTPError GEMINI_HTTP_STATUS=403 GEMINI_ERROR_STATUS='PERMISSION_DENIED' GEMINI_ERROR_MESSAGE='The Gemini API free tier is not available for this project. To use the Gemini API, please set up billing to upgrade to the paid tier at https://aistudio.google.com/billing. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.' GEMINI_ERROR_REASON=None GEMINI_ERROR_SERVICE=None GEMINI_ERROR_METHOD=None
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:24.4013364Z LLM_FALLBACK_TRIGGERED=true LLM_FALLBACK_REASON=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2202963Z LLM_OPERATION=news_ranking LLM_PROVIDER=openai LLM_ATTEMPT=1 LLM_RESULT=SUCCESS
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2207340Z    Reason: A superb visual surprise about a familiar animal hiding an extraordinary fluorescent secret. It is accessible, amusing and memorable, while providing the day's one clearly science-led selection.
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2211853Z    Reason: The nighttime hunt with truffle dog Stella gives this climate story a strong human, food and adventure angle. It adds sensory richness and a distinct culinary perspective to the front page.
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2215883Z    Reason: An icy Antarctic landscape resembling a skull is an instant visual hook. Its spooky character suits the season without centering on tragedy, and it provides striking variety beside the animal and food stories.
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2220179Z    Reason: Singapore's search for cooler, less energy-hungry alternatives is a constructive everyday solution story. It brings practical optimism and a modern city angle without relying on another laboratory breakthrough.
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2224863Z    Reason: A welcoming invitation to encounter microbats turns nighttime curiosity into empathy and participation. It broadens the animal coverage beyond cute creatures and offers a hopeful community-minded story.
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2938501Z   GEMINI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.2939125Z   OPENAI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.9522281Z LLM_OPERATION=editorial_generation LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_RESULT=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.9524786Z LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_DETAIL=HTTPError GEMINI_HTTP_STATUS=403 GEMINI_ERROR_STATUS='PERMISSION_DENIED' GEMINI_ERROR_MESSAGE='The Gemini API free tier is not available for this project. To use the Gemini API, please set up billing to upgrade to the paid tier at https://aistudio.google.com/billing. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.' GEMINI_ERROR_REASON=None GEMINI_ERROR_SERVICE=None GEMINI_ERROR_METHOD=None
+daily-duck	UNKNOWN STEP	2026-11-02T01:26:41.9526849Z LLM_FALLBACK_TRIGGERED=true LLM_FALLBACK_REASON=PROJECT_ACCESS_DENIED
+daily-duck	UNKNOWN STEP	2026-11-02T01:27:03.0197983Z OpenAI fallback max attempts: 2
+daily-duck	UNKNOWN STEP	2026-11-02T01:27:03.0198328Z LLM_OPERATION=editorial_generation LLM_PROVIDER=openai LLM_ATTEMPT=1 LLM_RESULT=SUCCESS
+daily-duck	UNKNOWN STEP	2026-11-02T01:27:03.0198988Z Using current JST Daily Duck issue date: 2026-11-02
+daily-duck	UNKNOWN STEP	2026-11-02T01:27:03.0200099Z Gate A email sent to 2 recipient(s).

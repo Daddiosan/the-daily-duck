@@ -1,0 +1,18 @@
+{
+  "issue_date": "2026-11-03",
+  "state": "WAITING_STORY_SELECTION",
+  "story_count": 5,
+  "gmail_id": "1a19f719c606dbed",
+  "gmail_url": "https://mail.google.com/mail/u/?authuser=thedailyduckai%40gmail.com#all/1a19f719c606dbed",
+  "sent_at_jst": "2026-11-03T12:26:25+09:00",
+  "sent_label_verified": true,
+  "sent_mail_count_in_search": 1,
+  "all_source_urls_in_mail": true,
+  "approval_token_digest_matches": true,
+  "run_id": 41572069038,
+  "artifact_id": 13202061453,
+  "artifact_zip_digest": "sha256:7737b6e59b8683da3d1f4163813d456c858b7f19ebb6bc517403c875e2716759",
+  "session_manual_dispatches": 0,
+  "session_manual_sends": 0,
+  "recipient_inbox_delivery_verified": false
+}

@@ -1,0 +1,41 @@
+test_0657_and_0700_are_same_issue (tests.test_daily_generation_guard.DateTests.test_0657_and_0700_are_same_issue) ... ok
+test_jst_midnight (tests.test_daily_generation_guard.DateTests.test_jst_midnight) ... ok
+test_manual_date_does_not_roll_at_midnight (tests.test_daily_generation_guard.DateTests.test_manual_date_does_not_roll_at_midnight) ... ok
+test_naive_clock_rejected (tests.test_daily_generation_guard.DateTests.test_naive_clock_rejected) ... ok
+test_strict_and_leap_dates (tests.test_daily_generation_guard.DateTests.test_strict_and_leap_dates) ... ok
+test_attempt_markers_are_main_scoped_and_not_deleted (tests.test_daily_generation_guard.GuardTests.test_attempt_markers_are_main_scoped_and_not_deleted) ... ok
+test_delivered_issue_skips_before_models_or_attempt_claim (tests.test_daily_generation_guard.GuardTests.test_delivered_issue_skips_before_models_or_attempt_claim) ... ok
+test_partial_marker_history_refused (tests.test_daily_generation_guard.GuardTests.test_partial_marker_history_refused) ... ok
+test_pre_smtp_duplicate_recheck_blocks (tests.test_daily_generation_guard.GuardTests.test_pre_smtp_duplicate_recheck_blocks) ... ok
+test_published_november_2_refused_before_network (tests.test_daily_generation_guard.GuardTests.test_published_november_2_refused_before_network) ... ok
+test_ready_has_no_side_effects (tests.test_daily_generation_guard.GuardTests.test_ready_has_no_side_effects) ... ok
+test_smtp_is_not_opened_when_duplicate_found (tests.test_daily_generation_guard.GuardTests.test_smtp_is_not_opened_when_duplicate_found) ... ok
+test_unknown_old_attempt_cannot_be_retried (tests.test_daily_generation_guard.GuardTests.test_unknown_old_attempt_cannot_be_retried) ... ok
+test_unverifiable_sent_aborts (tests.test_daily_generation_guard.GuardTests.test_unverifiable_sent_aborts) ... ok
+test_unverified_smtp_receipt_requires_review (tests.test_daily_generation_guard.GuardTests.test_unverified_smtp_receipt_requires_review) ... ok
+test_verified_delivery_receipt_contains_no_token (tests.test_daily_generation_guard.GuardTests.test_verified_delivery_receipt_contains_no_token) ... ok
+test_workflow_rerun_refused_before_network (tests.test_daily_generation_guard.GuardTests.test_workflow_rerun_refused_before_network) ... ok
+test_date_sender_and_bound_token (tests.test_daily_generation_guard.HeaderTests.test_date_sender_and_bound_token) ... ok
+test_failed_verification_does_not_send_mail (tests.test_daily_generation_guard.HeaderTests.test_failed_verification_does_not_send_mail) ... ok
+test_external_wake_verified_delivery_suppresses_missing_cron_alert (tests.test_daily_generation_guard.MonitorTests.test_external_wake_verified_delivery_suppresses_missing_cron_alert) ... ok
+test_missing_each_day_has_distinct_alert_key (tests.test_daily_generation_guard.MonitorTests.test_missing_each_day_has_distinct_alert_key) ... ok
+test_no_alert_before_0715_and_current_issue_after (tests.test_daily_generation_guard.MonitorTests.test_no_alert_before_0715_and_current_issue_after) ... ok
+test_old_manual_issue_does_not_mask_missing_today (tests.test_daily_generation_guard.MonitorTests.test_old_manual_issue_does_not_mask_missing_today) ... ok
+test_paid_stages_guarded_and_attempt_precedes_them (tests.test_daily_generation_guard.WorkflowTests.test_paid_stages_guarded_and_attempt_precedes_them) ... ok
+test_2026_09_04_failed_attempt_then_successful_retry (tests.test_automation_chain_audit.AuditTests.test_2026_09_04_failed_attempt_then_successful_retry) ... ok
+test_alert_key_is_run_attempt_stage_specific (tests.test_automation_chain_audit.AuditTests.test_alert_key_is_run_attempt_stage_specific) ... ok
+test_daily_schedule_waits_for_scheduler_grace (tests.test_automation_chain_audit.AuditTests.test_daily_schedule_waits_for_scheduler_grace) ... ok
+test_downstream_run_completion_timeout (tests.test_automation_chain_audit.AuditTests.test_downstream_run_completion_timeout) ... ok
+test_downstream_state_timeouts (tests.test_automation_chain_audit.AuditTests.test_downstream_state_timeouts) ... ok
+test_each_downstream_workflow_failure (tests.test_automation_chain_audit.AuditTests.test_each_downstream_workflow_failure) ... ok
+test_healthy_chain_has_no_false_positive (tests.test_automation_chain_audit.AuditTests.test_healthy_chain_has_no_false_positive) ... ok
+test_live_inputs_fetches_latest_scheduled_run_separately (tests.test_automation_chain_audit.AuditTests.test_live_inputs_fetches_latest_scheduled_run_separately) ... ok
+test_manual_run_does_not_mask_stale_schedule (tests.test_automation_chain_audit.AuditTests.test_manual_run_does_not_mask_stale_schedule) ... ok
+test_poller_schedule_is_stale_after_bounded_scheduler_tolerance (tests.test_automation_chain_audit.AuditTests.test_poller_schedule_is_stale_after_bounded_scheduler_tolerance) ... ok
+test_recent_production_schedule_delays_are_not_stale (tests.test_automation_chain_audit.AuditTests.test_recent_production_schedule_delays_are_not_stale) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 2.910s
+
+OK
+Using manually specified Daily Duck issue date: 2026-11-03
