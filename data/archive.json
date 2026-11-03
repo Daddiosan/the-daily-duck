@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-02",
+    "displayDate": "November 2, 2026",
+    "slug": "skullcape",
+    "title": "SKULLCAPE",
+    "duckName": "Skullcape",
+    "storyTitleEn": "A CHILL DOWN YOUR FEATHERS",
+    "storyTitleJa": "南極の島に「凍った恐怖」？骸骨のように見える風景",
+    "image": "assets/ducks/2026-11-02-skullcape.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Skullcape",
+    "imageAltJa": "SkullcapeをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Vega Island in Antarctica has a chilling visual surprise: its icy landscape resembles a skull. The eerie shape gives a frozen scene a playful, spooky character and shows how landscapes can spark the imagination.",
+    "storyJa": "南極のベガ島には、ひやりとする視覚的な驚きがあります。氷に覆われた風景が、骸骨のように見えるのです。不気味でありながらどこか楽しい形が、凍った景色に季節らしい雰囲気を与え、風景が想像力をかき立てることを教えてくれます。",
+    "duckEn": "Antarctica brought its own spooky season special.",
+    "duckJa": "南極から、ひと味違うハロウィーンの景色です。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/vega-island-frozen-in-fright/",
+    "archiveSummaryEn": "An icy landscape on Antarctica’s Vega Island resembles a skull. A spooky visual surprise from a frozen world.",
+    "archiveSummaryJa": "南極のベガ島にある氷の風景が、骸骨のように見えます。凍った世界から届いた、少し不気味な視覚の驚きです。",
+    "reasonEn": "An icy landscape on Antarctica’s Vega Island resembles a skull. A spooky visual surprise from a frozen world.",
+    "reasonJa": "南極のベガ島にある氷の風景が、骸骨のように見えます。凍った世界から届いた、少し不気味な視覚の驚きです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-01",
     "displayDate": "November 1, 2026",
     "slug": "orbit-o-ween",

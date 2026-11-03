@@ -1,0 +1,16 @@
+{
+  "action": "ARCHIVE_ONLY_PUBLISHED",
+  "at": "2026-11-03T02:46:57.724768+00:00",
+  "issue_date": "2026-11-02",
+  "image": "assets/ducks/2026-11-02-skullcape.png",
+  "page": "ducks/2026-11-02/index.html",
+  "title": "A CHILL DOWN YOUR FEATHERS",
+  "duck_name": "Skullcape",
+  "publication_mode": "ARCHIVE_ONLY",
+  "x_publish_requested": false,
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
