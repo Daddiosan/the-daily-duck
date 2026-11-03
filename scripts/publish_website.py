@@ -12,6 +12,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+if __package__:
+    from .publication_title import publication_title
+else:
+    from publication_title import publication_title
+
+
 READY = Path("automation_state/ready_to_publish.json")
 RESULT = Path("automation_state/website_publish_result.json")
 TODAY = Path("data/today.json")
@@ -129,169 +135,6 @@ def e(
     )
 
 
-def _selection_number(
-    value: Any,
-    field: str,
-) -> int | None:
-
-    if value is None:
-        return None
-
-    if (
-        isinstance(value, bool)
-        or not isinstance(value, int)
-        or value < 1
-    ):
-        raise ValueError(
-            f"{field} must be a positive integer."
-        )
-
-    return value
-
-
-def _selected_title_text(
-    value: Any,
-    field: str,
-) -> str:
-
-    if not isinstance(value, str):
-        raise ValueError(
-            f"{field} must be a non-empty string."
-        )
-
-    selected = value.strip()
-
-    if not selected or selected != value:
-        raise ValueError(
-            f"{field} must be a non-empty, trimmed string."
-        )
-
-    if any(
-        ord(character) < 32
-        for character in selected
-    ):
-        raise ValueError(
-            f"{field} contains control characters."
-        )
-
-    if "<" in selected or ">" in selected:
-        raise ValueError(
-            f"{field} contains HTML delimiter characters."
-        )
-
-    return selected
-
-
-def publication_title(
-    ready: dict[str, Any],
-    approved: dict[str, Any],
-    fallback: str,
-) -> str:
-    """Resolve the approved English publication title, failing closed on conflicts."""
-
-    selected_present = "selected_title" in ready
-    selection_markers = (
-        "selected_title_number",
-        "selected_title_detail",
-    )
-    approved_markers = (
-        "selected_title",
-        "selected_title_number",
-    )
-
-    if not selected_present:
-        if any(key in ready for key in selection_markers) or any(
-            key in approved
-            for key in approved_markers
-        ):
-            raise ValueError(
-                "Selected-title state is incomplete: selected_title is missing."
-            )
-
-        return fallback
-
-    selected = _selected_title_text(
-        ready.get("selected_title"),
-        "selected_title",
-    )
-    selected_number = _selection_number(
-        ready.get("selected_title_number"),
-        "selected_title_number",
-    )
-    corroborating_numbers = [
-        selected_number
-    ] if selected_number is not None else []
-
-    detail = ready.get("selected_title_detail")
-    if "selected_title_detail" in ready:
-        if not isinstance(detail, dict):
-            raise ValueError(
-                "selected_title_detail must be an object."
-            )
-
-        detail_title = _selected_title_text(
-            detail.get("title"),
-            "selected_title_detail.title",
-        )
-        if detail_title != selected:
-            raise ValueError(
-                "selected_title conflicts with selected_title_detail.title."
-            )
-
-        detail_number = _selection_number(
-            detail.get("number"),
-            "selected_title_detail.number",
-        )
-        if detail_number is not None:
-            corroborating_numbers.append(
-                detail_number
-            )
-
-    if "selected_title" in approved:
-        approved_title = _selected_title_text(
-            approved.get("selected_title"),
-            "gate_a_approved_story.selected_title",
-        )
-        if approved_title != selected:
-            raise ValueError(
-                "selected_title conflicts with gate_a_approved_story.selected_title."
-            )
-
-    approved_number = _selection_number(
-        approved.get("selected_title_number"),
-        "gate_a_approved_story.selected_title_number",
-    )
-    if approved_number is not None:
-        corroborating_numbers.append(
-            approved_number
-        )
-
-    reply = ready.get("design_approval_reply")
-    if reply is not None:
-        if not isinstance(reply, str):
-            raise ValueError(
-                "design_approval_reply must be a string."
-            )
-        match = re.fullmatch(
-            r"[1-9][0-9]*\s+([1-9][0-9]*)",
-            reply.strip(),
-        )
-        if not match:
-            raise ValueError(
-                "design_approval_reply is invalid."
-            )
-        corroborating_numbers.append(
-            int(match.group(1))
-        )
-
-    if len(set(corroborating_numbers)) > 1:
-        raise ValueError(
-            "Selected-title numbers conflict across the approval state."
-        )
-
-    return selected
-
-
 def build_item(
     ready: dict[str, Any],
     image_rel: str,
@@ -358,24 +201,7 @@ def build_item(
     # English-first canonical content
     # ========================================================
 
-    fallback_title_en = text(
-        approved.get(
-            "title_en"
-        ),
-        approved.get(
-            "title"
-        ),
-        recommended.get(
-            "title"
-        ),
-        duck_name,
-    )
-
-    title_en = publication_title(
-        ready,
-        approved,
-        fallback_title_en,
-    )
+    title_en = publication_title(ready, approved)
 
     reason_en = text(
         approved.get(

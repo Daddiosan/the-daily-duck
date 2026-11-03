@@ -166,7 +166,7 @@ class PublishWebsiteCompatibilityTests(unittest.TestCase):
         self.assertIn(f'"headline":"{SELECTED_TITLE}"', page)
         self.assertIn(f"<h2>{JAPANESE_TITLE}</h2>", page)
 
-    def test_legacy_package_uses_existing_gate_a_title(self):
+    def test_legacy_package_without_final_selection_is_rejected(self):
         ready = ready_package(self.canonical)
         ready.pop("selected_title")
         ready.pop("selected_title_number")
@@ -175,9 +175,8 @@ class PublishWebsiteCompatibilityTests(unittest.TestCase):
         ready["gate_a_approved_story"].pop("selected_title")
         ready["gate_a_approved_story"].pop("selected_title_number")
 
-        item = publish_website.build_item(ready, "assets/ducks/example.png")
-
-        self.assertEqual(item["storyTitleEn"], LEGACY_TITLE)
+        with self.assertRaisesRegex(ValueError, "selected_title is missing"):
+            publish_website.build_item(ready, "assets/ducks/example.png")
 
     def test_nested_approved_japanese_title_is_preserved(self):
         ready = ready_package(self.canonical)

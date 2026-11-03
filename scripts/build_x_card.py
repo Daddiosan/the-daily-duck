@@ -30,6 +30,12 @@ from typing import Any
 from PIL import Image, ImageDraw, ImageFont
 
 
+if __package__:
+    from .publication_title import publication_title
+else:
+    from publication_title import publication_title
+
+
 READY_PATH = Path("automation_state/ready_to_publish.json")
 OUT_DIR = Path("automation_images/x")
 
@@ -644,15 +650,7 @@ def render_legacy_card(
         ready
     )
 
-    title = first_text(
-        ready.get(
-            "selected_title"
-        ),
-        approved.get(
-            "duck_name"
-        ),
-        "DAILY DUCK",
-    ).upper()
+    title = publication_title(ready, approved_root)
 
     teaser = first_text(
         approved.get(
@@ -743,18 +741,13 @@ def render_legacy_card(
         True,
     )
 
-    title_lines = truncate_lines(
-        draw,
-        wrap_words_by_pixels(
-            draw,
-            title,
-            title_font,
-            panel_w,
-        ),
-        title_font,
-        panel_w,
-        2,
-    )
+    title_lines = wrap_words_by_pixels(draw, title, title_font, panel_w)
+    if len(title_lines) > 2 or any(
+        draw.textbbox((0, 0), line, font=title_font)[2]
+        - draw.textbbox((0, 0), line, font=title_font)[0] > panel_w
+        for line in title_lines
+    ):
+        raise ValueError("Approved title does not fit the X card without truncation.")
 
     y = draw_lines(
         draw,
@@ -934,22 +927,7 @@ def render_english_first_card(
         ready
     )
 
-    # Use the human-selected publication title first.
-    title = first_text(
-        ready.get(
-            "selected_title"
-        ),
-        approved_root.get(
-            "selected_title"
-        ),
-        approved.get(
-            "title_en"
-        ),
-        approved.get(
-            "duck_name"
-        ),
-        "DAILY DUCK",
-    ).upper()
+    title = publication_title(ready, approved_root)
 
     # English description in the previously red-boxed area.
     # x_en is the direct English equivalent of the old x_jp teaser.
@@ -1111,7 +1089,11 @@ def render_english_first_card(
             )
         )
 
-        if len(candidate_lines) <= 2:
+        if len(candidate_lines) <= 2 and all(
+            draw.textbbox((0, 0), line, font=title_font)[2]
+            - draw.textbbox((0, 0), line, font=title_font)[0] <= panel_w
+            for line in candidate_lines
+        ):
             title_lines = (
                 candidate_lines
             )
@@ -1120,23 +1102,7 @@ def render_english_first_card(
         title_font_size -= 2
 
     if not title_lines:
-        title_font = font(
-            50,
-            True,
-        )
-
-        title_lines = truncate_lines(
-            draw,
-            wrap_words_by_pixels(
-                draw,
-                title,
-                title_font,
-                panel_w,
-            ),
-            title_font,
-            panel_w,
-            2,
-        )
+        raise ValueError("Approved title does not fit the X card without truncation.")
 
     y = draw_lines(
         draw,
@@ -1151,40 +1117,26 @@ def render_english_first_card(
         ),
     )
 
-    # Yellow accent line aligned below title.
-    accent_y = y + 12
+    # Keep the date/teaser positions; place the accent 6 clear pixels
+    # above the date's actual ink, matching its visible width exactly.
+    y += 55
+    date_text = display_date_english(issue_date)
+    date_font = font(27, True)
+    date_mask, offset = date_font.getmask2(date_text)
+    ink = date_mask.getbbox()
+    if ink is None:
+        raise ValueError("Date text has no visible glyphs.")
+    date_left = left + offset[0] + ink[0]
+    date_right = left + offset[0] + ink[2]
+    date_top = y + offset[1] + ink[1]
+    accent_bottom = date_top - 6 - 1
 
     draw.rounded_rectangle(
-        (
-            left,
-            accent_y,
-            left + 155,
-            accent_y + 10,
-        ),
+        (date_left, accent_bottom - 10, date_right - 1, accent_bottom),
         radius=5,
         fill=YELLOW,
     )
-
-    # --------------------------------------------------------
-    # English date.
-    # --------------------------------------------------------
-
-    y = accent_y + 43
-
-    draw.text(
-        (
-            left,
-            y,
-        ),
-        display_date_english(
-            issue_date
-        ),
-        font=font(
-            27,
-            True,
-        ),
-        fill=NAVY,
-    )
+    draw.text((left, y), date_text, font=date_font, fill=NAVY)
 
     # --------------------------------------------------------
     # English explanation/teaser.
