@@ -1,0 +1,135 @@
+The Daily Duck — 2026-11-03 候補メール復旧・定期配信調査
+
+結果
+11月3日号は調査中に既存の定期実行が遅れて起動し、12:26:25 JSTに候補メールを送信した。
+本セッションからの手動dispatch・候補生成・再送は0回。候補メール確認以降の操作は行っていない。
+隔離ブランチに通常運用の修正候補を作成し、オフライン38テストがPASS。
+本番への適用、push、merge、Cloud設定変更、Web公開、X投稿は行っていない。
+07:00配信の安定化は本番未反映・実運用未検証であり、完了とは扱わない。
+
+調査中の既存運用の進行（本セッションの実行ではない）
+最終読み取り時、mainは786d3cf9275a611ee53229be8d2a068a73d7ada1へ2コミット進んでいた。
+12:42:21 JSTにGate Aの承認状態、12:45:18 JSTに画像・タイトル候補が保存されている。
+11月3日号の最新状態はWAITING_FINAL_SELECTION。候補生成時点のWAITING_STORY_SELECTIONと区別する。
+本セッションは承認返信の送信、画像生成、Web/X公開、既存ジョブの再実行を行っていない。
+concurrent_main_observation.jsonに安全な状態項目と変更パスのみ保存。
+進んだ2コミットは運用状態・プレビュー画像のみで、今回の修正対象コード7ファイルとの重複はない。
+本番反映前には、その時点のmainと承認状態を再照合する必要がある。
+
+メールの証拠
+run: https://github.com/Daddiosan/the-daily-duck/actions/runs/41572069038
+event=schedule, attempt=1, conclusion=success
+head SHA: 4de9055d3db4eaad4481863652c2dc2b6149af69
+起動: 2026-11-03 12:25:01 JST
+job: 12:25:04–12:26:29 JST、run更新終了12:26:30 JST
+Gmail: https://mail.google.com/mail/u/?authuser=thedailyduckai%40gmail.com#all/1a19f719c606dbed
+件名（承認トークン省略）: The Daily Duck — Choose Today's Story — 2026-11-03
+送信先: thedailyduckai@gmail.com / kobakoba_jp2002@yahoo.co.jp
+送信済み検索の該当候補メールは1通。候補5件、日付2026-11-03、WAITING_STORY_SELECTIONを確認。
+本文の5つのソースURLと成果物を照合し、件名トークンのGATE_A・日付に結び付いたSHA256を成果物digestと照合した。
+実トークンはログ・証拠ファイルに保存していない。Gmail送信済みは確認済みだがYahoo受信箱への到着は未確認。
+成果物 daily-duck-results: artifact ID 13202061453
+GitHub ZIP digest: sha256:7737b6e59b8683da3d1f4163813d456c858b7f19ebb6bc517403c875e2716759
+mail_verification.json / nov03_run.json / jobs/41572069038.json / nov03-results/ を参照。
+
+14日間の原因調査（2026-10-21〜2026-11-03 JST）
+全14日のscheduled runを確認、成功13・失敗1。11月3日も最終的には欠落ではなく遅延だった。
+各runのhead SHAにおけるcronは7 22 * * *（07:07 JST）。時刻目標07:00より設定自体が7分遅い。
+予定〜run作成の遅延は最小117分22秒、最大318分01秒、中央値175分00.5秒。
+run作成〜job開始は最大3秒、job処理は40〜88秒。
+11/1: 07:07予定 → 09:56:12作成 → 09:57:38 job終了
+11/2: 07:07予定 → 10:25:44作成 → 10:27:07 job終了
+11/3: 07:07予定 → 12:25:01作成 → 12:26:29 job終了
+全日の予定・開始・終了・秒差・run IDはschedule_comparison_final.csvに保存。
+当初未実行だった観測もtiming_summary.json / schedule_comparison.csvに保持し、後から書き換えていない。
+
+遅延の観測箇所はGitHubのscheduled event/run作成前。ランナー待機や生成処理の長時間化が主因という証拠はない。
+対象workflowはactiveで日々実行されており、無効化や60日無操作による停止ではない。
+旧daily-duck.ymlにはconcurrency設定もない。ほかのrunとの競合がこの数時間の待ちを起こした証拠はない。
+GitHub内部の混雑・個別障害のどちらかまでは、この公開メタデータから確定できない。
+GitHub公式はscheduleの遅延・負荷時のdrop可能性を明記している：
+https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
+
+APIエラーとメール遅延の切り分け
+10/26 run 40247564159はGemini HTTP403（projectでfree tier利用不可）をPERMISSION_FAILUREとして停止。
+後日の既存コードではPROJECT_ACCESS_DENIEDからOpenAIにfallbackして成功している。
+11/3もranking/editorialそれぞれGemini拒否 → OpenAIの1回目が成功した。
+このAPI問題は起動前の数時間の遅延を説明しない。プロバイダー・課金設定は変更していない。
+一部RSSのHTTP403は既存処理で許容されており、起動遅延の原因ではない。
+11/3の送信stepは12:26:05〜12:26:26、Gmail送信済み時刻は12:26:25。
+生成後にメール送信が何時間も遅れた形跡はない。宛先側の配達遅延については受信箱証拠なし。
+
+重複防止の既存不足
+旧生成workflowには送信済み確認、同時実行制御、SMTP前の永続実行記録がなかった。
+10/26号の手動dispatch run 40347851657 / 40353742118で、同じ号の候補メールが2通送信されている。
+Sent ID 1a178caf04845c38 / 1a178ebea204d599、送信時刻10/27 00:18:48 / 00:54:49 JST。
+sent_mail_history.jsonにトークンを除いた履歴を保存。11/3の手動復旧を追加しなかったのは重複防止のため。
+
+既存外部起動と監視
+cloud/approval_fallback/main.py の外部wakeはGate A承認確認とデザイン選択確認の2経路のみ。
+cloud/approval_relay/github_dispatch.py のallowlistもその2 workflowのみ、refはmain固定。
+通常候補生成daily-duck.ymlや入力target_dateは現行外部wakeの対象外。制限の迂回はしていない。
+docs/phase3b2/EXTERNAL_FALLBACK_RUNBOOK.mdは既存Cloud Scheduler→認証付きCloud Run→GitHub App基盤を記述。
+gcloudがこの環境のPATHになく、現在のGCP設定は直接検証できていない。クラウドへの変更なし。
+既存監視は07:07+3時間まで未起動を許容し、最初の監視予定08:20はその期限より早い。
+次の監視予定は12:20。監視自体もGitHub schedule依存で、07時台の独立検出にはならない。
+未起動警報の日付も古いapproved_storyから取得し、日付がキーにならず翌日の同種警報を抑制し得た。
+
+隔離した修正候補（本番未反映）
+作業場所: C:\Users\hirok\Projects\the-daily-duck-schedule-recovery-2026-11-03
+ブランチ: fix/daily-duck-schedule-2026-11-03
+ベースSHA: 4de9055d3db4eaad4481863652c2dc2b6149af69
+最終候補SHAはこのREPORTを含むローカルコミット（git rev-parse HEAD）。
+元の作業場所のfix/daily-duck-x-backfill-2026-10-11 / ce144494da3ceccd30d73add5b830df31fbf9ffbは保持。
+
+変更ファイル（運用・テスト7ファイルと本audit証拠）
+1. .github/workflows/daily-duck.yml
+   cronを06:57 JSTへ。直列化、10分timeout、生成前の無料preflight、日付の固定、実行記録と送信確認成果物を追加。
+   paid段階前にdaily-duck-attempt-日付の成果物を保存し、不明な前回実行を自動再試行しない。
+   daily-duck-resultsの名前は維持。Web/Xの呼び出しなし。contents権限はreadのまま。
+2. scripts/daily_generation_guard.py（新規）
+   明示日付優先・厳密日付検証、JST変換、main限定、rerun拒否、公開済み号拒否、Gmail Sent確認。
+   前回実行記録があればHOLD、確認不能は失敗。記録やロックを削除しない。
+   SMTP直前にもSent確認し、送信後は日付・承認digestが一致するSentを検証して受領記録を作る。
+   送信後確認失敗時は自動再送しない。課金API呼び出しなし。
+3. scripts/send_email.py
+   上記ガード有効時のSMTP前チェックと送信後検証のみ追加。
+4. .github/workflows/automation-chain-audit.yml
+   朝の監視予定を07:15 JSTへ。他の監視予定を保持。
+5. scripts/automation_chain_audit.py
+   未起動判定を当日07:15へ、日付別警報キー、現行日の送信確認成果物を参照。
+   実行記録後10分たって送信確認がない場合も警報候補を作る。
+6. tests/test_daily_generation_guard.py（新規）
+7. tests/test_automation_chain_audit.py
+
+変更前後の検証
+ベースSHAのソースを読み、同じ架空fixtureを変更前後へ適用した。SMTPはmock、ネットワーク送信・実モデル呼び出しなし。
+07:16未起動: 旧版は警報なし → 候補は2026-11-03のNO_RUN_TODAY。
+10:08未起動: 旧版は誤って2026-11-01 → 候補は正しい2026-11-03。
+送信済みのSMTP処理: 旧版は接続1回 → 候補は接続0回で停止。
+before_after_verification.json を参照。
+最終38テストPASS（1.937秒）。candidate_tests_final.logを参照。
+JST日付境界・06:57/07:00・日付固定・うるう日・不正日付・公開済み11/2拒否・送信済み・前回不明・rerun・隔離ブランチ・不完全履歴・承認digest・SMTP未接続・警報期限・成果物のmain/workflow出自を確認。
+オフラインの候補検証であり、GitHub runner/Gmail IMAP/SMTPに対する候補コードの実接続検証や翌朝の時刻検証は未実施。
+証拠の最終集計時、GitHub履歴JSONのrunsキーをworkflow_runsと誤認してローカル集計が一度停止した。
+キーを確認して集計を修正。初期証拠は保持し、外部APIの生成・送信を再試行していない。
+
+通常運用に戻すための残作業・Human Gate
+cronを早めるだけでは、観測された2〜5時間の遅延を解消できない。
+既存の認証付き外部wake基盤の再利用を優先し、06:57 JSTに日付固定の候補生成、07:15 JSTに独立した送信確認を起動する案を推奨。
+新規経路は候補生成専用workflow/main/target_dateに固定し、既存allowlistの明示的な拡張・認証・権限レビューを行う。
+遅れたGitHub cronと外部起動が両方走っても、同一concurrency・Sent確認・日付別実行記録で生成/送信を止める。
+07:15時点で未着なら独立監視で警報。SMTP結果不明や実行記録ありなら、人間がSentを確認するまで再送しない。
+Cloud Scheduler/Cloud Runの現行設定・追加費用を確認し、具体的な変更と費用を提示して承認後に適用する。
+外部経路の実装・クラウドdeployは本候補に含めていない。既存allowlistは維持している。
+GitHub Actionsも即時開始を保証しないため、外部wakeでも07:00厳守の保証にはならない。次の朝に実測し、必要なら直接実行基盤を別途評価する。
+最初の本番反映後は、当日メール1通・遅れて来たcronの無課金skip・警報・後段の承認待ちを実地確認する。
+記事選択、人間承認なしの画像生成/Web/X公開は行わない。11/2以前の公開成果物には変更なし。
+AGENTS.md rule 5: 「元リポジトリへの適用、push、merge、deploy には明示的な Human Gate 承認を必要とする。」
+このルールと今回の依頼に従い、修正候補をローカル保存し、本番反映のHuman Gateで停止する。
+
+費用
+本セッションが開始した有料モデルAPI呼び出しは0回。11/2の承認済み予算を流用していない。
+遅れて自然起動した既存定期実行にはOpenAI成功2呼び出しがある。その後、別の既存フローでデザイン生成も進行している。
+usage/請求額は今回の取得ログにないため、これら既存自動運用の実費は未確定。
+この自動実行を「総費用0」とは報告しない。課金設定の変更、追加購入、自動チャージ、新たなリトライは行っていない。

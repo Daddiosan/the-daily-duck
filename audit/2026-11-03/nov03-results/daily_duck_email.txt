@@ -1,0 +1,452 @@
+The Daily Duck — Gate A
+
+The Daily Duck is now ENGLISH-FIRST.
+English is the canonical/master copy.
+Japanese is provided as a translation for review.
+
+本日の候補ニュース5件について、
+英語を正式原稿（Master）として記事案を作成しました。
+日本語は英語正本を基にした確認用の翻訳です。
+
+5件を比較して、
+本日採用する記事を1つ選んでください。
+
+
+AIおすすめ: 候補 1
+
+
+==================================================
+CANDIDATE 1 / 候補 1
+★ AI RECOMMENDED / AIおすすめ
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+Pennsylvania’s Grand Canyon Glows in Autumn
+
+
+WHY THIS STORY
+
+This spectacular autumn landscape offers an immediately accessible burst of seasonal beauty and a highly visual change of pace for the front page.
+
+
+EDITORIAL COPY
+
+Pennsylvania’s Grand Canyon is putting on a spectacular autumn display. Its bright seasonal beauty offers a cheerful reminder that sometimes the most uplifting views are already within reach.
+
+
+DUCK
+
+Duck name:
+Autumn Canyon Duck
+
+Duck line:
+This duck is ready for a colorful change of scenery.
+
+
+X DRAFT
+
+Pennsylvania’s Grand Canyon is glowing with spectacular autumn color—a bright, beautiful reminder that uplifting views may be closer than we think.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+秋色に輝くペンシルベニアのグランドキャニオン
+
+
+記事のポイント
+
+壮観な秋の風景が、身近に楽しめる季節の美しさを届けます。フロントページに鮮やかな彩りを加える、視覚的にも魅力的な話題です。
+
+
+記事案
+
+ペンシルベニアのグランドキャニオンが、壮観な秋の景色を見せています。鮮やかな季節の美しさは、心を明るくする風景が、思いのほか身近にあることを思い出させてくれます。
+
+
+Duckコメント
+
+このカモは、色鮮やかな景色の変化を楽しむ準備万端です。
+
+
+X投稿文
+
+ペンシルベニアのグランドキャニオンが、壮観な秋色に輝いています。心を明るくする景色は、意外と身近にあるのかもしれません。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Pennsylvania’s Grand Canyon
+
+Source:
+NASA
+
+URL:
+https://science.nasa.gov/earth/earth-observatory/pennsylvanias-grand-canyon/
+
+Score: 86
+
+
+==================================================
+CANDIDATE 2 / 候補 2
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+Mysterious “Sea Muppets” Have Never Been Seen Alive
+
+
+WHY THIS STORY
+
+These mysterious seahorse lookalikes combine a wonderfully unusual appearance with the curiosity of a creature no one has ever seen alive.
+
+
+EDITORIAL COPY
+
+Scientists have discovered mysterious seahorse lookalikes nicknamed “sea muppets.” Their bizarre appearance is captivating enough on its own, but the biggest mystery remains: no one has ever seen one alive.
+
+
+DUCK
+
+Duck name:
+Sea Muppet Duck
+
+Duck line:
+A mysterious little lookalike with a very big question mark.
+
+
+X DRAFT
+
+Meet the mysterious “sea muppets”: bizarre seahorse lookalikes that no one has ever seen alive. Nature still has plenty of surprises.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+謎の「シーマペット」、生きた姿は誰も見たことがない
+
+
+記事のポイント
+
+この謎めいたタツノオトシゴそっくりの生き物は、奇妙な姿に加え、誰も生きた個体を見たことがないという好奇心を誘う謎を備えています。
+
+
+記事案
+
+科学者たちが、通称「シーマペット」と呼ばれる謎めいたタツノオトシゴそっくりの生き物を発見しました。その奇妙な姿だけでも目を引きますが、最大の謎は、今まで誰も生きた姿を見たことがないことです。
+
+
+Duckコメント
+
+大きな謎を抱えた、謎めいたそっくりさんです。
+
+
+X投稿文
+
+謎の「シーマペット」に注目。奇妙なタツノオトシゴそっくりの姿をしていますが、生きた個体を見た人はまだ誰もいません。自然には驚きがいっぱいです。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Scientists discover mysterious seahorse lookalikes that no one has ever seen alive
+
+Source:
+ScienceDaily Offbeat
+
+URL:
+https://www.sciencedaily.com/releases/2026/10/261029072119.htm
+
+Score: 83
+
+
+==================================================
+CANDIDATE 3 / 候補 3
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+A Lost Mediterranean Route May Lead to the World’s Oldest Shipwreck
+
+
+WHY THIS STORY
+
+An ancient shipwreck, pyramid-era cargo, and a lost Mediterranean trading route create an easy-to-follow historical mystery with a strong sense of adventure.
+
+
+EDITORIAL COPY
+
+Archaeologists may have found the world’s oldest shipwreck. The discovery is linked to pyramid-era cargo and a lost Mediterranean trading route, turning the seafloor into the setting for an extraordinary historical mystery.
+
+
+DUCK
+
+Duck name:
+Shipwreck Sleuth Duck
+
+Duck line:
+This duck is following an ancient trail across the sea.
+
+
+X DRAFT
+
+An ancient shipwreck, pyramid-era cargo, and a lost Mediterranean trading route—archaeologists may be closer to an extraordinary maritime mystery.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+世界最古の難破船か、失われた地中海航路の手がかり
+
+
+記事のポイント
+
+古代の難破船、ピラミッド時代の積み荷、そして失われた地中海の交易路が、冒険心をかき立てるわかりやすい歴史ミステリーを生み出しています。
+
+
+記事案
+
+考古学者たちが、世界最古の難破船を発見した可能性があります。そこにはピラミッド時代の積み荷と、失われた地中海の交易路が関わっており、海底が驚くべき歴史ミステリーの舞台になっています。
+
+
+Duckコメント
+
+このカモは、海を越えた古代の手がかりを追っています。
+
+
+X投稿文
+
+古代の難破船、ピラミッド時代の積み荷、失われた地中海の交易路。考古学者たちが、驚くべき海の歴史ミステリーに近づいているのかもしれません。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Archaeologists may have just found the world's oldest shipwreck
+
+Source:
+ScienceDaily Offbeat
+
+URL:
+https://www.sciencedaily.com/releases/2026/10/261025073036.htm
+
+Score: 77
+
+
+==================================================
+CANDIDATE 4 / 候補 4
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+A 1,200-Year-Old Hairless Dog Reveals an Ancient Human Bond
+
+
+WHY THIS STORY
+
+Unusual hairless dogs, preserved puppies, and evidence of ancient human care offer a memorable window into the bond between people and animals.
+
+
+EDITORIAL COPY
+
+Archaeologists have discovered a 1,200-year-old mummified hairless dog in Peru. Preserved puppies and signs of ancient human care make the find a moving glimpse into a long-standing bond between people and animals.
+
+
+DUCK
+
+Duck name:
+Caring Companion Duck
+
+Duck line:
+A small reminder that the bond between people and animals has deep roots.
+
+
+X DRAFT
+
+A 1,200-year-old mummified hairless dog and preserved puppies offer a moving glimpse into the ancient bond between people and animals.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+1,200年前の毛のない犬が伝える、古代の人と動物の絆
+
+
+記事のポイント
+
+珍しい毛のない犬、保存された子犬、そして古代の人々が大切にしていた証拠が、人と動物の絆を印象的に伝えています。
+
+
+記事案
+
+考古学者たちが、ペルーで1,200年前のミイラ化した毛のない犬を発見しました。保存された子犬と、古代の人々が大切にしていた証拠は、人と動物の長く続く絆を感じさせる、心に残る発見です。
+
+
+Duckコメント
+
+人と動物の絆には、深い歴史があることを思い出させてくれます。
+
+
+X投稿文
+
+1,200年前のミイラ化した毛のない犬と保存された子犬が、人と動物の古くから続く絆を感じさせる、心に残る発見です。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Archaeologists discover 1,200-year-old mummified hairless dog in Peru
+
+Source:
+ScienceDaily Society
+
+URL:
+https://www.sciencedaily.com/releases/2026/10/261016070644.htm
+
+Score: 73
+
+
+==================================================
+CANDIDATE 5 / 候補 5
+==================================================
+
+ENGLISH MASTER / 英語正本
+--------------------------------------------------
+
+TITLE
+
+How Chinese Writing Gradually Took on Square Forms
+
+
+WHY THIS STORY
+
+This thoughtful cultural story explores why Chinese characters look the way they do, offering meaningful variety through the influence of language, tools, and tradition.
+
+
+EDITORIAL COPY
+
+An analysis suggests that Chinese writing developed its square forms gradually, shaped by language, tools, and tradition. The familiar appearance of Chinese characters carries a story of cultural change over time.
+
+
+DUCK
+
+Duck name:
+Square Script Duck
+
+Duck line:
+A neat reminder that the shapes we recognize often have a long story behind them.
+
+
+X DRAFT
+
+Why do Chinese characters look square? An analysis suggests their forms developed gradually, shaped by language, tools, and tradition.
+
+
+==================================================
+JAPANESE TRANSLATION / 日本語訳
+==================================================
+
+タイトル
+
+漢字の四角い形はどのように生まれたのか
+
+
+記事のポイント
+
+中国の漢字がなぜ現在のような形に見えるのかを、言語、道具、伝統の影響から考える、意義深く新鮮な文化の話題です。
+
+
+記事案
+
+分析によると、中国の文字が四角い形になったのは、長い時間をかけて徐々に発展した結果だと考えられます。その形は、言語や道具、伝統によって形づくられてきました。見慣れた漢字の姿には、時を超えた文化の変化の物語があります。
+
+
+Duckコメント
+
+見慣れた形にも、長い物語があることを思い出させてくれます。
+
+
+X投稿文
+
+なぜ漢字は四角く見えるのでしょう？ 分析によると、その形は言語や道具、伝統に影響されながら、徐々に発展したと考えられます。
+
+
+==================================================
+SOURCE / 出典
+==================================================
+
+Original headline:
+Chinese writing developed square forms gradually, shaped by language, tools and tradition, analysis suggests
+
+Source:
+Phys.org
+
+URL:
+https://phys.org/news/2026-11-chinese-square-gradually-language-tools.html
+
+Score: 70
+
+
+==================================================
+GATE A — STORY SELECTION / 本日の記事を選択
+==================================================
+
+採用する記事の番号だけを返信してください。
+
+1
+2
+3
+4
+5
+
+
+例:
+
+3
+
+
+IMPORTANT:
+
+- 「1」「2」「3」「4」「5」のいずれか1文字だけを返信してください。
+- それ以外の返信では承認されません。
+- 選択した1件だけが本日の正式記事になります。
+- 英語版がcanonical/master copyです。
+- 日本語版は英語正本から生成された翻訳です。
+- 記事選択後、その記事専用の画像コンセプトを3案作成します。
+- 画像コンセプトは別メールで送信します。
+- 画像コンセプト選択後、その1つのコンセプトから実画像を5枚生成します。
+- 最終画像選択が終わるまでWebサイト/Xには公開しません。

@@ -1,0 +1,38 @@
+{
+  "07:16_JST": {
+    "before": [],
+    "after": [
+      {
+        "stage": "Daily Automation scheduled trigger",
+        "issue_date": "2026-11-03",
+        "status": "NO_RUN_TODAY"
+      }
+    ]
+  },
+  "10:08_JST": {
+    "before": [
+      {
+        "stage": "Daily Automation scheduled trigger",
+        "issue_date": "2026-11-01",
+        "status": "NO_RUN_TODAY"
+      }
+    ],
+    "after": [
+      {
+        "stage": "Daily Automation scheduled trigger",
+        "issue_date": "2026-11-03",
+        "status": "NO_RUN_TODAY"
+      }
+    ]
+  },
+  "duplicate_already_sent": {
+    "before": {
+      "smtp_connections": 1,
+      "blocked": false
+    },
+    "after": {
+      "smtp_connections": 0,
+      "blocked": true
+    }
+  }
+}

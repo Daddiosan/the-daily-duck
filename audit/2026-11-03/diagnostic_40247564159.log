@@ -1,0 +1,13 @@
+daily-duck	UNKNOWN STEP	2026-10-26T00:04:59.4252138Z   ERROR: HTTP Error 403: Forbidden
+daily-duck	UNKNOWN STEP	2026-10-26T00:04:59.4885977Z   GEMINI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-10-26T00:04:59.4886415Z   OPENAI_API_KEY: ***
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6093073Z LLM_OPERATION=news_ranking LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_RESULT=PERMISSION_FAILURE
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6094989Z LLM_PROVIDER=gemini LLM_ATTEMPT=1 LLM_DETAIL=HTTPError GEMINI_HTTP_STATUS=403 GEMINI_ERROR_STATUS='PERMISSION_DENIED' GEMINI_ERROR_MESSAGE='The Gemini API free tier is not available for this project. To use the Gemini API, please set up billing to upgrade to the paid tier at https://aistudio.google.com/billing. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.' GEMINI_ERROR_REASON=None GEMINI_ERROR_SERVICE=None GEMINI_ERROR_METHOD=None
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6096701Z Traceback (most recent call last):
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6102897Z   File "/home/runner/work/the-daily-duck/the-daily-duck/scripts/llm_provider.py", line 571, in _generate_with_fallback
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6103315Z     raw_text = _call_gemini_once(prompt, schema, api_key=gemini_key, model=gemini_model)
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6551130Z urllib.error.HTTPError: HTTP Error 403: Forbidden
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6551893Z Traceback (most recent call last):
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6556317Z     return _generate_with_fallback(
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6557073Z   File "/home/runner/work/the-daily-duck/the-daily-duck/scripts/llm_provider.py", line 580, in _generate_with_fallback
+daily-duck	UNKNOWN STEP	2026-10-26T00:05:00.6557962Z llm_provider.ProviderFailure: Gemini failed with non-retryable error: PERMISSION_FAILURE

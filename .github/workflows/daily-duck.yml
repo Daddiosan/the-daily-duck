@@ -9,15 +9,22 @@ on:
         type: string
 
   schedule:
-    # 07:00 JST
-    - cron: "7 22 * * *"
+    # 06:57 JST; allow normal processing time before the 07:00 delivery goal.
+    # GitHub cron remains best-effort; an independently scheduled wake is needed.
+    - cron: "57 21 * * *"
 
 permissions:
   contents: read
+  actions: read
+
+concurrency:
+  group: daily-duck-news-generation
+  cancel-in-progress: false
 
 jobs:
   daily-duck:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     env:
       # Manual run:
@@ -30,6 +37,7 @@ jobs:
       # Current Daily Duck specification:
       # exactly 3 image concepts at Gate A.
       IMAGE_CONCEPT_COUNT: "3"
+      DAILY_DUCK_DELIVERY_GUARD: "1"
 
     steps:
       # ------------------------------------------------------------
@@ -46,10 +54,32 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Resolve one issue date and check prior delivery before paid work
+        id: delivery_gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python scripts/daily_generation_guard.py --github-output "$GITHUB_OUTPUT"
+
+      - name: Freeze the resolved issue date across all generation stages
+        if: steps.delivery_gate.outputs.should_run == 'true'
+        run: echo "DAILY_DUCK_TARGET_DATE=${{ steps.delivery_gate.outputs.issue_date }}" >> "$GITHUB_ENV"
+
+      - name: Persist a dated attempt before any paid model or SMTP call
+        if: steps.delivery_gate.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-attempt-${{ steps.delivery_gate.outputs.issue_date }}
+          path: daily_attempt/attempt.json
+          if-no-files-found: error
+          retention-days: 30
+
       # ------------------------------------------------------------
       # 3. Install Python dependencies
       # ------------------------------------------------------------
       - name: Install Python dependencies
+        if: steps.delivery_gate.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-phase2.txt
@@ -58,6 +88,7 @@ jobs:
       # 4. Show target date
       # ------------------------------------------------------------
       - name: Show Daily Duck target date
+        if: steps.delivery_gate.outputs.should_run == 'true'
         run: |
           echo "GitHub event: ${{ github.event_name }}"
 
@@ -73,6 +104,7 @@ jobs:
       # 5. Collect news
       # ------------------------------------------------------------
       - name: Collect Daily Duck news
+        if: steps.delivery_gate.outputs.should_run == 'true'
         run: |
           python scripts/collect_news.py
 
@@ -80,6 +112,7 @@ jobs:
       # 6. Rank news with Gemini
       # ------------------------------------------------------------
       - name: Rank Daily Duck news
+        if: steps.delivery_gate.outputs.should_run == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -102,6 +135,7 @@ jobs:
       #
       # ------------------------------------------------------------
       - name: Send Daily Duck email
+        if: steps.delivery_gate.outputs.should_run == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -110,6 +144,15 @@ jobs:
           EMAIL_TO: ${{ vars.EMAIL_TO }}
         run: |
           python scripts/send_email.py
+
+      - name: Preserve verified dated mail delivery
+        if: steps.delivery_gate.outputs.should_run == 'true' || steps.delivery_gate.outputs.status == 'ALREADY_SENT'
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-duck-delivered-${{ steps.delivery_gate.outputs.issue_date }}
+          path: daily_delivery.json
+          if-no-files-found: error
+          retention-days: 30
 
       # ------------------------------------------------------------
       # 8. Upload Gate A results
@@ -122,6 +165,7 @@ jobs:
       # Do not rename it.
       # ------------------------------------------------------------
       - name: Upload Daily Duck results
+        if: always() && steps.delivery_gate.outputs.should_run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: daily-duck-results

@@ -11,8 +11,9 @@ from typing import Any
 JST = timezone(timedelta(hours=9))
 TIMEOUT = timedelta(minutes=60)
 POLL_SCHEDULE_TIMEOUT = timedelta(hours=8)
-DAILY_SCHEDULE_TIME_JST = time(hour=7, minute=7)
-DAILY_SCHEDULE_GRACE = timedelta(hours=3)
+DAILY_SCHEDULE_TIME_JST = time(hour=7, minute=0)
+DAILY_SCHEDULE_GRACE = timedelta(minutes=15)
+DAILY_DELIVERY_TIMEOUT = timedelta(minutes=10)
 WORKFLOWS = {
     "The Daily Duck Automation": ("daily-duck.yml", "Daily Automation"),
     "The Daily Duck - Gate A Approval Check": ("approval-check-phase2.yml", "Gate A Approval Check"),
@@ -41,6 +42,8 @@ class Problem:
 
     @property
     def key(self) -> str:
+        if self.failure_stage in ("Daily Automation scheduled trigger", "Daily Automation candidate delivery"):
+            return ":".join((self.workflow_name, self.issue_date, self.failure_stage))
         return ":".join((self.workflow_name, str(self.run_id), str(self.attempt), self.failure_stage))
 
 def parse_time(value: Any) -> datetime | None:
@@ -119,13 +122,28 @@ def evaluate(
             parse_time(scheduled_run.get("created_at")) if scheduled_run else None
         )
         if stage == "Daily Automation" and now >= daily_schedule_deadline(now):
+            current_date = now.astimezone(JST).date().isoformat()
+            delivery = states.get("daily_delivery")
+            delivered_today = bool(
+                isinstance(delivery, dict)
+                and delivery.get("issue_date") == current_date
+                and delivery.get("sent_verified") is True
+            )
             ran_today = bool(
                 scheduled_created
                 and scheduled_created.astimezone(JST).date()
                 == now.astimezone(JST).date()
             )
-            if not ran_today:
-                found.append(problem("Daily Automation scheduled trigger", date, now, scheduled_run or {"name": workflow}, "NO_RUN_TODAY", "Check the daily schedule and Actions availability."))
+            if not ran_today and not delivered_today:
+                found.append(problem("Daily Automation scheduled trigger", current_date, now, scheduled_run or {"name": workflow}, "NO_RUN_TODAY", "Check the current-date candidate delivery and the independent wake path; do not regenerate without checking Sent and attempt markers."))
+            attempt = states.get("daily_attempt")
+            attempted_at = parse_time(attempt.get("created_at")) if isinstance(attempt, dict) else None
+            if (
+                not delivered_today and isinstance(attempt, dict)
+                and attempt.get("issue_date") == current_date and attempted_at
+                and now - attempted_at >= DAILY_DELIVERY_TIMEOUT
+            ):
+                found.append(problem("Daily Automation candidate delivery", current_date, now, run, "MAIL_NOT_VERIFIED", "Inspect Sent and the dated attempt marker; never clear the marker or retry SMTP blindly."))
         if stage in ("Gate A Approval Check", "Design Selection Check"):
             if not scheduled_created:
                 found.append(problem(f"{stage} scheduled trigger", date, now, {"name": workflow}, "MISSING", "Check the frequent poller schedule and Actions availability."))
@@ -166,7 +184,7 @@ def gh_json(endpoint: str) -> Any:
         raise RuntimeError(result.stderr.strip() or f"gh api failed: {endpoint}")
     return json.loads(result.stdout)
 
-def live_inputs(repository: str, state_dir: Path) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+def live_inputs(repository: str, state_dir: Path, now: datetime | None = None) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
     runs = {}
     for workflow, (filename, _) in WORKFLOWS.items():
         workflow_runs = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?per_page=20").get("workflow_runs", [])
@@ -176,7 +194,28 @@ def live_inputs(repository: str, state_dir: Path) -> tuple[dict[str, list[dict[s
             workflow_runs.extend(run for run in scheduled_runs if run.get("id") not in known_ids)
         runs[workflow] = workflow_runs
     names = ("approved_story", "design_options", "design_selection_result", "ready_to_publish", "website_publish_result", "x_publish_result")
-    return runs, {name: read_json(state_dir / f"{name}.json") for name in names}
+    states = {name: read_json(state_dir / f"{name}.json") for name in names}
+    current_date = (now or datetime.now(timezone.utc)).astimezone(JST).date().isoformat()
+    artifact_name = f"daily-duck-delivered-{current_date}"
+    artifacts = gh_json(f"repos/{repository}/actions/artifacts?name={artifact_name}&per_page=100").get("artifacts", [])
+    daily_run_ids = {run.get("id") for run in runs.get("The Daily Duck Automation", [])}
+    states["daily_delivery"] = next((
+        {"issue_date": current_date, "sent_verified": True, "run_id": row["workflow_run"]["id"]}
+        for row in artifacts
+        if row.get("name") == artifact_name and row.get("expired") is False
+        and row.get("workflow_run", {}).get("head_branch") == "main"
+        and row.get("workflow_run", {}).get("id") in daily_run_ids
+    ), None)
+    attempt_name = f"daily-duck-attempt-{current_date}"
+    attempts = gh_json(f"repos/{repository}/actions/artifacts?name={attempt_name}&per_page=100").get("artifacts", [])
+    states["daily_attempt"] = next((
+        {"issue_date": current_date, "created_at": row.get("created_at"), "run_id": row["workflow_run"]["id"]}
+        for row in attempts
+        if row.get("name") == attempt_name
+        and row.get("workflow_run", {}).get("head_branch") == "main"
+        and row.get("workflow_run", {}).get("id") in daily_run_ids
+    ), None)
+    return runs, states
 
 def main() -> int:
     parser = argparse.ArgumentParser()
@@ -197,7 +236,7 @@ def main() -> int:
         repository = os.environ.get("GITHUB_REPOSITORY", "").strip()
         if not repository:
             raise SystemExit("GITHUB_REPOSITORY is required")
-        runs, states = live_inputs(repository, args.state_dir)
+        runs, states = live_inputs(repository, args.state_dir, now)
     current = evaluate(runs, states, now)
     seen_data = read_json(args.seen_file)
     seen = set(seen_data.get("keys", [])) if isinstance(seen_data, dict) else set()
