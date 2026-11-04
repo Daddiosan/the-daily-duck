@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-04",
   "generated_at": "2026-11-04T13:14:29.227886+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-04/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "The Sighting That Never Came",
+    "concept_en": "A poetic negative-space poster image visualizes the mystery of an absent living sighting: the duck waits beside a softly illuminated viewing window containing only a vague seahorse-like shadow.",
+    "composition_en": "Use a wide, minimal landscape composition with a deep midnight-blue background and one large rounded viewing window or pool of light in the center-right. Inside it, place a barely visible abstract seahorse-like shadow fading into mist, deliberately leaving the living creature unseen. Position the friendly duck in the lower-right foreground, gazing upward with hopeful curiosity. A gentle warm halo around the duck contrasts with the cool empty space. The image should feel like a memorable film poster without any text, with strong silhouette design, generous negative space, and a charming sense of wonder.",
+    "generation_prompt_en": "Create a premium modern landscape editorial poster illustration with a strong cinematic focal point and no text. Show the recognizable friendly yellow Daily Duck mascot in the lower-right foreground: orange beak, large dark glossy eyes, small feather tuft, warm approachable expression, looking upward with curious wonder. Against a deep midnight-blue background, create one large softly illuminated rounded viewing window or pool of light in the center-right. Within it, show only a faint abstract shadow inspired by a seahorse shape, dissolving into mist and negative space; do not show a living creature and do not imply a confirmed sighting. Use a warm golden halo around the duck against cool blue surroundings, elegant minimal shapes, refined magazine-cover visual language, landscape 16:9 framing, emotionally intriguing and charming. No logos, no watermark, no UI, no readable text, no headline, no lettering.",
+    "alt_en": "A curious yellow duck gazes at a softly lit window containing only the fading shadow of a seahorse-like mystery.",
+    "title_ja": "訪れなかった目撃",
+    "concept_ja": "誰も生きた姿を見たことがないという謎を、何も現れない viewing window と、そこに残るかすかな影で詩的に表現するポスター的ビジュアルです。",
+    "composition_ja": "深いミッドナイトブルーの背景に、中央右へ大きな丸みのある光の窓、または光の水面を置く、ミニマルな横長構図です。その内部には、霞へ消えていくタツノオトシゴ風の抽象的な影だけを薄く見せ、生きた生物そのものは描きません。右下手前には、希望と好奇心を込めて見上げる黄色いアヒルを配置します。アヒルの暖かな光輪と冷たい青い余白を対比させ、文字のない映画ポスターのような印象に仕上げます。",
+    "alt_ja": "黄色いアヒルが、タツノオトシゴ風の謎めいた影だけを映す柔らかな光の窓を見上げている。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "THE OCEAN STILL HAS SECRETS",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-04T13:16:54.527572+00:00"
 }
