@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-04T13:17:19.916789+00:00",
+  "issue_date": "2026-11-04",
+  "image": "assets/ducks/2026-11-04-sea-muppet.png",
+  "page": "ducks/2026-11-04/index.html",
+  "title": "THE OCEAN STILL HAS SECRETS",
+  "duck_name": "Sea Muppet",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
