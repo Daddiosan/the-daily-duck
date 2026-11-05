@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-05",
   "generated_at": "2026-11-05T01:59:34.780818+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-05/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "A History in the Flip",
+    "concept_en": "A visual metaphor for historical reinterpretation: an ancient coin appears to turn the page on a familiar assumption about an Iron Age king.",
+    "composition_en": "Wide landscape composition built around a large ancient coin suspended mid-turn above a softly lit archival surface. On one side, the coin is rendered clearly but neutrally; on the other, its turning edge catches a fresh luminous glow. The duck mascot stands beside it like an enthusiastic guide, one wing raised toward the reveal. Use layered paper-like shadows and subtle depth to suggest changing historical interpretation, without readable writing or invented symbols.",
+    "generation_prompt_en": "Create one polished landscape editorial illustration with a strong central visual metaphor. Show a generic ancient coin captured mid-flip above a refined archival tabletop, its edge catching a fresh golden light as it turns toward the viewer. Place the consistent Daily Duck mascot beside the coin: friendly yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression, standing upright and gesturing with one wing in delighted surprise. Suggest an influential Iron Age ruler being reinterpreted without depicting a specific person, culture, location, inscription, or invented historical emblem. Use elegant layered shadows like turning pages, restrained bronze, cream, and deep blue colors, clean modern art direction, premium magazine illustration, wide hero-image framing, simple background, clear focal hierarchy. No readable text, no logos, no watermark, no UI, no headline, no extra characters, no fake coin lettering.",
+    "alt_en": "A yellow duck gestures excitedly beside an ancient coin caught mid-flip, symbolizing a fresh reinterpretation of Iron Age history.",
+    "title_ja": "めくり返る歴史",
+    "concept_ja": "古代のコインが、鉄器時代の王についての見慣れた前提をひっくり返すように見える、歴史の再解釈の比喩です。",
+    "composition_ja": "横長の構図の中心に、収蔵品用の台の上で宙に浮き、回転の途中にある大きな古代のコインを置きます。コインの縁には新鮮な金色の光を当て、見慣れた見方が変わる瞬間を表現します。隣には、黄色い羽毛、オレンジ色のくちばし、大きく光沢のある黒い目、小さな羽毛の突起、温かな表情を持つデイリー・ダックのマスコットを立たせ、片翼でコインを示します。紙をめくるような影と奥行きで解釈の変化を示し、文字や架空の記号は入れません。",
+    "alt_ja": "回転途中の古代のコインのそばで、黄色いアヒルが驚きながら示している。鉄器時代の歴史に対する新たな解釈を象徴しています。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "HISTORY FLIPS THE SCRIPT",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-05T02:06:52.662634+00:00"
 }
