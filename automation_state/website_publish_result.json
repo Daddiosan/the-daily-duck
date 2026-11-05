@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-05T02:07:15.261765+00:00",
+  "issue_date": "2026-11-05",
+  "image": "assets/ducks/2026-11-05-the-coinflip-king.png",
+  "page": "ducks/2026-11-05/index.html",
+  "title": "HISTORY FLIPS THE SCRIPT",
+  "duck_name": "The Coinflip King",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

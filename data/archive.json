@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-05",
+    "displayDate": "November 5, 2026",
+    "slug": "the-coinflip-king",
+    "title": "THE COINFLIP KING",
+    "duckName": "The Coinflip King",
+    "storyTitleEn": "HISTORY FLIPS THE SCRIPT",
+    "storyTitleJa": "古代のコインが示す、女性だった可能性のある鉄器時代の王",
+    "image": "assets/ducks/2026-11-05-the-coinflip-king.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Coinflip King",
+    "imageAltJa": "The Coinflip KingをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Ancient coins are suggesting that an influential Iron Age king may have been female. It is a striking reinterpretation of a powerful figure—and a reminder that even familiar-looking pieces of the past can invite us to see history in a new way.",
+    "storyJa": "古代のコインから、影響力のあった鉄器時代の王は女性だった可能性が示されています。強大な人物像に対する印象的な再解釈であり、過去の遺物が歴史を新たな角度から見せてくれることを思い出させてくれます。",
+    "duckEn": "These coins are giving history a surprising new face.",
+    "duckJa": "このコインたちが、歴史に意外な新しい顔を見せてくれました。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-ancient-coins-influential-iron-age.html",
+    "archiveSummaryEn": "Ancient coins suggest an influential Iron Age king was female—a striking reinterpretation that shows how the past can still surprise us.",
+    "archiveSummaryJa": "古代のコインは、影響力のあった鉄器時代の王が女性だった可能性を示しています。過去は今も、私たちを驚かせてくれます。",
+    "reasonEn": "Ancient coins suggest an influential Iron Age king was female—a striking reinterpretation that shows how the past can still surprise us.",
+    "reasonJa": "古代のコインは、影響力のあった鉄器時代の王が女性だった可能性を示しています。過去は今も、私たちを驚かせてくれます。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-04",
     "displayDate": "November 4, 2026",
     "slug": "sea-muppet",
