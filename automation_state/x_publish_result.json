@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-05T02:07:58.606625+00:00",
+  "issue_date": "2026-11-05",
+  "x_post_id": "2118163380892565787",
+  "x_post_url": "https://x.com/i/web/status/2118163380892565787",
+  "x_media_id": "2118163378434715648",
+  "image_path": "automation_images/x/2026-11-05-x-card.png",
+  "post_text": "Ancient coins suggest an influential Iron Age king was female—a striking reinterpretation that shows how the past can still surprise us.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-05/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 161
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2118163380892565787",
+      "text": "Ancient coins suggest an influential Iron Age king was female—a striking reinterpretation that shows how the past can still surprise us.\n\nhttps://t.co/eUXqdXEZtt https://t.co/jSwJyVju4U"
+    }
+  }
+}
