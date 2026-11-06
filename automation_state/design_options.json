@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-06",
   "generated_at": "2026-11-06T03:54:24.391418+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-06/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "The Curiosity Relay",
+    "concept_en": "A playful relay-race metaphor in which curiosity travels from students on Earth to astronauts in space, emphasizing connection rather than technical space hardware.",
+    "composition_en": "Landscape composition staged like a friendly relay: the duck and students occupy the left foreground, passing a glowing question-shaped baton toward a large open sky. On the right, astronauts receive the symbolic baton from inside a softly lit spacecraft window. Use a sweeping diagonal from lower left to upper right to create movement and visual freshness. Keep the metaphor clearly illustrative, with no race setting presented as a factual event. Bright, warm, polished colors and an inviting family-editorial tone.",
+    "generation_prompt_en": "Create one publishable landscape hero image in a clean, modern, charming premium editorial style. Show the recognizable Daily Duck mascot: friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression. Use a clearly symbolic curiosity relay composition: on the left, the duck stands with a small group of school students on Earth, offering a glowing question-shaped baton toward the sky; on the right, astronauts inside a softly lit spacecraft window reach toward it. Make the visual metaphor elegant and obvious, not a literal sporting event. Use a dynamic lower-left to upper-right composition, gentle golden light, rich blue sky and space tones, simple polished 3D illustration, family-friendly wonder, strong focal point, landscape framing. No logos, no watermarks, no UI, no readable embedded text, no headline, no invented mission-specific details.",
+    "alt_en": "Students and a friendly yellow duck symbolically pass a glowing question toward astronauts in space.",
+    "title_ja": "好奇心のリレー",
+    "concept_ja": "地球の生徒たちから宇宙飛行士へ、好奇心がリレーのように受け渡されることを表現する、遊び心のある比喩的な構図です。",
+    "composition_ja": "横長の構図を親しみやすいリレーに見立てます。左手前にDaily Duckのマスコットと生徒たちを置き、生徒たちが光る疑問符型のバトンを空へ差し出します。右側の柔らかな光に包まれた宇宙船の窓では、宇宙飛行士がそれを受け取ろうとしています。左下から右上へ視線が流れる動きのある構成にし、実際の競技ではなく、明確なビジュアルメタファーとして描きます。",
+    "alt_ja": "生徒たちと黄色いアヒルが、光る疑問符を宇宙の宇宙飛行士へ渡している。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "CURIOSITY HAS NO CEILING",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-06T04:07:27.897966+00:00"
 }
