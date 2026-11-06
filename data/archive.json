@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-06",
+    "displayDate": "November 6, 2026",
+    "slug": "ask-the-astronauts",
+    "title": "ASK THE ASTRONAUTS",
+    "duckName": "Ask the Astronauts",
+    "storyTitleEn": "CURIOSITY HAS NO CEILING",
+    "storyTitleJa": "フロリダの生徒たち、NASAの宇宙飛行士に質問へ",
+    "image": "assets/ducks/2026-11-06-ask-the-astronauts.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Ask the Astronauts",
+    "imageAltJa": "Ask the AstronautsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Florida students will have the opportunity to ask NASA astronauts their questions. It is a warm reminder that curiosity can connect children on Earth with people exploring space.",
+    "storyJa": "フロリダの生徒たちが、NASAの宇宙飛行士に質問する機会を持ちます。好奇心が、地球にいる子どもたちと宇宙を探る人々をつなぐことを思い出させてくれる、心温まる出来事です。",
+    "duckEn": "Big questions can travel a very long way.",
+    "duckJa": "大きな質問は、とても遠くまで飛んでいけます。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://www.nasa.gov/learning-resources/nasa-astronauts-to-answer-questions-from-florida-students-2/",
+    "archiveSummaryEn": "Florida students are set to ask NASA astronauts their questions—a warm reminder that curiosity can connect children on Earth with people exploring space.",
+    "archiveSummaryJa": "フロリダの生徒たちがNASAの宇宙飛行士に質問します。好奇心が、地球の子どもたちと宇宙を探る人々をつなぐ、心温まる話です。",
+    "reasonEn": "Florida students are set to ask NASA astronauts their questions—a warm reminder that curiosity can connect children on Earth with people exploring space.",
+    "reasonJa": "フロリダの生徒たちがNASAの宇宙飛行士に質問します。好奇心が、地球の子どもたちと宇宙を探る人々をつなぐ、心温まる話です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-05",
     "displayDate": "November 5, 2026",
     "slug": "the-coinflip-king",
