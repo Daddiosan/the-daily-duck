@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-06T04:08:39.057019+00:00",
+  "issue_date": "2026-11-06",
+  "x_post_id": "2118556137759113245",
+  "x_post_url": "https://x.com/i/web/status/2118556137759113245",
+  "x_media_id": "2118556135611658240",
+  "image_path": "automation_images/x/2026-11-06-x-card.png",
+  "post_text": "Florida students are set to ask NASA astronauts their questions—a warm reminder that curiosity can connect children on Earth with people exploring space.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-06/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 178
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2118556137759113245",
+      "text": "Florida students are set to ask NASA astronauts their questions—a warm reminder that curiosity can connect children on Earth with people exploring space.\n\nhttps://t.co/uNXpoapOPF https://t.co/6GVnVcjimd"
+    }
+  }
+}
