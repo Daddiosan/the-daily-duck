@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-07",
+    "displayDate": "November 7, 2026",
+    "slug": "meander-duck",
+    "title": "MEANDER DUCK",
+    "duckName": "Meander Duck",
+    "storyTitleEn": "BILL-IEVE IN THE BENDS",
+    "storyTitleJa": "ユタ州のゴーズネックス、川が選んだ絶景ルート",
+    "image": "assets/ducks/2026-11-07-meander-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Meander Duck",
+    "imageAltJa": "Meander DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Some rivers take the direct route. Utah’s Goosenecks take the scenic one, curling through the landscape in remarkably tight bends. The result is an instantly striking piece of natural wonder—and a reminder that nature does not always travel in straight lines.",
+    "storyJa": "まっすぐ進む川もありますが、ユタ州のゴーズネックスを流れる川は、絶景ルートを選びました。大地の中を驚くほど細かく曲がりながら進むその姿は、ひと目で心をつかむ自然の驚きです。自然はいつも、まっすぐ進むとは限らないのだと教えてくれます。",
+    "duckEn": "Why take the straight line when the scenic route looks this good?",
+    "duckJa": "こんなに素敵なら、まっすぐ行かずに寄り道したくなるね。",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/taking-a-gander-at-utahs-goosenecks/",
+    "archiveSummaryEn": "Utah’s Goosenecks show a river taking the scenic route, with remarkably curvy meanders that make nature look delightfully playful.",
+    "archiveSummaryJa": "ユタ州のゴーズネックスでは、川が絶景ルートを選びます。驚くほど曲がりくねった流れが、自然の楽しさを見せてくれます。",
+    "reasonEn": "Utah’s Goosenecks show a river taking the scenic route, with remarkably curvy meanders that make nature look delightfully playful.",
+    "reasonJa": "ユタ州のゴーズネックスでは、川が絶景ルートを選びます。驚くほど曲がりくねった流れが、自然の楽しさを見せてくれます。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-06",
     "displayDate": "November 6, 2026",
     "slug": "ask-the-astronauts",
