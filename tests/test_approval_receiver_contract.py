@@ -75,6 +75,32 @@ IGNORED_RUNTIME_ENTRIES = {"__pycache__"}
 # original unconditional failure() policy, and schedule/permissions are still
 # pinned by the unchanged prefix/suffix reconstruction below.
 PHASE_3B_2A1_APPROVED_BASELINE = "23f54a4234bcb332f8f0b97bedb255b749235dd0"
+
+# HUMAN REAPPROVED 2026-11-07: the user explicitly approved these ten versions.
+# Record: docs/phase3b2/PROTECTED_WORKFLOW_REAPPROVAL_20261107.md.
+# The original fixed baseline and all protected paths remain in force.
+PROPOSED_WORKFLOW_REAPPROVAL_SHA256 = {
+    '.github/workflows/archive-only-publish-2026-10-11.yml':
+        'c89946abf027884d568b4f70ca599982dbc9d9a7cb3abac67ae095c679f62f11',
+    '.github/workflows/archive-only-publish-2026-10-26.yml':
+        '24e002e83c0d414223f0996efdf63eeee8de674df5128a023623dfd49a22db4f',
+    '.github/workflows/automation-chain-audit.yml':
+        'c90c94eabce594dd4e11bab00f32f1222d1e212ef654d804a31816faa691437d',
+    '.github/workflows/backfill-2026-10-11-design-options.yml':
+        '4fad32ab6e2d6412c96eed4ed12eed5ab6c64d486a2443f0358ef812d5fa1d5c',
+    '.github/workflows/backfill-2026-10-11-final-selection.yml':
+        '4d8fbb7f66912a83f472784f3009fca21fb61452d436a0cc2e9199211a61d76a',
+    '.github/workflows/backfill-2026-10-26-design-options.yml':
+        'b5960fa39175dd12825246f50dee068fb366a5ebb37103b96f1f59fb8dd3263c',
+    '.github/workflows/backfill-2026-10-26-final-selection.yml':
+        '63d83d9513d4d2d705d7dff23ae6b2df7387a8323d1f06d37b020d14e36abafc',
+    '.github/workflows/daily-duck.yml':
+        '9fe970f9fe3dc3e166aa75cd38458b53b57289cd43f127905f9dabb50d30649c',
+    '.github/workflows/x-backfill-publish-2026-10-11.yml':
+        'aded2fc39e5cb5eb9b9689951653d82e9475d151a13f2995209b50f4fbfcfc89',
+    '.github/workflows/x-backfill-publish-2026-10-26.yml':
+        'f63916fc8b157db4dad8eb54bd68951cfe6351f4544309b815cf953f8cf7ec9f',
+}
 GATE_A_PREFLIGHT_SECTION_SHA256 = (
     "bae110d1e7c0e22dfa54a23bcc5a2a65d7f8699fb22dd98a6171c3d0f8900785"
 )
@@ -224,6 +250,7 @@ class ApprovalReceiverContractTests(unittest.TestCase):
             "git",
             "diff",
             "--name-only",
+            "--no-renames",
             PHASE_3B_2A1_APPROVED_BASELINE,
             "--",
             ".github/workflows",
@@ -239,7 +266,24 @@ class ApprovalReceiverContractTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertEqual(result.stdout.strip(), "")
+        # Every protected delta must be one of the ten exact proposed files.
+        # A reverted, missing, changed or additional path remains a failure.
+        changed = result.stdout.splitlines()
+        self.assertEqual(len(changed), len(set(changed)))
+        self.assertEqual(set(changed), set(PROPOSED_WORKFLOW_REAPPROVAL_SHA256))
+        for relative, expected in PROPOSED_WORKFLOW_REAPPROVAL_SHA256.items():
+            with self.subTest(path=relative):
+                path = ROOT / relative
+                self.assertFalse(path.is_symlink())
+                self.assertTrue(path.is_file())
+                indexed = subprocess.check_output(
+                    ["git", "ls-files", "--stage", "--", relative],
+                    cwd=ROOT, text=True,
+                ).splitlines()
+                self.assertEqual(len(indexed), 1)
+                self.assertTrue(indexed[0].startswith("100644 "))
+                raw = path.read_bytes().replace(b"\r\n", b"\n")
+                self.assertEqual(hashlib.sha256(raw).hexdigest(), expected)
 
     def test_gate_a_workflow_change_is_limited_to_approved_sections(self):
         path = ".github/workflows/approval-check-phase2.yml"
