@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-07",
   "generated_at": "2026-11-07T05:30:41.446945+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-07/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "The Scenic Route From Above",
+    "concept_en": "A premium aerial editorial view of Utah’s Goosenecks, with the friendly Daily Duck mascot enjoying the river’s extraordinary curves from a canyon overlook.",
+    "composition_en": "Landscape hero composition viewed from above and slightly oblique: the winding river dominates the center, curling through the surrounding canyon landscape in tight, elegant bends. Place the recognizable yellow duck in the lower-right foreground on a natural overlook, facing the river with a warm, delighted expression. Use the river as the strong focal point, with generous atmospheric space, clean modern color grading, and a sense of cheerful natural wonder.",
+    "generation_prompt_en": "Create one clean, modern, premium editorial landscape hero image inspired by Utah’s Goosenecks. Show a striking aerial-oblique view of a single river making remarkably tight, winding bends through a broad canyon landscape. In the lower-right foreground, include a recognizable friendly yellow duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, looking out at the river. Emphasize the river’s scenic-route shape as the main focal point. Warm natural light, refined cinematic composition, realistic but charming editorial illustration, crisp details, soft atmospheric depth, simple uncluttered scene, landscape format. No logos, no watermark, no UI, no readable text, no headline, no embedded typography, no extra characters.",
+    "alt_en": "A friendly yellow duck looks across Utah’s Goosenecks as a river curves through the canyon in a series of tight bends.",
+    "title_ja": "上空から見る絶景ルート",
+    "concept_ja": "ユタ州のゴーズネックスを上空から眺め、川の extraordinary な曲線を楽しむデイリー・ダックのマスコットを描く、プレミアムな編集ビジュアルです。",
+    "composition_ja": "横長のヒーロー構図で、やや斜め上空から見下ろします。川を画面中央の主役に置き、広い峡谷の中を細かく優雅に曲がる流れを見せます。手前右側の自然な見晴らし場所に、川を眺める黄色いアヒルを配置します。温かく洗練された色調と、自然の楽しさが伝わる余白を重視します。",
+    "alt_ja": "黄色いアヒルが、峡谷の中を幾重にも曲がりながら流れるユタ州ゴーズネックスの川を眺めている。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "BILL-IEVE IN THE BENDS",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-07T06:17:13.883643+00:00"
 }
