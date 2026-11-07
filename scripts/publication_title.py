@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+from datetime import date
 from typing import Any
 
 
@@ -61,11 +62,33 @@ def _selected_title_text(
     return selected
 
 
+def _issue_date(value: Any) -> str:
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value):
+        raise ValueError("Publication issue_date must be YYYY-MM-DD.")
+    date.fromisoformat(value)
+    return value
+
+
+def _check_issue_dates(issue: str, state: dict[str, Any]) -> None:
+    for key in ("issue_date", "date"):
+        if key in state and _issue_date(state[key]) != issue:
+            raise ValueError("Publication issue dates conflict across the approval state.")
+    for key in ("selected_story", "approved_story", "gate_a_approved_story",
+                "story", "recommended_story", "selected_title_detail"):
+        nested = state.get(key)
+        if isinstance(nested, dict):
+            _check_issue_dates(issue, nested)
+
+
 def publication_title(
     ready: dict[str, Any],
     approved: dict[str, Any],
 ) -> str:
     """Resolve the approved English publication title, failing closed on conflicts."""
+
+    issue = _issue_date(ready.get("issue_date"))
+    _check_issue_dates(issue, ready)
+    _check_issue_dates(issue, approved)
 
     if "selected_title" not in ready:
         raise ValueError(

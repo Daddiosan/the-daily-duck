@@ -17,6 +17,9 @@
       : data.today || publishedArchive[0] || null;
 
   const translatable = $$('[data-ja][data-en]');
+  const articleTitle = (item) => item.storyTitleEn || item.title;
+  const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (c) =>
+    ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
   function applyStaticLanguage() {
     document.documentElement.lang = lang;
@@ -47,7 +50,7 @@
     date.textContent = currentData.displayDate;
     date.dateTime = currentData.date;
 
-    $('#todayTitle').textContent = currentData.title;
+    $('#todayTitle').textContent = articleTitle(currentData);
     $('#todayStory').textContent =
       lang === 'ja' ? currentData.storyJa : currentData.storyEn;
     $('#todayDuck').textContent =
@@ -66,7 +69,7 @@
         : (lang === 'ja' ? '🐤 アーカイブのダック' : '🐤 ARCHIVE DUCK');
     }
 
-    document.title = `The Daily Duck — ${currentData.title}`;
+    document.title = `The Daily Duck — ${articleTitle(currentData)}`;
   }
 
   function archiveCard(item) {
@@ -76,13 +79,13 @@
 
     return `
       <article class="duck-card">
-        <a class="duck-card-link" href="${href}" aria-label="${item.title} ${item.date}">
+        <a class="duck-card-link" href="${href}" aria-label="${escapeHtml(articleTitle(item))} ${item.date}">
           <div class="duck-card-image">
             <img src="${item.image}" alt="${imageAlt}" loading="lazy">
           </div>
           <div>
             <time datetime="${item.date}">${item.date.replaceAll('-', '.')}</time>
-            <h3>${item.title}</h3>
+            <h3>${escapeHtml(articleTitle(item))}</h3>
             <p>${summary}</p>
             <span class="view-story">${lang === 'ja' ? 'この日のページを見る →' : 'View this day →'}</span>
           </div>
@@ -109,12 +112,12 @@
       const el = document.querySelector(selector);
       if (el) el.setAttribute('content', value);
     };
-    setMeta('meta[property="og:title"]', `The Daily Duck — ${currentData.title}`);
+    setMeta('meta[property="og:title"]', `The Daily Duck — ${articleTitle(currentData)}`);
     setMeta('meta[property="og:description"]', desc);
     setMeta('meta[property="og:url"]', pageUrl);
     setMeta('meta[property="og:image"]', imageUrl);
     setMeta('meta[property="og:image:alt"]', lang === 'ja' ? currentData.imageAltJa : currentData.imageAltEn);
-    setMeta('meta[name="twitter:title"]', `The Daily Duck — ${currentData.title}`);
+    setMeta('meta[name="twitter:title"]', `The Daily Duck — ${articleTitle(currentData)}`);
     setMeta('meta[name="twitter:description"]', desc);
     setMeta('meta[name="twitter:image"]', imageUrl);
   }
@@ -147,7 +150,7 @@
         : `https://www.thedailyduck.ai/?date=${currentData.date}`;
 
       const shareData = {
-        title: `The Daily Duck — ${currentData.title}`,
+        title: `The Daily Duck — ${articleTitle(currentData)}`,
         text:
           lang === 'ja'
             ? `${currentData.displayDate} のダックは ${currentData.title} 🐤`

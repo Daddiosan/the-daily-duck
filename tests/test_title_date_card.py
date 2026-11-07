@@ -62,6 +62,18 @@ class TitleDateCardTests(unittest.TestCase):
         self.assertIn(f'<div class="story-title">{web.e(item["storyTitleEn"])}</div>', page)
         with Image.open(path) as image:
             self.assertEqual(image.size, (1500, 1200))
+            expected_title = Image.new("RGB", image.size, card.CREAM)
+            title_draw = ImageDraw.Draw(expected_title)
+            for n, text in enumerate(title_lines):
+                position = (left, title_y + n * line_height)
+                title_draw.text(position, text, font=title_font, fill=card.NAVY)
+                box = title_draw.textbbox(position, text, font=title_font)
+                self.assertLessEqual(box[2] - box[0], 500)
+                self.assertGreaterEqual(box[0], 0)
+                self.assertLessEqual(box[3], image.height)
+                self.assertIsNone(ImageChops.difference(
+                    image.crop(box), expected_title.crop(box),
+                ).getbbox(), "Saved title pixels must match the complete approved title")
             # Locate actual date ink independently of the accent calculations.
             date_y = title_y + len(title_lines) * line_height + 55
             date_text = card.display_date_english(ready["issue_date"])
@@ -111,13 +123,64 @@ class TitleDateCardTests(unittest.TestCase):
             with self.subTest(issue=issue):
                 ready = self.ready_package("A CHILL DOWN YOUR FEATHERS")
                 ready["issue_date"] = issue
+                ready["gate_a_approved_story"]["issue_date"] = issue
                 self.render_and_measure(ready, 2)
 
-    def assert_rejected_by_both(self, ready):
+    def test_cross_day_titles_are_rejected_at_every_approval_level(self):
+        containers = (
+            "selected_story", "approved_story", "gate_a_approved_story",
+            "story", "recommended_story", "selected_title_detail",
+        )
+        paths = [()] + [(key,) for key in containers]
+        paths += [("gate_a_approved_story", key) for key in containers]
+        paths += [("gate_a_approved_story", "selected_story",
+                   "recommended_story", "selected_title_detail")]
+        for path in paths:
+            for key in ("issue_date", "date"):
+                with self.subTest(path=path, key=key):
+                    ready = self.ready_package("Chill, Duck!")
+                    state = ready
+                    for container in path:
+                        # New containers deliberately have no selection markers.
+                        state = state.setdefault(container, {})
+                    state[key] = "2026-11-01"
+                    self.assert_rejected_by_both(ready, "issue dates conflict")
+
+    def test_invalid_or_missing_issue_dates_are_rejected(self):
+        for issue in (None, "", "2026-2-03", "2026-02-29", "2026-11-02 "):
+            with self.subTest(issue=issue):
+                ready = self.ready_package()
+                # Keep all dates equal so a conflict check cannot mask invalid dates.
+                for state in (ready, ready["gate_a_approved_story"],
+                              ready["gate_a_approved_story"]["selected_story"],
+                              ready["selected_title_detail"]):
+                    state["issue_date"] = issue
+                    state["date"] = issue
+                self.assert_rejected_by_both(ready)
+        ready = self.ready_package()
+        ready.pop("issue_date")
+        self.assert_rejected_by_both(ready)
+
+    def test_invalid_nested_dates_and_aliases_are_rejected(self):
+        for location in ("ready", "root", "nested", "detail"):
+            for key in ("issue_date", "date"):
+                for issue in (None, "", "2026-2-03", "2026-02-29", "2026-11-02 "):
+                    with self.subTest(location=location, key=key, issue=issue):
+                        ready = self.ready_package()
+                        states = {
+                            "ready": ready,
+                            "root": ready["gate_a_approved_story"],
+                            "nested": ready["gate_a_approved_story"]["selected_story"],
+                            "detail": ready["selected_title_detail"],
+                        }
+                        states[location][key] = issue
+                        self.assert_rejected_by_both(ready)
+
+    def assert_rejected_by_both(self, ready, expected_error=""):
         before = copy.deepcopy(ready)
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, expected_error):
             web.build_item(ready, ready["canonical_image_path"])
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, expected_error):
             card.render_card(ready)
         self.assertEqual(ready, before)
         self.assertFalse(self.output.exists())
@@ -174,8 +237,9 @@ class TitleDateCardTests(unittest.TestCase):
     def test_legacy_card_rejects_missing_selected_title(self):
         ready = self.ready_package()
         ready["issue_date"] = "2026-08-21"
+        ready["gate_a_approved_story"]["issue_date"] = "2026-08-21"
         ready.pop("selected_title")
-        self.assert_rejected_by_both(ready)
+        self.assert_rejected_by_both(ready, "selected_title is missing")
 
     def test_main_does_not_write_state_or_card_on_title_conflict(self):
         ready = self.ready_package()
