@@ -8,6 +8,11 @@ from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.send_workflow_failure_email import gate_a_alert_suspended
+except ImportError:
+    from send_workflow_failure_email import gate_a_alert_suspended
+
 JST = timezone(timedelta(hours=9))
 TIMEOUT = timedelta(minutes=60)
 POLL_SCHEDULE_TIMEOUT = timedelta(hours=8)
@@ -185,7 +190,9 @@ def evaluate(
     return list({item.key: item for item in found}.values())
 
 def pending_alerts(current: list[Problem], seen: set[str]) -> list[Problem]:
-    return [item for item in current if item.key not in seen]
+    # Keep suppressed problems visible, without emailing or marking them delivered.
+    return [item for item in current if item.key not in seen
+            and not gate_a_alert_suspended(workflow_name=item.workflow_name)]
 
 def gh_json(endpoint: str) -> Any:
     result = subprocess.run(["gh", "api", endpoint], capture_output=True, text=True)
