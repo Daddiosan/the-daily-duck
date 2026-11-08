@@ -7,6 +7,18 @@ import smtplib
 from email.message import EmailMessage
 
 
+# Temporary mail-only suspension; resume after recovery by setting this False.
+# Gate A execution and audit problem detection remain enabled.
+GATE_A_ALERTS_TEMPORARILY_SUSPENDED = True
+
+
+def gate_a_alert_suspended(*, stage: str = "", workflow_name: str = "") -> bool:
+    return GATE_A_ALERTS_TEMPORARILY_SUSPENDED and (
+        stage == "Gate A approval check"
+        or workflow_name == "The Daily Duck - Gate A Approval Check"
+    )
+
+
 def required(name: str) -> str:
     value = os.getenv(name, "").strip()
     if not value:
@@ -16,6 +28,9 @@ def required(name: str) -> str:
 
 def main() -> int:
     stage = os.getenv("FAILURE_STAGE", "The Daily Duck automation").strip()
+    if gate_a_alert_suspended(stage=stage):
+        print("Gate A warning email temporarily suspended; workflow execution unchanged.")
+        return 0
     run_url = os.getenv("GITHUB_RUN_URL", "").strip()
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
     audit_details = os.getenv("AUDIT_DETAILS", "").strip()
