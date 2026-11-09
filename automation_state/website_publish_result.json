@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-09T03:25:19.452329+00:00",
+  "issue_date": "2026-11-09",
+  "image": "assets/ducks/2026-11-09-the-curious-cat-spotter-duck.png",
+  "page": "ducks/2026-11-09/index.html",
+  "title": "LOOK CLOSER. THE WILD IS THERE.",
+  "duck_name": "The Curious Cat-Spotter Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-09",
+    "displayDate": "November 9, 2026",
+    "slug": "the-curious-cat-spotter-duck",
+    "title": "THE CURIOUS CAT-SPOTTER DUCK",
+    "duckName": "The Curious Cat-Spotter Duck",
+    "storyTitleEn": "LOOK CLOSER. THE WILD IS THERE.",
+    "storyTitleJa": "学生がニューメキシコ北部で珍しい野生ネコの証拠を発見",
+    "image": "assets/ducks/2026-11-09-the-curious-cat-spotter-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Curious Cat-Spotter Duck",
+    "imageAltJa": "The Curious Cat-Spotter DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A student’s curiosity led to an exciting wildlife discovery in northern New Mexico. Motion-camera images provided evidence of a rare wild cat, turning a field adventure into a story about paying attention to the hidden life around us. One careful observer can open a new window onto the wild.",
+    "storyJa": "学生の好奇心が、ニューメキシコ北部でのわくわくする野生動物の発見につながりました。動体検知カメラの画像が珍しい野生ネコの証拠となり、野外での冒険は、身近な自然に隠れた命へ目を向ける物語になったのです。ひとりの注意深い観察者が、野生の世界への新しい窓を開くことがあります。",
+    "duckEn": "A little curiosity can reveal a big secret in the wild.",
+    "duckJa": "小さな好奇心が、野生の大きな秘密を明らかにすることがあります。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-student-proof-rare-wild-cat.html",
+    "archiveSummaryEn": "A student’s field adventure in northern New Mexico found motion-camera evidence of a rare wild cat. Curiosity can bring hidden wildlife into view. 🦆",
+    "archiveSummaryJa": "ニューメキシコ北部での学生の野外調査が、珍しい野生ネコを捉えた動体検知カメラの証拠につながりました。好奇心が、隠れた野生動物を見つけ出します。🦆",
+    "reasonEn": "A student’s field adventure in northern New Mexico found motion-camera evidence of a rare wild cat. Curiosity can bring hidden wildlife into view. 🦆",
+    "reasonJa": "ニューメキシコ北部での学生の野外調査が、珍しい野生ネコを捉えた動体検知カメラの証拠につながりました。好奇心が、隠れた野生動物を見つけ出します。🦆",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-07",
     "displayDate": "November 7, 2026",
     "slug": "meander-duck",
