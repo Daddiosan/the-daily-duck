@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-09",
   "generated_at": "2026-11-09T03:23:05.834105+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-09/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "A WINDOW INTO THE WILD",
+    "concept_en": "A poetic visual metaphor for curiosity opening a clear view onto wildlife that usually goes unseen.",
+    "composition_en": "Use a wide landscape scene framed by a large rounded opening formed from foreground leaves and soft natural light, like a window into the wild. The Daily Duck sits prominently at the lower edge of the opening, gazing outward with bright curiosity. In the distant New Mexico scrubland, place a small indistinct wild-cat presence near a motion-camera viewpoint, subtle enough to feel discovered rather than staged. Keep the cat non-specific and avoid any invented identifying details. The composition should feel spacious, hopeful, and quietly magical while remaining clean and editorial.",
+    "generation_prompt_en": "Create one publishable 16:9 landscape editorial image in a clean, modern, premium nature-magazine style. Show the consistent friendly yellow Daily Duck mascot with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, seated at the lower edge of a large rounded opening made by foreground leaves, as if looking through a natural window into the wild. Beyond the opening, show northern New Mexico scrubland in soft golden light and a very small indistinct wild-cat presence near a motion-sensing wildlife camera viewpoint. Keep the animal non-specific, with no identifiable species markings or invented details; make it feel like evidence of hidden wildlife rather than a staged portrait. Spacious composition, gentle atmospheric depth, hopeful discovery mood, strong focal point on the duck and window-like opening, elegant natural colors. No logos, no watermark, no UI, no headline, no readable embedded text, no invented people or labels.",
+    "alt_en": "A curious yellow duck looks through a leafy natural window toward hidden wildlife and a motion-camera viewpoint in New Mexico.",
+    "title_ja": "野生への窓",
+    "concept_ja": "好奇心が、普段は見えない野生の世界への新しい窓を開くという、物語の中心的な比喩を描くコンセプトです。",
+    "composition_ja": "手前の葉と柔らかな自然光が、大きな丸みのある窓のような開口部を形づくる横長の風景にします。その下端にDaily Duckのマスコットを目立つように座らせ、明るい好奇心をたたえた表情で外を見つめさせます。開口部の向こうには、ニューメキシコ北部の低木地帯と、動体検知カメラが向けられている場所の近くにいる、ごく小さく不鮮明な野生ネコの気配を配置します。ネコの種や特徴は特定せず、演出された肖像ではなく、隠れた野生動物の証拠を見つけたように感じさせます。広がりと希望、静かな魔法を感じる、すっきりした編集的な構図にします。",
+    "alt_ja": "好奇心旺盛な黄色いアヒルが、葉でできた自然の窓越しに、ニューメキシコの隠れた野生動物と動体検知カメラの視点を見つめている。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "LOOK CLOSER. THE WILD IS THERE.",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-09T03:24:56.895657+00:00"
 }
