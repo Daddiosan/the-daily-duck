@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-11",
+    "displayDate": "November 11, 2026",
+    "slug": "the-whale-watching-web",
+    "title": "THE WHALE-WATCHING WEB",
+    "duckName": "The Whale-Watching Web",
+    "storyTitleEn": "A WHALE OF A CONNECTION",
+    "storyTitleJa": "インターネットの基盤をクジラの観測網に",
+    "image": "assets/ducks/2026-11-11-the-whale-watching-web.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Whale-Watching Web",
+    "imageAltJa": "The Whale-Watching WebをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "The internet’s backbone is being repurposed to advance whale monitoring. It is an unexpected meeting of ocean exploration and clever technology—and a hopeful reminder that tools built for one purpose can help protect the natural world.",
+    "storyJa": "インターネットの基盤を、クジラの観測に役立てる取り組みが進められています。海洋探査と巧みなテクノロジーが思いがけず結びついた、道具は別の目的にも自然界を守るために役立てられるという希望を感じさせる話です。",
+    "duckEn": "A whale of an idea, routed straight to hope.",
+    "duckJa": "クジラもびっくり、希望へつながるアイデアです。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-repurposing-internet-backbone-advance-whale.html",
+    "archiveSummaryEn": "What if the internet’s backbone could help monitor whales? This clever blend of technology and ocean exploration offers a hopeful new angle on conservation.",
+    "archiveSummaryJa": "インターネットの基盤が、クジラの観測に役立つとしたら？ テクノロジーと海洋探査の巧みな組み合わせが、保全に希望をもたらします。",
+    "reasonEn": "What if the internet’s backbone could help monitor whales? This clever blend of technology and ocean exploration offers a hopeful new angle on conservation.",
+    "reasonJa": "インターネットの基盤が、クジラの観測に役立つとしたら？ テクノロジーと海洋探査の巧みな組み合わせが、保全に希望をもたらします。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-10",
     "displayDate": "November 10, 2026",
     "slug": "hello-neighbor",
