@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-11T08:12:27.485118+00:00",
+  "issue_date": "2026-11-11",
+  "x_post_id": "2120429433219846548",
+  "x_post_url": "https://x.com/i/web/status/2120429433219846548",
+  "x_media_id": "2120429430959136768",
+  "image_path": "automation_images/x/2026-11-11-x-card.png",
+  "post_text": "What if the internet’s backbone could help monitor whales? This clever blend of technology and ocean exploration offers a hopeful new angle on conservation.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-11/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 181
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2120429433219846548",
+      "text": "What if the internet’s backbone could help monitor whales? This clever blend of technology and ocean exploration offers a hopeful new angle on conservation.\n\nhttps://t.co/E3L8gnNwgD https://t.co/FDXriYATik"
+    }
+  }
+}
