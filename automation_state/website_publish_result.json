@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-11T03:26:39.474091+00:00",
+  "issue_date": "2026-11-10",
+  "image": "assets/ducks/2026-11-10-hello-neighbor.png",
+  "page": "ducks/2026-11-10/index.html",
+  "title": "BILL-IEVE IT OR NOT!",
+  "duck_name": "Hello, Neighbor",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}

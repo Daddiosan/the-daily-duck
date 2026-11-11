@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-10",
+    "displayDate": "November 10, 2026",
+    "slug": "hello-neighbor",
+    "title": "HELLO, NEIGHBOR",
+    "duckName": "Hello, Neighbor",
+    "storyTitleEn": "BILL-IEVE IT OR NOT!",
+    "storyTitleJa": "知らない人とのつながりが持つ、意外な力",
+    "image": "assets/ducks/2026-11-10-hello-neighbor.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Hello, Neighbor",
+    "imageAltJa": "Hello, NeighborをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A brief connection with a stranger can be more meaningful than we expect. This warm story explores the surprising power of reaching beyond our familiar circles and reminds us that even small encounters can brighten an ordinary day.",
+    "storyJa": "知らない人との短いつながりが、思っている以上に意味を持つことがあります。この温かな物語は、いつもの人間関係の輪を少し越えてみることの意外な力を描き、ほんの小さな出会いでも日常を明るくできると教えてくれます。",
+    "duckEn": "Sometimes a little hello can make a big splash.",
+    "duckJa": "小さな「こんにちは」が、大きな波紋を広げることもあります。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-power-strangers.html",
+    "archiveSummaryEn": "A small encounter with a stranger can matter more than we expect. Here’s a hopeful reminder to leave a little room for connection.",
+    "archiveSummaryJa": "知らない人とのちょっとした出会いが、思っている以上に大切なものになることがあります。つながりのための小さな余白を残しておきたい、そんな希望のメッセージです。",
+    "reasonEn": "A small encounter with a stranger can matter more than we expect. Here’s a hopeful reminder to leave a little room for connection.",
+    "reasonJa": "知らない人とのちょっとした出会いが、思っている以上に大切なものになることがあります。つながりのための小さな余白を残しておきたい、そんな希望のメッセージです。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-09",
     "displayDate": "November 9, 2026",
     "slug": "the-curious-cat-spotter-duck",
