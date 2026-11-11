@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-10",
   "generated_at": "2026-11-10T05:29:26.286821+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-10/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "A Hello Across the Bench",
+    "concept_en": "A warm, human-scale visual of a small greeting creating an unexpectedly meaningful moment between the Daily Duck mascot and an unfamiliar passerby.",
+    "composition_en": "Landscape 16:9 composition in a bright, uncluttered public park. Place the recognizable friendly yellow duck in the foreground near one side of a simple bench, turning warmly toward a generic passerby on the other side. Show an open, welcoming gesture and gentle eye contact, with soft morning light, a few understated trees, and ample negative space. Keep the duck as the clear focal point; make the passerby generic and non-identifying. Mood: hopeful, intimate, and approachable.",
+    "generation_prompt_en": "Create a premium editorial landscape hero image, 16:9. Show the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression. The duck is beside a simple park bench, sharing a small friendly greeting with a generic unfamiliar passerby across the bench. Use a clean modern illustration style with soft natural morning light, restrained park details, gentle colors, subtle depth of field, and generous negative space. Make the greeting and emotional connection the focal point. No logos, no watermarks, no UI, no readable text, no headline, no speech bubbles, no exaggerated slapstick, no identifiable real person.",
+    "alt_en": "The friendly yellow Daily Duck shares a warm greeting with an unfamiliar passerby beside a park bench in soft morning light.",
+    "title_ja": "ベンチ越しの小さなあいさつ",
+    "concept_ja": "小さなあいさつが、Daily Duckのマスコットと見知らぬ通行人の間に思いがけず意味のある瞬間を生む、温かな人間味のあるビジュアルです。",
+    "composition_ja": "16:9の横長構図。明るくすっきりした公共の公園で、シンプルなベンチの近くに、親しみやすい黄色いアヒルを前景の主役として配置します。ベンチの反対側には、見知らぬ通行人を抽象的で特定できない人物として置き、互いに穏やかな視線と歓迎のしぐさを交わします。柔らかな朝の光と控えめな木々を添え、余白を広く取ります。雰囲気は希望に満ち、親密で親しみやすくします。",
+    "alt_ja": "柔らかな朝の光の中、公園のベンチのそばで、黄色いDaily Duckが見知らぬ通行人と温かいあいさつを交わしている。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "BILL-IEVE IT OR NOT!",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-11T03:26:10.756495+00:00"
 }
