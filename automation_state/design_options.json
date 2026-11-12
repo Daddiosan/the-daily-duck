@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-12",
   "generated_at": "2026-11-12T03:09:43.028202+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-12/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "A Stage Beneath the Waves",
+    "concept_en": "The ocean liner’s transformation is imagined as an underwater second act, with the retired vessel becoming a grand stage for a new chapter and the Daily Duck serving as its cheerful host.",
+    "composition_en": "A theatrical but still clean underwater scene, with the ocean liner resting horizontally on a simple seabed like a grand stage set. The Daily Duck stands in the foreground on a small natural rock, facing the ship with one wing raised as if introducing the next act. A soft circular pool of light frames the liner, while gentle sea plants and a few indistinct silhouettes suggest ocean life may gather around the future reef. Avoid literal theater props, costumes, curtains, or written signage; keep the metaphor elegant and editorial. Warm, magical, hopeful mood with a strong central silhouette and wide landscape framing.",
+    "generation_prompt_en": "Create one polished 16:9 landscape editorial illustration with a clean, modern, charming premium look. Imagine a retired ocean liner resting on a simple underwater seabed as a grand stage for its second act, representing its planned transformation into the world’s largest artificial reef. Place the consistent Daily Duck mascot in the foreground on a small natural rock: friendly yellow duck, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression, one wing raised in a welcoming host-like gesture. Frame the ship with a soft circular pool of blue light and understated sea plants; use only subtle, non-specific hints that ocean life could gather there. Keep the metaphor elegant and uncluttered: no literal theater curtains, costumes, microphones, signs, logos, watermarks, UI, readable embedded text, or headline. Strong central silhouette, wide hero composition, warm hopeful conservation mood.",
+    "alt_en": "A cheerful yellow duck presents a retired ocean liner as an underwater second act and future artificial reef.",
+    "title_ja": "波の下の新しい舞台",
+    "concept_ja": "引退した客船の人工魚礁への転身を、海中で始まる新しい舞台の第二幕として、上品な比喩表現で描きます。デイリー・ダックは明るい案内役です。",
+    "composition_ja": "横長の海中シーン。客船をシンプルな海底の上に横たえ、新しい物語の舞台のように見せます。手前の小さな岩の上にはデイリー・ダックを立たせ、片翼を上げて次の幕を紹介するようなポーズにします。柔らかな円形の光で船を囲み、控えめな海中植物と、海の生き物が集まる可能性を示す抽象的なシルエットを添えます。劇場の幕や衣装などを直接描かず、洗練された編集ビジュアルにします。",
+    "alt_ja": "明るい黄色いアヒルが、人工魚礁として第二幕を迎える客船を海中の舞台のように紹介している。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "THE SEA GETS A SECOND ACT",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-12T03:20:36.081880+00:00"
 }
