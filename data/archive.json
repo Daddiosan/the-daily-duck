@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-12",
+    "displayDate": "November 12, 2026",
+    "slug": "reef-liner",
+    "title": "REEF LINER",
+    "duckName": "Reef Liner",
+    "storyTitleEn": "THE SEA GETS A SECOND ACT",
+    "storyTitleJa": "引退した客船、世界最大の人工魚礁へ",
+    "image": "assets/ducks/2026-11-12-reef-liner.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Reef Liner",
+    "imageAltJa": "Reef LinerをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "One famous ocean liner is preparing for a remarkable second life beneath the waves: it will become the world’s largest artificial reef. The imaginative transformation offers a vivid reminder that even retired vessels can become part of something new—and potentially give ocean life a place to gather.",
+    "storyJa": "ある有名な客船が、海中で驚くべき第二の人生を始めようとしています。船は世界最大の人工魚礁になる予定です。想像力あふれるこの転身は、引退した船でさえ新しい何かの一部となり、海の生き物が集まる場所になり得ることを感じさせてくれます。",
+    "duckEn": "All aboard for an underwater second act!",
+    "duckJa": "海中で、いざ第二幕へ！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-ocean-liner-largest-artificial-reef.html",
+    "archiveSummaryEn": "A famous ocean liner is getting a remarkable second life beneath the waves—as the world’s largest artificial reef. A hopeful transformation with plenty of ocean-sized imagination.",
+    "archiveSummaryJa": "有名な客船が、海中で驚くべき第二の人生を始めます。目指すのは世界最大の人工魚礁。海のように大きな想像力を感じる、希望に満ちた転身です。",
+    "reasonEn": "A famous ocean liner is getting a remarkable second life beneath the waves—as the world’s largest artificial reef. A hopeful transformation with plenty of ocean-sized imagination.",
+    "reasonJa": "有名な客船が、海中で驚くべき第二の人生を始めます。目指すのは世界最大の人工魚礁。海のように大きな想像力を感じる、希望に満ちた転身です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-11",
     "displayDate": "November 11, 2026",
     "slug": "the-whale-watching-web",
