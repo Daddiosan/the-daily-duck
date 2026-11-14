@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-14T03:18:40.230747+00:00",
+  "issue_date": "2026-11-14",
+  "image": "assets/ducks/2026-11-14-mango-the-mangrove-duck.png",
+  "page": "ducks/2026-11-14/index.html",
+  "title": "EGG-CELLENT COMEBACK!",
+  "duck_name": "Mango the Mangrove Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
