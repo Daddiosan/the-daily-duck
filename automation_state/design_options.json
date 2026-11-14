@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-14",
   "generated_at": "2026-11-14T02:42:58.170753+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-14/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "Hope Takes Root",
+    "concept_en": "A warm, uplifting editorial scene showing the mangrove comeback through a thriving green wetland and a cheerful Daily Duck gently nestled among the roots.",
+    "composition_en": "Landscape hero composition, 16:9. Place the recognizable friendly yellow duck in the lower-right foreground, standing in shallow reflective water beside intricate mangrove roots. Dense healthy green mangrove growth fills the middle ground, while soft golden morning light opens across the water toward a bright horizon. Use the roots as the strong visual focal point, with ample calm negative space in the upper-left. Premium modern editorial illustration, clean shapes, natural textures, hopeful atmosphere.",
+    "generation_prompt_en": "Create one premium landscape editorial illustration in a clean modern charming style, 16:9. Show a thriving mangrove wetland at warm golden morning light, with lush green mangrove trees and visible branching roots emerging from shallow calm water. In the lower-right foreground, include a recognizable friendly yellow Daily Duck mascot with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, gently standing among the roots and looking toward the bright horizon. Make the mangrove roots the main symbolic focal point for renewal and hope. Soft reflections, elegant composition, strong focal point, refined color palette of fresh greens, warm gold, and quiet blue. No logos, no watermarks, no UI, no readable text, no headline, no extra characters, no invented scientific equipment.",
+    "alt_en": "A cheerful yellow duck stands among the roots of a lush mangrove wetland glowing in hopeful morning light.",
+    "title_ja": "希望が根を張る",
+    "concept_ja": "回復するマングローブを、豊かに広がる緑の湿地と、その根元に寄り添う明るい表情のデイリー・ダックで表現する、温かく希望に満ちたビジュアルです。",
+    "composition_ja": "16:9の横長ヒーロー構図。手前右に、オレンジ色のくちばし、大きく艶のある黒い目、小さな羽毛の房、親しみやすい表情を持つ黄色いカモを配置し、浅い水面から伸びるマングローブの根元に立たせます。中景には健やかな緑のマングローブを広げ、柔らかな朝の光が水面から明るい地平線へ向かう構成にします。左上には余白を残し、根を視線の中心に据えます。",
+    "alt_ja": "希望に満ちた朝の光に照らされた豊かなマングローブの根元で、黄色いカモがたたずんでいる。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "EGG-CELLENT COMEBACK!",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-14T03:18:20.351948+00:00"
 }
