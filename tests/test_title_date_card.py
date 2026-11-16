@@ -84,8 +84,8 @@ class TitleDateCardTests(unittest.TestCase):
             expected_ink = Image.new("RGB", mask.size, card.CREAM)
             ImageDraw.Draw(expected_ink).text((0, 0), date_text, font=card.font(27, True), fill=card.NAVY)
             self.assertIsNone(ImageChops.difference(
-                image.crop((left, date_y, left + 500, date_y + 50)),
-                expected_ink,
+                image.crop(date_box),
+                expected_ink.crop(ink),
             ).getbbox())
             # Scan the PNG pixels; do not trust draw coordinates alone.
             region = image.crop((0, date_box[1] - 35, 600, date_box[1]))
@@ -114,6 +114,15 @@ class TitleDateCardTests(unittest.TestCase):
 
     def test_november_2_title_and_pixels(self):
         self.render_and_measure(self.ready_package(), 2)
+
+    def test_november_15_long_title_and_pixels(self):
+        title = "CLEARLY BETTER: THE WORLD'S BIGGEST LAKE BOUNCES BACK!"
+        ready = self.ready_package(title)
+        ready["issue_date"] = "2026-11-15"
+        ready["gate_a_approved_story"]["issue_date"] = "2026-11-15"
+        before = copy.deepcopy(ready)
+        self.render_and_measure(ready, 4)
+        self.assertEqual(ready, before)
 
     def test_one_line_title_preserves_case(self):
         self.render_and_measure(self.ready_package("Chill Duck"), 1)

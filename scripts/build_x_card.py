@@ -1068,38 +1068,40 @@ def render_english_first_card(
 
     # --------------------------------------------------------
     # Selected final title.
-    # Fit to max 2 lines.
+    # Preserve the 2-line layout; allow up to 4 lines when needed.
     # --------------------------------------------------------
 
-    title_font_size = 72
     title_lines: list[str] = []
 
-    while title_font_size >= 50:
-        title_font = font(
-            title_font_size,
-            True,
-        )
-
-        candidate_lines = (
-            wrap_words_by_pixels(
-                draw,
-                title,
-                title_font,
-                panel_w,
+    for max_title_lines in (2, 4):
+        title_font_size = 72
+        while title_font_size >= 50:
+            title_font = font(
+                title_font_size,
+                True,
             )
-        )
 
-        if len(candidate_lines) <= 2 and all(
-            draw.textbbox((0, 0), line, font=title_font)[2]
-            - draw.textbbox((0, 0), line, font=title_font)[0] <= panel_w
-            for line in candidate_lines
-        ):
-            title_lines = (
-                candidate_lines
+            candidate_lines = (
+                wrap_words_by_pixels(
+                    draw,
+                    title,
+                    title_font,
+                    panel_w,
+                )
             )
+
+            if len(candidate_lines) <= max_title_lines and all(
+                draw.textbbox((0, 0), line, font=title_font)[2]
+                - draw.textbbox((0, 0), line, font=title_font)[0] <= panel_w
+                for line in candidate_lines
+            ):
+                title_lines = candidate_lines
+                break
+
+            title_font_size -= 2
+
+        if title_lines:
             break
-
-        title_font_size -= 2
 
     if not title_lines:
         raise ValueError("Approved title does not fit the X card without truncation.")
@@ -1108,7 +1110,7 @@ def render_english_first_card(
         draw,
         left,
         282,
-        title_lines[:2],
+        title_lines,
         title_font,
         NAVY,
         int(
