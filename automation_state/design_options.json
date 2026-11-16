@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-16",
   "generated_at": "2026-11-16T16:05:34.510570+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-16/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "The Seed-to-Future Table",
+    "concept_en": "A symbolic editorial still life showing the journey from traditional millet seed to hopeful future harvest, with the Golden Field Duck as a warm guide.",
+    "composition_en": "Landscape composition built around a simple rustic table or smooth natural surface. Arrange a small bowl of millet grains, a few millet stalks, and a hand-held bundle of harvested stalks in a visual progression from left to right, without implying a specific documented object or ceremony. The duck sits beside the grains, looking toward the golden field visible through an open background. Use soft morning light, restrained earthy tones, and a clean premium magazine aesthetic. Keep the image uncluttered and leave negative space on the right.",
+    "generation_prompt_en": "Create a clean, modern, premium editorial landscape image using a visual metaphor for traditional millet heritage continuing into the future. In the foreground, show a simple natural surface with a small bowl of millet grains and several golden millet stalks arranged as a clear progression toward a hand-harvested bundle; keep the objects generic and illustrative, not documentary-specific. Place a recognizable friendly yellow Daily Duck mascot beside the grains, with an orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. In the softly blurred background, show a golden millet field under calm hopeful light. Elegant natural textures, warm palette, strong focal point, generous negative space on the right. No logos, no watermarks, no UI, no readable text, no headline, no invented tools, no extra people, no scientific diagrams.",
+    "alt_en": "A friendly yellow duck sits beside millet grains and golden stalks, symbolizing traditional harvest heritage leading toward a bright field.",
+    "title_ja": "種から未来へ続く食卓",
+    "concept_ja": "伝統的なキビの種や穀粒から、手収穫された黄金色の畑へとつながる農業遺産の継承を、象徴的な静物画として表現します。",
+    "composition_ja": "横長の構図で、素朴な木の台や自然な質感のある面を中心に据えます。手前には小さな器に入ったキビの粒、数本のキビの穂、収穫された束を左から右へ流れるように配置します。穀粒のそばには黄色いアヒルを置き、背景の黄金色の畑へ視線を向けさせます。柔らかな朝の光と落ち着いた自然色を使い、右側には余白を残します。",
+    "alt_ja": "黄色いアヒルがキビの粒と黄金色の穂のそばに座り、受け継がれる農業の記憶と明るい未来を象徴している。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "HARVESTING THE PAST, GROWING TOMORROW",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-16T16:10:03.249577+00:00"
 }
