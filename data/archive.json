@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-15",
+    "displayDate": "November 15, 2026",
+    "slug": "lake-hope",
+    "title": "LAKE HOPE",
+    "duckName": "Lake Hope",
+    "storyTitleEn": "CLEARLY BETTER: THE WORLD'S BIGGEST LAKE BOUNCES BACK!",
+    "storyTitleJa": "世界最大の淡水湖バイカル湖が回復の兆し",
+    "image": "assets/ducks/2026-11-15-lake-hope.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Lake Hope",
+    "imageAltJa": "Lake HopeをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "After decades of decline, Lake Baikal—the world's largest freshwater lake—is showing encouraging signs of recovery. The landmark natural site brings a hopeful environmental message about nature's resilience.",
+    "storyJa": "数十年にわたる減少を経て、世界最大の淡水湖であるバイカル湖が回復の兆しを見せています。この壮大な自然の変遷は、自然の回復力についての希望に満ちたメッセージを届けてくれます。",
+    "duckEn": "Big news for a very big lake!",
+    "duckJa": "とっても大きな湖からのビッグニュースですね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-world-largest-freshwater-lake-recovering.html",
+    "archiveSummaryEn": "Lake Baikal, the world's largest freshwater lake, is recovering after decades of decline.",
+    "archiveSummaryJa": "数十年の減少を経て、世界最大の淡水湖であるバイカル湖が回復に向かっています。",
+    "reasonEn": "Lake Baikal, the world's largest freshwater lake, is recovering after decades of decline.",
+    "reasonJa": "数十年の減少を経て、世界最大の淡水湖であるバイカル湖が回復に向かっています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-14",
     "displayDate": "November 14, 2026",
     "slug": "mango-the-mangrove-duck",

@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-16T03:17:50.331425+00:00",
+  "issue_date": "2026-11-15",
+  "image": "assets/ducks/2026-11-15-lake-hope.png",
+  "page": "ducks/2026-11-15/index.html",
+  "title": "CLEARLY BETTER: THE WORLD'S BIGGEST LAKE BOUNCES BACK!",
+  "duck_name": "Lake Hope",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
