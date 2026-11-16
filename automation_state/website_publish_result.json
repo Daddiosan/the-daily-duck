@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-16T16:10:25.923568+00:00",
+  "issue_date": "2026-11-16",
+  "image": "assets/ducks/2026-11-16-golden-field-duck.png",
+  "page": "ducks/2026-11-16/index.html",
+  "title": "HARVESTING THE PAST, GROWING TOMORROW",
+  "duck_name": "Golden Field Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
