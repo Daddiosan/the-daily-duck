@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-17",
+    "displayDate": "November 17, 2026",
+    "slug": "kind-hearts",
+    "title": "KIND HEARTS",
+    "duckName": "Kind Hearts",
+    "storyTitleEn": "QUACKING THE MORAL CODE!",
+    "storyTitleJa": "幼い子どもたちも「よい子」で見られたい：最新の分析で明らかに",
+    "image": "assets/ducks/2026-11-17-kind-hearts.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Kind Hearts",
+    "imageAltJa": "Kind HeartsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A new analysis reveals that even young children care about being seen as morally good. Rather than acting purely out of self-interest, children naturally seek to do the right thing and establish warm, cooperative bonds with those around them.",
+    "storyJa": "最新の分析によると、幼い子どもたちも周囲から「道徳的によい存在」として見られたいと望んでいることが分かりました。利己的な行動ばかりをとるのではなく、子どもたちは自然と正しい行動を選び、周囲の人々と温かく協力的な絆を築こうとします。",
+    "duckEn": "Quack! Proof that kindness starts early!",
+    "duckJa": "クワッ！思いやりの心は幼い頃から育まれているんだね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-analysis-young-children-morally-good.html",
+    "archiveSummaryEn": "New analysis shows that even young children want to be seen as morally good, naturally building cooperative bonds.",
+    "archiveSummaryJa": "最新の分析によると、幼い子どもたちも自発的に「よい子」で見られたがり、協力的な関係を築こうとすることが分かりました。",
+    "reasonEn": "New analysis shows that even young children want to be seen as morally good, naturally building cooperative bonds.",
+    "reasonJa": "最新の分析によると、幼い子どもたちも自発的に「よい子」で見られたがり、協力的な関係を築こうとすることが分かりました。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-16",
     "displayDate": "November 16, 2026",
     "slug": "golden-field-duck",
