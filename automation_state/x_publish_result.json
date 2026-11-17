@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-17T06:09:57.543814+00:00",
+  "issue_date": "2026-11-17",
+  "x_post_id": "2122572932438175946",
+  "x_post_url": "https://x.com/i/web/status/2122572932438175946",
+  "x_media_id": "2122572929925890049",
+  "image_path": "automation_images/x/2026-11-17-x-card.png",
+  "post_text": "New analysis shows that even young children want to be seen as morally good, naturally building cooperative bonds.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-17/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 139
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2122572932438175946",
+      "text": "New analysis shows that even young children want to be seen as morally good, naturally building cooperative bonds.\n\nhttps://t.co/uSr7caKJWc https://t.co/ecia6POpTO"
+    }
+  }
+}
