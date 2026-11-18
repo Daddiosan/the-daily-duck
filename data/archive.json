@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-18",
+    "displayDate": "November 18, 2026",
+    "slug": "the-cat-poet",
+    "title": "THE CAT POET",
+    "duckName": "The Cat Poet",
+    "storyTitleEn": "PURR-SPECTIVE SHIFT",
+    "storyTitleJa": "猫の心の内側を見つめた、12世紀中国の詩人",
+    "image": "assets/ducks/2026-11-18-the-cat-poet.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The Cat Poet",
+    "imageAltJa": "The Cat PoetをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "More than 800 years ago, a Chinese poet was exploring a question that still fascinates people today: what might be happening inside a cat’s mind? The 12th-century poet was among the first to examine the inner lives of cats, creating a charming connection between literature, history and our enduring fascination with feline companions.",
+    "storyJa": "今から800年以上前、中国のある詩人は、現代の人々をも惹きつける問いに向き合っていました。猫の心の中では、いったい何が起きているのだろう？ その12世紀の詩人は、猫の内面を探った最初期の人物の一人でした。文学と歴史、そして人々が猫に抱き続けてきた fascination が、愛らしく結びついています。",
+    "duckEn": "A little mystery, a little poetry, and plenty of catitude.",
+    "duckJa": "少しの謎と、少しの詩。そして猫らしさはたっぷり。",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-12thcentury-chinese-poet-explore-cats.html",
+    "archiveSummaryEn": "A 12th-century Chinese poet was among the first to explore the inner lives of cats—a charming meeting of poetry, history and cat curiosity.",
+    "archiveSummaryJa": "12世紀の中国の詩人は、猫の心の内側を探った最初期の人物の一人でした。詩と歴史と猫の好奇心が出会う、心温まる話です。",
+    "reasonEn": "A 12th-century Chinese poet was among the first to explore the inner lives of cats—a charming meeting of poetry, history and cat curiosity.",
+    "reasonJa": "12世紀の中国の詩人は、猫の心の内側を探った最初期の人物の一人でした。詩と歴史と猫の好奇心が出会う、心温まる話です。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-17",
     "displayDate": "November 17, 2026",
     "slug": "kind-hearts",
