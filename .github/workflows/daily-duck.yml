@@ -8,6 +8,11 @@ on:
         required: false
         type: string
 
+      recover_2026_11_18:
+        description: "Resume the reviewed November 18 failure using its saved candidates."
+        type: boolean
+        default: false
+
   schedule:
     # 06:57 JST; allow normal processing time before the 07:00 delivery goal.
     # GitHub cron remains best-effort; an independently scheduled wake is needed.
@@ -60,7 +65,73 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-        run: python scripts/daily_generation_guard.py --github-output "$GITHUB_OUTPUT"
+          RECOVER_NOVEMBER_18: ${{ inputs.recover_2026_11_18 }}
+        run: |
+          if [[ "$RECOVER_NOVEMBER_18" != true ]]; then
+            python scripts/daily_generation_guard.py --github-output "$GITHUB_OUTPUT"
+            exit
+          fi
+          python - <<'PY'
+          import os
+          from datetime import datetime, timedelta
+          from pathlib import Path
+          from scripts import daily_generation_guard as guard
+
+          issue = "2026-11-18"
+          original_run = 44228545159
+          repository = os.environ["GITHUB_REPOSITORY"]
+          today = (datetime.now(guard.JST) - timedelta(hours=7)).date().isoformat()
+          if (
+              repository != "Daddiosan/the-daily-duck"
+              or os.environ["GITHUB_REF"] != "refs/heads/main"
+              or os.environ["GITHUB_EVENT_NAME"] != "workflow_dispatch"
+              or os.environ["GITHUB_RUN_ATTEMPT"] != "1"
+              or os.environ["DAILY_DUCK_TARGET_DATE"] != issue
+              or today != issue
+          ):
+              raise SystemExit("Recovery requires a first manual run on main for the active November 18 issue.")
+
+          status = guard.preflight(issue)["status"]
+          if status != "HOLD_PRIOR_ATTEMPT_REQUIRES_REVIEW":
+              raise SystemExit(f"Recovery stopped by delivery preflight: {status}")
+
+          prefix = f"repos/{repository}/actions"
+          history = guard.gh_json(f"{prefix}/artifacts?name=daily-duck-attempt-{issue}&per_page=100")
+          markers = history["artifacts"]
+          if (
+              history["total_count"] != 1
+              or len(markers) != 1
+              or markers[0]["id"] != 14393154923
+              or markers[0]["workflow_run"]["id"] != original_run
+          ):
+              raise SystemExit("Recovery requires exactly the original attempt marker.")
+
+          run = guard.gh_json(f"{prefix}/runs/{original_run}")
+          jobs = guard.gh_json(f"{prefix}/runs/{original_run}/jobs")["jobs"]
+          if (
+              run["run_attempt"] != 1
+              or run["conclusion"] != "failure"
+              or len(jobs) != 1
+              or jobs[0]["id"] != 134547619527
+          ):
+              raise SystemExit("The original attempt does not match the reviewed failure.")
+          steps = {step["name"]: step["conclusion"] for step in jobs[0]["steps"]}
+          if (
+              steps.get("Rank Daily Duck news") != "failure"
+              or steps.get("Send Daily Duck email") != "skipped"
+          ):
+              raise SystemExit("The original run did not prove that SMTP was skipped.")
+
+          path = Path("daily_attempt/attempt.json")
+          path.parent.mkdir(exist_ok=True)
+          path.write_text(
+              f'{{"issue_date":"{issue}","recovery_source_run":{original_run},'
+              f'"run_id":{int(os.environ["GITHUB_RUN_ID"])}}}\n',
+              encoding="utf-8",
+          )
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"issue_date={issue}\nshould_run=true\nstatus=READY_RECOVERY\n")
+          PY
 
       - name: Freeze the resolved issue date across all generation stages
         if: steps.delivery_gate.outputs.should_run == 'true'
@@ -105,8 +176,18 @@ jobs:
       # ------------------------------------------------------------
       - name: Collect Daily Duck news
         if: steps.delivery_gate.outputs.should_run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RECOVERY_STATUS: ${{ steps.delivery_gate.outputs.status }}
         run: |
-          python scripts/collect_news.py
+          if [[ "$RECOVERY_STATUS" == READY_RECOVERY ]]; then
+            gh run download 44228545159 --name daily-duck-results --dir "$RUNNER_TEMP/november-18-candidates"
+            cd "$RUNNER_TEMP/november-18-candidates"
+            echo '953cb665f2052e99565e4326a735b2f6565f75454c1eaafc2636398097ad7968  news_candidates.json' | sha256sum -c -
+            cp news_candidates.json "$GITHUB_WORKSPACE/news_candidates.json"
+          else
+            python scripts/collect_news.py
+          fi
 
       # ------------------------------------------------------------
       # 6. Rank news with Gemini
