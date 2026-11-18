@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-18T15:31:00.426958+00:00",
+  "issue_date": "2026-11-18",
+  "x_post_id": "2123076512588910705",
+  "x_post_url": "https://x.com/i/web/status/2123076512588910705",
+  "x_media_id": "2123076509892042752",
+  "image_path": "automation_images/x/2026-11-18-x-card.png",
+  "post_text": "A 12th-century Chinese poet was among the first to explore the inner lives of cats—a charming meeting of poetry, history and cat curiosity.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-18/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 164
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2123076512588910705",
+      "text": "A 12th-century Chinese poet was among the first to explore the inner lives of cats—a charming meeting of poetry, history and cat curiosity.\n\nhttps://t.co/cuKGCv4co6 https://t.co/BsWoOL0tOW"
+    }
+  }
+}
