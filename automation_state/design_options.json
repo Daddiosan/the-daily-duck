@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-18",
   "generated_at": "2026-11-18T15:27:57.629211+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-18/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "A Poem Between Duck and Cat",
+    "concept_en": "A playful scene of cross-species imagination in which the Daily Duck mascot and a cat share a poetic moment, using flowing visual ribbons to connect curiosity, literature and feline mystery.",
+    "composition_en": "Landscape composition with the duck and cat facing each other across a small round table. The duck holds a blank sheet or open notebook, while elegant translucent ribbons rise between them and form abstract clouds, moon shapes and gentle curls, never readable writing. The cat is poised and thoughtful; the duck is warmly intrigued. Use a contemporary studio-like setting with a soft apricot background, a pool of light on the pair and subtle paper textures. The visual focus is the graceful connection between their gazes and the floating poetic forms.",
+    "generation_prompt_en": "Create one publishable wide landscape editorial illustration with a clean modern premium look. Feature the consistent Daily Duck mascot: a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft and a warm approachable expression. Place the duck and a calm curious domestic cat facing one another across a small round table. The duck rests one wing beside a blank open notebook; from the space between them, elegant translucent ribbons of color drift upward into abstract cloud, moon and curl shapes, suggesting poetry and shared curiosity without any readable writing. Contemporary uncluttered studio setting, soft apricot and ivory background, warm spotlight, subtle paper texture, refined cultural feature illustration, charming but not childish, strong central focal point, landscape hero framing. No logos, no watermarks, no UI, no readable embedded text, no headline, no labels, no historical costumes, no named person, no extra animals.",
+    "alt_en": "The Daily Duck and a thoughtful cat face each other across a blank notebook as translucent abstract ribbons suggest a shared poetic curiosity.",
+    "title_ja": "アヒルと猫のあいだの詩",
+    "concept_ja": "文学、好奇心、猫の神秘性が交わる瞬間を、デイリー・ダックと猫のあいだを漂う抽象的な詩のリボンで表現します。",
+    "composition_ja": "横長の構図で、デイリー・ダックと猫が小さな丸テーブルを挟んで向き合います。アヒルのそばには文字のないノートを置き、二者の間から半透明の色彩のリボンが立ち上がり、雲や月、ゆるやかな曲線へと変化します。淡いアプリコットとアイボリーの現代的な空間、柔らかな光、紙の質感で、洗練された文化特集の雰囲気にします。",
+    "alt_ja": "デイリー・ダックと物思いにふける猫が、文字のないノートを挟んで向き合い、半透明の抽象的なリボンが共有された詩的な好奇心を表している。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "PURR-SPECTIVE SHIFT",
+  "final_selection_reply": "2 2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-18T15:29:55.939029+00:00"
 }
