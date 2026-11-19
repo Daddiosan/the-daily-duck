@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-19",
+    "displayDate": "November 19, 2026",
+    "slug": "the-see-through-swimmer",
+    "title": "THE SEE-THROUGH SWIMMER",
+    "duckName": "The See-Through Swimmer",
+    "storyTitleEn": "A BILL-IEVABLE DEEP-SEA REVEAL!",
+    "storyTitleJa": "透明な頭を持つ魚が、驚きの4K映像に登場",
+    "image": "assets/ducks/2026-11-19-the-see-through-swimmer.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for The See-Through Swimmer",
+    "imageAltJa": "The See-Through SwimmerをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "The deep sea has produced another remarkable close-up. Stunning 4K footage captures the rare barreleye fish, whose completely transparent dome head reveals glowing green eyes that can rotate. It is an underwater spectacle with a wonderfully unusual design.",
+    "storyJa": "深海から、またしても驚くべき姿が届きました。見事な4K映像が、希少なデメニギスを捉えています。完全に透明なドーム状の頭の中には、光る緑色の目があり、回転させることができます。とてもユニークな姿をした、海中の見事なショーです。",
+    "duckEn": "Some fish wear their curiosity right on their heads.",
+    "duckJa": "好奇心を頭に掲げて泳ぐ魚もいるんだね。",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/11/261117033917.htm",
+    "archiveSummaryEn": "A rare barreleye fish has made a spectacular 4K appearance, complete with a completely transparent dome head and glowing green rotating eyes. The deep sea keeps surprising us.",
+    "archiveSummaryJa": "希少なデメニギスが、完全に透明なドーム状の頭と、光る緑色の回転する目を備えた姿で、見事な4K映像に登場しました。深海はいつも私たちを驚かせます。",
+    "reasonEn": "A rare barreleye fish has made a spectacular 4K appearance, complete with a completely transparent dome head and glowing green rotating eyes. The deep sea keeps surprising us.",
+    "reasonJa": "希少なデメニギスが、完全に透明なドーム状の頭と、光る緑色の回転する目を備えた姿で、見事な4K映像に登場しました。深海はいつも私たちを驚かせます。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-18",
     "displayDate": "November 18, 2026",
     "slug": "the-cat-poet",
