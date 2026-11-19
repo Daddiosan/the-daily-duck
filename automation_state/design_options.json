@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-19",
   "generated_at": "2026-11-19T03:21:46.193571+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-19/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "The Transparent-Headed Encounter",
+    "concept_en": "A friendly Daily Duck mascot discovers the rare barreleye fish in the deep sea, creating a warm visual encounter between a familiar character and an extraordinary transparent-headed swimmer.",
+    "composition_en": "Landscape hero composition with the recognizable yellow duck in the left foreground, orange beak, large dark glossy eyes, small feather tuft, and warm curious expression. On the right, a rare barreleye fish glides through deep blue water, shown with a completely transparent dome-shaped head and glowing green eyes. Soft bioluminescent particles create depth without distracting from the two-character focal point. Clean, modern, premium editorial illustration with generous negative space and a sense of wonder.",
+    "generation_prompt_en": "Create one polished landscape editorial hero image, 16:9 composition, featuring a consistent friendly yellow Daily Duck mascot in the left foreground: bright yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable curious expression. The duck is underwater, gently facing a rare barreleye fish on the right. Show the fish with a completely transparent dome-shaped head and clearly visible glowing green eyes inside the dome, with the eyes oriented in a slightly different direction to suggest rotation. Deep blue ocean atmosphere, subtle soft light rays, sparse bioluminescent particles, strong focal point, clean modern charming premium science illustration, realistic enough to communicate the subject but still warmly stylized. No logos, no watermarks, no UI, no readable text, no headline, no extra animals, no clutter.",
+    "alt_en": "A friendly yellow duck encounters a rare barreleye fish with a transparent dome-shaped head and glowing green eyes in the deep sea.",
+    "title_ja": "透明な頭の魚との出会い",
+    "concept_ja": "親しみやすいデイリー・ダックが、深海で希少なデメニギスと出会う、驚きと好奇心を表現したビジュアルです。",
+    "composition_ja": "横長のヒーロー構図。左手前に、黄色い体、オレンジ色のくちばし、大きく黒く艶のある目、小さな羽毛の房、温かく好奇心に満ちた表情を持つおなじみのマスコットを配置します。右側には、完全に透明なドーム状の頭と、その内部に見える光る緑色の目を持つ希少なデメニギスを描きます。深い青の海と控えめな生物発光の粒子で奥行きを出し、2つの存在を主役にした、クリーンで現代的な科学イラストにします。",
+    "alt_ja": "深海で、透明なドーム状の頭と光る緑色の目を持つ希少なデメニギスに出会う黄色いアヒル。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "A BILL-IEVABLE DEEP-SEA REVEAL!",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-19T03:24:16.262921+00:00"
 }
