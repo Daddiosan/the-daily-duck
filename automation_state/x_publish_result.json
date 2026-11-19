@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-19T03:25:21.000127+00:00",
+  "issue_date": "2026-11-19",
+  "x_post_id": "2123256283096871243",
+  "x_post_url": "https://x.com/i/web/status/2123256283096871243",
+  "x_media_id": "2123256281087778816",
+  "image_path": "automation_images/x/2026-11-19-x-card.png",
+  "post_text": "A rare barreleye fish has made a spectacular 4K appearance, complete with a completely transparent dome head and glowing green rotating eyes. The deep sea keeps surprising us.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-19/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 200
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2123256283096871243",
+      "text": "A rare barreleye fish has made a spectacular 4K appearance, complete with a completely transparent dome head and glowing green rotating eyes. The deep sea keeps surprising us.\n\nhttps://t.co/8OqVDLgRvG https://t.co/8EAaqby94h"
+    }
+  }
+}
