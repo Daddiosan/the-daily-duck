@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-20T11:26:22.679247+00:00",
+  "issue_date": "2026-11-20",
+  "x_post_id": "2123739725693677840",
+  "x_post_url": "https://x.com/i/web/status/2123739725693677840",
+  "x_media_id": "2123739723642568704",
+  "image_path": "automation_images/x/2026-11-20-x-card.png",
+  "post_text": "An 8-year study on kids and screen time shows positive digital engagement can support teenager cognitive processing!\n\nhttps://www.thedailyduck.ai/ducks/2026-11-20/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 141
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2123739725693677840",
+      "text": "An 8-year study on kids and screen time shows positive digital engagement can support teenager cognitive processing!\n\nhttps://t.co/GeSwjcbdhC https://t.co/FNmLDdQg3T"
+    }
+  }
+}
