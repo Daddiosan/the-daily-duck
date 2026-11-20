@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-20",
   "generated_at": "2026-11-20T11:18:06.871592+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-20/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "Creative Digital Sandbox",
+    "concept_en": "The mascot duck interacts with an illuminated digital tablet in a warm modern room, surrounded by floating friendly glowing puzzle pieces and light icons representing cognitive engagement.",
+    "composition_en": "Wide horizontal framing. In a brightly lit modern study, the yellow duck mascot is seated comfortably at a wooden desk, tapping a tablet screen. Soft glowing holographic puzzle shapes hover gently around the tablet, illuminating the duck's cheerful face. Warm daylight streams from a side window.",
+    "generation_prompt_en": "Clean modern 3D editorial visual. A cute friendly yellow duck mascot with an orange beak, large glossy dark eyes, and a tiny feather tuft on top, sitting happily at a clean wooden desk. The duck gently touches a glowing digital tablet screen. Soft bright holographic icons of puzzle pieces and light gears float in the air around the screen with warm ambient light. High-end modern 3D render style, warm cozy lighting, cinematic depth of field, landscape aspect ratio 16:9, highly detailed, clean composition, no text, no logos.",
+    "alt_en": "The Daily Duck mascot tapping on a glowing tablet surrounded by floating light icons in a sunlit room.",
+    "title_ja": "クリエイティブ・デジタル砂場",
+    "concept_ja": "明るい現代の部屋でアヒルが光るタブレットを操作し、知的な刺激を象徴するパズル型の光が周囲に浮かぶコンセプト。",
+    "composition_ja": "横長の構図。陽光が差し込む机で、黄色いアヒルがタブレットを嬉しそうにタップしています。画面からは柔らかく光るパズルやギアのアイコンが空中に浮遊し、アヒルの顔を温かく照らしています。",
+    "alt_ja": "陽の光が入る部屋で、光るアイコンに囲まれながらタブレットを操作するアヒルマスコット。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "QUACKING THE CODE ON SCREEN TIME!",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-20T11:24:50.432385+00:00"
 }
