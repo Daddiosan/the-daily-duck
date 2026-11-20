@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-20",
+    "displayDate": "November 20, 2026",
+    "slug": "tech-balance-duck",
+    "title": "TECH BALANCE DUCK",
+    "duckName": "Tech Balance Duck",
+    "storyTitleEn": "QUACKING THE CODE ON SCREEN TIME!",
+    "storyTitleJa": "子どもたちを8年間追跡調査：スクリーンタイムに関する驚きの発見",
+    "image": "assets/ducks/2026-11-20-tech-balance-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Tech Balance Duck",
+    "imageAltJa": "Tech Balance DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Researchers tracked children over an eight-year period to study the long-term effects of screen time. Their surprising findings suggest that positive and engaging digital interactions can support cognitive development in teenagers.",
+    "storyJa": "研究者たちが子どもたちを8年間にわたって追跡し、スクリーンタイムの長期的な影響を調査しました。その驚くべき結果は、質の高いデジタルエンゲージメントが十代の若者の認知発達を好意的にサポートできる可能性を示しています。",
+    "duckEn": "Quack! A little screen time spent well can be a helpful boost!",
+    "duckJa": "クワッ！上手に使う画面の時間なら、知性のサポートにも役立つんだね！",
+    "sourceLabel": "ScienceDaily Technology",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/11/261116014725.htm",
+    "archiveSummaryEn": "An 8-year study on kids and screen time shows positive digital engagement can support teenager cognitive processing!",
+    "archiveSummaryJa": "子どもたちを8年間追跡した研究で、質の高いデジタル活用が十代の認知機能をサポートすることが分かりました！",
+    "reasonEn": "An 8-year study on kids and screen time shows positive digital engagement can support teenager cognitive processing!",
+    "reasonJa": "子どもたちを8年間追跡した研究で、質の高いデジタル活用が十代の認知機能をサポートすることが分かりました！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-19",
     "displayDate": "November 19, 2026",
     "slug": "the-see-through-swimmer",
