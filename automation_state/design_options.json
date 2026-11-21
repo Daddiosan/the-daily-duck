@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-21",
   "generated_at": "2026-11-21T06:19:44.707699+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-21/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "Glowing Window to New Worlds",
+    "concept_en": "A cheerful yellow duck sitting comfortably at a minimalist wooden desk, smiling as it looks at a glowing tablet screen showcasing warm, friendly scenes of diverse community life.",
+    "composition_en": "Landscape orientation, medium shot. A yellow duck with an orange beak, dark glossy eyes, and a small feather tuft is framed slightly off-center. Soft ambient lighting illuminates the duck's face from the tablet screen, creating an inviting, warm editorial mood without any text or logos.",
+    "generation_prompt_en": "A friendly yellow duck with an orange beak, large glossy black eyes, and a tiny tuft of feathers on its head, sitting at a clean modern wooden table. The duck is looking happily at a thin glowing digital tablet laying on the table. The tablet casts a soft warm light onto the duck's smiling face. Soft blurred cozy background with warm pastel colors, clean modern style, high quality editorial illustration, horizontal hero shot, no text, no logos.",
+    "alt_en": "A yellow duck sitting at a wooden table looking happily at a softly glowing tablet screen in a bright modern setting.",
+    "title_ja": "新しい世界を開く光る画面",
+    "concept_ja": "ミニマルな木製デスクに座った黄色いアヒルが、多様なコミュニティの温かい風景が広がる光るタブレット画面を笑顔で見つめるコンセプト。",
+    "composition_ja": "横長構図の中景。オレンジ色のくちばしとつぶらな瞳を持つ黄色いアヒルが画面中央少し横に配置され、タブレットから漏れる柔らかい光がアヒルの表情を温かく照らします。",
+    "alt_ja": "木製のテーブルに座り、柔らかく光るタブレット画面を嬉しそうに見つめる黄色いアヒル。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "BILL-DING BRIDGES ONLINE",
+  "final_selection_reply": "1 1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-21T07:50:15.232904+00:00"
 }
