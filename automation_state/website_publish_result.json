@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-21T07:50:35.212833+00:00",
+  "issue_date": "2026-11-21",
+  "image": "assets/ducks/2026-11-21-empathy-duck.png",
+  "page": "ducks/2026-11-21/index.html",
+  "title": "BILL-DING BRIDGES ONLINE",
+  "duck_name": "Empathy Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
