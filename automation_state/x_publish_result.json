@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-21T07:51:21.114532+00:00",
+  "issue_date": "2026-11-21",
+  "x_post_id": "2124048000171356559",
+  "x_post_url": "https://x.com/i/web/status/2124048000171356559",
+  "x_media_id": "2124047998057353216",
+  "image_path": "automation_images/x/2026-11-21-x-card.png",
+  "post_text": "New study shows how brief digital exposure to new perspectives on social media can help build empathy.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-21/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 127
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2124048000171356559",
+      "text": "New study shows how brief digital exposure to new perspectives on social media can help build empathy.\n\nhttps://t.co/yN6cIP3YSk https://t.co/1PrbeRkQhC"
+    }
+  }
+}
