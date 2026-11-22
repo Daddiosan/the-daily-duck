@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-22",
+    "displayDate": "November 22, 2026",
+    "slug": "space-brick-duck",
+    "title": "SPACE BRICK DUCK",
+    "duckName": "Space Brick Duck",
+    "storyTitleEn": "BUILD THE FUTURE FROM THE MOON",
+    "storyTitleJa": "科学者が月のチリをレゴ風のブロックに変換、将来の月面基地建設へ",
+    "image": "assets/ducks/2026-11-22-space-brick-duck.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Space Brick Duck",
+    "imageAltJa": "Space Brick DuckをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Researchers have found a way to transform moon dust into building bricks that click together much like LEGO blocks. This creative technique could help construct habitats for future lunar bases using materials already present on the Moon.",
+    "storyJa": "研究者たちは、月のチリをレゴブロックのように組み合わせられる建築用ブロックに変換する方法を開発しました。この創造的な技術により、月面に存在する素材を活用して将来の月面基地を建設できるようになるかもしれません。",
+    "duckEn": "Building on the Moon, one block at a time!",
+    "duckJa": "月面基地も、ブロックをひとつずつ積み重ねて作られるんだね！",
+    "sourceLabel": "ScienceDaily Technology",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/11/261119194525.htm",
+    "archiveSummaryEn": "Scientists are turning moon dust into LEGO-like bricks to help build future lunar bases!",
+    "archiveSummaryJa": "科学者たちが月のチリをレゴ風のブロックに変え、未来の月面基地づくりに活用する方法を開発しました！",
+    "reasonEn": "Scientists are turning moon dust into LEGO-like bricks to help build future lunar bases!",
+    "reasonJa": "科学者たちが月のチリをレゴ風のブロックに変え、未来の月面基地づくりに活用する方法を開発しました！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-21",
     "displayDate": "November 21, 2026",
     "slug": "empathy-duck",

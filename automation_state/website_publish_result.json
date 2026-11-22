@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-22T06:01:56.913024+00:00",
+  "issue_date": "2026-11-22",
+  "image": "assets/ducks/2026-11-22-space-brick-duck.png",
+  "page": "ducks/2026-11-22/index.html",
+  "title": "BUILD THE FUTURE FROM THE MOON",
+  "duck_name": "Space Brick Duck",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
