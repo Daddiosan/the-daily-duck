@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-22",
   "generated_at": "2026-11-22T05:42:53.344132+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-22/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "THE MOON, UNDER CONSTRUCTION",
+    "concept_en": "A bold, aspirational poster-like scene presents a small future lunar base rising from Moon-dust bricks, with the duck standing proudly in the foreground.",
+    "composition_en": "Create a sweeping landscape vista from a low, slightly elevated viewpoint. In the foreground, place the friendly duck beside a small stack of bricks, facing a partially completed rounded lunar habitat built from warm-colored LEGO-like blocks. Let the structure lead the eye toward a bright crescent-lit lunar horizon and open starry space. Use generous negative space, bold silhouette shapes, warm optimistic color contrast, and a premium cinematic poster mood without adding any text.",
+    "generation_prompt_en": "Create one publishable landscape hero image, 16:9, with bold cinematic poster energy but no text. Show a recognizable friendly yellow Daily Duck mascot in the foreground, with orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression, standing proudly beside a few orange-tan LEGO-like building bricks on the Moon. Behind the duck, show a small partially completed rounded lunar habitat assembled from similar interlocking bricks, clearly presented as a hopeful future possibility rather than an existing structure. Use a low wide viewpoint, strong architectural silhouette, soft crescent light across the lunar horizon, deep navy space, warm golden highlights, clean modern premium editorial illustration, simple uncluttered design, no logos, no watermarks, no UI, no readable text, no headline, no extra characters, no flags, no unsupported vehicles or equipment.",
+    "alt_en": "A proud yellow duck stands beside bricks as a rounded future lunar habitat rises behind it on the Moon.",
+    "title_ja": "月面基地、建設中",
+    "concept_ja": "月のチリから作られたブロックで未来の月面基地が少しずつ姿を現す、ポスターのように力強く希望を感じさせる場面です。",
+    "composition_ja": "やや低い視点から見渡す横長の月面風景です。手前に、数個のブロックのそばで誇らしげに立つ黄色いアヒルを置き、その背後に温かな色のレゴ風ブロックで組み立てられた、丸みを帯びた建設途中の月面基地を配置します。明るい月の地平線と星空へ視線が伸びるようにし、力強いシルエットと余白を活かした映画ポスター風の雰囲気にします。",
+    "alt_ja": "黄色いアヒルが月面に立ち、背後ではブロック製の未来の月面基地が建設途中の姿を見せている。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "BUILD THE FUTURE FROM THE MOON",
+  "final_selection_reply": "3 3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-22T06:01:29.855278+00:00"
 }
