@@ -76,7 +76,8 @@ IGNORED_RUNTIME_ENTRIES = {"__pycache__"}
 # pinned by the unchanged prefix/suffix reconstruction below.
 PHASE_3B_2A1_APPROVED_BASELINE = "23f54a4234bcb332f8f0b97bedb255b749235dd0"
 
-# HUMAN REAPPROVED 2026-11-07: the user explicitly approved these ten versions.
+# Exact protected workflow versions. Eight entries retain the 2026-11-07 approval.
+# The two Daily Duck operations entries are pinned to the 2026-11-23 change.
 # Record: docs/phase3b2/PROTECTED_WORKFLOW_REAPPROVAL_20261107.md.
 # The original fixed baseline and all protected paths remain in force.
 PROPOSED_WORKFLOW_REAPPROVAL_SHA256 = {
@@ -85,7 +86,7 @@ PROPOSED_WORKFLOW_REAPPROVAL_SHA256 = {
     '.github/workflows/archive-only-publish-2026-10-26.yml':
         '24e002e83c0d414223f0996efdf63eeee8de674df5128a023623dfd49a22db4f',
     '.github/workflows/automation-chain-audit.yml':
-        'c90c94eabce594dd4e11bab00f32f1222d1e212ef654d804a31816faa691437d',
+        '99aa530d2b851602f9fa004a3021e9d88885c49c677d848dbb26030b12459107',
     '.github/workflows/backfill-2026-10-11-design-options.yml':
         '4fad32ab6e2d6412c96eed4ed12eed5ab6c64d486a2443f0358ef812d5fa1d5c',
     '.github/workflows/backfill-2026-10-11-final-selection.yml':
@@ -95,7 +96,7 @@ PROPOSED_WORKFLOW_REAPPROVAL_SHA256 = {
     '.github/workflows/backfill-2026-10-26-final-selection.yml':
         '63d83d9513d4d2d705d7dff23ae6b2df7387a8323d1f06d37b020d14e36abafc',
     '.github/workflows/daily-duck.yml':
-        '9fe970f9fe3dc3e166aa75cd38458b53b57289cd43f127905f9dabb50d30649c',
+        '7545ee07e9f81064cfd30539836ff927717e284fd7a74785ee5af419dddf42cf',
     '.github/workflows/x-backfill-publish-2026-10-11.yml':
         'aded2fc39e5cb5eb9b9689951653d82e9475d151a13f2995209b50f4fbfcfc89',
     '.github/workflows/x-backfill-publish-2026-10-26.yml':

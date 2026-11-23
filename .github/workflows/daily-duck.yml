@@ -54,8 +54,15 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check whether morning generation is paused
+        id: operations
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/daily_duck_operations.py check-generation
+
       - name: Resolve one issue date and check prior delivery before paid work
         id: delivery_gate
+        if: steps.operations.outputs.allowed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
