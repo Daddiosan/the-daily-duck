@@ -31,6 +31,13 @@ def main() -> int:
     if gate_a_alert_suspended(stage=stage):
         print("Gate A warning email temporarily suspended; workflow execution unchanged.")
         return 0
+    # GitHub Actions failures are consolidated by the scheduled audit.
+    # Keep command-line usage and the existing SMTP transport available.
+    workflow = os.getenv("GITHUB_WORKFLOW", "").strip()
+    if workflow and workflow != "The Daily Duck - Automation Chain Audit":
+        print("Workflow failure will be handled by the scheduled audit.")
+        return 0
+
     run_url = os.getenv("GITHUB_RUN_URL", "").strip()
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
     audit_details = os.getenv("AUDIT_DETAILS", "").strip()

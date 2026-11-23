@@ -2,16 +2,20 @@ name: The Daily Duck - Automation Chain Audit
 
 on:
   workflow_dispatch:
-
+    inputs:
+      operation:
+        description: Audit, or record a response and resume morning generation
+        type: choice
+        options:
+          - audit
+          - acknowledge
+        default: audit
   schedule:
-    # JST 07:15 / 12:20 / 18:20 / 22:20; external wake needed for timely detection.
-    - cron: "15 22 * * *"
-    - cron: "20 3 * * *"
-    - cron: "20 9 * * *"
-    - cron: "20 13 * * *"
+    # Every three hours at :20 JST, including a check at 07:20 JST.
+    - cron: "20 1-23/3 * * *"
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 concurrency:
@@ -20,133 +24,56 @@ concurrency:
 
 jobs:
   audit:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      # ------------------------------------------------------------
-      # 1. Checkout
-      # ------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      # ------------------------------------------------------------
-      # 2. Python
-      # ------------------------------------------------------------
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Restore delivered-alert keys
-        uses: actions/cache/restore@v4
-        with:
-          path: monitor_state/seen_alerts.json
-          key: daily-duck-alert-state-${{ github.run_id }}
-          restore-keys: |
-            daily-duck-alert-state-
+      - name: Record response and resume morning generation
+        if: github.event_name == 'workflow_dispatch' && inputs.operation == 'acknowledge'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/daily_duck_operations.py acknowledge
 
-      # ------------------------------------------------------------
-      # 3. Run audit
-      #
-      # continue-on-error is important:
-      # it allows the following steps to process the audit result.
-      # ------------------------------------------------------------
-      - name: Run automation chain audit
+      - name: Audit and reserve an eligible reminder
         id: chain_audit
+        if: github.event_name == 'schedule' || inputs.operation != 'acknowledge'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
         shell: bash
         run: |
-          set +e
+          python scripts/automation_chain_audit.py --manage-reminders
 
-          python scripts/automation_chain_audit.py \
-            > audit_output.txt 2>&1
-
-          EXIT_CODE=$?
-
-          echo "============================================================"
-          echo "AUTOMATION CHAIN AUDIT OUTPUT"
-          echo "============================================================"
-
-          cat audit_output.txt
-
-          echo "============================================================"
-          echo "AUDIT EXIT CODE: $EXIT_CODE"
-          echo "============================================================"
-
-          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
-
-          exit "$EXIT_CODE"
-
-      # ------------------------------------------------------------
-      # 4. Load audit details
-      #
-      # GITHUB_ENV becomes available to the NEXT step.
-      # ------------------------------------------------------------
-      - name: Prepare automation alert details
-        id: alert_details
-        if: steps.chain_audit.outcome == 'failure'
-        shell: bash
+      - name: Check whether a reminder was reserved
+        id: alert
+        if: steps.chain_audit.outcome == 'failure' && hashFiles('monitor_state/pending_alerts.json') != ''
         run: |
-          PENDING_COUNT=$(python -c "import json; print(len(json.load(open('monitor_state/pending_alerts.json', encoding='utf-8')).get('alerts', [])))")
-          echo "pending_count=$PENDING_COUNT" >> "$GITHUB_OUTPUT"
-          if [ "$PENDING_COUNT" -gt 0 ]; then
-            echo "should_alert=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_alert=false" >> "$GITHUB_OUTPUT"
+          if python -c 'import json; import sys; sys.exit(not json.load(open("monitor_state/pending_alerts.json"))["alerts"])'; then
+            echo "send=true" >> "$GITHUB_OUTPUT"
           fi
-          {
-            echo 'AUDIT_DETAILS<<EOF'
 
-            if [ -f audit_output.txt ]; then
-              cat audit_output.txt
-            else
-              echo "The automation audit failed before an audit report could be created."
-            fi
-
-            echo 'EOF'
-          } >> "$GITHUB_ENV"
-
-      # ------------------------------------------------------------
-      # 5. Send alert email
-      # ------------------------------------------------------------
-      - name: Send automation chain alert
-        if: steps.chain_audit.outcome == 'failure' && steps.alert_details.outputs.should_alert == 'true'
+      - name: Send consolidated reminder
+        if: steps.alert.outputs.send == 'true'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-
+          EMAIL_TO: ${{ secrets.EMAIL_TO || vars.EMAIL_TO }}
           FAILURE_STAGE: Scheduled workflow health check
-
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-          GITHUB_REPOSITORY: ${{ github.repository }}
-
           AUTOMATION_ALERTS_FILE: monitor_state/pending_alerts.json
-
         run: python scripts/send_workflow_failure_email.py
 
-      - name: Record delivered-alert keys
-        if: steps.chain_audit.outcome == 'failure' && steps.alert_details.outputs.should_alert == 'true'
-        run: python scripts/merge_automation_alert_state.py
-
-      - name: Save delivered-alert keys
-        if: steps.chain_audit.outcome == 'failure' && steps.alert_details.outputs.should_alert == 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: monitor_state/seen_alerts.json
-          key: daily-duck-alert-state-${{ github.run_id }}
-
-      # ------------------------------------------------------------
-      # 6. Mark workflow failed after alert has been sent
-      # ------------------------------------------------------------
-      - name: Mark audit as failed
-        if: steps.chain_audit.outcome == 'failure'
-        shell: bash
-        run: |
-          echo "Automation chain problem detected."
-          exit 1
+      - name: Mark unhealthy audit as failed
+        if: always() && steps.chain_audit.outcome == 'failure'
+        run: exit 1

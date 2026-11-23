@@ -9,8 +9,10 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from scripts.daily_duck_operations import advance, read_state, write_state
     from scripts.send_workflow_failure_email import gate_a_alert_suspended
 except ImportError:
+    from daily_duck_operations import advance, read_state, write_state
     from send_workflow_failure_email import gate_a_alert_suspended
 
 JST = timezone(timedelta(hours=9))
@@ -26,6 +28,7 @@ WORKFLOWS = {
     "The Daily Duck - Design Selection Check": ("design-selection-check.yml", "Design Selection Check"),
     "The Daily Duck - Website Publish": ("website-publish.yml", "Website Publish"),
     "The Daily Duck - X Publish": ("x-publish.yml", "X Publish"),
+    "The Daily Duck - Regenerate Titles Only": ("regenerate-titles-only.yml", "Regenerate Titles Only"),
 }
 SCHEDULED_WORKFLOWS = {
     "The Daily Duck Automation",
@@ -194,18 +197,46 @@ def pending_alerts(current: list[Problem], seen: set[str]) -> list[Problem]:
     return [item for item in current if item.key not in seen
             and not gate_a_alert_suspended(workflow_name=item.workflow_name)]
 
+def reminder_problems(
+    current: list[Problem], state: dict, states: dict[str, Any], now: datetime,
+) -> tuple[list[Problem], set[str]]:
+    alerts = pending_alerts(current, set())
+    daily_workflow = "The Daily Duck Automation"
+    daily_alerts = [item for item in alerts if item.workflow_name == daily_workflow]
+    alerts = [item for item in alerts if item.workflow_name != daily_workflow]
+    delivery = states.get("daily_delivery")
+    delivered = isinstance(delivery, dict) and delivery.get("sent_verified") is True
+    date = now.astimezone(JST).date().isoformat()
+    if not state["paused_at"] and not delivered:
+        if daily_alerts:
+            alerts.extend(daily_alerts)
+        elif daily_workflow in state["first_seen"]:
+            alerts.append(problem(
+                "Daily Automation candidate delivery", date, now,
+                {"name": daily_workflow}, "MAIL_NOT_VERIFIED",
+                "Check the morning run and verify delivery in Gmail Sent.",
+            ))
+    keys = {
+        daily_workflow if item.workflow_name == daily_workflow
+        else f"{item.workflow_name}:{item.failure_stage}"
+        for item in alerts
+    }
+    return alerts, keys
+
+
 def gh_json(endpoint: str) -> Any:
     result = subprocess.run(["gh", "api", endpoint], capture_output=True, text=True)
     if result.returncode:
         raise RuntimeError(result.stderr.strip() or f"gh api failed: {endpoint}")
     return json.loads(result.stdout)
 
-def live_inputs(repository: str, state_dir: Path, now: datetime | None = None) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+def live_inputs(repository: str, state_dir: Path, now: datetime | None = None, *, main_only: bool = False) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
     runs = {}
+    branch = "&branch=main" if main_only else ""
     for workflow, (filename, _) in WORKFLOWS.items():
-        workflow_runs = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?per_page=20").get("workflow_runs", [])
+        workflow_runs = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?per_page=20{branch}").get("workflow_runs", [])
         if workflow in SCHEDULED_WORKFLOWS:
-            scheduled_runs = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?event=schedule&per_page=1").get("workflow_runs", [])
+            scheduled_runs = gh_json(f"repos/{repository}/actions/workflows/{filename}/runs?event=schedule&per_page=1{branch}").get("workflow_runs", [])
             known_ids = {run.get("id") for run in workflow_runs}
             workflow_runs.extend(run for run in scheduled_runs if run.get("id") not in known_ids)
         runs[workflow] = workflow_runs
@@ -240,7 +271,10 @@ def main() -> int:
     parser.add_argument("--seen-file", type=Path, default=Path("monitor_state/seen_alerts.json"))
     parser.add_argument("--pending-file", type=Path, default=Path("monitor_state/pending_alerts.json"))
     parser.add_argument("--result-file", type=Path, default=Path("audit_result.json"))
+    parser.add_argument("--manage-reminders", action="store_true")
     args = parser.parse_args()
+    if args.manage_reminders and args.fixture:
+        parser.error("--manage-reminders requires live inputs")
     now = datetime.now(timezone.utc)
     if args.fixture:
         fixture = read_json(args.fixture)
@@ -252,11 +286,30 @@ def main() -> int:
         repository = os.environ.get("GITHUB_REPOSITORY", "").strip()
         if not repository:
             raise SystemExit("GITHUB_REPOSITORY is required")
-        runs, states = live_inputs(repository, args.state_dir, now)
+        runs, states = live_inputs(repository, args.state_dir, now, main_only=args.manage_reminders)
     current = evaluate(runs, states, now)
     seen_data = read_json(args.seen_file)
     seen = set(seen_data.get("keys", [])) if isinstance(seen_data, dict) else set()
     pending = pending_alerts(current, seen)
+    if args.manage_reminders:
+        state, sha = read_state(repository)
+        alerts, keys = reminder_problems(current, state, states, now)
+        updated, should_send, newly_paused = advance(state, keys, now)
+        if updated != state:
+            write_state(repository, updated, sha)
+        if updated["paused_at"]:
+            pause = problem(
+                "Morning generation paused", now.astimezone(JST).date().isoformat(), now,
+                {"name": "The Daily Duck - Automation Chain Audit"},
+                "PAUSED_NO_RESPONSE",
+                "After checking the incident, run the audit workflow with acknowledge selected.",
+            )
+            alerts.append(pause)
+            current = [item for item in current if item.workflow_name != "The Daily Duck Automation"] + [pause]
+            if newly_paused:
+                print("Morning generation paused after 20 days without a recorded response.")
+        pending = alerts if should_send else []
+
     payload = {"detected_at": now.astimezone(JST).isoformat(), "problems": [asdict(p) | {"key": p.key} for p in current], "pending_alerts": [asdict(p) | {"key": p.key} for p in pending]}
     for path in (args.result_file, args.pending_file):
         path.parent.mkdir(parents=True, exist_ok=True)
