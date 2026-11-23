@@ -157,17 +157,15 @@ def publication_title(
             raise ValueError(
                 "design_approval_reply must be a string."
             )
-        match = re.fullmatch(
-            r"[1-9][0-9]*\s+([1-9][0-9]*)",
-            reply.strip(),
-        )
-        if not match:
-            raise ValueError(
-                "design_approval_reply is invalid."
-            )
-        corroborating_numbers.append(
-            int(match.group(1))
-        )
+        reply = reply.strip()
+        if reply in {"1", "2", "3"}:
+            reply_title_number = int(reply)
+        else:
+            match = re.fullmatch(r"[1-9][0-9]*\s+([1-9][0-9]*)", reply)
+            if not match:
+                raise ValueError("design_approval_reply is invalid.")
+            reply_title_number = int(match.group(1))
+        corroborating_numbers.append(reply_title_number)
 
     if len(set(corroborating_numbers)) > 1:
         raise ValueError(
