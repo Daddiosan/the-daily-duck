@@ -94,9 +94,10 @@ class ApprovalNormalizationAndValidationTests(unittest.TestCase):
     def test_gate_a_matches_legacy_strict_normalization(self):
         self.assertEqual(normalize_reply(" 3\r\n"), "3")
         self.assertEqual(gate(normalize_reply(" 3\r\n")).command, "SELECT_STORY:3")
+        self.assertEqual(gate("３").command, "SELECT_STORY:3")
 
     def test_invalid_gate_a_command(self):
-        for value in ("0", "6", "3 OK", "３", "3\n4", 3):
+        for value in ("0", "6", "3 OK", "③", "3\n4", 3):
             with self.subTest(value=value), self.assertRaises(
                 ApprovalValidationError
             ):
@@ -143,7 +144,7 @@ class ApprovalNormalizationAndValidationTests(unittest.TestCase):
         self.assertEqual(design("ＮＥＸＴ　３").command, "NEXT_3")
 
     def test_invalid_design_selection(self):
-        for value in ("0 1", "1 4", "1", "NEXT", "1 2 OK", (1, 2)):
+        for value in ("0 1", "1 4", "4", "NEXT", "1 2 OK", (1, 2)):
             with self.subTest(value=value), self.assertRaises(
                 ApprovalValidationError
             ):

@@ -397,15 +397,10 @@ class GateAClassificationMatrixTests(unittest.TestCase):
         self.assertEqual(outcome.decision, A2Decision.SKIPPED_INVALID)
         self.assertEqual(adapter.calls, [])
 
-    def test_full_width_digit_is_rejected_not_normalized(self):
-        # normalize_gate_command deliberately does NOT NFKC-normalize
-        # (approval_domain.py's own comment: doing so "would silently
-        # broaden the accepted Gate A syntax"). A2 must inherit that
-        # strictness via extract_gate_a_command_from_gmail, not work around
-        # it.
+    def test_full_width_digit_is_dispatched_as_ascii(self):
         outcome, _, _, adapter = call(gate_a_message(body="３"), GATE_A_SNAPSHOT)
-        self.assertEqual(outcome.decision, A2Decision.SKIPPED_INVALID)
-        self.assertEqual(adapter.calls, [])
+        self.assertEqual(outcome.command.command, "SELECT_STORY:3")
+        self.assertEqual(len(adapter.calls), 1)
 
     def test_stale_issue_is_not_dispatched(self):
         outcome, _, _, adapter = call(

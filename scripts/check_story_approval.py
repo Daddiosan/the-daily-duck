@@ -252,7 +252,7 @@ def normalize_reply(
         normalized,
     )
 
-    return normalized.strip()
+    return normalized.strip().translate(str.maketrans("１２３４５", "12345"))
 
 
 def load_package() -> dict[str, Any]:

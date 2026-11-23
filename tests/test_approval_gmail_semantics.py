@@ -92,6 +92,7 @@ class GateAGmailDifferentialTests(unittest.TestCase):
 
     def test_gate_a_legacy_acceptance_and_rejection_are_preserved(self):
         self.assertEqual(new_gate_result("3\n> quoted 5"), "SELECT_STORY:3")
+        self.assertEqual(new_gate_wire("３"), "3")
         for body in ("3\nThanks!", "3\nSent from my iPhone", "3\n3", "3\n4"):
             with self.subTest(body=body):
                 self.assertIsNone(new_gate_result(body))
@@ -100,6 +101,8 @@ class GateAGmailDifferentialTests(unittest.TestCase):
 class DesignGmailDifferentialTests(unittest.TestCase):
     CASES = (
         ("simple_selection", "1 3"),
+        ("single_number", "2"),
+        ("single_full_width", "２"),
         ("whitespace", " 1 3 "),
         ("quoted_reply", "1 3\n> quoted original"),
         ("trailing_thanks", "1 3\nThanks!"),
@@ -127,6 +130,19 @@ class DesignGmailDifferentialTests(unittest.TestCase):
         ):
             with self.subTest(body=body):
                 self.assertEqual(new_design_result(body), "SELECT_DESIGN:1:3")
+
+    def test_design_single_choice_selects_the_same_image_and_title(self):
+        for body in ("2", "２", "２\n> 1", "２\n2 2"):
+            with self.subTest(body=body):
+                self.assertEqual(new_design_result(body), "SELECT_DESIGN:2:2")
+                self.assertEqual(legacy_design_result(body), "SELECT_DESIGN:2:2")
+        self.assertIsNone(new_design_result("②"))
+        self.assertIsNone(legacy_design_result("②"))
+        self.assertIsNone(new_design_result("2\n1 3"))
+        self.assertIsNone(legacy_design_result("2\n1 3"))
+        quoted = "2026年11月23日 user <user@example.com>:\n2"
+        self.assertIsNone(new_design_result(quoted))
+        self.assertIsNone(legacy_design_result(quoted))
 
     def test_design_duplicate_commands_are_accepted(self):
         self.assertEqual(new_design_result("1 3\n1 3"), "SELECT_DESIGN:1:3")

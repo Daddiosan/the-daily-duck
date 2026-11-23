@@ -173,7 +173,7 @@ class DispatchDecision:
 _SAFE_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$")
 _PRINCIPAL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+@-]{0,253}$")
 _GATE_COMMAND_RE = re.compile(r"^[1-5]$")
-_DESIGN_FINAL_RE = re.compile(r"^([1-3])\s+([1-3])$")
+_DESIGN_FINAL_RE = re.compile(r"^([1-3])(?:\s+([1-3]))?$")
 _DESIGN_NEXT_RE = re.compile(r"^NEXT\s+3$", flags=re.IGNORECASE)
 
 # A 32-digit positive integer is vastly beyond any realistic preview batch
@@ -454,18 +454,16 @@ def _validate_principal_source(
 
 
 def normalize_gate_command(value: object) -> str:
-    # The production Gmail path accepts one exact ASCII digit only. Do not NFKC
-    # normalize here: that would silently broaden the accepted Gate A syntax.
     if not isinstance(value, str):
         raise ApprovalValidationError(
             "INVALID_GATE_A_COMMAND",
-            "Gate A command must be text containing one ASCII digit.",
+            "Gate A command must be text containing one digit.",
         )
-    text = value.strip()
+    text = value.strip().translate(str.maketrans("１２３４５", "12345"))
     if not _GATE_COMMAND_RE.fullmatch(text):
         raise ApprovalValidationError(
             "INVALID_GATE_A_COMMAND",
-            "Gate A command must be exactly one ASCII digit from 1 through 5.",
+            "Gate A command must be exactly one digit from 1 through 5.",
         )
     return f"SELECT_STORY:{text}"
 
@@ -481,13 +479,14 @@ def normalize_design_command(value: object) -> str:
     normalized = re.sub(r"\s+", " ", normalized).strip()
 
     match = _DESIGN_FINAL_RE.fullmatch(normalized)
-    if match:
-        return f"SELECT_DESIGN:{match.group(1)}:{match.group(2)}"
+    if match and (match.group(2) or value.strip() in "123１２３"):
+        image, title = match.groups()
+        return f"SELECT_DESIGN:{image}:{title or image}"
     if _DESIGN_NEXT_RE.fullmatch(normalized):
         return "NEXT_3"
     raise ApprovalValidationError(
         "INVALID_DESIGN_COMMAND",
-        "Design command must be 'IMAGE TITLE' (1-3 each) or 'NEXT 3'.",
+        "Design command must be 1-3 or 'NEXT 3' (legacy IMAGE TITLE is also accepted).",
     )
 
 
@@ -529,13 +528,12 @@ def extract_gate_a_command_from_gmail(value: object) -> str:
     lines = [line.strip() for line in "\n".join(kept).strip().splitlines() if line.strip()]
     normalized = re.sub(r"\s+", " ", " ".join(lines)).strip()
     try:
-        normalize_gate_command(normalized)
+        return normalize_gate_command(normalized).split(":", 1)[1]
     except ApprovalValidationError as exc:
         raise ApprovalValidationError(
             "INVALID_GATE_A_GMAIL_REPLY",
             "Gmail reply does not contain one exact fresh Gate A command.",
         ) from exc
-    return normalized
 
 
 def extract_design_command_from_gmail(value: object) -> str:
@@ -555,6 +553,8 @@ def extract_design_command_from_gmail(value: object) -> str:
         if re.match(r"^On .+ wrote:$", stripped, flags=re.IGNORECASE):
             break
         if re.match(r"^.+ wrote:$", stripped, flags=re.IGNORECASE):
+            break
+        if re.match(r"^\d{4}年\d{1,2}月\d{1,2}日.+<.+>:$", stripped):
             break
         if stripped in (
             "-----Original Message-----",
@@ -577,9 +577,9 @@ def extract_design_command_from_gmail(value: object) -> str:
         normalized = re.sub(r"[\u00a0\t]+", " ", normalized)
         normalized = re.sub(r"\s+", " ", normalized).strip()
         match = _DESIGN_FINAL_RE.fullmatch(normalized)
-        if match:
-            wire_command = f"{match.group(1)} {match.group(2)}"
-            commands.append((f"SELECT_DESIGN:{match.group(1)}:{match.group(2)}", wire_command))
+        if match and (match.group(2) or line in "123１２３"):
+            image, title = match.groups()
+            commands.append((f"SELECT_DESIGN:{image}:{title or image}", normalized))
             continue
         if _DESIGN_NEXT_RE.fullmatch(normalized):
             commands.append(("NEXT_3", "NEXT 3"))

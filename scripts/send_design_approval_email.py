@@ -232,6 +232,8 @@ TITLE {title["number"]}
 def build_email(
     package: dict[str, Any],
     approval_token: str,
+    *,
+    legacy_reply: bool = False,
 ) -> tuple[str, str]:
     issue_date = issue_date_from(
         package
@@ -241,20 +243,11 @@ def build_email(
         validate_package(package)
     )
 
-    concept_sections = "\n\n\n".join(
-        format_concept(concept)
-        for concept in concepts
-    )
-
-    title_sections = "\n\n".join(
-        format_title(title)
-        for title in titles
-    )
-
-    image_list = "\n".join(
-        f"IMAGE {preview['number']}: "
-        f"DailyDuck_Image_{preview['number']}.png"
-        for preview in previews
+    options = "\n\n".join(
+        f"{format_concept(concept)}\n\n"
+        f"{format_title(title)}\n"
+        f"添付：DailyDuck_Image_{preview['number']}.png"
+        for concept, title, preview in zip(concepts, titles, previews)
     )
 
     batch_number = int(
@@ -269,103 +262,32 @@ def build_email(
     )
     subject = subject_with_approval_token(subject_prefix, approval_token)
 
-    body = f"""
-The Daily Duck — Design Selection
+    story = package.get("approved_story_compact")
+    if not isinstance(story, dict):
+        approved = package.get("approved_story")
+        story = approved.get("selected_story", approved) if isinstance(approved, dict) else {}
+    if not isinstance(story, dict):
+        story = {}
+    title_ja = first_text(story.get("title_ja"))
+    title_en = first_text(story.get("title_en"), story.get("title"))
+    story_titles = "\n".join(dict.fromkeys(title for title in (title_ja, title_en) if title))
+    if not story_titles and not legacy_reply:
+        raise ValueError("The approved story title is missing.")
 
-Issue date:
-{issue_date}
-
-Gate A is complete.
-
-コンセプト3案それぞれについて、
-実画像を1枚ずつ生成しました。
-
-このメールだけで最終選択できます。
-
-
-==================================================
-3 IMAGE CONCEPTS + 3 REAL IMAGES
-画像コンセプト3案 + 実画像3枚
-==================================================
-
-{concept_sections}
-
-
-添付画像:
-
-{image_list}
-
-
-==================================================
-3 TITLE OPTIONS
-タイトル3案
-==================================================
-
-{title_sections}
-
-
-==================================================
-HOW TO REPLY
-返信方法
-==================================================
-
-画像番号 + スペース + タイトル番号
-
-例:
-
-1 3
-
-意味:
-画像1 + タイトル3
-
-
-全角もOK:
-
-１ ３
-
-
-画像番号:
-1 / 2 / 3
-
-タイトル番号:
-1 / 2 / 3
-
-
-==================================================
-NEXT 3
-==================================================
-
-3枚とも気に入らない場合:
-
-NEXT 3
-
-または全角:
-
-ＮＥＸＴ ３
-
-
-NEXT 3では、
-同じ3コンセプトを維持したまま、
-各コンセプトについて新しい画像を1枚ずつ生成します。
-
-つまり新しい3枚を送ります。
-
-
-==================================================
-IMPORTANT
-==================================================
-
-別途「コンセプトだけを選ぶ」返信は不要です。
-
-この1通への
-
-IMAGE_NUMBER TITLE_NUMBER
-
-の返信だけで、
-画像・コンセプト・タイトルを同時に確定します。
-
-最終選択まではWebsite/Xへ公開しません。
-""".strip()
+    story_section = f"選んだ記事\n{story_titles}\n\n" if not legacy_reply else ""
+    reply = (
+        "画像番号 + スペース + タイトル番号（IMAGE_NUMBER TITLE_NUMBER）\n例：1 3"
+        if legacy_reply else
+        "希望の番号（1〜3）だけ返信してください。例：2（全角の２でも可）\n"
+        "同じ番号の画像と掲載タイトルが一緒に決まります。"
+    )
+    body = (
+        f"The Daily Duck — 画像と掲載タイトルの選択 — {issue_date}\n\n"
+        f"{story_section}Gate A is complete.\n\n"
+        f"{options}\n\n"
+        f"{reply}\n"
+        "3枚とも選ばない場合は NEXT 3（全角のＮＥＸＴ ３でも可）で画像を作り直せます。"
+    )
 
     return subject, body
 
@@ -528,8 +450,8 @@ def main() -> int:
     package["final_selection_rule"] = {
         "image_numbers": [1, 2, 3],
         "title_numbers": [1, 2, 3],
-        "format": "IMAGE_NUMBER TITLE_NUMBER",
-        "example": "1 3",
+        "format": "OPTION_NUMBER",
+        "example": "2",
         "next_3_command": "NEXT 3",
         "full_width_supported": True,
         "next_state": "READY_TO_PUBLISH",
@@ -552,10 +474,10 @@ def main() -> int:
         "Titles: 3"
     )
     print(
-        "Reply example: 1 3"
+        "Reply example: 2"
     )
     print(
-        "Full-width: １ ３"
+        "Full-width: ２"
     )
     print(
         "Regeneration: NEXT 3 / ＮＥＸＴ ３"

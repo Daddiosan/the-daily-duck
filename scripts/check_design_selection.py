@@ -54,7 +54,7 @@ PREVIEW_ROOT = Path(
 )
 
 FINAL_RE = re.compile(
-    r"^([1-3])\s+([1-3])$"
+    r"^([1-3])(?:\s+([1-3]))?$"
 )
 
 NEXT_3_RE = re.compile(
@@ -205,6 +205,9 @@ def fresh_reply_lines(
         ):
             break
 
+        if re.match(r"^\d{4}年\d{1,2}月\d{1,2}日.+<.+>:$", stripped):
+            break
+
         if stripped in (
             "-----Original Message-----",
             "-----元のメッセージ-----",
@@ -244,12 +247,12 @@ def extract_command(
             candidate
         )
 
-        if final_match:
+        if final_match and (final_match.group(2) or line in "123１２３"):
             commands.append(
                 (
                     "FINAL",
                     int(final_match.group(1)),
-                    int(final_match.group(2)),
+                    int(final_match.group(2) or final_match.group(1)),
                     candidate,
                 )
             )
@@ -1103,7 +1106,7 @@ def main() -> int:
                 "No valid final reply found."
             )
             print(
-                "Valid: 1 3 / １ ３ / NEXT 3 / ＮＥＸＴ ３"
+                "Valid: 2 / ２ / NEXT 3 / ＮＥＸＴ ３"
             )
             print(
                 "STATE: WAITING_FINAL_SELECTION"

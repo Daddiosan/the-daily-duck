@@ -341,7 +341,7 @@ def build_backfill_email(
 ) -> tuple[str, str, list[dict[str, Any]]]:
     selected = _design_package_story(package)
     _, _, previews = design_email.validate_package(package)
-    subject, body = design_email.build_email(package, approval_token)
+    subject, body = design_email.build_email(package, approval_token, legacy_reply=True)
     story_section = f"""
 ==================================================
 SELECTED STORY / 選択済み記事

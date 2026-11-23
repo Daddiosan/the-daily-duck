@@ -732,232 +732,30 @@ def format_story_option(
     ),
 ) -> str:
 
-    number = story[
-        "candidate_number"
-    ]
-
-    recommendation_label = ""
-
-    if (
-        number
-        == recommended_number
-    ):
-
-        recommendation_label = (
-            "\n"
-            "★ AI RECOMMENDED / "
-            "AIおすすめ"
-        )
-
-    score_line = ""
-
-    if (
-        story.get(
-            "total_score"
-        )
-        is not None
-    ):
-
-        score_line = (
-            "\nScore: "
-            f"{story['total_score']}"
-        )
-
-    source_title = (
-        story.get(
-            "title",
-            "",
-        )
-    )
-
-    return f"""
-==================================================
-CANDIDATE {number} / 候補 {number}{recommendation_label}
-==================================================
-
-ENGLISH MASTER / 英語正本
---------------------------------------------------
-
-TITLE
-
-{story.get('title_en', '')}
-
-
-WHY THIS STORY
-
-{story.get('reason_en', '')}
-
-
-EDITORIAL COPY
-
-{story.get('en_copy', '')}
-
-
-DUCK
-
-Duck name:
-{story.get('duck_name', '')}
-
-Duck line:
-{story.get('duck_en', '')}
-
-
-X DRAFT
-
-{story.get('x_en', '')}
-
-
-==================================================
-JAPANESE TRANSLATION / 日本語訳
-==================================================
-
-タイトル
-
-{story.get('title_ja', '')}
-
-
-記事のポイント
-
-{story.get('reason_ja', '')}
-
-
-記事案
-
-{story.get('jp_copy', '')}
-
-
-Duckコメント
-
-{story.get('duck_jp', '')}
-
-
-X投稿文
-
-{story.get('x_jp', '')}
-
-
-==================================================
-SOURCE / 出典
-==================================================
-
-Original headline:
-{source_title}
-
-Source:
-{story.get('source', '')}
-
-URL:
-{story.get('url', '')}
-{score_line}
-""".strip()
+    number = story["candidate_number"]
+    recommendation = "（おすすめ）" if number == recommended_number else ""
+    return f"{number}. {story.get('title_ja', '')}{recommendation}\n   {story.get('title_en', '')}"
 
 
 def build_email(
     package: dict[str, Any],
     approval_token: str,
-) -> tuple[
-    str,
-    str,
-]:
-
+) -> tuple[str, str]:
     subject_prefix = (
-        "The Daily Duck — "
-        "Choose Today's Story — "
+        "The Daily Duck — Choose Today's Story — "
         f"{package['issue_date']}"
     )
     subject = subject_with_approval_token(subject_prefix, approval_token)
-
-    sections: list[
-        str
-    ] = []
-
-    for story in package[
-        "story_options"
-    ]:
-
-        sections.append(
-            format_story_option(
-                story,
-                package.get(
-                    "recommended_number"
-                ),
-            )
-        )
-
-    candidates_text = (
-        "\n\n\n".join(
-            sections
-        )
+    candidates = "\n\n".join(
+        format_story_option(story, package.get("recommended_number"))
+        for story in package["story_options"]
     )
-
-    recommended_text = ""
-
-    if package.get(
-        "recommended_number"
-    ):
-
-        recommended_text = (
-            "\n"
-            "AIおすすめ: "
-            "候補 "
-            f"{package['recommended_number']}"
-            "\n"
-        )
-
-    body = f"""
-The Daily Duck — Gate A
-
-The Daily Duck is now ENGLISH-FIRST.
-English is the canonical/master copy.
-Japanese is provided as a translation for review.
-
-本日の候補ニュース5件について、
-英語を正式原稿（Master）として記事案を作成しました。
-日本語は英語正本を基にした確認用の翻訳です。
-
-5件を比較して、
-本日採用する記事を1つ選んでください。
-
-{recommended_text}
-
-{candidates_text}
-
-
-==================================================
-GATE A — STORY SELECTION / 本日の記事を選択
-==================================================
-
-採用する記事の番号だけを返信してください。
-
-1
-2
-3
-4
-5
-
-
-例:
-
-3
-
-
-IMPORTANT:
-
-- 「1」「2」「3」「4」「5」のいずれか1文字だけを返信してください。
-- それ以外の返信では承認されません。
-- 選択した1件だけが本日の正式記事になります。
-- 英語版がcanonical/master copyです。
-- 日本語版は英語正本から生成された翻訳です。
-- 記事選択後、その記事専用の画像コンセプトを3案作成します。
-- 画像コンセプトは別メールで送信します。
-- 画像コンセプト選択後、その1つのコンセプトから実画像を5枚生成します。
-- 最終画像選択が終わるまでWebサイト/Xには公開しません。
-""".strip()
-
-    return (
-        subject,
-        body,
+    body = (
+        f"The Daily Duck — 記事候補 — {package['issue_date']}\n\n"
+        f"{candidates}\n\n"
+        "希望の番号（1〜5）だけ返信してください。例：2（全角の２でも可）"
     )
+    return subject, body
 
 
 # ============================================================
