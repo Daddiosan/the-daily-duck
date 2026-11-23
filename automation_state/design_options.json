@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-23",
   "generated_at": "2026-11-23T04:30:14.402005+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-23/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "Opening the Glass Door to Career Growth",
+    "concept_en": "A visual metaphor showing a large modern glass door swinging open in a sunlit office, symbolizing how removing degree barriers creates fair career pathways for skilled workers.",
+    "composition_en": "Wide landscape composition. Sunlight streams across a clean, minimalist contemporary office space. In the center, a sleek glass doorway is pulled wide open. The Daily Duck mascot—a recognizable friendly yellow duck with an orange beak, large dark glossy eyes, and a small feather tuft—stands proudly at the open threshold, holding a tiny golden gear that represents practical skill, looking forward with a warm and confident expression.",
+    "generation_prompt_en": "A clean modern editorial landscape photo featuring a friendly yellow duck mascot with an orange beak, large dark glossy eyes, and a small feather tuft. The duck stands proudly inside a sunlit contemporary open-plan office next to a wide-open floor-to-ceiling glass door, holding a small shiny golden gear. Warm morning sunlight streams through the open doorway, casting gentle light across sleek light wood floors and minimal Scandinavian office furniture. Uplifting and warm editorial atmosphere, crisp focus on the duck mascot, shallow depth of field, highly detailed, no text, no logos.",
+    "alt_en": "The yellow duck mascot standing proudly by an open glass office door holding a golden gear, illuminated by warm morning sunlight.",
+    "title_ja": "キャリアの扉を開くガラスのドアー",
+    "concept_ja": "学歴要件という壁が取り払われ、実務経験とスキルを持つ労働者に公平なキャリアの道が開かれたことを、陽の光が差し込むオフィスの開かれたガラス扉で表現した視覚的メタファー。",
+    "composition_ja": "横長の構図。清潔感あふれるモダンなオフィスで、大きなガラス扉が大きく開かれています。中央には、オレンジ色のくちばし、大きな黒い目、小さな頭の毛束が特徴的な黄色いアヒルのマスコットが立ち、スキルを象徴する小さな黄金の歯車を掲げながら、自信に満ちた温かい表情で前を見つめています。",
+    "alt_ja": "朝日の差し込むオフィスの開かれたガラス扉の前に立ち、黄金の歯車を抱えて誇らしげに微笑む黄色いアヒルのマスコット。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "QUACKING THE GLASS CEILING!",
+  "final_selection_reply": "1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-23T04:35:17.199615+00:00"
 }
