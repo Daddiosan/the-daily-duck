@@ -221,6 +221,30 @@ class TitleDateCardTests(unittest.TestCase):
                     ready["gate_a_approved_story"]["selected_story"]["selected_title"] = "CONFLICT"
                 self.assert_rejected_by_both(ready)
 
+    def test_single_number_reply_accepts_same_title_for_web_and_x(self):
+        for number in (1, 2, 3):
+            with self.subTest(number=number):
+                ready = self.ready_package()
+                ready["design_approval_reply"] = str(number)
+                ready["selected_title_number"] = number
+                ready["selected_title_detail"]["number"] = number
+                ready["gate_a_approved_story"]["selected_title_number"] = number
+                item = web.build_item(ready, ready["canonical_image_path"])
+                self.assertEqual(item["storyTitleEn"], ready["selected_title"])
+                path, _ = card.render_card(ready)
+                self.assertTrue(path.is_file())
+
+    def test_invalid_or_conflicting_single_number_reply_fails_closed(self):
+        for reply, error in (
+            ("2", "Selected-title numbers conflict"),
+            ("4", "design_approval_reply is invalid"),
+            ("11", "design_approval_reply is invalid"),
+        ):
+            with self.subTest(reply=reply):
+                ready = self.ready_package()
+                ready["design_approval_reply"] = reply
+                self.assert_rejected_by_both(ready, error)
+
     def test_conflicting_approval_numbers_fail_closed(self):
         for location in ("detail", "root", "reply", "selected"):
             with self.subTest(location=location):
