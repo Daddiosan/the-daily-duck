@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-23",
+    "displayDate": "November 23, 2026",
+    "slug": "fair-opportunities",
+    "title": "FAIR OPPORTUNITIES",
+    "duckName": "Fair Opportunities",
+    "storyTitleEn": "QUACKING THE GLASS CEILING!",
+    "storyTitleJa": "学歴要件の撤廃により、学位を持たない実務経験者の賃金が上昇",
+    "image": "assets/ducks/2026-11-23-fair-opportunities.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Fair Opportunities",
+    "imageAltJa": "Fair OpportunitiesをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A positive trend is emerging in the workplace. Removing formal college degree requirements for job positions has been linked to higher pay and better career opportunities for experienced workers without degrees.",
+    "storyJa": "職場環境に前向きなトレンドが生まれています。求人要件から大学の学位要件を撤廃することが、学位を持たない実務経験豊富な労働者の賃金上昇やより良いキャリアの機会につながっていることが示されました。",
+    "duckEn": "Valuing skills and experience brings great wins for workers!",
+    "duckJa": "スキルと経験を評価することが、働く人々にとって大きな勝利に！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-degree-requirements-linked-higher-pay.html",
+    "archiveSummaryEn": "Removing degree requirements is linked to higher pay for experienced workers without degrees—opening doors to fairer career growth!",
+    "archiveSummaryJa": "学歴要件の撤廃が、学位を持たない経験豊富な労働者の給料アップにつながっていることが判明。より公平なキャリアの道が開けています！",
+    "reasonEn": "Removing degree requirements is linked to higher pay for experienced workers without degrees—opening doors to fairer career growth!",
+    "reasonJa": "学歴要件の撤廃が、学位を持たない経験豊富な労働者の給料アップにつながっていることが判明。より公平なキャリアの道が開けています！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-22",
     "displayDate": "November 22, 2026",
     "slug": "space-brick-duck",
