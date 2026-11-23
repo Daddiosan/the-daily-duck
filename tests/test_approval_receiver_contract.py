@@ -80,7 +80,7 @@ PHASE_3B_2A1_APPROVED_BASELINE = "23f54a4234bcb332f8f0b97bedb255b749235dd0"
 # The two Daily Duck operations entries are pinned to the 2026-11-23 change.
 # Record: docs/phase3b2/PROTECTED_WORKFLOW_REAPPROVAL_20261107.md.
 # The original fixed baseline and all protected paths remain in force.
-PROPOSED_WORKFLOW_REAPPROVAL_SHA256 = {
+PROTECTED_PATH_SHA256 = {
     '.github/workflows/archive-only-publish-2026-10-11.yml':
         'c89946abf027884d568b4f70ca599982dbc9d9a7cb3abac67ae095c679f62f11',
     '.github/workflows/archive-only-publish-2026-10-26.yml':
@@ -101,6 +101,9 @@ PROPOSED_WORKFLOW_REAPPROVAL_SHA256 = {
         'aded2fc39e5cb5eb9b9689951653d82e9475d151a13f2995209b50f4fbfcfc89',
     '.github/workflows/x-backfill-publish-2026-10-26.yml':
         'f63916fc8b157db4dad8eb54bd68951cfe6351f4544309b815cf953f8cf7ec9f',
+    # Reply syntax only; the approval domain remains pinned to exact content.
+    'scripts/approval_domain.py':
+        '4f56e8a035967e9b5b9e77e1124f30de80ba3ec45fd870ab085d6ed9a149540b',
 }
 GATE_A_PREFLIGHT_SECTION_SHA256 = (
     "bae110d1e7c0e22dfa54a23bcc5a2a65d7f8699fb22dd98a6171c3d0f8900785"
@@ -267,12 +270,12 @@ class ApprovalReceiverContractTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        # Every protected delta must be one of the ten exact proposed files.
+        # Every protected delta must be an exact listed file.
         # A reverted, missing, changed or additional path remains a failure.
         changed = result.stdout.splitlines()
         self.assertEqual(len(changed), len(set(changed)))
-        self.assertEqual(set(changed), set(PROPOSED_WORKFLOW_REAPPROVAL_SHA256))
-        for relative, expected in PROPOSED_WORKFLOW_REAPPROVAL_SHA256.items():
+        self.assertEqual(set(changed), set(PROTECTED_PATH_SHA256))
+        for relative, expected in PROTECTED_PATH_SHA256.items():
             with self.subTest(path=relative):
                 path = ROOT / relative
                 self.assertFalse(path.is_symlink())

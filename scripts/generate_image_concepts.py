@@ -418,10 +418,7 @@ Each generated image will later be attached to one approval email.
 
 The human will reply with:
 
-IMAGE_NUMBER TITLE_NUMBER
-
-Example:
-1 3
+One option number, e.g. 2, to select both the image and title at that number.
 
 There is NO separate concept-selection turn.
 
@@ -1066,8 +1063,8 @@ def main() -> int:
             "images_per_concept": 1,
             "image_count": 3,
             "title_count": 3,
-            "reply_format": "IMAGE_NUMBER TITLE_NUMBER",
-            "example": "1 3",
+            "reply_format": "OPTION_NUMBER",
+            "example": "2",
             "next_3_supported": True,
             "full_width_supported": True,
         },
