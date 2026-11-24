@@ -1,7 +1,5 @@
 {
-  "first_seen": {
-    "The Daily Duck Automation": "2026-11-24T02:56:52.977485+00:00"
-  },
+  "first_seen": {},
   "last_send_at": "2026-11-24T02:56:52.977485+00:00",
   "paused_at": null,
   "send_count": 1,
