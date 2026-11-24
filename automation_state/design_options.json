@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-24",
   "generated_at": "2026-11-24T07:35:37.505032+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-24/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 3,
+  "selected_image_concept": {
+    "number": 3,
+    "title_en": "THE SOUND OF FEELING",
+    "concept_en": "A lyrical editorial image about music being experienced through perception rather than fully captured by numbers.",
+    "composition_en": "Wide cinematic landscape composition with the duck and violin on a softly lit stage-like space. The yellow duck mascot stands or sits proudly with the violin, eyes gently closed in concentration and delight, while a flowing ribbon of warm color and abstract sound waves emerges from the instrument and curves around the scene. Behind the duck, a quiet neutral grid of measurement lines fades into the background, clearly secondary to the sensory musical flow. Keep all forms abstract and illustrative rather than claiming a literal physical change. Sophisticated, joyful, minimal, emotionally resonant, with a strong central silhouette and generous breathing room.",
+    "generation_prompt_en": "Create one clean, modern, charming premium editorial landscape image with lyrical cinematic composition. Show the recognizable Daily Duck mascot as a friendly yellow duck with an orange beak, large dark glossy eyes, a small feather tuft, and a warm approachable expression, holding a violin in a softly lit stage-like space. The duck looks gently concentrated and delighted as a flowing ribbon of warm color and abstract sound waves emerges from the violin and curves through the scene, representing music felt emotionally. Place a quiet neutral grid of abstract measurement lines far in the background, fading and secondary, with no readable text. Make the image a metaphor for perception versus measurement, not a literal claim that the violin physically changed. Strong central silhouette, elegant negative space, refined warm palette, joyful premium magazine illustration. No logos, no watermark, no UI, no headline, no readable text, no extra characters.",
+    "alt_en": "A delighted yellow duck holds a violin as warm abstract sound waves flow around it, with faint measurement lines receding in the background.",
+    "title_ja": "感じる音のかたち",
+    "concept_ja": "音楽が数値だけでは捉えきれず、感覚として体験されることを、詩的で印象的なビジュアルメタファーとして描きます。",
+    "composition_ja": "柔らかな光に包まれた舞台のような空間で、カモとバイオリンを主役にする横長のシネマティック構図。黄色いマスコットはバイオリンを持ち、目をやさしく閉じて、集中と喜びを感じさせる表情を浮かべます。楽器からは温かな色彩のリボンと抽象的な音の波が流れ出し、音楽を心で感じる様子を表します。背後には、文字のない控えめな測定線のグリッドを薄く置き、感覚的な音楽の流れを引き立てます。バイオリンが物理的に変化したと断定するのではなく、あくまで抽象的な比喩として表現します。",
+    "alt_ja": "黄色いカモがバイオリンを抱え、温かな抽象的な音の波に包まれている。背景では測定線がかすかに後退している。"
+  },
+  "selected_image_number": 3,
+  "selected_title_number": 3,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "THE SOUND OF FEELING",
+  "final_selection_reply": "3",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-24T14:42:30.046433+00:00"
 }
