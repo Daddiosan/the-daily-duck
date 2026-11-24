@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-24",
+    "displayDate": "November 24, 2026",
+    "slug": "musical-magic",
+    "title": "MUSICAL MAGIC",
+    "duckName": "Musical Magic",
+    "storyTitleEn": "THE SOUND OF FEELING",
+    "storyTitleJa": "バイオリンは弾き込むと音が良くなる？演奏者の感覚と音響の不思議",
+    "image": "assets/ducks/2026-11-24-musical-magic.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Musical Magic",
+    "imageAltJa": "Musical MagicをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Musicians have long believed that playing a violin regularly enhances its tone. A study examining physical measurements alongside a soloist's feedback showed that while acoustics remained unchanged on paper, the player experienced a clear improvement in the instrument's feel and sound.",
+    "storyJa": "バイオリンを日常的に弾き込むと音が良くなると、音楽家たちは長年信じてきました。ある研究で物理的な測定とソロ演奏者の感覚を調べたところ、数値上の測定値は変わらなかったものの、演奏者は明確な音と使い心地の向上を感じていました。",
+    "duckEn": "Music is felt with the heart, not just measured!",
+    "duckJa": "音楽は数値だけでなく、心で感じるものですね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-violin-physical-characteristics-regular-playing.html",
+    "archiveSummaryEn": "Does playing a violin make it sound better? While physical measurements stayed unchanged, a soloist felt the instrument truly improved through regular practice!",
+    "archiveSummaryJa": "バイオリンは弾くほどに音が良くなる？数値上のデータは変わらなくても、ソロ演奏者は練習を重ねることで明確な響きの向上を実感していました！",
+    "reasonEn": "Does playing a violin make it sound better? While physical measurements stayed unchanged, a soloist felt the instrument truly improved through regular practice!",
+    "reasonJa": "バイオリンは弾くほどに音が良くなる？数値上のデータは変わらなくても、ソロ演奏者は練習を重ねることで明確な響きの向上を実感していました！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-23",
     "displayDate": "November 23, 2026",
     "slug": "fair-opportunities",
