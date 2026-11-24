@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-24T14:43:59.151029+00:00",
+  "issue_date": "2026-11-24",
+  "x_post_id": "2125239006648791307",
+  "x_post_url": "https://x.com/i/web/status/2125239006648791307",
+  "x_media_id": "2125239004652306432",
+  "image_path": "automation_images/x/2026-11-24-x-card.png",
+  "post_text": "Does playing a violin make it sound better? While physical measurements stayed unchanged, a soloist felt the instrument truly improved through regular practice!\n\nhttps://www.thedailyduck.ai/ducks/2026-11-24/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 185
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2125239006648791307",
+      "text": "Does playing a violin make it sound better? While physical measurements stayed unchanged, a soloist felt the instrument truly improved through regular practice!\n\nhttps://t.co/FjI5RTLloB https://t.co/dFyWMiHxhQ"
+    }
+  }
+}
