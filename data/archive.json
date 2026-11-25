@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-25",
+    "displayDate": "November 25, 2026",
+    "slug": "colbert-spider",
+    "title": "COLBERT SPIDER",
+    "duckName": "Colbert Spider",
+    "storyTitleEn": "TINY SPIDER IS PURE DNA-MITE!",
+    "storyTitleJa": "スティーヴン・コルベアにちなんで名付けられた小クモ、人間より50%大きいゲノムを持つ",
+    "image": "assets/ducks/2026-11-25-colbert-spider.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Colbert Spider",
+    "imageAltJa": "Colbert SpiderをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "A tiny trapdoor spider named after comedian Stephen Colbert is surprising researchers with a massive secret. Despite measuring only around the size of a quarter, this little arachnid possesses a genome fifty percent larger than that of a human. It goes to show that incredible surprises can come in very small packages.",
+    "storyJa": "コメディアンのスティーヴン・コルベアにちなんで名付けられた小さなトタテグモが、大きな驚きをもたらしています。コインほどの小さな体でありながら、このクモは人間より50%も大きいゲノムを持っています。まさに「大きな驚きは小さな姿でやってくる」ことを証明するエピソードです。",
+    "duckEn": "Small in size, massive in genetic code!",
+    "duckJa": "体は小さくても、遺伝子コードはとってもビッグですね！",
+    "sourceLabel": "ScienceDaily Environment",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/11/261122060343.htm",
+    "archiveSummaryEn": "A tiny trapdoor spider named after Stephen Colbert has a genome 50% larger than a human's! Big surprises really do come in small packages.",
+    "archiveSummaryJa": "スティーヴン・コルベアにちなんで名付けられた小さなクモが、人間より50%も大きなゲノムを持っていることが判明！小さな体に大きな驚きが詰まっています。",
+    "reasonEn": "A tiny trapdoor spider named after Stephen Colbert has a genome 50% larger than a human's! Big surprises really do come in small packages.",
+    "reasonJa": "スティーヴン・コルベアにちなんで名付けられた小さなクモが、人間より50%も大きなゲノムを持っていることが判明！小さな体に大きな驚きが詰まっています。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-24",
     "displayDate": "November 24, 2026",
     "slug": "musical-magic",
