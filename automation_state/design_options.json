@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-25",
   "generated_at": "2026-11-25T05:08:17.086479+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-25/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 2,
+  "selected_image_concept": {
+    "number": 2,
+    "title_en": "The Late Night Talk Show Guest",
+    "concept_en": "In a playful nod to Stephen Colbert, the Daily Duck mascot hosts a cozy talk-show interview with the tiny spider resting on a mini cushion behind a studio desk.",
+    "composition_en": "Landscape framing with warm broadcast studio lighting. The yellow duck mascot sits on the left behind a polished wooden host desk, looking warmly at a tiny trapdoor spider perched on a miniature velvet pillow with a small toy microphone.",
+    "generation_prompt_en": "A wide landscape photograph of a friendly yellow duck mascot sitting behind a classic wooden late-night talk show desk under warm theatrical spotlights. On the desk, a tiny, charming quarter-sized trapdoor spider sits comfortably on a mini red velvet cushion next to a tiny chrome microphone. Cozy television studio backdrop with soft golden lighting, premium cinematic feel, clear focal point, 3D editorial style.",
+    "alt_en": "The yellow duck mascot behind a wooden talk-show desk interviewing a tiny spider sitting on a small velvet cushion.",
+    "title_ja": "深夜トークショーのゲストクモ",
+    "concept_ja": "スティーヴン・コルベアにちなんで、アヒルのマスコットがトークショーのデスクで小さなミニクッションに乗った小クモをゲストとして迎えている様子。",
+    "composition_ja": "温かみのあるスタジオ照明の横長構図。左側に木製デスクに座るアヒルのマスコット、デスク上にはミニチュアのベルベットクッションと小さなマイクにちょこんと乗った小クモが描かれています。",
+    "alt_ja": "トークショーのデスク越しに、小さなクッションに座る極小のクモをあたたかく迎える黄色いアヒルのマスコット。"
+  },
+  "selected_image_number": 2,
+  "selected_title_number": 2,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "TINY SPIDER IS PURE DNA-MITE!",
+  "final_selection_reply": "2",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-25T07:07:10.446544+00:00"
 }
