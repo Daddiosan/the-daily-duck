@@ -1,5 +1,5 @@
 {
-  "state": "WAITING_FINAL_SELECTION",
+  "state": "DESIGN_SELECTED_READY_TO_PUBLISH",
   "issue_date": "2026-11-26",
   "generated_at": "2026-11-26T10:00:44.157450+00:00",
   "approved_story": {
@@ -708,10 +708,21 @@
   "preview_batch_number": 1,
   "preview_batch_path": "automation_images/design_previews/2026-11-26/batch_01",
   "preview_candidate_count": 3,
-  "selected_image_concept_number": null,
-  "selected_image_concept": null,
-  "selected_image_number": null,
-  "selected_title_number": null,
+  "selected_image_concept_number": 1,
+  "selected_image_concept": {
+    "number": 1,
+    "title_en": "BILL-IEVE IT OR NUT!",
+    "concept_en": "A warm, elevated landscape portrait of Georgia’s Pecan Belt, turning the orchard landscape into a flowing visual pattern while the Daily Duck mascot discovers the abundance below.",
+    "composition_en": "Landscape hero composition with the friendly yellow duck in the lower-right foreground, orange beak, large dark glossy eyes, small feather tuft, and warm approachable expression. Rows of pecan trees sweep diagonally across the frame toward a softly glowing horizon, creating a clear belt-like rhythm. A few naturally fallen pecans sit near the duck without becoming the main focus. Clean modern editorial styling, rich greens and golden sunlight, premium warmth, strong focal point, generous negative space, no text.",
+    "generation_prompt_en": "Create one polished landscape editorial hero image in a clean, modern, charming premium style. Show a recognizable friendly yellow duck mascot in the lower-right foreground: bright yellow feathers, orange beak, large dark glossy eyes, small feather tuft, warm approachable expression, consistent mascot identity. Place the duck at the edge of a broad pecan orchard in Georgia, with orderly rows of pecan trees flowing diagonally into the distance and a softly glowing warm horizon. Include only a few naturally fallen pecans near the duck as a subtle food cue. Emphasize scenic agricultural tradition, regional warmth, rich orchard texture, elegant composition, cinematic golden daylight, crisp details, soft depth of field, landscape aspect ratio, strong focal point, publication-ready. No logos, no watermark, no UI, no readable text, no headline, no lettering embedded in the image.",
+    "alt_en": "The Daily Duck mascot stands beside a sunlit pecan orchard, with rows of trees stretching toward the horizon in Georgia’s Pecan Belt.",
+    "title_ja": "信じて、ナッツ！",
+    "concept_ja": "ジョージア州のペカンベルトを、広がる果樹園のリズムとして見せる温かな風景ビジュアルです。デイリー・ダックが豊かな実りを発見する構成にします。",
+    "composition_ja": "横長のヒーロー構図。右下手前に、黄色い体、オレンジ色のくちばし、大きく艶のある黒い目、小さな羽毛の冠、親しみやすい表情を持つおなじみのアヒルを配置します。ペカンの木々の列を斜めに奥へ伸ばし、遠くに柔らかな光の地平線を置きます。アヒルの近くには、補助的に落ちたペカンを少数だけ描きます。緑と金色の光を基調にした、清潔で現代的かつ上質な雰囲気です。画像内に文字は入れません。",
+    "alt_ja": "デイリー・ダックのマスコットが、ジョージア州のペカンベルトで、地平線へ続く日差しに照らされたペカン果樹園のそばに立っている。"
+  },
+  "selected_image_number": 1,
+  "selected_title_number": 1,
   "design_flow": {
     "selection_turns_after_gate_a": 1,
     "concept_count": 3,
@@ -748,5 +759,9 @@
     "next_3_command": "NEXT 3",
     "full_width_supported": true,
     "next_state": "READY_TO_PUBLISH"
-  }
+  },
+  "selected_title": "BILL-IEVE IT OR NUT!",
+  "final_selection_reply": "1",
+  "final_selection_sender": "kobakoba_jp2002@yahoo.co.jp",
+  "final_selected_at": "2026-11-26T11:21:22.335889+00:00"
 }
