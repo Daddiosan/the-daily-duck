@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-26",
+    "displayDate": "November 26, 2026",
+    "slug": "pecan-pal",
+    "title": "PECAN PAL",
+    "duckName": "Pecan Pal",
+    "storyTitleEn": "BILL-IEVE IT OR NUT!",
+    "storyTitleJa": "ジョージア州のペカンベルトが誇る豊かな伝統",
+    "image": "assets/ducks/2026-11-26-pecan-pal.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Pecan Pal",
+    "imageAltJa": "Pecan PalをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Georgia's famous Pecan Belt showcases a long-standing agricultural tradition. Highlighting rich orchard imagery and regional character, this area celebrates the warmth and heritage of local farming and food production.",
+    "storyJa": "ジョージア州の有名なペカンベルトは、長年にわたる農業の伝統を今に伝えています。豊かな果樹園の風景と地域の魅力を備えたこの地域は、地元の農業と食品生産の温もりと歴史をたたえています。",
+    "duckEn": "Quack! That is a whole lot of delicious pecans!",
+    "duckJa": "クワッ！美味しそうなペカンがいっぱいだね！",
+    "sourceLabel": "NASA",
+    "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/georgias-pecan-belt/",
+    "archiveSummaryEn": "Take a look at Georgia's famous Pecan Belt and its long-running agricultural tradition.",
+    "archiveSummaryJa": "ジョージア州の有名なペカンベルトと、その長年にわたる農業の伝統をご覧ください。",
+    "reasonEn": "Take a look at Georgia's famous Pecan Belt and its long-running agricultural tradition.",
+    "reasonJa": "ジョージア州の有名なペカンベルトと、その長年にわたる農業の伝統をご覧ください。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-25",
     "displayDate": "November 25, 2026",
     "slug": "colbert-spider",

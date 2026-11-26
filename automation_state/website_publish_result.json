@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-26T11:21:46.187630+00:00",
+  "issue_date": "2026-11-26",
+  "image": "assets/ducks/2026-11-26-pecan-pal.png",
+  "page": "ducks/2026-11-26/index.html",
+  "title": "BILL-IEVE IT OR NUT!",
+  "duck_name": "Pecan Pal",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
