@@ -1,0 +1,30 @@
+{
+  "action": "X_POSTED",
+  "at": "2026-11-26T11:22:45.168495+00:00",
+  "issue_date": "2026-11-26",
+  "x_post_id": "2125913140361601301",
+  "x_post_url": "https://x.com/i/web/status/2125913140361601301",
+  "x_media_id": "2125913138042142721",
+  "image_path": "automation_images/x/2026-11-26-x-card.png",
+  "post_text": "Take a look at Georgia's famous Pecan Belt and its long-running agricultural tradition.\n\nhttps://www.thedailyduck.ai/ducks/2026-11-26/",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "secondary_language": null,
+    "post_order": [
+      "en",
+      "url"
+    ],
+    "max_weighted_length": 280,
+    "weighted_length": 112
+  },
+  "response": {
+    "data": {
+      "edit_history_tweet_ids": [
+        ""
+      ],
+      "id": "2125913140361601301",
+      "text": "Take a look at Georgia's famous Pecan Belt and its long-running agricultural tradition.\n\nhttps://t.co/LFh037X95R https://t.co/R84ldr3w2m"
+    }
+  }
+}
