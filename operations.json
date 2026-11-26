@@ -1,8 +1,10 @@
 {
-  "first_seen": {},
-  "last_send_at": "2026-11-25T00:52:16.013309+00:00",
+  "first_seen": {
+    "The Daily Duck - Design Selection Check:Design Selection Check scheduled trigger": "2026-11-26T13:59:58.026329+00:00"
+  },
+  "last_send_at": "2026-11-26T13:59:58.026329+00:00",
   "paused_at": null,
   "send_count": 1,
-  "send_date": "2026-11-25",
+  "send_date": "2026-11-26",
   "version": 1
 }
