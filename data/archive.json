@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-28",
+    "displayDate": "November 28, 2026",
+    "slug": "multitasking-secrets",
+    "title": "MULTITASKING SECRETS",
+    "duckName": "Multitasking Secrets",
+    "storyTitleEn": "WIRED TO DO IT ALL AT ONCE!",
+    "storyTitleJa": "女性の方がマルチタスクが得意に見える驚きの理由",
+    "image": "assets/ducks/2026-11-28-multitasking-secrets.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Multitasking Secrets",
+    "imageAltJa": "Multitasking SecretsをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Ever wondered why women often seem to handle multiple tasks at once more smoothly than men? Science offers a fresh and surprising look into the underlying reasons behind everyday multitasking behavior.",
+    "storyJa": "なぜ女性の方が男性よりも複数のタスクを同時にスムーズにこなせるように見えるのか、疑問に思ったことはありませんか？最新の研究が、日常のマルチタスク行動の背景にある驚きの理由に光を当てています。",
+    "duckEn": "Quack! I can swim, quack, and look cute all at the same time!",
+    "duckJa": "ガーガー！ボクも泳ぎながらガーガー鳴いて可愛く振る舞うマルチタスクが得意だよ！",
+    "sourceLabel": "ScienceDaily Offbeat",
+    "sourceUrl": "https://www.sciencedaily.com/releases/2026/11/261125045306.htm",
+    "archiveSummaryEn": "Science reveals the surprising reason why women often seem better at multitasking than men!",
+    "archiveSummaryJa": "女性の方が男性よりもマルチタスクが得意に見える驚きの理由を科学が解明！",
+    "reasonEn": "Science reveals the surprising reason why women often seem better at multitasking than men!",
+    "reasonJa": "女性の方が男性よりもマルチタスクが得意に見える驚きの理由を科学が解明！",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-27",
     "displayDate": "November 27, 2026",
     "slug": "curiosity-power",
