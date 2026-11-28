@@ -1,5 +1,34 @@
 [
   {
+    "date": "2026-11-27",
+    "displayDate": "November 27, 2026",
+    "slug": "curiosity-power",
+    "title": "CURIOSITY POWER",
+    "duckName": "Curiosity Power",
+    "storyTitleEn": "QUACK THE CODE OF EASY LEARNING!",
+    "storyTitleJa": "好奇心から学ぶと脳の負担が減る？",
+    "image": "assets/ducks/2026-11-27-curiosity-power.png",
+    "imageAltEn": "The Daily Duck yellow duck mascot for Curiosity Power",
+    "imageAltJa": "Curiosity PowerをテーマにしたThe Daily Duckの黄色いダック",
+    "storyEn": "Learning out of genuine curiosity may require less mental effort than doing it for monetary rewards. Research shows that when we are naturally interested in a subject, our brains process facts more easily. It is an inspiring reminder of how powerful positive curiosity can be.",
+    "storyJa": "お金の報酬のためではなく、純粋な好奇心から知識を学ぶ方が、脳の疲労や負担が少なく済むかもしれません。自然と興味を持っているテーマに対しては、脳が知識をよりスムーズに処理することが研究で示されています。前向きな好奇心の強さを教えてくれる励みになるニュースです。",
+    "duckEn": "Quack! Learning is easy when you're genuinely curious!",
+    "duckJa": "クワッ！興味があることなら、覚えるのもラクラクだね！",
+    "sourceLabel": "Phys.org",
+    "sourceUrl": "https://phys.org/news/2026-11-facts-mental-effort-money.html",
+    "archiveSummaryEn": "Learning out of genuine interest takes less mental effort than learning for money! Curiosity really is powerful.",
+    "archiveSummaryJa": "お金のためより、純粋な興味で学ぶ方が脳の負担が少ないことが判明！好奇心の力は素晴らしいですね。",
+    "reasonEn": "Learning out of genuine interest takes less mental effort than learning for money! Curiosity really is powerful.",
+    "reasonJa": "お金のためより、純粋な興味で学ぶ方が脳の負担が少ないことが判明！好奇心の力は素晴らしいですね。",
+    "languagePolicy": {
+      "primaryLanguage": "en",
+      "canonicalLanguage": "en",
+      "translationLanguage": "ja",
+      "translationSource": "english_master"
+    },
+    "published": true
+  },
+  {
     "date": "2026-11-26",
     "displayDate": "November 26, 2026",
     "slug": "pecan-pal",

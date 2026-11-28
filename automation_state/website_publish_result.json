@@ -1,0 +1,14 @@
+{
+  "action": "PUBLISHED",
+  "at": "2026-11-28T01:14:04.892380+00:00",
+  "issue_date": "2026-11-27",
+  "image": "assets/ducks/2026-11-27-curiosity-power.png",
+  "page": "ducks/2026-11-27/index.html",
+  "title": "QUACK THE CODE OF EASY LEARNING!",
+  "duck_name": "Curiosity Power",
+  "language_policy": {
+    "primary_language": "en",
+    "canonical_language": "en",
+    "translation_language": "ja"
+  }
+}
